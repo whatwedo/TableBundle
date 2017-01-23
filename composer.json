@@ -3,7 +3,7 @@
     "type": "symfony-bundle",
     "description": "Table generator for symfony",
     "license": "MIT",
-    "homepage": "https://dev.whatwedo.ch/whatwedo/TableBundle",
+    "homepage": "https://doc.whatwedo.ch/whatwedo/tablebundle",
     "minimum-stability": "dev",
     "authors": [
         {
