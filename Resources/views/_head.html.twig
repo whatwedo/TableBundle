@@ -1,0 +1,35 @@
+{% set currentRoute = app.request.attributes.get('_route') %}
+{% set currentQuery = app.request.query %}
+
+<tr>
+    {% for key, column in table.columns %}
+        <th
+        {% if table.queryBuilder is not null and column.sortableColumn and (column.ordered(app.request.query, 'ASC') or column.ordered(app.request.query, 'DESC')) %}
+            class="sorted"
+        {% endif %}
+        >
+            <nobr>
+                {{ column.label }}
+                {# we do not allow server ordering for RelationContent #}
+                {% if table.queryBuilder is not null %}
+                    {% if column.sortableColumn %}
+                        &nbsp;
+                        {% if column.ordered(app.request.query, 'ASC') %}
+                            <a href="{{ column.orderQueryDESC(app.request.query) }}"><i class="fa fa-sort-asc"></i></a>
+                            <a href="{{ column.deleteOrder(app.request.query) }}"><i class="fa fa-times"></i></a>
+                        {% elseif column.ordered(app.request.query, 'DESC') %}
+                            <a href="{{ column.orderQueryASC(app.request.query) }}"><i class="fa fa-sort-desc"></i></a>
+                            <a href="{{ column.deleteOrder(app.request.query) }}"><i class="fa fa-times"></i></a>
+                        {% else %}
+                            <a href="{{ column.orderQueryASC(app.request.query) }}"><i class="fa fa-sort"></i></a>
+                        {% endif %}
+                    {% endif %}
+                {% elseif table.rows.count > 0 %}
+                    <i class="fa fa-sort-asc show-asc"></i>
+                    <i class="fa fa-sort-desc show-desc"></i>
+                    <i class="fa fa-sort show-neither-asc-desc"></i>
+                {% endif %}
+            </nobr>
+        </th>
+    {% endfor %}
+</tr>

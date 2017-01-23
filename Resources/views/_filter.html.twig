@@ -1,0 +1,186 @@
+{% import _self as whatwedo_table_filters %}
+
+{% macro filter(iBlock, i, filter, tableFilters, operation, value) %}
+    <div class="whatwedo_table__filters__block">
+        <div class="whatwedo_table__filters_filter row">
+            <div class="col-xs-10 col-xs-offset-1">
+                <div class="row">
+                    <div class="col-xs-4">
+                        <select name="filter_column[{{ iBlock }}][{{ i }}]" class="form-control" data-disable-interactive>
+                            {% for f in tableFilters %}
+                                <option
+                                    value="{{ f.identifier }}"
+                                    data-operator-options="{{ f.type.operators|json_encode }}"
+                                    data-value-template="{{ f.type.valueField|raw|e }}"
+                                    class="form-control"
+                                    {% if filter.identifier == f.identifier %}selected="selected"{% endif %}
+                                >
+                                    {{ f.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-xs-3">
+                        <select name="filter_operator[{{ iBlock }}][{{ i }}]" class="form-control" data-disable-interactive>
+                            {% for key, name in filter.type.operators %}
+                                <option value="{{ key }}"{% if operation == key %} selected="selected"{% endif %}>
+                                    {{ name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-xs-5">
+                        {{ filter.type.valueField(value)|replace({
+                            '{name}': 'filter_value[' ~ iBlock ~ '][' ~ i ~ ']'
+                        })|raw }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-1 text-right">
+                <div class="btn-group btn-group-xs" role="group">
+                    <button class="btn btn-default" data-filter-action="add-and">
+                        und
+                    </button>
+                    <button class="btn btn-danger" data-filter-action="remove">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+        {% set filterColumns = app.request.query.get('filter_column', []) %}
+        {% set filterOperators = app.request.query.get('filter_operator', []) %}
+        {% set filterValues = app.request.query.get('filter_value', []) %}
+
+<form action="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge(app.request.attributes.all|merge({ page: 1 })) ) }}" id="whatwedo_table__filters" {% if filterColumns|length %}class="active"{% endif %}>
+    <input type="hidden" name="user-searching" />
+    <input type="hidden" name="limit" value="{{ app.request.query.get('limit') == '' ? 25 : app.request.query.get('limit') }}" />
+    <div class="row">
+        <div class="col-xs-12">
+            <strong>
+                Zeige Eintrage, wenn
+            </strong>
+        </div>
+    </div>
+
+    {% set iCustom = 0 %}
+    {% for iBlock, filters in filterColumns %}
+        {% set iCustom = iCustom + 1 %}
+        <div class="whatwedo_table__filters__blocks">
+            {% if iCustom > 1 %}
+                <p>
+                    <strong>
+                        oder
+                    </strong>
+                </p>
+            {% endif %}
+            {% for i, filterIdentifier in filters %}
+                {% if table.filters[filterIdentifier] is defined %}
+                    {{ whatwedo_table_filters.filter(iBlock, i, table.filters[filterIdentifier], table.filters, filterOperators[iBlock][i], filterValues[iBlock][i]) }}
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="whatwedo_table__filters__blocks">
+            {{ whatwedo_table_filters.filter(0, 0, table.filters|first, table.filters) }}
+        </div>
+    {% endfor %}
+
+    <div class="row">
+        <div class="col-xs-12">
+            <p>
+                <strong>
+                    oder
+                </strong>
+            </p>
+            <button class="btn-default btn btn-xs" data-filter-action="add-or">
+                Oder-Regel hinzufügen
+            </button>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-12 text-right">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#whatwedo_table__filters__save">
+                    <i class="fa fa-floppy-o"></i>
+                    Filter speichern
+                </button>
+
+                {#
+                {% for key, massAction in table.massActions %}
+                    {% if massAction is iterable %}
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{ key|raw }} <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                {% for subKey, action in massAction %}
+                                    <li>
+                                        <button type="submit" name="export" value="{{ subKey }}">
+                                            {{ action|raw }}
+                                        </button>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% else %}
+                        <button type="submit" class="btn btn-default" name="export" value="{{ key }}">
+                            {{ massAction|raw }}
+                        </button>
+                    {% endif %}
+                {% endfor %}
+                #}
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-arrow-right"></i>
+                    Resultate anzeigen
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Speicher-Modal -->
+    <div class="modal fade" id="whatwedo_table__filters__save" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Filter als Abfrage speichern</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" name="filter_name" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Beschreibung</label>
+                        <input type="text" name="filter_description" class="form-control">
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="filter_public" value="1"> Öffentlich
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        <i class="fa fa-times"></i>
+                        Schliessen
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-floppy-o"></i>
+                        Speichern
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script type="text/template" id="whatwedo_table__filters__template__block">
+    {{ whatwedo_table_filters.filter('{iBlock}', '{i}', table.filters|first, table.filters) }}
+</script>

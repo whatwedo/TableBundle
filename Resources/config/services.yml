@@ -1,0 +1,33 @@
+services:
+    whatwedo_table.table:
+        class: whatwedo\TableBundle\Table\Table
+        shared: false
+        arguments:
+            - '@event_dispatcher'
+            - '@request_stack'
+            - '@templating'
+
+    # Events
+    whatwedo_table.event_listener.limit:
+        class: whatwedo\TableBundle\EventListener\LimitEventListener
+        tags:
+            - { name: kernel.event_listener, event: whatwedo_table.data_load.pre_load, method: limitResultSet }
+
+    whatwedo_table.event_listener.order:
+        class: whatwedo\TableBundle\EventListener\OrderEventListener
+        tags:
+            - { name: kernel.event_listener, event: whatwedo_table.data_load.pre_load, method: orderResultSet }
+
+    whatwedo_table.event_listener.filter:
+        class: whatwedo\TableBundle\EventListener\FilterEventListener
+        tags:
+            - { name: kernel.event_listener, event: whatwedo_table.data_load.pre_load, method: filterResultSet }
+
+    # Twig Extension
+    sybio.twig_extension:
+        class: whatwedo\TableBundle\Twig\TableExtension
+        arguments:
+            - "@service_container"
+        public: false
+        tags:
+            - { name: twig.extension, priority: 255 }

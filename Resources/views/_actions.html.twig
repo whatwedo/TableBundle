@@ -1,0 +1,9 @@
+<nobr>
+    <div class="btn-group" role="group">
+        {% for item in items %}
+            <a href="{{ path(item.route, { id: row.id }) }}" class="btn btn-{{ item.button }} btn-xs" title="{{ item.label }}">
+                <i class="fa fa-{{ item.icon }}"></i>
+            </a>
+        {% endfor %}
+    </div>
+</nobr>

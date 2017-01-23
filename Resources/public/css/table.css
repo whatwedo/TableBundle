@@ -1,0 +1,184 @@
+#whatwedo_table {
+  position: relative;
+}
+
+#whatwedo_table thead {
+  background-color: #FFF;
+}
+
+#whatwedo_table .whawtedo_table__row_operations .btn-group {
+  display: flex;
+}
+
+#whatwedo_table:before {
+  content: '';
+  display: block;
+}
+
+#whatwedo_table.loading .whatwedo_table-overlay {
+  opacity: 1;
+  visibility: visible;
+  transition: 0.25s ease-in-out;
+}
+
+#whatwedo_table tr[data-href] {
+  cursor: pointer;
+}
+
+#whatwedo_table .whatwedo_table-search {
+  width: 35%;
+}
+
+#whatwedo_table .whatwedo_table-search select {
+  width: 30%;
+}
+
+#whatwedo_table .whatwedo_table-search input {
+  width: 70%;
+}
+
+#whatwedo_table .whatwedo_table-overlay {
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.25s ease-in-out;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  background: rgba(255, 255, 255, 0.7);
+  z-index: 200;
+  top: 0;
+  left: 0;
+}
+
+#whatwedo_table .whatwedo_table-overlay .spinner {
+  margin: 20% auto 0;
+  width: 70px;
+  text-align: center;
+}
+
+#whatwedo_table .whatwedo_table-overlay .spinner > div {
+  width: 18px;
+  height: 18px;
+  background-color: #333333;
+  border-radius: 100%;
+  display: inline-block;
+  -webkit-animation: whatwedo_table-sk-bouncedelay 1.4s infinite ease-in-out both;
+  animation: whatwedo_table-sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+#whatwedo_table .whatwedo_table-overlay .spinner .bounce1 {
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
+}
+
+#whatwedo_table .whatwedo_table-overlay .spinner .bounce2 {
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
+}
+
+@-webkit-keyframes whatwedo_table-sk-bouncedelay {
+  0%,
+  80%,
+  100% {
+    -webkit-transform: scale(0);
+  }
+  40% {
+    -webkit-transform: scale(1);
+  }
+}
+
+@keyframes whatwedo_table-sk-bouncedelay {
+  0%,
+  80%,
+  100% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
+  40% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+#whatwedo_table .btn-sort {
+  padding-right: 0;
+  padding-left: 0;
+  font-size: 10px;
+}
+
+#whatwedo_table.whatwedo_table__large .table-responsive {
+  overflow-x: scroll;
+}
+
+#whatwedo_table.whatwedo_table__large .table-responsive td {
+  white-space: nowrap;
+}
+
+#whatwedo_table.whatwedo_table__editable .table-responsive {
+  height: calc(100vh - 350px);
+  overflow: scroll;
+}
+
+#whatwedo_table.whatwedo_table__editable .whatwedo_table__row__contents {
+  display: block;
+}
+
+#whatwedo_table.whatwedo_table__editable .whatwedo_table__row__contents::after {
+  content: "\f040";
+  font: normal normal normal 14px/1 FontAwesome;
+  padding-left: 5px;
+  display: inline-block;
+  opacity: 0;
+  visibility: hidden;
+}
+
+#whatwedo_table.whatwedo_table__editable .whatwedo_table__row__contents:hover::after {
+  opacity: 0.5;
+  visibility: visible;
+}
+
+#whatwedo_table.whatwedo_table__editable .whatwedo_table__row__edit_widget {
+  display: none;
+}
+
+#whatwedo_table.whatwedo_table__editable .whatwedo_table__row__editable_save {
+  visibility: hidden;
+  opacity: 0;
+}
+
+#whatwedo_table.whatwedo_table__editable .whatwedo_table__row__edit_enabled .whatwedo_table__row__edit_widget {
+  display: block;
+}
+
+#whatwedo_table.whatwedo_table__editable .whatwedo_table__row__edit_enabled .whatwedo_table__row__contents {
+  display: none;
+}
+
+#whatwedo_table.whatwedo_table__editable .whatwedo_table__row__edit_enabled .whatwedo_table__row__editable_save {
+  visibility: visible;
+  opacity: 1;
+}
+
+#whatwedo_table_selected {
+  display: none;
+}
+
+#whatwedo_table__filters {
+  display: none;
+}
+
+#whatwedo_table__filters.active {
+  display: block;
+}
+
+#whatwedo_table__filters .whatwedo_table__filters_filter {
+  margin-bottom: 10px;
+}
+
+#whatwedo_table__filters .whatwedo_table__filters_filter .btn-group {
+  margin-top: 5px;
+}
+
+.table-responsive {
+  overflow-x: visible;
+}

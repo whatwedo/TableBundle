@@ -1,0 +1,15 @@
+<div class="table-responsive">
+    {% set class = '' %}
+    {# we allow client ordering for RelationContent #}
+    {% if table.queryBuilder is null and table.rows.count > 0 %}
+        {% set class = 'dataTable' %}
+    {% endif %}
+    <table class="table table-striped table-hover {{ class }}" {% if tableAttributes is defined %}{{ tableAttributes }}{% endif %}>
+        <thead class="thead-default">
+        {% include 'whatwedoTableBundle::_head.html.twig' %}
+        </thead>
+        <tbody>
+        {% include 'whatwedoTableBundle::_content.html.twig' %}
+        </tbody>
+    </table>
+</div>
