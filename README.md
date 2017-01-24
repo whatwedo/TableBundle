@@ -1,4 +1,6 @@
 # whatwedoTableBundle
+[![Latest Stable Version](https://poser.pugx.org/whatwedo/core-bundle/v/stable)](https://packagist.org/packages/whatwedo/core-bundle)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/8d9abdb9-0543-4610-bf06-7ff8a08532f4/mini.png)](https://insight.sensiolabs.com/projects/8d9abdb9-0543-4610-bf06-7ff8a08532f4)
 
 This bundle helps to automatically create table lists for entites or arrays.
 
