@@ -12,7 +12,7 @@
                 {{ column.label }}
                 {# we do not allow server ordering for RelationContent #}
                 {% if table.queryBuilder is not null %}
-                    {% if column.sortableColumn %}
+                    {% if column.sortableColumn and column.isSortable %}
                         &nbsp;
                         {% if column.ordered(app.request.query, 'ASC') %}
                             <a href="{{ column.orderQueryDESC(app.request.query) }}"><i class="fa fa-sort-asc"></i></a>
