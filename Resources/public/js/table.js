@@ -302,17 +302,13 @@ var whatwedoTable = {
             var $this = $(this);
             var $block = $this.closest('.whatwedo_table__filters__block');
 
-            if ($('#whatwedo_table .whatwedo_table__filters__block').length === 1) {
-                alert('Der letzte Filter darf nicht gelöscht werden.');
-                return;
-            }
-
             var $blocksContainer = $block.closest('.whatwedo_table__filters__blocks');
 
             $block.remove();
 
             if ($blocksContainer.find('.whatwedo_table__filters__block').length === 0) {
                 $blocksContainer.remove();
+                $('#whatwedo_table__filters').submit();
             }
         });
 
