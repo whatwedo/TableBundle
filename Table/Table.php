@@ -29,6 +29,8 @@ namespace whatwedo\TableBundle\Table;
 
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use DOMNode;
+use Oepfelchasper\SearchBundle\Model\TextRange;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -391,9 +393,41 @@ class Table
         if (!($q = $request->query->get('q', false))) {
             return $raw;
         }
-        // TODO: case insensitive preg_replace
-        $first = preg_replace('(' . preg_quote($q) . ')', '<mark>$0</mark>', $raw->__toString());
-        $second = preg_replace('(' . preg_quote(ucfirst($q)) . ')', '<mark>$0</mark>', $first);
-        return preg_replace('(' . preg_quote(lcfirst($q)) . ')', '<mark>$0</mark>', $second);
+
+        $replaceRegex = '/(' . implode('|', array_map('preg_quote', explode(' ', $q), ['/'])) . ')/i';
+
+        if (strpos($raw->__toString(), '<') === false) {
+            return preg_replace($replaceRegex, '<mark class="whatwedo_search__mark">$0</mark>', $raw->__toString());
+        }
+
+        $doc = new \DOMDocument();
+        $doc->loadXML('<html><body>' . $raw->__toString() . '</body></html>');
+        $xp = new \DOMXPath($doc);
+
+        $anchor = $doc->getElementsByTagName('body')->item(0);
+        if (!$anchor)
+        {
+            throw new \Exception('Anchor element not found.');
+        }
+
+        /** @var \DOMNode $node */
+        foreach ($xp->query('//text()') as $node) {
+            if (!$node->parentNode) {
+                continue;
+            }
+
+            $text = preg_replace($replaceRegex, '<mark class="whatwedo_search__mark">$0</mark>', $node->nodeValue);
+            $fragment = $doc->createDocumentFragment();
+            $fragment->appendXML($text);
+            $node->parentNode->replaceChild($fragment, $node);
+        }
+
+        $str = $doc->saveHTML($anchor->firstChild);
+
+        if (trim($str) == '<html><body></body></html>') {
+            return '';
+        }
+
+        return $str;
     }
 }
