@@ -30,7 +30,6 @@ namespace whatwedo\TableBundle\Table;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use DOMNode;
-use Oepfelchasper\SearchBundle\Model\TextRange;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -158,6 +157,7 @@ class Table
     public function overrideFilterName($identifier, $label)
     {
         $this->filters[$identifier]->setName($label);
+
         return $this;
     }
 

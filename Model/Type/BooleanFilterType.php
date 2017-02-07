@@ -31,53 +31,37 @@ use Doctrine\ORM\QueryBuilder;
 /**
  * @author Ueli Banholzer <ueli@whatwedo.ch>
  */
-class NumberFilterType extends FilterType
+class BooleanFilterType extends FilterType
 {
     const CRITERIA_EQUAL = 'equal';
     const CRITERIA_NOT_EQUAL = 'not_equal';
-    const CRITERIA_BIGGER_THAN = 'bigger_than';
-    const CRITERIA_SMALLER_THAN = 'smaller_than';
 
     public function getOperators()
     {
         return [
-            static::CRITERIA_EQUAL => 'ist gleich',
-            static::CRITERIA_NOT_EQUAL => 'ist ungleich',
-            static::CRITERIA_BIGGER_THAN => 'grösser als',
-            static::CRITERIA_SMALLER_THAN => 'kleiner als',
+            static::CRITERIA_EQUAL => 'ist',
+            static::CRITERIA_NOT_EQUAL => 'ist nicht',
         ];
     }
 
-    public function getValueField($value = null)
+    public function getValueField($value = 1)
     {
-        if (!is_numeric($value)) {
-            $value = 0;
-        }
-
-        return sprintf('<input type="number" step="any" name="{name}" value="%s" class="form-control">', $value);
+        return sprintf(
+            '<select name="{name}" class="form-control"><option value="1" %s>ausgewählt</option><option value="0" %s>nicht ausgewählt</option></select>',
+            $value == 1 ? 'selected' : '',
+            $value == 0 ? 'selected' : ''
+        );
     }
 
     public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
     {
-        if (!is_numeric($value)) {
-            $value = 0;
-        }
-
-        $value = (float) $value;
+        $value = $value == 1 ? 'true' : 'false';
 
         switch ($operator) {
             case static::CRITERIA_EQUAL:
-                $queryBuilder->setParameter($parameterName, $value);
-                return $queryBuilder->expr()->eq($this->getColumn(), sprintf(':%s', $parameterName));
+                return $queryBuilder->expr()->eq($this->getColumn(), $value);
             case static::CRITERIA_NOT_EQUAL:
-                $queryBuilder->setParameter($parameterName, $value);
-                return $queryBuilder->expr()->neq($this->getColumn(), sprintf(':%s', $parameterName));
-            case static::CRITERIA_BIGGER_THAN:
-                $queryBuilder->setParameter($parameterName, $value);
-                return $queryBuilder->expr()->gt($this->getColumn(), sprintf(':%s', $parameterName));
-            case static::CRITERIA_SMALLER_THAN:
-                $queryBuilder->setParameter($parameterName, $value);
-                return $queryBuilder->expr()->lt($this->getColumn(), sprintf(':%s', $parameterName));
+                return $queryBuilder->expr()->neq($this->getColumn(), $value);
         }
 
         return false;

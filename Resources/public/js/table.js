@@ -367,6 +367,18 @@ var whatwedoTable = {
         });
     },
 
+    setLimit: function() {
+      var buildUrl = function(base, key, value) {
+        var sep = (base.indexOf('?') > -1) ? '&' : '?';
+        return base + sep + key + '=' + value;
+      };
+
+      $('#whatwedo_table select[name="limit"]').change(function(e) {
+            window.location.href = buildUrl(buildUrl(window.location.href, 'page', 1), 'limit', $(this).val());
+            e.preventDefault();
+        });
+    },
+
     /**
      * initialize class
      */
@@ -376,6 +388,7 @@ var whatwedoTable = {
         //this.addHandlers();
         this.filters();
         this.tableHeader();
+        this.setLimit();
     }
 };
 

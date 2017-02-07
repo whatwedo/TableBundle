@@ -83,6 +83,7 @@ class FilterEventListener
                     continue;
                 }
 
+
                 $filter = $this->table->getFilters()[$column];
 
                 foreach ($filter->getType()->getJoins() as $joinAlias => $join) {

@@ -4,9 +4,9 @@
 <tr>
     {% for key, column in table.columns %}
         <th
-            {% if table.queryBuilder is not null and column.sortableColumn and (column.ordered(app.request.query, 'ASC') or column.ordered(app.request.query, 'DESC')) %}
-                class="sorted"
-            {% endif %}
+        {% if table.queryBuilder is not null and column.sortableColumn and (column.ordered(app.request.query, 'ASC') or column.ordered(app.request.query, 'DESC')) %}
+            class="sorted"
+        {% endif %}
         >
             <nobr>
                 {{ column.label }}
@@ -15,13 +15,13 @@
                     {% if column.sortableColumn and column.isSortable %}
                         &nbsp;
                         {% if column.ordered(app.request.query, 'ASC') %}
-                            <a class="table-sort-asc" href="{{ column.orderQueryDESC(app.request.query) }}"><i class="fa fa-sort-asc"></i></a>
-                            <a class="table-sort-neither-asc-desc" href="{{ column.deleteOrder(app.request.query) }}"><i class="fa fa-times"></i></a>
+                            <a href="{{ column.orderQueryDESC(app.request.query) }}"><i class="fa fa-sort-asc"></i></a>
+                            <a href="{{ column.deleteOrder(app.request.query) }}"><i class="fa fa-times"></i></a>
                         {% elseif column.ordered(app.request.query, 'DESC') %}
-                            <a class="table-sort-asc" href="{{ column.orderQueryASC(app.request.query) }}"><i class="fa fa-sort-desc"></i></a>
-                            <a class="table-sort-neither-asc-desc" href="{{ column.deleteOrder(app.request.query) }}"><i class="fa fa-times"></i></a>
+                            <a href="{{ column.orderQueryASC(app.request.query) }}"><i class="fa fa-sort-desc"></i></a>
+                            <a href="{{ column.deleteOrder(app.request.query) }}"><i class="fa fa-times"></i></a>
                         {% else %}
-                            <a class="table-sort-asc" href="{{ column.orderQueryASC(app.request.query) }}"><i class="fa fa-sort"></i></a>
+                            <a class="ordering-test" href="{{ column.orderQueryASC(app.request.query) }}"><i class="fa fa-sort"></i></a>
                         {% endif %}
                     {% endif %}
                 {% elseif table.rows.count > 0 %}

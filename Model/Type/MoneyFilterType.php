@@ -31,7 +31,7 @@ use Doctrine\ORM\QueryBuilder;
 /**
  * @author Ueli Banholzer <ueli@whatwedo.ch>
  */
-class NumberFilterType extends FilterType
+class MoneyFilterType extends FilterType
 {
     const CRITERIA_EQUAL = 'equal';
     const CRITERIA_NOT_EQUAL = 'not_equal';
@@ -63,7 +63,7 @@ class NumberFilterType extends FilterType
             $value = 0;
         }
 
-        $value = (float) $value;
+        $value = ((float) $value) * 100;
 
         switch ($operator) {
             case static::CRITERIA_EQUAL:
