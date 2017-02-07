@@ -81,7 +81,8 @@ class OrderEventListener
         $addOrderByFunction = $this->first ? 'orderBy' : 'addOrderBy';
         $this->first = false;
         if (!in_array(explode('.', $sortExp)[0], $this->queryBuilder->getAllAliases())) {
-            throw new \Exception(sprintf(' "%s" is not defined in querybuilder. Please override getQueryBuilder in your definition and add a select ($qb->addSelect("%s");)', explode('.', $sortExp)[0],explode('.', $sortExp)[0]));
+            $notFound = explode('.', $sortExp)[0];
+            throw new \Exception(sprintf('"%s" is not defined in querybuilder. Please override getQueryBuilder in your definition and add a join. For example: %s%s ->leftJoin(sprintf(\'%%s.%s\', self::getQueryAlias()), \'%s\')', $notFound, PHP_EOL, PHP_EOL, $notFound, $notFound));
         }
         $this->queryBuilder->$addOrderByFunction(
             $sortExp,

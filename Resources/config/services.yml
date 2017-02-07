@@ -11,17 +11,17 @@ services:
     whatwedo_table.event_listener.limit:
         class: whatwedo\TableBundle\EventListener\LimitEventListener
         tags:
-            - { name: kernel.event_listener, event: whatwedo_table.data_load.pre_load, method: limitResultSet }
+            - { name: kernel.event_listener, event: whatwedo_table.data_load.pre_load, method: limitResultSet, priority: 100 }
 
     whatwedo_table.event_listener.order:
         class: whatwedo\TableBundle\EventListener\OrderEventListener
         tags:
-            - { name: kernel.event_listener, event: whatwedo_table.data_load.pre_load, method: orderResultSet }
+            - { name: kernel.event_listener, event: whatwedo_table.data_load.pre_load, method: orderResultSet, priority: 100 }
 
     whatwedo_table.event_listener.filter:
         class: whatwedo\TableBundle\EventListener\FilterEventListener
         tags:
-            - { name: kernel.event_listener, event: whatwedo_table.data_load.pre_load, method: filterResultSet }
+            - { name: kernel.event_listener, event: whatwedo_table.data_load.pre_load, method: filterResultSet, priority: 100 }
 
     # Twig Extension
     sybio.twig_extension:

@@ -25,46 +25,45 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Table;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+namespace whatwedo\TableBundle\Model\Type;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * @author Ueli Banholzer <ueli@whatwedo.ch>
  */
-class ActionColumn extends AbstractColumn
+class BooleanFilterType extends FilterType
 {
-    /**
-     * @param OptionsResolver $resolver
-     * @return mixed
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    const CRITERIA_EQUAL = 'equal';
+    const CRITERIA_NOT_EQUAL = 'not_equal';
+
+    public function getOperators()
     {
-        $resolver->setDefaults([
-            'items' => []
-        ]);
+        return [
+            static::CRITERIA_EQUAL => 'ist',
+            static::CRITERIA_NOT_EQUAL => 'ist nicht',
+        ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabel()
+    public function getValueField($value = 1)
     {
-        return '';
+        return sprintf(
+            '<select name="{name}" class="form-control"><option value="1" %s>ausgewählt</option><option value="0" %s>nicht ausgewählt</option></select>',
+            $value == 1 ? 'selected' : '',
+            $value == 0 ? 'selected' : ''
+        );
     }
 
-    public function getTdClass()
+    public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
     {
-        return 'text-right';
-    }
+        $value = $value == 1 ? 'true' : 'false';
 
-    /**
-     * {@inheritdoc}
-     */
-    public function render($row)
-    {
-        return $this->templating->render('whatwedoTableBundle::_actions.html.twig', [
-            'row' => $row,
-            'items' => $this->options['items'],
-        ]);
+        switch ($operator) {
+            case static::CRITERIA_EQUAL:
+                return $queryBuilder->expr()->eq($this->getColumn(), $value);
+            case static::CRITERIA_NOT_EQUAL:
+                return $queryBuilder->expr()->neq($this->getColumn(), $value);
+        }
+
+        return false;
     }
 }
