@@ -40,12 +40,14 @@ class LimitEventListener
         $table = $event->getTable();
 
         if ($table->getRequest()->query->getInt('limit') === -1) {
-            $table->getQueryBuilder()->setMaxResults(-1);
+            $table->setLimit(-1);
+            $table->getQueryBuilder()->setMaxResults(null);
             $table->getQueryBuilder()->setFirstResult(0);
             return;
         }
 
-        $table->getQueryBuilder()->setMaxResults($table->getRequest()->query->getInt('limit', 25));
+        $table->setLimit($table->getRequest()->query->getInt('limit', 25));
+        $table->getQueryBuilder()->setMaxResults($table->getLimit());
 
         $table->getQueryBuilder()->setFirstResult(($table->getCurrentPage() - 1) * $table->getLimit());
     }
