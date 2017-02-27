@@ -3,7 +3,7 @@ var whatwedoTable = {
      * Anklickbare Tabellenzeilen
      */
     clickableRows: function($whatwedoTable) {
-        $(document).on('click', '#whatwedo_table tr[data-href]', function(e) {
+        $(document).on('click', '#whatwedo_table tr[data-href], .dataTable tr[data-href]', function(e) {
             var $this = $(this);
 
             if (!$this.closest('#whatwedo_table').hasClass('whatwedo_table__editable')) {

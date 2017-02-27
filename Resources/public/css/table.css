@@ -182,3 +182,7 @@
 .table-responsive {
   overflow-x: visible;
 }
+
+.dataTable tr[data-href] {
+  cursor: pointer;
+}
