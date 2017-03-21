@@ -1,0 +1,3 @@
+whatwedo_table_filter_direct_create:
+    path: /whatwedo/table/filter/direct/create
+    defaults: { _controller: whatwedoTableBundle:Filter:directCreate }

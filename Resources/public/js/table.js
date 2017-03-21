@@ -359,6 +359,10 @@ var whatwedoTable = {
                 });
             }
         });
+
+        $(document).on('submit', '#whatwedo_table__save', function() {
+            return whatwedoTable.updateFormFilterValues();
+        })
     },
 
     tableHeader: function() {
@@ -377,6 +381,28 @@ var whatwedoTable = {
             window.location.href = buildUrl(buildUrl(window.location.href, 'page', 1), 'limit', $(this).val());
             e.preventDefault();
         });
+    },
+
+    updateFormFilterValues: function() {
+        if ($('input[name=filter_name]').val() == '') {
+            alert('Filter Name darf nicht leer sein');
+            return false;
+        }
+        var data = $('#whatwedo_table__filters').serializeArray();
+        var retArray = {
+            'filter_operator'   : [[], []],
+            'filter_value'      : [[], []],
+            'filter_column'     : [[], []]
+        };
+        for (var i = 0; i < data.length; i++) {
+            var name = data[i]['name'];
+            if (name.startsWith('filter_operator') || name.startsWith('filter_value') || name.startsWith('filter_column')) {
+                var matches = name.match(/(.+)\[(\d+)\]\[(\d+)\]$/);
+                retArray[matches[1]][matches[2]][matches[3]] = data[i]['value'];
+            }
+        }
+        $('input[name=filter_conditions]').val(JSON.stringify(retArray))
+        return true;
     },
 
     /**

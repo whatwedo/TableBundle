@@ -142,9 +142,13 @@
             </div>
         </div>
     </div>
-
-    <!-- Speicher-Modal -->
-    <div class="modal fade" id="whatwedo_table__filters__save" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+</form>
+<!-- Speicher-Modal -->
+<div class="modal fade" id="whatwedo_table__filters__save" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <form id="whatwedo_table__save" method="post" action="{{ path('whatwedo_table_filter_direct_create') }}">
+        <input type="hidden" name="filter_route" value="{{ app.request.attributes.get('_route') }}" />
+        <input type="hidden" name="filter_route_arguments" value="{{ app.request.attributes.get('_route_params') | json_encode }}" />
+        <input type="hidden" name="filter_conditions" value="" />
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -166,7 +170,8 @@
                         </label>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer">                {{ dump(app.request) }}
+
                     <button type="button" class="btn btn-default" data-dismiss="modal">
                         <i class="fa fa-times"></i>
                         Schliessen
@@ -178,8 +183,8 @@
                 </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
+</div>
 
 <script type="text/template" id="whatwedo_table__filters__template__block">
     {{ whatwedo_table_filters.filter('{iBlock}', '{i}', table.filters|first, table.filters) }}
