@@ -105,6 +105,10 @@
     <div class="row">
         <div class="col-xs-12 text-right">
             <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default" onclick="$('#whatwedo_table__saved_filters').slideToggle()">
+                    <i class="fa fa-list"></i>
+                    Gespeicherte Filter
+                </button>
                 <button type="button" class="btn btn-default" data-toggle="modal" data-target="#whatwedo_table__filters__save">
                     <i class="fa fa-floppy-o"></i>
                     Filter speichern
@@ -142,9 +146,48 @@
             </div>
         </div>
     </div>
-
-    <!-- Speicher-Modal -->
-    <div class="modal fade" id="whatwedo_table__filters__save" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <table id="whatwedo_table__saved_filters" style="display: none" class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Beschreibung</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for filter in table.savedFilter(app.user.username) %}
+            <tr>
+                <td>{{ filter.name }}</td>
+                <td>{{ filter.description }}</td>
+                <td>{{ filter.stateAsString }}</td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <a href="{{ path(filter.route, filter.arguments | merge(filter.conditions)) }}" class="btn btn-primary btn-xs" title="" data-original-title="Aktiviere Filter">
+                            <i class="fa fa-arrow-right"></i>
+                        </a>
+                        {% if app.user.username == filter.creatorUsername %}
+                            <a href="{{ path('whatwedo_table_filter_direct_delete', {'id' : filter.id}) }}" class="btn btn-danger btn-xs" title="" data-original-title="Filter Löschen">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">Keine gespeicherten Filtern</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</form>
+<!-- Speicher-Modal -->
+<div class="modal fade" id="whatwedo_table__filters__save" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <form id="whatwedo_table__save" method="post" action="{{ path('whatwedo_table_filter_direct_create') }}">
+        <input type="hidden" name="filter_route" value="{{ app.request.attributes.get('_route') }}" />
+        <input type="hidden" name="filter_route_arguments" value="{{ app.request.attributes.get('_route_params') | json_encode }}" />
+        <input type="hidden" name="filter_conditions" value="" />
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -154,11 +197,11 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Name</label>
-                        <input type="text" name="filter_name" class="form-control">
+                        <input type="text" name="filter_name" class="form-control" max="50">
                     </div>
                     <div class="form-group">
                         <label>Beschreibung</label>
-                        <input type="text" name="filter_description" class="form-control">
+                        <input type="text" name="filter_description" class="form-control" max="256">
                     </div>
                     <div class="checkbox">
                         <label>
@@ -178,8 +221,8 @@
                 </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
+</div>
 
 <script type="text/template" id="whatwedo_table__filters__template__block">
     {{ whatwedo_table_filters.filter('{iBlock}', '{i}', table.filters|first, table.filters) }}

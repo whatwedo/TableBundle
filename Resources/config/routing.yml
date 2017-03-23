@@ -1,0 +1,9 @@
+whatwedo_table_filter_direct_create:
+    path: /whatwedo/table/filter/create
+    defaults: { _controller: whatwedoTableBundle:Filter:directCreate }
+    methods: [POST]
+
+whatwedo_table_filter_direct_delete:
+    path: /whatwedo/table/filter/delete
+    defaults: { _controller: whatwedoTableBundle:Filter:delete }
+    methods: [GET]

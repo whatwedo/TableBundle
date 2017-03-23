@@ -27,6 +27,7 @@
 
 namespace whatwedo\TableBundle\Table;
 
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use DOMNode;
@@ -35,6 +36,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Templating\EngineInterface;
 use whatwedo\TableBundle\Collection\ColumnCollection;
+use whatwedo\TableBundle\Enum\FilterStateEnum;
 use whatwedo\TableBundle\Event\DataLoadEvent;
 use whatwedo\TableBundle\Iterator\RowIterator;
 use whatwedo\TableBundle\Model\Type\FilterTypeInterface;
@@ -104,15 +106,22 @@ class Table
      */
     protected $filters = [];
 
+    /**
+     * @var EntityRepository
+     */
+    protected $filterRepository;
+
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         RequestStack $requestStack,
-        EngineInterface $templating
+        EngineInterface $templating,
+        EntityRepository $filterRepository
     ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->request = $requestStack->getMasterRequest();
         $this->columns = new ColumnCollection();
         $this->templating = $templating;
+        $this->filterRepository = $filterRepository;
     }
 
     /**
@@ -430,4 +439,30 @@ class Table
 
         return $str;
     }
+
+    public function getSavedFilter($username)
+    {
+        $path = preg_replace('/_show$/i', '_index', $this->rowRoute);
+        $qb = $this->filterRepository->createQueryBuilder('f');
+        return $qb
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('f.route', ':path'),
+                    $qb->expr()->orX(
+                        $qb->expr()->orX(
+                            $qb->expr()->eq('f.state', FilterStateEnum::ALL),
+                            $qb->expr()->eq('f.state', FilterStateEnum::SYSTEM)
+                        ),
+                        $qb->expr()->andX(
+                            $qb->expr()->eq('f.state', FilterStateEnum::SELF),
+                            $qb->expr()->eq('f.creatorUsername', ':username')
+                        )
+                    )
+                )
+            )
+            ->setParameter('path', $path)
+            ->setParameter('username', $username)
+            ->getQuery()->getResult();
+    }
+
 }

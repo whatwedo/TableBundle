@@ -6,6 +6,7 @@ services:
             - '@event_dispatcher'
             - '@request_stack'
             - '@templating'
+            - '@whatwedo_table.repository.filter'
 
     # Events
     whatwedo_table.event_listener.limit:
@@ -31,3 +32,11 @@ services:
         public: false
         tags:
             - { name: twig.extension, priority: 255 }
+
+
+    # Repository
+    whatwedo_table.repository.filter:
+        class: Doctrine\ORM\EntityRepository
+        factory: ["@doctrine.orm.entity_manager", getRepository]
+        arguments:
+            - whatwedo\TableBundle\Entity\Filter
