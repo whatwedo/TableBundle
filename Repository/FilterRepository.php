@@ -27,7 +27,7 @@
 
 namespace whatwedo\TableBundle\Repository;
 
-use whatwedo\CoreBundle\Repository\EntityRepository;
+use Doctrine\ORM\EntityRepository;
 
 /**
  * @author Nicolo Singer <nicolo@whatwedo.ch>

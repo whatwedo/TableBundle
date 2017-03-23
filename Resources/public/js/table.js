@@ -15,47 +15,6 @@ var whatwedoTable = {
     },
 
     /**
-     * Auswählbare Tabellenzeilen
-     */
-    selectableRows: function($whatwedoTable) {
-        var $whatwedoTableSelectedTbody = $('#whatwedo_table_selected tbody');
-        var $whatwedoTableTbody = $('#whatwedo_table tbody');
-
-        $(document).on('change', 'input[data-multiselect]', function() {
-            var $this = $(this);
-            var isInSelectedTable = $this.parents('#whatwedo_table_selected').length == 1;
-            var inputSelector = 'input[data-multiselect="this"][value="' + $this.val() + '"]';
-
-            switch ($this.data('multiselect')) {
-                case "all":
-                    if ($this.is(':checked')) {
-                        $this.closest('table').find('input[data-multiselect="this"]').prop('checked', true);
-                        $('input[data-multiselect="this"]').trigger('change');
-                    } else {
-                        $this.closest('table').find('input[data-multiselect="this"]').prop('checked', false);
-                        $('input[data-multiselect="this"]').trigger('change');
-                    }
-                    break;
-                case "this":
-                    if ($this.is(':checked')) {
-                        $this.closest('tr').clone().appendTo($whatwedoTableSelectedTbody).find('.whawtedo_table__row_operations').remove();
-                    } else {
-                        $whatwedoTableSelectedTbody.find(inputSelector).closest('tr').remove();
-                        $whatwedoTableTbody.find(inputSelector).prop('checked', false);
-                    }
-                    break;
-            }
-
-            if ($whatwedoTableSelectedTbody.find('tr').length > 0) {
-                $('#whatwedo_table_selected').show();
-            } else {
-                $('#whatwedo_table_selected').hide();
-            }
-        });
-        $('input[data-multiselect]').trigger('change');
-    },
-
-    /**
      * current ongoing AJAX request
      */
     currentRequest: null,
@@ -217,20 +176,6 @@ var whatwedoTable = {
                 window.location.href = href;
             });
         }
-    },
-
-    addHandlers: function($whatwedoTable) {
-        $(document).on('click', '#whatwedo_table th a', this.handleDataLoad);
-        $(document).on('click', '#whatwedo_table .whatwedo_table-pagination a', this.handleDataLoad);
-        $(document).on('submit', '#whatwedo_table .whatwedo_table-search form', this.handleDataLoad);
-        $(document).on('change', '#whatwedo_table .whatwedo_table-search select', function() { $(this).submit(); });
-        $(document).on('click', '#whatwedo_table .whatwedo_table-search a', this.handleDataLoad);
-        $(document).on('click', '#whatwedo_table__filters [type="submit"]', this.handleDataLoad);
-        window.addEventListener('popstate', function(e){
-            if (e.state.type === 'table') {
-                whatwedoTable.loadContent(e.state.url, e.state.data);
-            }
-        });
     },
 
     filters: function() {
@@ -410,8 +355,6 @@ var whatwedoTable = {
      */
     init: function() {
         this.clickableRows();
-        //this.selectableRows();
-        //this.addHandlers();
         this.filters();
         this.tableHeader();
         this.setLimit();

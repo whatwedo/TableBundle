@@ -29,6 +29,7 @@ namespace whatwedo\TableBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use whatwedo\TableBundle\Enum\FilterStateEnum;
 
 /**
  * @author Nicolo Singer <nicolo@whatwedo.ch>
@@ -216,6 +217,11 @@ class Filter
     public function setDescription($description)
     {
         $this->description = $description;
+    }
+
+    public function getStateAsString()
+    {
+        return FilterStateEnum::getRepresentation($this->state);
     }
 
 }
