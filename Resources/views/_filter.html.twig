@@ -156,7 +156,8 @@
             </tr>
         </thead>
         <tbody>
-        {% for filter in table.savedFilter(app.user.username) %}
+        {% set app_username = app.user is null ? null : app.user.username %}
+        {% for filter in table.savedFilter(app_username) %}
             {% set filter_href = path(filter.route, filter.arguments | merge(filter.conditions)) %}
             <tr data-href="{{ filter_href }}">
                 <td>{{ filter.name }}</td>
