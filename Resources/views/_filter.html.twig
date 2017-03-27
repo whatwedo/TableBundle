@@ -105,7 +105,7 @@
     <div class="row">
         <div class="col-xs-12 text-right">
             <div class="btn-group" role="group">
-                <button type="button" class="btn btn-default" onclick="$('#whatwedo_table__saved_filters').slideToggle()">
+                <button type="button" class="btn btn-default" onclick="$('#whatwedo_table__saved_filters').toggle()">
                     <i class="fa fa-list"></i>
                     Gespeicherte Filter
                 </button>
@@ -139,7 +139,7 @@
                 {% endfor %}
                 #}
 
-                <button type="submit" class="btn btn-primary">
+                <button id="whatwedo_table__show_results" type="submit" class="btn btn-primary">
                     <i class="fa fa-arrow-right"></i>
                     Resultate anzeigen
                 </button>
@@ -151,19 +151,20 @@
             <tr>
                 <th>Name</th>
                 <th>Beschreibung</th>
-                <th>Status</th>
+                <th>Sichtbarkeit</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
         {% for filter in table.savedFilter(app.user.username) %}
-            <tr>
+            {% set filter_href = path(filter.route, filter.arguments | merge(filter.conditions)) %}
+            <tr data-href="{{ filter_href }}">
                 <td>{{ filter.name }}</td>
                 <td>{{ filter.description }}</td>
                 <td>{{ filter.stateAsString }}</td>
                 <td>
                     <div class="btn-group" role="group">
-                        <a href="{{ path(filter.route, filter.arguments | merge(filter.conditions)) }}" class="btn btn-primary btn-xs" title="" data-original-title="Aktiviere Filter">
+                        <a href="{{ filter_href }}" class="btn btn-primary btn-xs" title="" data-original-title="Aktiviere Filter">
                             <i class="fa fa-arrow-right"></i>
                         </a>
                         {% if app.user.username == filter.creatorUsername %}

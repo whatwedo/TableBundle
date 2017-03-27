@@ -460,6 +460,7 @@ class Table
                     )
                 )
             )
+            ->orderBy('f.name')
             ->setParameter('path', $path)
             ->setParameter('username', $username)
             ->getQuery()->getResult();

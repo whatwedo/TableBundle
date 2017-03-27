@@ -12,6 +12,7 @@ var whatwedoTable = {
                 }
             }
         });
+
     },
 
     /**
@@ -308,6 +309,13 @@ var whatwedoTable = {
         $(document).on('submit', '#whatwedo_table__save', function() {
             return whatwedoTable.updateFormFilterValues();
         })
+
+        $('.whatwedo_table__filters_filter').keypress(function(e){
+            if (e.which === 13) { // enter key pressed
+                e.preventDefault();
+                $('#whatwedo_table__show_results').trigger('click');
+            }
+        });
     },
 
     tableHeader: function() {

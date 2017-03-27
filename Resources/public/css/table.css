@@ -186,3 +186,8 @@
 .dataTable tr[data-href] {
   cursor: pointer;
 }
+
+#whatwedo_table__saved_filters tbody tr td:last-child {
+  text-align: right;
+}
+
