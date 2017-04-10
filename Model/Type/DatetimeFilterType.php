@@ -31,7 +31,7 @@ use Doctrine\ORM\QueryBuilder;
 /**
  * @author Ueli Banholzer <ueli@whatwedo.ch>
  */
-class DateFilterType extends FilterType
+class DatetimeFilterType extends FilterType
 {
     const CRITERIA_EQUAL = 'equal';
     const CRITERIA_NOT_EQUAL = 'not_equal';
@@ -52,43 +52,41 @@ class DateFilterType extends FilterType
 
     public function getValueField($value = null)
     {
-        $value = \DateTime::createFromFormat('d.m.Y', $value);
+        $value = \DateTime::createFromFormat('d.m.Y H:i:s', $value);
 
         if (!$value) {
             $value = new \DateTime();
         }
         return sprintf(
-            '<input type="text" name="{name}" value="%s" class="form-control" data-provide="datetimepicker" data-date-format="dd.mm.yyyy" data-min-view="2">',
-            $value instanceof \DateTime ? $value->format('d.m.Y') : ''
+            '<input type="text" name="{name}" value="%s" class="form-control" data-provide="datetimepicker" data-date-format="dd.mm.yyyy HH:ii">',
+            $value instanceof \DateTime ? $value->format('d.m.Y H:i') : ''
         );
     }
 
     public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
     {
-        $value = \DateTime::createFromFormat('d.m.Y', $value);
+        $value = \DateTime::createFromFormat('d.m.Y H:i', $value);
 
         if (!$value) {
             $value = new \DateTime();
         }
         switch ($operator) {
             case static::CRITERIA_EQUAL:
-                $queryBuilder->setParameter($parameterName, $value->format('d-m-Y'));
+                $queryBuilder->setParameter($parameterName, $value->format('d-m-Y H:i'));
                 return $queryBuilder->expr()->eq(
                     sprintf(':%s', $parameterName),
-                    sprintf('DATE_FORMAT(%s, \'%%d-%%m-%%Y\')', $this->getColumn())
+                    sprintf('DATE_FORMAT(%s, \'%%d-%%m-%%Y %%H:%%i:%%s\')', $this->getColumn())
                 );
             case static::CRITERIA_NOT_EQUAL:
                 $queryBuilder->setParameter($parameterName, $value->format('d-m-Y'));
                 return $queryBuilder->expr()->neq(
                     sprintf(':%s', $parameterName),
-                    sprintf('DATE_FORMAT(%s, \'%%d-%%m-%%Y\')', $this->getColumn())
+                    sprintf('DATE_FORMAT(%s, \'%%d-%%m-%%Y %%H:%%i:%%s\')', $this->getColumn())
                 );
             case static::CRITERIA_BEFORE:
-                $value->setTime(0, 0, 0);
                 $queryBuilder->setParameter($parameterName, $value);
                 return $queryBuilder->expr()->lt($this->getColumn(), sprintf(':%s', $parameterName));
             case static::CRITERIA_AFTER:
-                $value->setTime(23, 59, 59);
                 $queryBuilder->setParameter($parameterName, $value);
                 return $queryBuilder->expr()->gt($this->getColumn(), sprintf(':%s', $parameterName));
             case static::CRITERIA_IN_YEAR:

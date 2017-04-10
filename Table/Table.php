@@ -40,6 +40,7 @@ use whatwedo\TableBundle\Enum\FilterStateEnum;
 use whatwedo\TableBundle\Event\DataLoadEvent;
 use whatwedo\TableBundle\Iterator\RowIterator;
 use whatwedo\TableBundle\Model\Type\FilterTypeInterface;
+use whatwedo\TableBundle\Model\Type\SimpleEnumFilterType;
 
 /**
  * @author Ueli Banholzer <ueli@whatwedo.ch>
@@ -166,7 +167,17 @@ class Table
     public function overrideFilterName($identifier, $label)
     {
         $this->filters[$identifier]->setName($label);
+        return $this;
+    }
 
+    public function simpleEnumFilter($identifier, $class)
+    {
+        if (!isset($this->filters[$identifier])) {
+            throw new \Exception(sprintf('no Filter found for "%s". Add one first via addFilter. (simpleEnumFilter only works when field was automatically detected.)', $identifier));
+        }
+        $name = $this->filters[$identifier]->getName();
+        $column = $this->filters[$identifier]->getType()->getColumn();
+        $this->filters[$identifier] = new Filter($identifier, $name, new SimpleEnumFilterType($column, [], $class));
         return $this;
     }
 
