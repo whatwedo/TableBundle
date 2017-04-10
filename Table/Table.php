@@ -156,7 +156,7 @@ class Table
      * @param $identifier
      * @param $name
      * @param FilterTypeInterface $type
-     * @return $this
+     * @return Table $this
      */
     public function addFilter($identifier, $name, FilterTypeInterface $type)
     {
@@ -164,12 +164,23 @@ class Table
         return $this;
     }
 
+    /**
+     * @param $identifier
+     * @param $label
+     * @return Table $this
+     */
     public function overrideFilterName($identifier, $label)
     {
         $this->filters[$identifier]->setName($label);
         return $this;
     }
 
+    /**
+     * @param $identifier
+     * @param $class
+     * @return Table $this
+     * @throws \Exception
+     */
     public function simpleEnumFilter($identifier, $class)
     {
         if (!isset($this->filters[$identifier])) {
@@ -181,9 +192,38 @@ class Table
         return $this;
     }
 
+    /**
+     * @param $identifier
+     * @return Table $this
+     */
     public function removeFilter($identifier)
     {
         unset($this->filters[$identifier]);
+        return $this;
+    }
+
+    /**
+     * @param $label
+     * @param $icon
+     * @param $button
+     * @param $route
+     * @return Table $this
+     * @throws \Exception
+     */
+    public function addActionItem($label, $icon, $button, $route)
+    {
+        /** @var ActionColumn $actionColumn */
+        $actionColumn = null;
+        foreach ($this->columns as $column) {
+            if ($column instanceof ActionColumn) {
+                $actionColumn = $column;
+                break;
+            }
+        }
+        if (is_null($actionColumn)) {
+            throw new \Exception('No ActionColumn found in Table');
+        }
+        $actionColumn->addItem($label, $icon, $button, $route);
         return $this;
     }
 
