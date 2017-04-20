@@ -53,6 +53,7 @@
         {% set filterColumns = app.request.query.get('filter_column', []) %}
         {% set filterOperators = app.request.query.get('filter_operator', []) %}
         {% set filterValues = app.request.query.get('filter_value', []) %}
+        {% set app_username = app.user is null ? null : app.user.username %}
 
 <form action="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge(app.request.attributes.all|merge({ page: 1 })) ) }}" id="whatwedo_table__filters" {% if filterColumns|length %}class="active"{% endif %}>
     <input type="hidden" name="user-searching" />
@@ -105,40 +106,16 @@
     <div class="row">
         <div class="col-xs-12 text-right">
             <div class="btn-group" role="group">
-                <button type="button" class="btn btn-default" onclick="$('#whatwedo_table__saved_filters').toggle()">
-                    <i class="fa fa-list"></i>
-                    Gespeicherte Filter
-                </button>
+                {% if table.savedFilter(app_username) | length > 0 %}
+                    <button type="button" class="btn btn-default" onclick="$('#whatwedo_table__saved_filters').toggle()">
+                        <i class="fa fa-list"></i>
+                        Gespeicherte Filter
+                    </button>
+                {% endif %}
                 <button type="button" class="btn btn-default" data-toggle="modal" data-target="#whatwedo_table__filters__save">
                     <i class="fa fa-floppy-o"></i>
                     Filter speichern
                 </button>
-
-                {#
-                {% for key, massAction in table.massActions %}
-                    {% if massAction is iterable %}
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {{ key|raw }} <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                {% for subKey, action in massAction %}
-                                    <li>
-                                        <button type="submit" name="export" value="{{ subKey }}">
-                                            {{ action|raw }}
-                                        </button>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    {% else %}
-                        <button type="submit" class="btn btn-default" name="export" value="{{ key }}">
-                            {{ massAction|raw }}
-                        </button>
-                    {% endif %}
-                {% endfor %}
-                #}
-
                 <button id="whatwedo_table__show_results" type="submit" class="btn btn-primary">
                     <i class="fa fa-arrow-right"></i>
                     Resultate anzeigen
@@ -156,7 +133,6 @@
             </tr>
         </thead>
         <tbody>
-        {% set app_username = app.user is null ? null : app.user.username %}
         {% for filter in table.savedFilter(app_username) %}
             {% set filter_href = path(filter.route, filter.arguments | merge(filter.conditions)) %}
             <tr data-href="{{ filter_href }}">
@@ -175,10 +151,6 @@
                         {% endif %}
                     </div>
                 </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">Keine gespeicherten Filtern</td>
             </tr>
         {% endfor %}
         </tbody>
