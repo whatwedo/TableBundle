@@ -6,4 +6,4 @@ whatwedo_table_filter_direct_create:
 whatwedo_table_filter_direct_delete:
     path: /whatwedo/table/filter/delete
     defaults: { _controller: whatwedoTableBundle:Filter:delete }
-    methods: [GET]
+    methods: [POST]

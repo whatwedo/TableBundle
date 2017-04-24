@@ -337,7 +337,7 @@ var whatwedoTable = {
     },
 
     updateFormFilterValues: function() {
-        if ($('input[name=filter_name]').val() == '') {
+        if ($('input[name=filter_name]').val() === '') {
             alert('Filter Name darf nicht leer sein');
             return false;
         }
@@ -351,6 +351,9 @@ var whatwedoTable = {
             var name = data[i]['name'];
             if (name.startsWith('filter_operator') || name.startsWith('filter_value') || name.startsWith('filter_column')) {
                 var matches = name.match(/(.+)\[(\d+)\]\[(\d+)\]$/);
+                if (typeof retArray[matches[1]][matches[2]] === 'undefined') {
+                    retArray[matches[1]][matches[2]] = [];
+                }
                 retArray[matches[1]][matches[2]][matches[3]] = data[i]['value'];
             }
         }

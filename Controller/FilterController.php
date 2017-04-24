@@ -31,6 +31,8 @@ namespace whatwedo\TableBundle\Controller;
 use Oepfelchasper\CoreBundle\Controller\CrudController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use whatwedo\TableBundle\Entity\Filter;
 use whatwedo\TableBundle\Enum\FilterStateEnum;
 
@@ -44,14 +46,17 @@ class FilterController extends Controller
         $filter->setDescription($request->request->get('filter_description'));
         $filter->setState($request->request->getBoolean('filter_public') ? FilterStateEnum::ALL : FilterStateEnum::SELF);
         $filter->setCreatorUsername($this->getUser()->getUsername());
-        $conditions = [];
-        $conditions['filter_column'] = $request->request->get('filter_column', []);
-        $conditions['filter_operator'] = $request->request->get('filter_operator', []);
-        $conditions['filter_value'] = $request->request->get('filter_value', []);
-        $filter->setConditions($conditions);
+
         $filter->setRoute($request->request->get('filter_route'));
         $filter->setArguments(json_decode($request->request->get('filter_route_arguments'), true));
         $filter->setConditions(json_decode($request->get('filter_conditions'), true));
+
+        if (!is_array($filter->getConditions()) || !is_array($filter->getArguments())) {
+            throw new BadRequestHttpException();
+        }
+        if ($this->get('router')->getRouteCollection()->get($filter->getRoute()) === null) {
+            throw new BadRequestHttpException();
+        }
 
         $em = $this->get('doctrine.orm.default_entity_manager');
 
@@ -63,6 +68,9 @@ class FilterController extends Controller
 
     public function deleteAction(Request $request)
     {
+        if ($request->get('token') !== $this->get('security.csrf.token_manager')->getToken('token')->getValue()) {
+            throw new InvalidCsrfTokenException('Invalid CSRF token');
+        }
         $em = $this->get('doctrine')->getManager();
         $filter = $em->getRepository('whatwedoTableBundle:Filter')->find($request->query->getInt('id'));
         if (!is_null($filter)) {
