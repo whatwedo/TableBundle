@@ -35,6 +35,10 @@ use whatwedo\TableBundle\Table\Table;
  */
 class LimitEventListener
 {
+
+    /**
+     * @param DataLoadEvent $event
+     */
     public function limitResultSet(DataLoadEvent $event)
     {
         $table = $event->getTable();

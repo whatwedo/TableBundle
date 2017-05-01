@@ -118,9 +118,6 @@ class FilterEventListener
         } elseif (count($orX->getParts()) === 1) {
             $this->queryBuilder()->andWhere($orX->getParts()[0]);
         }
-////         uncomment to debug DQL/SQL
-//         dump($this->queryBuilder()->getDQL());exit;
-//         dump($this->queryBuilder()->getQuery()->getSQL());exit;
     }
 
 }
