@@ -39,6 +39,7 @@ class TextFilterType extends FilterType
     const CRITERIA_ENDS_WITH = 'ends_with';
     const CRITERIA_CONTAINS = 'contains';
     const CRITERIA_IS_EMPTY = 'is_empty';
+    const CRITERIA_IS_NOT_EMPTY = 'is_not_empty';
 
     public function getOperators()
     {
@@ -49,6 +50,7 @@ class TextFilterType extends FilterType
             static::CRITERIA_STARTS_WITH => 'beginnt mit',
             static::CRITERIA_ENDS_WITH => 'endet mit',
             static::CRITERIA_IS_EMPTY => 'enthält keinen Wert',
+            static::CRITERIA_IS_NOT_EMPTY => 'enthält einen Wert',
         ];
     }
 
@@ -81,6 +83,12 @@ class TextFilterType extends FilterType
                 $queryBuilder->setParameter($parameterName, '');
                 return $queryBuilder->expr()->orX()->addMultiple([
                     $queryBuilder->expr()->isNull($this->getColumn()),
+                    $queryBuilder->expr()->eq($this->getColumn(), sprintf(':%s', $parameterName))
+                ]);
+            case static::CRITERIA_IS_NOT_EMPTY:
+                $queryBuilder->setParameter($parameterName, '');
+                return $queryBuilder->expr()->orX()->addMultiple([
+                    $queryBuilder->expr()->isNotNull($this->getColumn()),
                     $queryBuilder->expr()->eq($this->getColumn(), sprintf(':%s', $parameterName))
                 ]);
         }
