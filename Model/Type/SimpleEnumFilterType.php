@@ -55,7 +55,7 @@ class SimpleEnumFilterType extends FilterType
     public function getOperators()
     {
         return [
-            self::CRITERIA_EQUAL => 'is gleich',
+            self::CRITERIA_EQUAL => 'ist gleich',
             self::CRITERIA_NOT_EQUAL => 'ist ungleich'
         ];
     }
