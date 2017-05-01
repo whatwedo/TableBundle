@@ -427,6 +427,7 @@ class Table
      */
     public function renderTableOnly()
     {
+        $this->loadData();
         return $this->templating->render('whatwedoTableBundle::_table.html.twig', [
             'table' => $this,
         ]);
@@ -437,6 +438,7 @@ class Table
      */
     public function renderTable()
     {
+        $this->loadData();
         return $this->templating->render('whatwedoTableBundle::table.html.twig', [
             'table' => $this,
         ]);
