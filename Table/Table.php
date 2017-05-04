@@ -112,6 +112,18 @@ class Table
      */
     protected $filterRepository;
 
+    /**
+     * @var string
+     */
+    protected $title = 'Übersicht';
+
+    /**
+     * Table constructor.
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param RequestStack $requestStack
+     * @param EngineInterface $templating
+     * @param EntityRepository $filterRepository
+     */
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         RequestStack $requestStack,
@@ -519,4 +531,22 @@ class Table
             ->getQuery()->getResult();
     }
 
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     * @return Table
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
 }
