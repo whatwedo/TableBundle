@@ -361,6 +361,25 @@ var whatwedoTable = {
         return true;
     },
 
+    initExport: function() {
+        $(document).ready(function(){
+            $('#export-csv-current').on('click', function(event) {
+                event.preventDefault();
+                var trs = $(this).parents('#whatwedo_table').find('tr[data-href]');
+                var q = '';
+                for (var i = 0; i < trs.length; i++) {
+                    q += i == 0 ? '?' : '&';
+                    q += 'ids[]=' + $(trs[i]).data('href').match(/[0-9]+$/g);
+                }
+                window.location.href = $(this).data('export') + q;
+            });
+            $('#export-csv-all').on('click', function(event) {
+                event.preventDefault();
+                window.location.href = $(this).data('export') + '?ids[]=-1';
+            })
+        });
+    },
+
     /**
      * initialize class
      */
@@ -369,6 +388,7 @@ var whatwedoTable = {
         this.filters();
         this.tableHeader();
         this.setLimit();
+        this.initExport();
     }
 };
 
