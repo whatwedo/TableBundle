@@ -91,7 +91,12 @@ class FilterEventListener
                         continue;
                     }
                     $addedJoins[] = $joinAlias;
-                    $this->queryBuilder()->join($join, $joinAlias);
+                    $method = 'join';
+                    if (is_array($join)) {
+                        $method = $join[0];
+                        $join = $join[1];
+                    }
+                    $this->queryBuilder()->$method($join, $joinAlias);
                 }
 
                 $w = $filter->getType()->addToQueryBuilder(
