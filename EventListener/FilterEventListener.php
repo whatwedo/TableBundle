@@ -90,7 +90,7 @@ class FilterEventListener
                     if (in_array($joinAlias, $addedJoins)) {
                         continue;
                     }
-
+                    $addedJoins[] = $joinAlias;
                     $this->queryBuilder()->join($join, $joinAlias);
                 }
 
