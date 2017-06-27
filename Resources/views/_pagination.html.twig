@@ -10,7 +10,7 @@
         {% endif %}
     >
         <a href="{% if table.currentPage > 1 %}{{ path(currentRoute, app.request.attributes.all|merge(currentQuery|merge({ 'page': 1 }))) }}{% else %}#{% endif %}" aria-label="Erste Seite" title="Erste Seite">
-            <span aria-hidden="true"><i class="fa fa-step-backward"></i></span>
+            <span aria-hidden="true"><i class="fa fa-fast-backward"></i></span>
             <span class="sr-only">Erste Seite</span>
         </a>
     </li>
@@ -22,7 +22,7 @@
         {% endif %}
     >
         <a href="{% if table.currentPage > 1 %}{{ path(currentRoute, app.request.attributes.all|merge(currentQuery|merge({ 'page': table.currentPage - 1 }))) }}{% else %}#{% endif %}" aria-label="Vorherige Seite" title="Vorherige Seite">
-            <span aria-hidden="true"><i class="fa fa-fast-backward"></i></span>
+            <span aria-hidden="true"><i class="fa fa-step-backward"></i></span>
             <span class="sr-only">Vorherige Seite</span>
         </a>
     </li>

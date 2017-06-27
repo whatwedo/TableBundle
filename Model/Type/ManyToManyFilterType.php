@@ -98,6 +98,9 @@ class ManyToManyFilterType extends FilterType
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getOperators()
     {
         return [
@@ -106,6 +109,10 @@ class ManyToManyFilterType extends FilterType
         ];
     }
 
+    /**
+     * @param int $value
+     * @return string
+     */
     public function getValueField($value = 0)
     {
         $field = '<select name="{name}" class="form-control">';
@@ -122,6 +129,13 @@ class ManyToManyFilterType extends FilterType
         return $field;
     }
 
+    /**
+     * @param $operator
+     * @param $value
+     * @param $parameterName
+     * @param QueryBuilder $queryBuilder
+     * @return bool|\Doctrine\ORM\Query\Expr\Comparison|string
+     */
     public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
     {
         $rand = md5(rand());
