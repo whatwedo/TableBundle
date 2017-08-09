@@ -25,88 +25,45 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Table;
+namespace whatwedo\TableBundle\Filter\Type;
+use Doctrine\ORM\QueryBuilder;
 
-
-use whatwedo\TableBundle\Filter\Type\FilterTypeInterface;
-
-class Filter
+/**
+ * @author Ueli Banholzer <ueli@whatwedo.ch>
+ */
+class BooleanFilterType extends FilterType
 {
-    /**
-     * @var string
-     */
-    protected $name;
+    const CRITERIA_EQUAL = 'equal';
+    const CRITERIA_NOT_EQUAL = 'not_equal';
 
-    /**
-     * @var FilterTypeInterface
-     */
-    protected $type;
-    /**
-     * @var string
-     */
-    protected $identifier;
-
-    public function __construct($identifier, $name, FilterTypeInterface $type)
+    public function getOperators()
     {
-        $this->identifier = $identifier;
-        $this->name = $name;
-        $this->type = $type;
+        return [
+            static::CRITERIA_EQUAL => 'ist',
+            static::CRITERIA_NOT_EQUAL => 'ist nicht',
+        ];
     }
 
-    /**
-     * @return mixed
-     */
-    public function getName()
+    public function getValueField($value = 1)
     {
-        return $this->name;
+        return sprintf(
+            '<select name="{name}" class="form-control"><option value="1" %s>ausgewählt</option><option value="0" %s>nicht ausgewählt</option></select>',
+            $value == 1 ? 'selected' : '',
+            $value == 0 ? 'selected' : ''
+        );
     }
 
-    /**
-     * @param mixed $name
-     * @return Filter
-     */
-    public function setName($name)
+    public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
     {
-        $this->name = $name;
+        $value = $value == 1 ? 'true' : 'false';
 
-        return $this;
-    }
+        switch ($operator) {
+            case static::CRITERIA_EQUAL:
+                return $queryBuilder->expr()->eq($this->getColumn(), $value);
+            case static::CRITERIA_NOT_EQUAL:
+                return $queryBuilder->expr()->neq($this->getColumn(), $value);
+        }
 
-    /**
-     * @return string
-     */
-    public function getIdentifier()
-    {
-        return $this->identifier;
-    }
-
-    /**
-     * @param string $identifier
-     * @return Filter
-     */
-    public function setIdentifier($identifier)
-    {
-        $this->identifier = $identifier;
-
-        return $this;
-    }
-
-    /**
-     * @return FilterTypeInterface
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param FilterTypeInterface $type
-     * @return Filter
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-
-        return $this;
+        return false;
     }
 }

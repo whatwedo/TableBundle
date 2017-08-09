@@ -39,8 +39,9 @@ use whatwedo\TableBundle\Collection\ColumnCollection;
 use whatwedo\TableBundle\Enum\FilterStateEnum;
 use whatwedo\TableBundle\Event\DataLoadEvent;
 use whatwedo\TableBundle\Iterator\RowIterator;
-use whatwedo\TableBundle\Model\Type\FilterTypeInterface;
-use whatwedo\TableBundle\Model\Type\SimpleEnumFilterType;
+use whatwedo\TableBundle\Filter\Type\FilterTypeInterface;
+use whatwedo\TableBundle\Filter\Type\SimpleEnumFilterType;
+use whatwedo\TableBundle\Repository\FilterRepository;
 
 /**
  * @author Ueli Banholzer <ueli@whatwedo.ch>
@@ -108,7 +109,7 @@ class Table
     protected $filters = [];
 
     /**
-     * @var EntityRepository
+     * @var FilterRepository
      */
     protected $filterRepository;
 
@@ -508,27 +509,8 @@ class Table
     public function getSavedFilter($username)
     {
         $path = preg_replace('/_show$/i', '_index', $this->rowRoute);
-        $qb = $this->filterRepository->createQueryBuilder('f');
-        return $qb
-            ->where(
-                $qb->expr()->andX(
-                    $qb->expr()->eq('f.route', ':path'),
-                    $qb->expr()->orX(
-                        $qb->expr()->orX(
-                            $qb->expr()->eq('f.state', FilterStateEnum::ALL),
-                            $qb->expr()->eq('f.state', FilterStateEnum::SYSTEM)
-                        ),
-                        $qb->expr()->andX(
-                            $qb->expr()->eq('f.state', FilterStateEnum::SELF),
-                            $qb->expr()->eq('f.creatorUsername', ':username')
-                        )
-                    )
-                )
-            )
-            ->orderBy('f.name')
-            ->setParameter('path', $path)
-            ->setParameter('username', $username)
-            ->getQuery()->getResult();
+
+        return $this->filterRepository->findSavedFilter($path, $username);
     }
 
     /**

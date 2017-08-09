@@ -25,7 +25,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Model\Type;
+namespace whatwedo\TableBundle\Filter\Type;
+
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccess;

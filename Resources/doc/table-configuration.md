@@ -28,8 +28,8 @@ Our Tables can be easily filtered. To do so, do following:
 ```
 ...
 use whatwedo\TableBundle\Table\Filter;
-use whatwedo\TableBundle\Model\Type\DateFilterType;
-use whatwedo\TableBundle\Model\Type\TextFilterType;
+use whatwedo\TableBundle\Filter\Type\DateFilterType;
+use whatwedo\TableBundle\Filter\Type\TextFilterType;
 ... more FilterTypes as you need ...
 ...
 $table->addFilter('acronym', 'label', new TextFilterType('column'));

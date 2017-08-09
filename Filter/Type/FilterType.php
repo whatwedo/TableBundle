@@ -25,7 +25,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Model\Type;
+namespace whatwedo\TableBundle\Filter\Type;
 
 /**
  * @author Ueli Banholzer <ueli@whatwedo.ch>

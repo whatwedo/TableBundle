@@ -25,13 +25,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Model\Type;
+namespace whatwedo\TableBundle\Filter\Type;
+
 use Doctrine\ORM\QueryBuilder;
 
 /**
  * @author Ueli Banholzer <ueli@whatwedo.ch>
  */
-class MoneyFilterType extends FilterType
+class NumberFilterType extends FilterType
 {
     const CRITERIA_EQUAL = 'equal';
     const CRITERIA_NOT_EQUAL = 'not_equal';
@@ -63,7 +64,7 @@ class MoneyFilterType extends FilterType
             $value = 0;
         }
 
-        $value = ((float) $value) * 100;
+        $value = (float) $value;
 
         switch ($operator) {
             case static::CRITERIA_EQUAL:
