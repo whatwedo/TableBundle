@@ -117,11 +117,18 @@ class ManyToManyFilterType extends FilterType
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
 
         foreach (call_user_func($this->callable) as $entity) {
+            $value = null;
+            if ($this->labelAccessorPath == '__toString') {
+                $value = $entity->__toString();
+            } else {
+                $value = $propertyAccessor->getValue($entity, $this->labelAccessorPath);
+            }
+
             $field .= sprintf(
                 '<option value="%s" %s>%s</option>',
                 $entity->getId(),
                 $entity->getId() == (int) $value ? 'selected="selected"' : '',
-                $propertyAccessor->getValue($entity, $this->labelAccessorPath)
+                $value
             );
         }
         $field .= '</select>';
