@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2016, whatwedo GmbH
+ * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,57 +25,19 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Table;
+namespace whatwedo\TableBundle\Model;
 
 
-use Symfony\Component\HttpFoundation\ParameterBag;
-
-/**
- * @author Nicolo Singer <nicolo@whatwedo.ch>
- */
-interface SortableColumnInterface
+interface TableDataInterface
 {
-    const ORDER_ENABLED = 'is_order_';
-    const ORDER_ASC = 'asc_order_';
+    /**
+     * returns the current page results
+     * @return array
+     */
+    public function getResults();
 
     /**
-     * @return string
+     * @return int returns the total number of results available
      */
-    public function getSortExpression();
-
-    /**
-     * @return bool
-     */
-    public function isSortable();
-
-    /**
-     * @param ParameterBag $query
-     * @return string
-     */
-    public function getOrderQueryASC(ParameterBag $query);
-
-    /**
-     * @param ParameterBag $query
-     * @return string
-     */
-    public function getOrderQueryDESC(ParameterBag $query);
-
-    /**
-     * @param ParameterBag $query
-     * @return string
-     */
-    public function getDeleteOrder(ParameterBag $query);
-
-    /**
-     * @param ParameterBag $query
-     * @param $order
-     * @return bool
-     */
-    public function isOrdered(ParameterBag $query, $order);
-
-    /**
-     * @return string
-     */
-    public function getOrderValue($row);
-
+    public function getTotalResults();
 }

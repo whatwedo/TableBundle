@@ -1,10 +1,18 @@
+{% import "whatwedoTableBundle::_macros.html.twig" as macros %}
+
 <div class="table-responsive">
-    {% set class = '' %}
-    {# we allow client ordering for RelationContent #}
-    {% if table.queryBuilder is null and table.rows.count > 0 %}
-        {% set class = 'dataTable' %}
+
+    {% if table.options.tableAttrs.class is not defined %}
+        {% set contentAttrs = table.options.tableAttrs|merge({
+            class: 'table table-striped table-hover whatwedo_table_inner whatwedo_table_inner_' ~ table.identifier
+        }) %}
+    {% else %}
+        {% set contentAttrs = table.options.tableAttrs|merge({
+            class: 'table table-striped table-hover whatwedo_table_inner whatwedo_table_inner_' ~ table.identifier ~ ' ' ~ table.options.tableAttrs.class
+        }) %}
     {% endif %}
-    <table class="table table-striped table-hover {{ class }}" {% if tableAttributes is defined %}{{ tableAttributes }}{% endif %}>
+
+    <table {{ macros.attributes(contentAttrs) }}>
         <thead class="thead-default">
         {% include 'whatwedoTableBundle::_head.html.twig' %}
         </thead>

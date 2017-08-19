@@ -4,14 +4,13 @@
 <tr>
     {% for key, column in table.columns %}
         <th
-        {% if table.queryBuilder is not null and column.sortableColumn and (column.ordered(app.request.query, 'ASC') or column.ordered(app.request.query, 'DESC')) %}
+        {% if table.sortable and column.sortableColumn and (column.ordered(app.request.query, 'ASC') or column.ordered(app.request.query, 'DESC')) %}
             class="sorted"
         {% endif %}
         >
             <nobr>
                 {{ column.label }}
-                {# we do not allow server ordering for RelationContent #}
-                {% if table.queryBuilder is not null %}
+                {% if table.sortable %}
                     {% if column.sortableColumn and column.isSortable %}
                         &nbsp;
                         {% if column.ordered(app.request.query, 'ASC') %}
@@ -24,7 +23,7 @@
                             <a class="ordering-test" href="{{ column.orderQueryASC(app.request.query) }}"><i class="fa fa-sort"></i></a>
                         {% endif %}
                     {% endif %}
-                {% elseif table.rows.count > 0 %}
+                {% elseif table.rows.count > 0 and table.sortable %}
                     <i class="fa fa-sort-asc show-asc"></i>
                     <i class="fa fa-sort-desc show-desc"></i>
                     <i class="fa fa-sort show-neither-asc-desc"></i>

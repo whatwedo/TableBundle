@@ -33,20 +33,19 @@ use Symfony\Component\HttpFoundation\Request;
 use whatwedo\TableBundle\Event\DataLoadEvent;
 use whatwedo\TableBundle\Table\AbstractColumn;
 use whatwedo\TableBundle\Table\Column;
+use whatwedo\TableBundle\Table\DoctrineTable;
 use whatwedo\TableBundle\Table\SortableColumnInterface;
-use whatwedo\TableBundle\Table\Table;
 
 /**
  * @author Nicolo Singer <nicolo@whatwedo.ch>
  */
 class OrderEventListener
 {
-
-    /** @var  Table $table */
+    /** @var DoctrineTable $table */
     private $table;
-    /** @var  Request $request */
+    /** @var Request $request */
     private $request;
-    /** @var  QueryBuilder $queryBuilder */
+    /** @var QueryBuilder $queryBuilder */
     private $queryBuilder;
     /** @var bool $first */
     private $first = true;
@@ -57,6 +56,12 @@ class OrderEventListener
     public function orderResultSet(DataLoadEvent $event)
     {
         $this->table = $event->getTable();
+
+        if (!$this->table instanceof DoctrineTable) {
+            // TODO this is currently only available for DoctrineTable's
+            return;
+        }
+
         $this->request = $this->table->getRequest();
         $this->queryBuilder = $this->table->getQueryBuilder();
         $this->process();
@@ -67,6 +72,7 @@ class OrderEventListener
         $columns = array_filter($this->table->getColumns()->toArray(), function ($column) {
             return $this->sortThisColumn($column);
         });
+
         array_walk($columns, function ($column) {
             $this->addOrderBy($column);
         });
@@ -75,15 +81,20 @@ class OrderEventListener
     private function addOrderBy(SortableColumnInterface $column)
     {
         $alias = count($this->queryBuilder->getRootAliases()) > 0 ? $this->queryBuilder->getRootAliases()[0] : '';
+
         $sortExp = strpos($column->getSortExpression(), '.') !== false
             ? $column->getSortExpression()
             : sprintf('%s.%s', $alias, $column->getSortExpression());
+
         $addOrderByFunction = $this->first ? 'orderBy' : 'addOrderBy';
+
         $this->first = false;
+
         if (!in_array(explode('.', $sortExp)[0], $this->queryBuilder->getAllAliases())) {
             $notFound = explode('.', $sortExp)[0];
             throw new \Exception(sprintf('"%s" is not defined in querybuilder. Please override getQueryBuilder in your definition and add a join. For example: %s%s ->leftJoin(sprintf(\'%%s.%s\', self::getQueryAlias()), \'%s\')', $notFound, PHP_EOL, PHP_EOL, $notFound, $notFound));
         }
+
         $this->queryBuilder->$addOrderByFunction(
             $sortExp,
             $this->request->query->has(SortableColumnInterface::ORDER_ASC . $column->getAcronym())

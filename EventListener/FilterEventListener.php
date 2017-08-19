@@ -28,6 +28,7 @@
 namespace whatwedo\TableBundle\EventListener;
 
 use whatwedo\TableBundle\Event\DataLoadEvent;
+use whatwedo\TableBundle\Table\DoctrineTable;
 use whatwedo\TableBundle\Table\Table;
 
 /**
@@ -35,15 +36,20 @@ use whatwedo\TableBundle\Table\Table;
  */
 class FilterEventListener
 {
-
     /**
-     * @var Table $table
+     * @var DoctrineTable $table
      */
     protected $table;
 
     public function filterResultSet(DataLoadEvent $event)
     {
         $this->table = $event->getTable();
+
+        if (!$this->table instanceof DoctrineTable) {
+            // we're only able to filter DoctrineTable
+            return;
+        }
+
         $this->addQueryBuilderFilter();
     }
 
@@ -69,9 +75,9 @@ class FilterEventListener
 
         $orX = $this->queryBuilder()->expr()->orX();
         // First, loop all OR's
-        $queryFilterColumn = $this->request()->query->get('filter_column', []);
-        $queryFilterOperator = $this->request()->query->get('filter_operator', []);
-        $queryFilterValue = $this->request()->query->get('filter_value', []);
+        $queryFilterColumn = $this->request()->query->get($this->table->getIdentifier() . '_filter_column', []);
+        $queryFilterOperator = $this->request()->query->get($this->table->getIdentifier() . '_filter_operator', []);
+        $queryFilterValue = $this->request()->query->get($this->table->getIdentifier() . '_filter_value', []);
 
         foreach ($queryFilterColumn as $orKey => $columns) {
             // Then, loop all AND's
@@ -102,7 +108,7 @@ class FilterEventListener
                 $w = $filter->getType()->addToQueryBuilder(
                     $queryFilterOperator[$orKey][$andKey],
                     $queryFilterValue[$orKey][$andKey],
-                    implode('_', ['filter', (int) $orKey, (int) $andKey, $filter->getIdentifier()]),
+                    implode('_', ['filter', (int) $orKey, (int) $andKey, $filter->getAcronym()]),
                     $this->queryBuilder()
                 );
 

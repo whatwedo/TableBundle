@@ -2,11 +2,11 @@ var whatwedoTable = {
     /**
      * Anklickbare Tabellenzeilen
      */
-    clickableRows: function($whatwedoTable) {
-        $(document).on('click', '#whatwedo_table tr[data-href], .dataTable tr[data-href]', function(e) {
+    clickableRows: function() {
+        $(document).on('click', '.whatwedo_table tr[data-href], .dataTable tr[data-href]', function(e) {
             var $this = $(this);
 
-            if (!$this.closest('#whatwedo_table').hasClass('whatwedo_table__editable')) {
+            if (!$this.closest('.whatwedo_table').hasClass('whatwedo_table__editable')) {
                 if($(e.target).is('td')) {
                     window.document.location = $this.data("href");
                 }
@@ -179,9 +179,9 @@ var whatwedoTable = {
         }
     },
 
-    filters: function() {
+    filters: function($table) {
         // Template
-        var filterTemplate = $('#whatwedo_table__filters__template__block').text();
+        var filterTemplate = $('#whatwedo_table__' + $table.data('identifier') + '__filters__template__block').text();
 
         // jQuery Elemente
         var $whatwedoTableFilters = null;
@@ -219,7 +219,7 @@ var whatwedoTable = {
             return result;
         };
 
-        $(document).on('click', '#whatwedo_table [data-filter-action="add-and"]', function(e) {
+        $(document).on('click', '#whatwedo_table_' + $table.data('identifier') + ' [data-filter-action="add-and"]', function(e) {
             e.preventDefault();
             var $this = $(this);
             var $blocksContainer = $this.closest('.whatwedo_table__filters__blocks');
@@ -231,9 +231,9 @@ var whatwedoTable = {
             $blocksContainer.append(block);
         });
 
-        $(document).on('click', '#whatwedo_table [data-filter-action="add-or"]', function(e) {
+        $(document).on('click', '#whatwedo_table_' + $table.data('identifier') + ' [data-filter-action="add-or"]', function(e) {
             e.preventDefault();
-            var $lastBlocksContainer = $('#whatwedo_table__filters').find('.whatwedo_table__filters__blocks:last');
+            var $lastBlocksContainer = $('#whatwedo_table_' + $table.data('identifier')).find('.whatwedo_table__filters__blocks:last');
             var currentBlockIteratorNumber = findCurrentBlockIteratorNumber($lastBlocksContainer);
             var block = filterTemplate
                 .replace(/{iBlock}/g, (currentBlockIteratorNumber + 1).toString())
@@ -243,7 +243,7 @@ var whatwedoTable = {
             $lastBlocksContainer.after(block);
         });
 
-        $(document).on('click', '#whatwedo_table [data-filter-action="remove"]', function(e) {
+        $(document).on('click', '#whatwedo_table_' + $table.data('identifier') + ' [data-filter-action="remove"]', function(e) {
             e.preventDefault();
             var $this = $(this);
             var $block = $this.closest('.whatwedo_table__filters__block');
@@ -258,8 +258,8 @@ var whatwedoTable = {
             }
         });
 
-        $(document).on('click', '#whatwedo_table [data-toggle="filter"]', function() {
-            var $whatwedoTableFilters = $('#whatwedo_table__filters');
+        $(document).on('click', '#whatwedo_table_' + $table.data('identifier') + ' [data-toggle="filter"]', function() {
+            var $whatwedoTableFilters = $('#whatwedo_table_' + $table.data('identifier') + ' .whatwedo_table__filters');
 
             if ($whatwedoTableFilters.hasClass('active')) {
                 $whatwedoTableFilters.slideUp();
@@ -267,27 +267,27 @@ var whatwedoTable = {
             } else {
                 $whatwedoTableFilters.slideDown();
                 $whatwedoTableFilters.addClass('active');
-                var filter_value = $('.whatwedo_table__filters_filter [name^="filter_value"]');
+                var filter_value = $('.whatwedo_table__filters_filter [name^="' + $table.data('identifier') + '_filter_value"]');
                 if (filter_value.is('select')) {
-                    $('.whatwedo_table__filters_filter [name^="filter_value"]').select2();
+                    $('.whatwedo_table__filters_filter [name^="' + $table.data('identifier') + '_filter_value"]').select2();
                 }
             }
         });
 
-        $(document).on('change', '#whatwedo_table select[name^="filter_column"]', function() {
+        $(document).on('change', '#whatwedo_table_' + $table.data('identifier') + ' select[name^="' + $table.data('identifier') + '_filter_column"]', function() {
             var $this = $(this);
             var $parentBlock = $this.parents('.whatwedo_table__filters_filter');
             var $choosenOption = $this.find(":selected");
 
             // Operator
-            var $operator = $parentBlock.find('select[name^="filter_operator"]');
+            var $operator = $parentBlock.find('select[name^="' + $table.data('identifier') + '_filter_operator"]');
             $operator.empty();
             $.each($choosenOption.data('operator-options'), function(key, name) {
                 $operator.append('<option value=' + key + '>' + name + '</option>')
             });
 
             // Field
-            var $field = $parentBlock.find('[name^="filter_value"]');
+            var $field = $parentBlock.find('[name^="' + $table.data('identifier') + '_filter_value"]');
 
             if (typeof $field.data('select2') !== 'undefined') {
                 $field.select2('destroy');
@@ -295,7 +295,7 @@ var whatwedoTable = {
             var fieldName = $field.attr('name');
             var template = $choosenOption.data('value-template');
             $field.replaceWith(template.replace(/{name}/g, fieldName));
-            $field = $parentBlock.find('[name^="filter_value"]');
+            $field = $parentBlock.find('[name^="' + $table.data('identifier') + '_filter_value"]');
 
             if ($field.prop('tagName') == 'SELECT'
                 && typeof $field.attr('data-disable-interactive') === 'undefined') {
@@ -306,38 +306,39 @@ var whatwedoTable = {
             }
         });
 
-        $(document).on('submit', '#whatwedo_table__save', function() {
+        $(document).on('submit', '.whatwedo_table__save', function() {
             return whatwedoTable.updateFormFilterValues();
         })
 
         $('.whatwedo_table__filters_filter').keypress(function(e){
             if (e.which === 13) { // enter key pressed
                 e.preventDefault();
-                $('#whatwedo_table__show_results').trigger('click');
+                $('#whatwedo_table_' + $table.data('identifier') + ' .whatwedo_table__show_results').trigger('click');
             }
         });
     },
 
     tableHeader: function() {
-        $('table[data-fixed-header]').stickyTableHeaders({
+        $('.whatwedo_table_inner[data-fixed-header]').stickyTableHeaders({
             fixedOffset: 105
         });
     },
 
-    setLimit: function() {
+    setLimit: function($table) {
       var buildUrl = function(base, key, value) {
         var sep = (base.indexOf('?') > -1) ? '&' : '?';
         return base + sep + key + '=' + value;
       };
 
-      $('#whatwedo_table select[name="limit"]').change(function(e) {
-            window.location.href = buildUrl(buildUrl(window.location.href, 'page', 1), 'limit', $(this).val());
+      $('#whatwedo_table_' + $table.data('identifier') +' select[name="limit"]').change(function(e) {
+            window.location.href = buildUrl(buildUrl(window.location.href, $table.data('identifier') + '_page', 1), $table.data('identifier') + '_limit', $(this).val());
             e.preventDefault();
         });
     },
 
     updateFormFilterValues: function() {
-        if ($('input[name=filter_name]').val() === '') {
+        // TODO this should be rewritten to accept table identifiers
+        if ($('input[name$=filter_name]').val() === '') {
             alert('Filter Name darf nicht leer sein');
             return false;
         }
@@ -349,7 +350,7 @@ var whatwedoTable = {
         };
         for (var i = 0; i < data.length; i++) {
             var name = data[i]['name'];
-            if (name.startsWith('filter_operator') || name.startsWith('filter_value') || name.startsWith('filter_column')) {
+            if (name.endsWith('filter_operator') || name.endsWith('filter_value') || name.endsWith('filter_column')) {
                 var matches = name.match(/(.+)\[(\d+)\]\[(\d+)\]$/);
                 if (typeof retArray[matches[1]][matches[2]] === 'undefined') {
                     retArray[matches[1]][matches[2]] = [];
@@ -357,13 +358,13 @@ var whatwedoTable = {
                 retArray[matches[1]][matches[2]][matches[3]] = data[i]['value'];
             }
         }
-        $('input[name=filter_conditions]').val(JSON.stringify(retArray))
+        $('input[name$=filter_conditions]').val(JSON.stringify(retArray))
         return true;
     },
 
     initExport: function() {
         $(document).ready(function(){
-            $('#export-csv-current').on('click', function(event) {
+            $('[data-whatwedo-table-export-csv-current]').on('click', function(event) {
                 event.preventDefault();
                 var trs = $(this).parents('#whatwedo_table').find('tr[data-href]');
                 var q = '';
@@ -373,7 +374,7 @@ var whatwedoTable = {
                 }
                 window.location.href = $(this).data('export') + q;
             });
-            $('#export-csv-all').on('click', function(event) {
+            $('[data-whatwedo-table-export-csv-all]').on('click', function(event) {
                 event.preventDefault();
                 window.location.href = $(this).data('export') + '?ids[]=-1';
             })
@@ -384,11 +385,17 @@ var whatwedoTable = {
      * initialize class
      */
     init: function() {
-        this.clickableRows();
-        this.filters();
-        this.tableHeader();
-        this.setLimit();
-        this.initExport();
+        var _ = this;
+
+        $('.whatwedo_table').each(function() {
+            var $table = $(this);
+
+            _.clickableRows();
+            _.filters($table);
+            _.tableHeader();
+            _.setLimit($table);
+            _.initExport($table);
+        });
     }
 };
 

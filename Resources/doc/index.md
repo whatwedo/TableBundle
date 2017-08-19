@@ -46,29 +46,65 @@ In your controller, you have to configure the table:
 // ...
     public function listAction()
     {
-        $table = $this->get('whatwedo_table.table')
-            ->setQueryBuilder($this->getRepository('AgencyUserBundle:User')->getQueryBuilder());
-        
-        $table
-            ->addColumn('id', null, [
-                'label' => '#',
-            ])
-            ->addColumn('lastname', null, [
-                'label' => 'Lastname',
-            ])
-            ->addColumn('firstname', null, [
-                'label' => 'Firstname',
-            ])
-            ->addColumn('email', null, [
-                'label' => 'E-Mail',
-                'formatter' => EmailFormatter::class,
-            ]);
+        /** @var TableFactory $tableFactory */
+        $tableFactory = $this->get('whatwedo_table.factory.table');
+    
+        // static table with custom data
+        $tableStatic = $tableFactory->createTable('static', [
+            'dataLoader' => function($page, $limit) {
+                $tableData = new SimpleTableData();
+    
+                $tableData->setResults([
+                    (object)[
+                        'zip' => 3011,
+                        'city' => 'Bern',
+                    ],
+                    (object)[
+                        'zip' => 3097,
+                        'city' => 'Liebefeld',
+                    ],
+                    (object)[
+                        'zip' => 3775,
+                        'city' => 'Lenk im Simmental',
+                    ],
+                    (object)[
+                        'zip' => 3753,
+                        'city' => 'Oey-Diemtigen',
+                    ],
+                ]);
+                $tableData->setTotalResults(4);
+    
+                return $tableData;
+            }
+        ]);
+    
+        $tableStatic->addColumn('zip', null, [
+            'label' => 'ZIP',
+        ]);
+    
+        $tableStatic->addColumn('city', null, [
+            'label' => 'City',
+        ]);
+    
+        // dynamic table with query builder
+        $tableDynamic = $tableFactory->createDoctrineTable('dynamic', [
+            'queryBuilder' => $this->getDoctrine()->getRepository('AgencyUserBundle:User')->createQueryBuilder('server'),
+            'title' => 'Dynamische Tabelle',
+            'attrs' => [
+                'class' => 'box-primary'
+            ]
+        ]);
+    
+        $tableDynamic->addColumn('name', null, [
+            'label' => 'Name',
+        ]);
+    
+        // Render view
+        return $this->render('whatwedoServerManagerBundle:Dashboard:dashboard.html.twig', [
+            'tableStatic' => $tableStatic,
+            'tableDynamic' => $tableDynamic,
+        ]);
     }
-    
-    return $this->render('list.html.twig', [
-        'table' => $table,
-    ]);
-    
 // ...
 ```
 
@@ -76,6 +112,11 @@ and in your template
 
 ```
 {* list.html.twig *}
+
+{* render the whole table functionality *}
+{{ table.renderTableBox|raw }}
+
+{* only render the table *} 
 
 {{ table.renderTable|raw }}
 ```

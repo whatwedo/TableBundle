@@ -27,7 +27,6 @@
 
 namespace whatwedo\TableBundle\Table;
 
-
 use whatwedo\TableBundle\Filter\Type\FilterTypeInterface;
 
 class Filter
@@ -41,14 +40,15 @@ class Filter
      * @var FilterTypeInterface
      */
     protected $type;
+
     /**
      * @var string
      */
-    protected $identifier;
+    protected $acronym;
 
-    public function __construct($identifier, $name, FilterTypeInterface $type)
+    public function __construct($acronym, $name, FilterTypeInterface $type)
     {
-        $this->identifier = $identifier;
+        $this->acronym = $acronym;
         $this->name = $name;
         $this->type = $type;
     }
@@ -75,20 +75,17 @@ class Filter
     /**
      * @return string
      */
-    public function getIdentifier()
+    public function getAcronym()
     {
-        return $this->identifier;
+        return $this->acronym;
     }
 
     /**
-     * @param string $identifier
-     * @return Filter
+     * @param string $acronym
      */
-    public function setIdentifier($identifier)
+    public function setAcronym($acronym)
     {
-        $this->identifier = $identifier;
-
-        return $this;
+        $this->acronym = $acronym;
     }
 
     /**

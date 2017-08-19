@@ -1,7 +1,7 @@
 services:
-    whatwedo_table.table:
-        class: whatwedo\TableBundle\Table\Table
-        shared: false
+    # Factory
+    whatwedo_table.factory.table:
+        class: whatwedo\TableBundle\Factory\TableFactory
         arguments:
             - '@event_dispatcher'
             - '@request_stack'
@@ -9,11 +9,6 @@ services:
             - '@whatwedo_table.repository.filter'
 
     # Events
-    whatwedo_table.event_listener.limit:
-        class: whatwedo\TableBundle\EventListener\LimitEventListener
-        tags:
-            - { name: kernel.event_listener, event: whatwedo_table.data_load.pre_load, method: limitResultSet, priority: 100 }
-
     whatwedo_table.event_listener.order:
         class: whatwedo\TableBundle\EventListener\OrderEventListener
         tags:
@@ -32,7 +27,6 @@ services:
         public: false
         tags:
             - { name: twig.extension, priority: 255 }
-
 
     # Repository
     whatwedo_table.repository.filter:

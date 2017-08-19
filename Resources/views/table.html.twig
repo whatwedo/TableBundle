@@ -1,17 +1,41 @@
-<div class="box" id="whatwedo_table">
-    <div class="box-header">
-        <h3 class="box-title">{{ table.title }}</h3>
-        {% include 'whatwedoTableBundle::_search.html.twig' %}
-    </div>
+{% import "whatwedoTableBundle::_macros.html.twig" as macros %}
 
-    {% if table.filters|length > 0 %}
+{% if table.options.attrs.class is not defined %}
+    {% set contentAttrs = table.options.attrs|merge({
+        class: 'box whatwedo_table whatwedo_table_' ~ table.identifier
+    }) %}
+{% else %}
+    {% set contentAttrs = table.options.tableAttrs|merge({
+        class: 'box whatwedo_table whatwedo_table_' ~ table.identifier ~ ' ' ~ table.options.attrs.class
+    }) %}
+{% endif %}
+
+{% set contentAttrs = contentAttrs|merge({
+    id: 'whatwedo_table_' ~ table.identifier,
+    'data-identifier': table.identifier
+}) %}
+
+<div {{ macros.attributes(contentAttrs) }}>
+    {% if title or table.isSearchable %}
+        <div class="box-header">
+            {% if title %}
+            <h3 class="box-title">{{ title }}</h3>
+            {% endif %}
+
+            {% if table.isSearchable %}
+                {% include 'whatwedoTableBundle::_search.html.twig' %}
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% if table.filters is defined and table.filters|length > 0 %}
     <div class="box-body">
         {% include 'whatwedoTableBundle::_filter.html.twig' %}
     </div>
     {% endif %}
 
     <div class="box-body">
-        {% include "whatwedoTableBundle::_table.html.twig" with { 'tableAttributes': 'data-fixed-header' } %}
+        {% include "whatwedoTableBundle::_table.html.twig" %}
     </div>
 
     <div class="box-footer clearfix">

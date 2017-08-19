@@ -1,22 +1,25 @@
 <div class="box-tools whatwedo_table-search">
-    <form action="{{ path(app.request.attributes.get('_route'), { 'page': '1' }) }}">
+    <form action="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : 1 }) }}">
         <div class="input-group input-group-sm">
-            <select data-disable-interactive name="limit" class="form-control">
-                {% for num in [10, 25, 50, 100, 200] %}
+            <select data-disable-interactive name="{{ table.actionQueryParameter('limit') }}" class="form-control">
+                {% for num in table.options['limitChoices'] %}
                     <option value="{{ num }}"{% if table.limit == num %} selected{% endif %}>{{ num }} Einträge</option>
                 {% endfor %}
             </select>
-            <input type="text" class="form-control" placeholder="Suchbegriff..." value="{{ app.request.query.get('q') }}" name="q">
+            <input type="text" class="form-control" placeholder="Suchbegriff..." value="{{ table.searchQuery }}" name="{{ table.actionQueryParameter('query') }}">
             <span class="input-group-btn">
                 <button class="btn btn-primary" type="submit">
                     <i class="fa fa-search"></i>
                 </button>
-                {% if app.request.query.get('q')|length > 0 %}
-                    <a href="{{ path(app.request.attributes.get('_route'), { page: 1, 'q': '' }) }}" class="btn btn-danger" type="button" title="Suche entfernen">
+                {% if table.searchQuery|length > 0 %}
+                    <a href="{{ whatwedo_table_generate_route_replace_arguments({
+                        (table.actionQueryParameter('page')) : 1,
+                        (table.actionQueryParameter('query')) : ''
+                    }) }}" class="btn btn-danger" type="button" title="Suche entfernen">
                         <i class="fa fa-times"></i>
                     </a>
                 {% endif %}
-                {% if table.filters|length > 0 %}
+                {% if table.filters is defined and table.filters|length > 0 %}
                     <button type="button" data-toggle="filter" class="btn btn-success" title="Filter">
                         <i class="fa fa-filter"></i>
                     </button>

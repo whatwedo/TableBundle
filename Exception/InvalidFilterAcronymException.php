@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2016, whatwedo GmbH
+ * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,27 +25,21 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\EventListener;
+namespace whatwedo\TableBundle\Exception;
 
-use whatwedo\TableBundle\Event\DataLoadEvent;
-use whatwedo\TableBundle\Table\Table;
+use Throwable;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
-class LimitEventListener
+class InvalidFilterAcronymException extends \InvalidArgumentException
 {
-
-    /**
-     * @param DataLoadEvent $event
-     */
-    public function limitResultSet(DataLoadEvent $event)
+    public function __construct($acronym, $message = "", $code = 0, Throwable $previous = null)
     {
-        $table = $event->getTable();
+        if (!$message) {
+            $message = sprintf(
+                'There is no filter configured with the acronym "%s".',
+                htmlentities($acronym)
+            );
+        }
 
-        $table->setLimit($table->getRequest()->query->getInt('limit', 25));
-        $table->getQueryBuilder()->setMaxResults($table->getLimit());
-
-        $table->getQueryBuilder()->setFirstResult(($table->getCurrentPage() - 1) * $table->getLimit());
+        parent::__construct($message, $code, $previous);
     }
 }

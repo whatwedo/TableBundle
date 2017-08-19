@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2016, whatwedo GmbH
+ * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,57 +25,49 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Table;
+namespace whatwedo\TableBundle\Model;
 
-
-use Symfony\Component\HttpFoundation\ParameterBag;
-
-/**
- * @author Nicolo Singer <nicolo@whatwedo.ch>
- */
-interface SortableColumnInterface
+class SimpleTableData implements TableDataInterface
 {
-    const ORDER_ENABLED = 'is_order_';
-    const ORDER_ASC = 'asc_order_';
+    /**
+     * @var array
+     */
+    protected $results;
 
     /**
-     * @return string
+     * @var int
      */
-    public function getSortExpression();
+    protected $totalResults;
 
     /**
-     * @return bool
+     * @return array
      */
-    public function isSortable();
+    public function getResults()
+    {
+        return $this->results;
+    }
 
     /**
-     * @param ParameterBag $query
-     * @return string
+     * @param array $results
      */
-    public function getOrderQueryASC(ParameterBag $query);
+    public function setResults($results)
+    {
+        $this->results = $results;
+    }
 
     /**
-     * @param ParameterBag $query
-     * @return string
+     * @return int
      */
-    public function getOrderQueryDESC(ParameterBag $query);
+    public function getTotalResults()
+    {
+        return $this->totalResults;
+    }
 
     /**
-     * @param ParameterBag $query
-     * @return string
+     * @param int $totalResults
      */
-    public function getDeleteOrder(ParameterBag $query);
-
-    /**
-     * @param ParameterBag $query
-     * @param $order
-     * @return bool
-     */
-    public function isOrdered(ParameterBag $query, $order);
-
-    /**
-     * @return string
-     */
-    public function getOrderValue($row);
-
+    public function setTotalResults($totalResults)
+    {
+        $this->totalResults = $totalResults;
+    }
 }

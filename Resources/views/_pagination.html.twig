@@ -1,6 +1,4 @@
 {% set pageOffset = 5 %}
-{% set currentRoute = app.request.attributes.get('_route') %}
-{% set currentQuery = app.request.query.all %}
 <ul class="pagination pagination-sm no-margin pull-right whatwedo_table-pagination">
 
     {# first link #}
@@ -9,7 +7,7 @@
             class="disabled"
         {% endif %}
     >
-        <a href="{% if table.currentPage > 1 %}{{ path(currentRoute, app.request.attributes.all|merge(currentQuery|merge({ 'page': 1 }))) }}{% else %}#{% endif %}" aria-label="Erste Seite" title="Erste Seite">
+        <a href="{% if table.currentPage > 1 %}{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : 1 }) }}{% else %}#{% endif %}" aria-label="Erste Seite" title="Erste Seite">
             <span aria-hidden="true"><i class="fa fa-fast-backward"></i></span>
             <span class="sr-only">Erste Seite</span>
         </a>
@@ -21,7 +19,7 @@
             class="disabled"
         {% endif %}
     >
-        <a href="{% if table.currentPage > 1 %}{{ path(currentRoute, app.request.attributes.all|merge(currentQuery|merge({ 'page': table.currentPage - 1 }))) }}{% else %}#{% endif %}" aria-label="Vorherige Seite" title="Vorherige Seite">
+        <a href="{% if table.currentPage > 1 %}{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : table.currentPage - 1 }) }}{% else %}#{% endif %}" aria-label="Vorherige Seite" title="Vorherige Seite">
             <span aria-hidden="true"><i class="fa fa-step-backward"></i></span>
             <span class="sr-only">Vorherige Seite</span>
         </a>
@@ -32,7 +30,7 @@
         {% set page = table.currentPage - i %}
         {% if page > 0 %}
             <li>
-                <a href="{{ path(currentRoute, app.request.attributes.all|merge(currentQuery|merge({ 'page': page }))) }}">
+                <a href="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : page }) }}">
                     {{ page }}
                 </a>
             </li>
@@ -41,7 +39,7 @@
 
     {# current #}
     <li class="active">
-        <a href="{{ path(currentRoute, app.request.attributes.all|merge(currentQuery|merge({ 'page': table.currentPage }))) }}">
+        <a href="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : table.currentPage }) }}">
             {{ table.currentPage }}
             <span class="sr-only">(aktuelle Seite)</span>
         </a>
@@ -53,7 +51,7 @@
         {% set page = table.currentPage + i %}
         {% if page < ( table.totalPages + 1 ) %}
             <li>
-                <a href="{{ path(currentRoute, app.request.attributes.all|merge(currentQuery|merge({ 'page': page }))) }}">
+                <a href="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : page }) }}">
                     {{ page }}
                 </a>
             </li>
@@ -67,7 +65,7 @@
             class="disabled"
         {% endif %}
     >
-        <a href="{% if table.currentPage != table.totalPages %}{{ path(currentRoute, app.request.attributes.all|merge(currentQuery|merge({ 'page': table.currentPage + 1 }))) }}{% else %}#{% endif %}" aria-label="Nächste Seite" title="Nächste Seite">
+        <a href="{% if table.currentPage != table.totalPages %}{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : table.currentPage + 1 }) }}{% else %}#{% endif %}" aria-label="Nächste Seite" title="Nächste Seite">
             <span aria-hidden="true"><i class="fa fa-step-forward"></i></span>
             <span class="sr-only">Nächste Seite</span>
         </a>
@@ -81,7 +79,7 @@
             class="disabled"
         {% endif %}
     >
-        <a href="{% if table.currentPage != table.totalPages %}{{ path(currentRoute, app.request.attributes.all|merge(currentQuery|merge({ 'page': table.totalPages }))) }}{% else %}#{% endif %}" aria-label="Letzte Seite" title="Letzte Seite">
+        <a href="{% if table.currentPage != table.totalPages %}{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : table.totalPages }) }}{% else %}#{% endif %}" aria-label="Letzte Seite" title="Letzte Seite">
             <span aria-hidden="true"><i class="fa fa-fast-forward"></i></span>
             <span class="sr-only">Letzte Seite</span>
         </a>
