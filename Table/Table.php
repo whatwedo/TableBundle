@@ -483,7 +483,7 @@ class Table
 
     public function isSortable()
     {
-        return (bool) $this->options['searchable'];
+        return (bool) $this->options['sortable'];
     }
 
     public function getSearchQuery()

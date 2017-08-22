@@ -33,13 +33,16 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Templating\EngineInterface;
-use whatwedo\TableBundle\Event\DataLoadEvent;
 use whatwedo\TableBundle\Exception\InvalidFilterAcronymException;
 use whatwedo\TableBundle\Filter\Type\FilterTypeInterface;
 use whatwedo\TableBundle\Filter\Type\SimpleEnumFilterType;
 use whatwedo\TableBundle\Model\SimpleTableData;
 use whatwedo\TableBundle\Repository\FilterRepository;
 
+/**
+ * Class DoctrineTable
+ * @package whatwedo\TableBundle\Table
+ */
 class DoctrineTable extends Table
 {
     /**

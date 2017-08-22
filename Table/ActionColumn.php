@@ -35,7 +35,7 @@ class ActionColumn extends AbstractColumn
 {
     /**
      * @param OptionsResolver $resolver
-     * @return mixed
+     * @return void
      */
     public function configureOptions(OptionsResolver $resolver)
     {
