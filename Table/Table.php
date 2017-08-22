@@ -157,7 +157,7 @@ class Table
             'default_limit' => 25,
             'limit_choices' => [10, 25, 50, 100, 200],
             'table_box_template' => 'whatwedoTableBundle::table.html.twig',
-            'table_template' => 'whatwedoTableBundle::_table.html.twig',
+            'table_template' => 'whatwedoTableBundle::tableOnly.html.twig',
         ]);
 
         $resolver->setAllowedTypes('title', ['null', 'string']);

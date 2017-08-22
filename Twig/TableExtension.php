@@ -82,8 +82,12 @@ class TableExtension extends \Twig_Extension
              * generates the same route with replaced or new arguments
              */
             new \Twig_SimpleFunction('whatwedo_table_generate_route_replace_arguments', function($arguments) {
+                $attributes = array_filter($this->request->attributes->all(), function($key) {
+                    return strpos($key, '_') !== 0;
+                }, ARRAY_FILTER_USE_KEY);
+
                 $parameters = array_replace(
-                    $this->request->query->all(),
+                    array_merge($attributes, $this->request->query->all()),
                     $arguments
                 );
 
