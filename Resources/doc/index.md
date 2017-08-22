@@ -51,7 +51,7 @@ In your controller, you have to configure the table:
     
         // static table with custom data
         $tableStatic = $tableFactory->createTable('static', [
-            'dataLoader' => function($page, $limit) {
+            'data_loader' => function($page, $limit) {
                 $tableData = new SimpleTableData();
     
                 $tableData->setResults([
@@ -88,9 +88,9 @@ In your controller, you have to configure the table:
     
         // dynamic table with query builder
         $tableDynamic = $tableFactory->createDoctrineTable('dynamic', [
-            'queryBuilder' => $this->getDoctrine()->getRepository('AgencyUserBundle:User')->createQueryBuilder('server'),
+            'query_builder' => $this->getDoctrine()->getRepository('AgencyUserBundle:User')->createQueryBuilder('server'),
             'title' => 'Dynamische Tabelle',
-            'attrs' => [
+            'attr' => [
                 'class' => 'box-primary'
             ]
         ]);

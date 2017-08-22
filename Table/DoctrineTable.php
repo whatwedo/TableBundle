@@ -92,8 +92,8 @@ class DoctrineTable extends Table
 
         $resolver->setDefault('searchable', true);
         $resolver->setDefault('sortable', true);
-        $resolver->setDefault('dataLoader', [$this, 'dataLoader']);
-        $resolver->setRequired('queryBuilder');
+        $resolver->setDefault('data_loader', [$this, 'dataLoader']);
+        $resolver->setRequired('query_builder');
     }
 
     /**
@@ -101,7 +101,7 @@ class DoctrineTable extends Table
      */
     public function getQueryBuilder()
     {
-        return $this->options['queryBuilder'];
+        return $this->options['query_builder'];
     }
 
     /**

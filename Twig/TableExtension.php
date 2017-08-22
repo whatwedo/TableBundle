@@ -68,7 +68,6 @@ class TableExtension extends \Twig_Extension
              */
             new \Twig_SimpleFunction('whatwedo_table', function($identifier, $options) {
                 $tableFactory = $this->container->get('whatwedo_table.factory.table');
-
                 return call_user_func([$tableFactory, 'createTable'], $identifier, $options);
             }),
             /**

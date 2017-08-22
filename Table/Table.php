@@ -148,25 +148,25 @@ class Table
             'title' => null,
             'searchable' => false,
             'sortable' => false,
-            'attrs' => [
-                'class' => ''
+            'attr' => [
+                'class' => null,
             ],
-            'tableAttrs' => [
-                'class' => ''
+            'table_attr' => [
+                'class' => null,
             ],
-            'defaultLimit' => 25,
-            'limitChoices' => [10, 25, 50, 100, 200],
-            'tableBoxTemplate' => 'whatwedoTableBundle::table.html.twig',
-            'tableTemplate' => 'whatwedoTableBundle::_table.html.twig',
+            'default_limit' => 25,
+            'limit_choices' => [10, 25, 50, 100, 200],
+            'table_box_template' => 'whatwedoTableBundle::table.html.twig',
+            'table_template' => 'whatwedoTableBundle::_table.html.twig',
         ]);
 
         $resolver->setAllowedTypes('title', ['null', 'string']);
-        $resolver->setAllowedTypes('attrs', ['array']);
+        $resolver->setAllowedTypes('attr', ['array']);
         $resolver->setAllowedTypes('searchable', ['boolean']);
-        $resolver->setAllowedTypes('defaultLimit', ['integer']);
-        $resolver->setAllowedTypes('tableBoxTemplate', ['string']);
-        $resolver->setAllowedTypes('tableTemplate', ['string']);
-        $resolver->setAllowedTypes('limitChoices', ['array']);
+        $resolver->setAllowedTypes('default_limit', ['integer']);
+        $resolver->setAllowedTypes('table_box_template', ['string']);
+        $resolver->setAllowedTypes('table_template', ['string']);
+        $resolver->setAllowedTypes('limit_choices', ['array']);
 
         /*
          * Data Loader
@@ -178,16 +178,23 @@ class Table
          * The callable must return a TableDataInterface.
          * you can pass an array to call_user_func
          */
-        $resolver->setRequired('dataLoader');
-        $resolver->setAllowedTypes('dataLoader', ['array', 'callable']);
+        $resolver->setRequired('data_loader');
+        $resolver->setAllowedTypes('data_loader', ['array', 'callable']);
     }
 
-
+    /**
+     * @param $key
+     * @return null
+     */
     public function getOption($key)
     {
         return isset($this->options[$key]) ? $this->options[$key] : null;
     }
 
+    /**
+     * @param $key
+     * @param $value
+     */
     public function setOption($key, $value)
     {
         $this->options[$key] = $value;
@@ -307,6 +314,10 @@ class Table
         return $this->eventDispatcher;
     }
 
+    /**
+     * @param $action
+     * @return string
+     */
     public function getActionQueryParameter($action)
     {
         return sprintf('%s_%s', $this->getIdentifier(), $action);
@@ -411,7 +422,7 @@ class Table
      */
     public function loadData()
     {
-        if (!is_callable($this->options['dataLoader']) && !is_array($this->options['dataLoader'])) {
+        if (!is_callable($this->options['data_loader']) && !is_array($this->options['data_loader'])) {
             throw new DataLoaderNotAvailableException();
         }
 
@@ -422,7 +433,7 @@ class Table
         // sets the limit of results
         $this->setLimit($this->getRequest()->query->getInt(
             $this->getActionQueryParameter(static::QUERY_PARAMETER_LIMIT),
-            $this->options['defaultLimit']
+            $this->options['default_limit']
         ));
 
         $this->eventDispatcher->dispatch(DataLoadEvent::PRE_LOAD, new DataLoadEvent($this));
@@ -430,11 +441,11 @@ class Table
         // loads the data from the data loader callable
         $tableData = null;
 
-        if (is_callable($this->options['dataLoader'])) {
-            $tableData = ($this->options['dataLoader'])($this->getCurrentPage(), $this->getLimit());
+        if (is_callable($this->options['data_loader'])) {
+            $tableData = ($this->options['data_loader'])($this->getCurrentPage(), $this->getLimit());
         }
-        if (is_array($this->options['dataLoader'])) {
-            $tableData = call_user_func($this->options['dataLoader'], $this->getCurrentPage(), $this->getLimit());
+        if (is_array($this->options['data_loader'])) {
+            $tableData = call_user_func($this->options['data_loader'], $this->getCurrentPage(), $this->getLimit());
         }
 
         if (!$tableData instanceof TableDataInterface) {
@@ -457,7 +468,7 @@ class Table
     {
         $this->loadData();
 
-        return $this->templating->render($this->options['tableTemplate'], [
+        return $this->templating->render($this->options['table_template'], [
             'table' => $this,
         ]);
     }
@@ -470,22 +481,31 @@ class Table
     {
         $this->loadData();
 
-        return $this->templating->render($this->options['tableBoxTemplate'], [
+        return $this->templating->render($this->options['table_box_template'], [
             'title' => $this->options['title'],
             'table' => $this,
         ]);
     }
 
+    /**
+     * @return bool
+     */
     public function isSearchable()
     {
         return (bool) $this->options['searchable'];
     }
 
+    /**
+     * @return bool
+     */
     public function isSortable()
     {
         return (bool) $this->options['sortable'];
     }
 
+    /**
+     * @return string
+     */
     public function getSearchQuery()
     {
         return $this->options['searchable']

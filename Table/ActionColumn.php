@@ -41,7 +41,7 @@ class ActionColumn extends AbstractColumn
     {
         $resolver->setDefaults([
             'items' => [],
-            'showActionColumn' => []
+            'show_action_column' => []
         ]);
     }
 
@@ -75,8 +75,8 @@ class ActionColumn extends AbstractColumn
     {
         $items = [];
         foreach ($this->options['items'] as $item) {
-            if (array_key_exists($item['route'], $this->options['showActionColumn'])) {
-                if (call_user_func($this->options['showActionColumn'][$item['route']], $row)) {
+            if (array_key_exists($item['route'], $this->options['show_action_column'])) {
+                if (call_user_func($this->options['show_action_column'][$item['route']], $row)) {
                     $items[] = $item;
                 }
             } else {

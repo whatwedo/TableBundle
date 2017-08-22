@@ -2,7 +2,7 @@
     <form action="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : 1 }) }}">
         <div class="input-group input-group-sm">
             <select data-disable-interactive name="{{ table.actionQueryParameter('limit') }}" class="form-control">
-                {% for num in table.options['limitChoices'] %}
+                {% for num in table.options['limit_choices'] %}
                     <option value="{{ num }}"{% if table.limit == num %} selected{% endif %}>{{ num }} Einträge</option>
                 {% endfor %}
             </select>

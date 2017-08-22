@@ -1,21 +1,21 @@
 {% import "whatwedoTableBundle::_macros.html.twig" as macros %}
 
-{% if table.options.attrs.class is not defined %}
-    {% set contentAttrs = table.options.attrs|merge({
+{% if table.options.attr.class is not defined %}
+    {% set contentAttr = table.options.attr|merge({
         class: 'box whatwedo_table whatwedo_table_' ~ table.identifier
     }) %}
 {% else %}
-    {% set contentAttrs = table.options.tableAttrs|merge({
-        class: 'box whatwedo_table whatwedo_table_' ~ table.identifier ~ ' ' ~ table.options.attrs.class
+    {% set contentAttr = table.options.table_attr|merge({
+        class: 'box whatwedo_table whatwedo_table_' ~ table.identifier ~ ' ' ~ table.options.attr.class
     }) %}
 {% endif %}
 
-{% set contentAttrs = contentAttrs|merge({
+{% set contentAttr = contentAttr|merge({
     id: 'whatwedo_table_' ~ table.identifier,
     'data-identifier': table.identifier
 }) %}
 
-<div {{ macros.attributes(contentAttrs) }}>
+<div {{ macros.attributes(contentAttr) }}>
     {% if title or table.isSearchable %}
         <div class="box-header">
             {% if title %}
