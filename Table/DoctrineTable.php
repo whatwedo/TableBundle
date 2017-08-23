@@ -45,10 +45,6 @@ use whatwedo\TableBundle\Repository\FilterRepository;
  */
 class DoctrineTable extends Table
 {
-    /**
-     * @var QueryBuilder
-     */
-    protected $queryBuilder;
 
     /**
      * @var FilterRepository

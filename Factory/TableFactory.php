@@ -28,10 +28,10 @@
 namespace whatwedo\TableBundle\Factory;
 
 
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Templating\EngineInterface;
-use whatwedo\TableBundle\Repository\FilterRepository;
 use whatwedo\TableBundle\Table\DoctrineTable;
 use whatwedo\TableBundle\Table\Table;
 
@@ -53,7 +53,7 @@ class TableFactory
     protected $templating;
 
     /**
-     * @var FilterRepository
+     * @var EntityRepository
      */
     protected $filterRepository;
 
@@ -63,13 +63,13 @@ class TableFactory
      * @param EventDispatcherInterface $eventDispatcher
      * @param RequestStack             $requestStack
      * @param EngineInterface          $templating
-     * @param FilterRepository         $filterRepository
+     * @param EntityRepository         $filterRepository
      */
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         RequestStack $requestStack,
         EngineInterface $templating,
-        FilterRepository $filterRepository
+        EntityRepository $filterRepository
     ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->requestStack = $requestStack;

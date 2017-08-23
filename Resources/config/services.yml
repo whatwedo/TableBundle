@@ -19,6 +19,14 @@ services:
         tags:
             - { name: kernel.event_listener, event: whatwedo_table.data_load.pre_load, method: filterResultSet, priority: 100 }
 
+    whatwedo_table.event_listener.search:
+        class: whatwedo\TableBundle\EventListener\SearchEventListener
+        arguments:
+            - "@doctrine.orm.entity_manager"
+            - "@service_container"
+        tags:
+            - { name: kernel.event_listener, event: whatwedo_table.data_load.pre_load, method: searchResultSet, priority: 100 }
+
     # Twig Extension
     sybio.twig_extension:
         class: whatwedo\TableBundle\Twig\TableExtension

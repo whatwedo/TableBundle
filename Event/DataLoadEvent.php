@@ -27,6 +27,7 @@
 
 namespace whatwedo\TableBundle\Event;
 use Symfony\Component\EventDispatcher\Event;
+use whatwedo\TableBundle\Table\DoctrineTable;
 use whatwedo\TableBundle\Table\Table;
 
 /**
@@ -48,7 +49,7 @@ class DataLoadEvent extends Event
     }
 
     /**
-     * @return Table
+     * @return DoctrineTable
      */
     public function getTable()
     {
