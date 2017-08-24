@@ -41,11 +41,6 @@ class TableExtension extends \Twig_Extension
     protected $container;
 
     /**
-     * @var Request
-     */
-    protected $request;
-
-    /**
      * @var RouterInterface
      */
     protected $router;
@@ -54,7 +49,6 @@ class TableExtension extends \Twig_Extension
     {
         $this->container = $container;
         $this->router = $container->get('router');
-        $this->request = $container->get('request_stack')->getMasterRequest();
     }
 
     /**
@@ -82,17 +76,18 @@ class TableExtension extends \Twig_Extension
              * generates the same route with replaced or new arguments
              */
             new \Twig_SimpleFunction('whatwedo_table_generate_route_replace_arguments', function($arguments) {
-                $attributes = array_filter($this->request->attributes->all(), function($key) {
+                $request = $this->container->get('request_stack')->getMasterRequest();
+                $attributes = array_filter($request->attributes->all(), function($key) {
                     return strpos($key, '_') !== 0;
                 }, ARRAY_FILTER_USE_KEY);
 
                 $parameters = array_replace(
-                    array_merge($attributes, $this->request->query->all()),
+                    array_merge($attributes, $request->query->all()),
                     $arguments
                 );
 
                 return $this->router->generate(
-                    $this->request->attributes->get('_route'),
+                    $request->attributes->get('_route'),
                     $parameters
                 );
 

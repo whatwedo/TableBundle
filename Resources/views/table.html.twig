@@ -23,7 +23,7 @@
             {% endif %}
 
             {% if table.isSearchable %}
-                {% include 'whatwedoTableBundle::_search.html.twig' %}
+            {% include 'whatwedoTableBundle::_search.html.twig' %}
             {% endif %}
         </div>
     {% endif %}
@@ -32,21 +32,21 @@
     <div class="box-body">
         {% include 'whatwedoTableBundle::_filter.html.twig' %}
     </div>
-    {% endif %}
+{% endif %}
 
-    <div class="box-body">
-        {% include "whatwedoTableBundle::_table.html.twig" %}
-    </div>
+<div class="box-body">
+{% include "whatwedoTableBundle::_table.html.twig" %}
+</div>
 
-    <div class="box-footer clearfix">
-        {% include 'whatwedoTableBundle::_foot.html.twig' %}
-    </div>
+<div class="box-footer clearfix">
+    {% include 'whatwedoTableBundle::_foot.html.twig' %}
+</div>
 
-    <div class="whatwedo_table-overlay">
-        <div class="spinner">
-            <div class="bounce1"></div>
-            <div class="bounce2"></div>
-            <div class="bounce3"></div>
-        </div>
-    </div>
+<div class="whatwedo_table-overlay">
+<div class="spinner">
+    <div class="bounce1"></div>
+    <div class="bounce2"></div>
+    <div class="bounce3"></div>
+</div>
+</div>
 </div>
