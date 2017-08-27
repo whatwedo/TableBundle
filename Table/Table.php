@@ -252,8 +252,10 @@ class Table
      */
     public function getActionColumn()
     {
-        if (isset($this->columns[static::ACTION_COLUMN_ACRONYM])) {
-            $this->addColumn(static::ACTION_COLUMN_ACRONYM, ActionColumn::class, []);
+        if (!isset($this->columns[static::ACTION_COLUMN_ACRONYM])) {
+            $column = new ActionColumn(static::ACTION_COLUMN_ACRONYM, []);
+            $column->setTemplating($this->templating);
+            $this->columns->set(static::ACTION_COLUMN_ACRONYM, $column);
         }
 
         return $this->columns[static::ACTION_COLUMN_ACRONYM];
