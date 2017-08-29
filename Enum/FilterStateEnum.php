@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2016, whatwedo GmbH
+ * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,34 +25,51 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\EventListener;
-
-use whatwedo\TableBundle\Event\DataLoadEvent;
-use whatwedo\TableBundle\Table\Table;
+namespace whatwedo\TableBundle\Enum;
 
 /**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
+ * @author Nicolo Singer <nicolo@whatwedo.ch>
  */
-class LimitEventListener
+class FilterStateEnum
 {
 
-    /**
-     * @param DataLoadEvent $event
-     */
-    public function limitResultSet(DataLoadEvent $event)
-    {
-        $table = $event->getTable();
+    const ALL       = 1;
+    const SELF      = 2;
+    const SYSTEM    = 3;
 
-        if ($table->getRequest()->query->getInt('limit') === -1) {
-            $table->setLimit(-1);
-            $table->getQueryBuilder()->setMaxResults(null);
-            $table->getQueryBuilder()->setFirstResult(0);
-            return;
+    protected static $values = [
+        FilterStateEnum::ALL        =>  'Öffentlich',
+        FilterStateEnum::SELF       =>  'Privat',
+        FilterStateEnum::SYSTEM     =>  'System'
+    ];
+
+    public static function getArray()
+    {
+        return static::$values;
+    }
+
+    public static function getValues()
+    {
+        return array_keys(static::$values);
+    }
+
+    public static function has($value)
+    {
+        return isset(static::$values[$value]);
+    }
+
+    public static function getRepresentation($value)
+    {
+        if (isset(static::$values[$value])) {
+            return static::$values[$value];
         }
 
-        $table->setLimit($table->getRequest()->query->getInt('limit', 25));
-        $table->getQueryBuilder()->setMaxResults($table->getLimit());
-
-        $table->getQueryBuilder()->setFirstResult(($table->getCurrentPage() - 1) * $table->getLimit());
+        return null;
     }
+
+    public static function getFormValues()
+    {
+        return array_flip(static::$values);
+    }
+
 }

@@ -27,6 +27,7 @@
 
 namespace whatwedo\TableBundle\Table;
 
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use DOMNode;
@@ -35,9 +36,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Templating\EngineInterface;
 use whatwedo\TableBundle\Collection\ColumnCollection;
+use whatwedo\TableBundle\Enum\FilterStateEnum;
 use whatwedo\TableBundle\Event\DataLoadEvent;
 use whatwedo\TableBundle\Iterator\RowIterator;
 use whatwedo\TableBundle\Model\Type\FilterTypeInterface;
+use whatwedo\TableBundle\Model\Type\SimpleEnumFilterType;
 
 /**
  * @author Ueli Banholzer <ueli@whatwedo.ch>
@@ -104,15 +107,34 @@ class Table
      */
     protected $filters = [];
 
+    /**
+     * @var EntityRepository
+     */
+    protected $filterRepository;
+
+    /**
+     * @var string
+     */
+    protected $title = 'Übersicht';
+
+    /**
+     * Table constructor.
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param RequestStack $requestStack
+     * @param EngineInterface $templating
+     * @param EntityRepository $filterRepository
+     */
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         RequestStack $requestStack,
-        EngineInterface $templating
+        EngineInterface $templating,
+        EntityRepository $filterRepository
     ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->request = $requestStack->getMasterRequest();
         $this->columns = new ColumnCollection();
         $this->templating = $templating;
+        $this->filterRepository = $filterRepository;
     }
 
     /**
@@ -146,7 +168,7 @@ class Table
      * @param $identifier
      * @param $name
      * @param FilterTypeInterface $type
-     * @return $this
+     * @return Table $this
      */
     public function addFilter($identifier, $name, FilterTypeInterface $type)
     {
@@ -154,16 +176,66 @@ class Table
         return $this;
     }
 
+    /**
+     * @param $identifier
+     * @param $label
+     * @return Table $this
+     */
     public function overrideFilterName($identifier, $label)
     {
         $this->filters[$identifier]->setName($label);
-
         return $this;
     }
 
+    /**
+     * @param $identifier
+     * @param $class
+     * @return Table $this
+     * @throws \Exception
+     */
+    public function simpleEnumFilter($identifier, $class)
+    {
+        if (!isset($this->filters[$identifier])) {
+            throw new \Exception(sprintf('no Filter found for "%s". Add one first via addFilter. (simpleEnumFilter only works when field was automatically detected.)', $identifier));
+        }
+        $name = $this->filters[$identifier]->getName();
+        $column = $this->filters[$identifier]->getType()->getColumn();
+        $this->filters[$identifier] = new Filter($identifier, $name, new SimpleEnumFilterType($column, [], $class));
+        return $this;
+    }
+
+    /**
+     * @param $identifier
+     * @return Table $this
+     */
     public function removeFilter($identifier)
     {
         unset($this->filters[$identifier]);
+        return $this;
+    }
+
+    /**
+     * @param $label
+     * @param $icon
+     * @param $button
+     * @param $route
+     * @return Table $this
+     * @throws \Exception
+     */
+    public function addActionItem($label, $icon, $button, $route)
+    {
+        /** @var ActionColumn $actionColumn */
+        $actionColumn = null;
+        foreach ($this->columns as $column) {
+            if ($column instanceof ActionColumn) {
+                $actionColumn = $column;
+                break;
+            }
+        }
+        if (is_null($actionColumn)) {
+            throw new \Exception('No ActionColumn found in Table');
+        }
+        $actionColumn->addItem($label, $icon, $button, $route);
         return $this;
     }
 
@@ -367,6 +439,7 @@ class Table
      */
     public function renderTableOnly()
     {
+        $this->loadData();
         return $this->templating->render('whatwedoTableBundle::_table.html.twig', [
             'table' => $this,
         ]);
@@ -377,6 +450,7 @@ class Table
      */
     public function renderTable()
     {
+        $this->loadData();
         return $this->templating->render('whatwedoTableBundle::table.html.twig', [
             'table' => $this,
         ]);
@@ -429,5 +503,50 @@ class Table
         }
 
         return $str;
+    }
+
+    public function getSavedFilter($username)
+    {
+        $path = preg_replace('/_show$/i', '_index', $this->rowRoute);
+        $qb = $this->filterRepository->createQueryBuilder('f');
+        return $qb
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('f.route', ':path'),
+                    $qb->expr()->orX(
+                        $qb->expr()->orX(
+                            $qb->expr()->eq('f.state', FilterStateEnum::ALL),
+                            $qb->expr()->eq('f.state', FilterStateEnum::SYSTEM)
+                        ),
+                        $qb->expr()->andX(
+                            $qb->expr()->eq('f.state', FilterStateEnum::SELF),
+                            $qb->expr()->eq('f.creatorUsername', ':username')
+                        )
+                    )
+                )
+            )
+            ->orderBy('f.name')
+            ->setParameter('path', $path)
+            ->setParameter('username', $username)
+            ->getQuery()->getResult();
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     * @return Table
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2016, whatwedo GmbH
+ * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,34 +25,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\EventListener;
+namespace whatwedo\TableBundle\Repository;
 
-use whatwedo\TableBundle\Event\DataLoadEvent;
-use whatwedo\TableBundle\Table\Table;
+use Doctrine\ORM\EntityRepository;
 
 /**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
+ * @author Nicolo Singer <nicolo@whatwedo.ch>
  */
-class LimitEventListener
+class FilterRepository extends EntityRepository
 {
 
-    /**
-     * @param DataLoadEvent $event
-     */
-    public function limitResultSet(DataLoadEvent $event)
-    {
-        $table = $event->getTable();
-
-        if ($table->getRequest()->query->getInt('limit') === -1) {
-            $table->setLimit(-1);
-            $table->getQueryBuilder()->setMaxResults(null);
-            $table->getQueryBuilder()->setFirstResult(0);
-            return;
-        }
-
-        $table->setLimit($table->getRequest()->query->getInt('limit', 25));
-        $table->getQueryBuilder()->setMaxResults($table->getLimit());
-
-        $table->getQueryBuilder()->setFirstResult(($table->getCurrentPage() - 1) * $table->getLimit());
-    }
 }

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2016, whatwedo GmbH
+ * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,34 +25,18 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\EventListener;
+namespace whatwedo\TableBundle\Formatter;
 
-use whatwedo\TableBundle\Event\DataLoadEvent;
-use whatwedo\TableBundle\Table\Table;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
-class LimitEventListener
+use whatwedo\CoreBundle\Formatter\AbstractFormatter;
+use whatwedo\TableBundle\Enum\FilterStateEnum;
+
+class FilterStateFormatter extends AbstractFormatter
 {
-
-    /**
-     * @param DataLoadEvent $event
-     */
-    public function limitResultSet(DataLoadEvent $event)
+    public static function getString($value)
     {
-        $table = $event->getTable();
-
-        if ($table->getRequest()->query->getInt('limit') === -1) {
-            $table->setLimit(-1);
-            $table->getQueryBuilder()->setMaxResults(null);
-            $table->getQueryBuilder()->setFirstResult(0);
-            return;
-        }
-
-        $table->setLimit($table->getRequest()->query->getInt('limit', 25));
-        $table->getQueryBuilder()->setMaxResults($table->getLimit());
-
-        $table->getQueryBuilder()->setFirstResult(($table->getCurrentPage() - 1) * $table->getLimit());
+        $value = FilterStateEnum::getRepresentation($value);
+        return is_null($value) ? 'unbekannt' : $value;
     }
+
 }

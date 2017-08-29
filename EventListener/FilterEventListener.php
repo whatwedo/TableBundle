@@ -90,8 +90,13 @@ class FilterEventListener
                     if (in_array($joinAlias, $addedJoins)) {
                         continue;
                     }
-
-                    $this->queryBuilder()->join($join, $joinAlias);
+                    $addedJoins[] = $joinAlias;
+                    $method = 'join';
+                    if (is_array($join)) {
+                        $method = $join[0];
+                        $join = $join[1];
+                    }
+                    $this->queryBuilder()->$method($join, $joinAlias);
                 }
 
                 $w = $filter->getType()->addToQueryBuilder(
@@ -118,9 +123,6 @@ class FilterEventListener
         } elseif (count($orX->getParts()) === 1) {
             $this->queryBuilder()->andWhere($orX->getParts()[0]);
         }
-////         uncomment to debug DQL/SQL
-//         dump($this->queryBuilder()->getDQL());exit;
-//         dump($this->queryBuilder()->getQuery()->getSQL());exit;
     }
 
 }

@@ -3,7 +3,7 @@
         <div class="input-group input-group-sm">
             <select data-disable-interactive name="limit" class="form-control">
                 {% for num in [25, 50, 100, 200, -1] %}
-                    <option value="{{ num }}"{% if app.request.get('limit')== num %} selected{% endif %}>{% if num == -1 %}alle{% else %}{{ num }}{% endif %} Einträge</option>
+                    <option value="{{ num }}"{% if table.limit == num %} selected{% endif %}>{% if num == -1 %}alle{% else %}{{ num }}{% endif %} Einträge</option>
                 {% endfor %}
             </select>
             <input type="text" class="form-control" placeholder="Suchbegriff..." value="{{ app.request.query.get('q') }}" name="q">
