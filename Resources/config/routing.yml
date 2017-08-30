@@ -7,3 +7,8 @@ whatwedo_table_filter_direct_delete:
     path: /whatwedo/table/filter/delete
     defaults: { _controller: whatwedoTableBundle:Filter:delete }
     methods: [POST]
+
+whatwedo_table_filter_load_relation_filter:
+    path: /whatwedo/table/filter/relation
+    defaults: { _controller: whatwedoTableBundle:Filter:loadRelationFilterType }
+    methods: [GET]

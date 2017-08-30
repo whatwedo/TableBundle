@@ -297,18 +297,20 @@ var whatwedoTable = {
             $field.replaceWith(template.replace(/{name}/g, fieldName));
             $field = $parentBlock.find('[name^="' + $table.data('identifier') + '_filter_value"]');
 
-            if ($field.prop('tagName') == 'SELECT'
+            if ($field.prop('tagName') === 'SELECT'
                 && typeof $field.attr('data-disable-interactive') === 'undefined') {
-                $field.select2({
-                    language: 'de',
-                    width: '100%'
-                });
+                if (typeof $field.attr('data-ajax-select') === 'undefined') {
+                    whatwedo_select2.select2($field[0]);
+                } else {
+                    whatwedo_select2.ajaxSelect2($field[0]);
+                    console.log($field);
+                }
             }
         });
 
         $(document).on('submit', '.whatwedo_table__save', function() {
             return whatwedoTable.updateFormFilterValues();
-        })
+        });
 
         $('.whatwedo_table__filters_filter').keypress(function(e){
             if (e.which === 13) { // enter key pressed

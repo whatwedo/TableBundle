@@ -27,18 +27,26 @@
 
 namespace whatwedo\TableBundle\Controller;
 
-
 use Oepfelchasper\CoreBundle\Controller\CrudController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use whatwedo\TableBundle\Entity\Filter;
 use whatwedo\TableBundle\Enum\FilterStateEnum;
 
+/**
+ * Class FilterController
+ * @package whatwedo\TableBundle\Controller
+ */
 class FilterController extends Controller
 {
 
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function directCreateAction(Request $request)
     {
         $filter = new Filter();
@@ -66,6 +74,10 @@ class FilterController extends Controller
         return $this->redirectToFilter($filter);
     }
 
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function deleteAction(Request $request)
     {
         if ($request->get('token') !== $this->get('security.csrf.token_manager')->getToken('token')->getValue()) {
@@ -84,7 +96,10 @@ class FilterController extends Controller
         return $this->redirect($referer);
     }
 
-
+    /**
+     * @param Filter $filter
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     private function redirectToFilter(Filter $filter)
     {
         $path = $this->get('router')->generate(
@@ -92,6 +107,37 @@ class FilterController extends Controller
             array_merge($filter->getArguments(), $filter->getConditions())
         );
         return $this->redirect($path);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function loadRelationFilterTypeAction(Request $request)
+    {
+        $class = $request->get('entity', false);
+        $term = $request->get('q', false);
+        $result = new \stdClass();
+        $result->error = true;
+        if ($class !== false && $term !== false) {
+            $ids = $this->getDoctrine()->getRepository('whatwedoSearchBundle:Index')->search($term);
+            $entities = $this->getDoctrine()->getRepository($class)
+                ->createQueryBuilder('e')
+                ->where('e.id IN (:ids)')
+                ->setParameter('ids', $ids)
+                ->getQuery()
+                ->getResult()
+            ;
+            $items = array_map(function($entity) {
+                $std = new \stdClass();
+                $std->id = $entity->getId();
+                $std->text = $entity->__toString();
+                return $std;
+            }, $entities);
+            $result->items = $items;
+            $result->error = false;
+        }
+        return new JsonResponse($result);
     }
 
 }

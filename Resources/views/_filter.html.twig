@@ -55,7 +55,7 @@
 {% set filterValues = app.request.query.get(table.actionQueryParameter('filter_value'), []) %}
 {% set app_username = app.user is null ? null : app.user.username %}
 
-<form action="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')): 1 }) }}" class="whatwedo_table__filters {% if filterColumns|length %}active"{% endif %}>
+<form action="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')): 1 }) }}" class="whatwedo_table__filters {% if filterColumns|length %}active{% endif %}" data-ajax-url="{{ path('whatwedo_table_filter_load_relation_filter') }}">
     <input type="hidden" name="{{ table.actionQueryParameter('limit') }}" value="{{ table.limit }}" />
     <div class="row">
         <div class="col-xs-12">
@@ -78,7 +78,8 @@
             {% endif %}
             {% for i, filterIdentifier in filters %}
                 {% if table.filters[filterIdentifier] is defined %}
-                    {{ whatwedo_table_filters.filter(table, iBlock, i, table.filters[filterIdentifier], table.filters, filterOperators[iBlock][i], filterValues[iBlock][i]) }}
+                    {% set filterValue = filterValues[iBlock][i] is defined ? filterValues[iBlock][i] : '' %}
+                    {{ whatwedo_table_filters.filter(table, iBlock, i, table.filters[filterIdentifier], table.filters, filterOperators[iBlock][i], filterValue) }}
                 {% endif %}
             {% endfor %}
         </div>
