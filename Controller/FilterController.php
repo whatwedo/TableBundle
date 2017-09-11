@@ -29,12 +29,14 @@ namespace whatwedo\TableBundle\Controller;
 
 use Oepfelchasper\CoreBundle\Controller\CrudController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use whatwedo\TableBundle\Entity\Filter;
 use whatwedo\TableBundle\Enum\FilterStateEnum;
+use whatwedo\TableBundle\Event\ResultRequestEvent;
 
 /**
  * Class FilterController
@@ -117,27 +119,9 @@ class FilterController extends Controller
     {
         $class = $request->get('entity', false);
         $term = $request->get('q', false);
-        $result = new \stdClass();
-        $result->error = true;
-        if ($class !== false && $term !== false) {
-            $ids = $this->getDoctrine()->getRepository('whatwedoSearchBundle:Index')->search($term);
-            $entities = $this->getDoctrine()->getRepository($class)
-                ->createQueryBuilder('e')
-                ->where('e.id IN (:ids)')
-                ->setParameter('ids', $ids)
-                ->getQuery()
-                ->getResult()
-            ;
-            $items = array_map(function($entity) {
-                $std = new \stdClass();
-                $std->id = $entity->getId();
-                $std->text = $entity->__toString();
-                return $std;
-            }, $entities);
-            $result->items = $items;
-            $result->error = false;
-        }
-        return new JsonResponse($result);
+        $resultRequestEvent = new ResultRequestEvent($class, $term);
+        $this->get('event_dispatcher')->dispatch(ResultRequestEvent::SET, $resultRequestEvent);
+        return $resultRequestEvent->getResult();
     }
 
 }
