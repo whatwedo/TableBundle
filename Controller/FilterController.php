@@ -120,7 +120,7 @@ class FilterController extends Controller
         $class = $request->get('entity', false);
         $term = $request->get('q', false);
         $resultRequestEvent = new ResultRequestEvent($class, $term);
-        $this->get('event_dispatcher')->dispatch(ResultRequestEvent::SET, $resultRequestEvent);
+        $this->get('event_dispatcher')->dispatch(ResultRequestEvent::FILTER_SET, $resultRequestEvent);
         return $resultRequestEvent->getResult();
     }
 

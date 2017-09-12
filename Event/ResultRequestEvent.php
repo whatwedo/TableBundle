@@ -35,7 +35,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  */
 class ResultRequestEvent extends Event
 {
-    const SET = 'whatwedo_ajax.result_request.set';
+    const FILTER_SET = 'whatwedo_ajax.result_request.filter_set';
+    const RELATION_SET = 'whatwedo_ajax.result_request.relation_set';
 
     /**
      * @var JsonResponse $result

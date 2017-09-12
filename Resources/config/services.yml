@@ -33,7 +33,8 @@ services:
             - "@doctrine.orm.entity_manager"
             - "@service_container"
       tags:
-            - { name: kernel.event_listener, event: whatwedo_ajax.result_request.set, method: searchResultSet, priority: 100 }
+            - { name: kernel.event_listener, event: whatwedo_ajax.result_request.filter_set, method: searchResultSet, priority: 100 }
+            - { name: kernel.event_listener, event: whatwedo_ajax.result_request.relation_set, method: searchResultSet, priority: 100 }
 
     # Twig Extension
     sybio.twig_extension:
