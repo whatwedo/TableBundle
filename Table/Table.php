@@ -147,7 +147,7 @@ class Table
         $resolver->setDefaults([
             'title' => null,
             'searchable' => false,
-            'sortable' => false,
+            'sortable' => true,
             'attr' => [
                 'class' => null,
             ],
@@ -238,8 +238,19 @@ class Table
 
         $column = new $type($acronym, $options);
 
+        // only DoctrineTable can sort nested properties. Therefore disable them for other tables.
+        if (!$this instanceof DoctrineTable && $column instanceof SortableColumnInterface && $column->isSortable()) {
+            if (strpos($column->getSortExpression(), '.') !== false) {
+                $column->setSortable(false);
+            }
+        }
+
         if ($column instanceof TemplateableColumnInterface) {
             $column->setTemplating($this->templating);
+        }
+
+        if ($column instanceof SortableColumnInterface) {
+            $column->setTableIdentifier($this->getIdentifier());
         }
 
         $this->columns->set($acronym, $column);

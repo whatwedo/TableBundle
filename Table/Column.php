@@ -40,6 +40,12 @@ use whatwedo\CoreBundle\Formatter\DefaultFormatter;
  */
 class Column extends AbstractColumn implements SortableColumnInterface
 {
+
+    /**
+     * @var string $tableIdentifier
+     */
+    protected $tableIdentifier;
+
     /**
      * {@inheritdoc}
      */
@@ -146,6 +152,16 @@ class Column extends AbstractColumn implements SortableColumnInterface
     }
 
     /**
+     * @param boolean $sortable
+     * @return $this
+     */
+    public function setSortable($sortable)
+    {
+        $this->options['sortable'] = $sortable;
+        return $this;
+    }
+
+    /**
      * @param ParameterBag $query
      * @return string
      */
@@ -179,10 +195,10 @@ class Column extends AbstractColumn implements SortableColumnInterface
      */
     public function isOrdered(ParameterBag $query, $order)
     {
-        return $query->has(static::ORDER_ENABLED . $this->getAcronym())
-            && $query->get(static::ORDER_ENABLED . $this->getAcronym()) == '1'
-            && $query->has(static::ORDER_ASC . $this->getAcronym())
-            && $query->get(static::ORDER_ASC . $this->getAcronym()) == ($order == 'ASC') ? '1' : '0';
+        return $query->has($this->getOrderEnabledQueryParameter())
+            && $query->get($this->getOrderEnabledQueryParameter()) == '1'
+            && $query->has($this->getOrderAscQueryParameter())
+            && $query->get($this->getOrderAscQueryParameter()) == ($order == 'ASC') ? '1' : '0';
     }
 
     /**
@@ -194,11 +210,50 @@ class Column extends AbstractColumn implements SortableColumnInterface
     private function getOrderQuery(ParameterBag $query, $enabled, $asc)
     {
         $queryData = array_replace($query->all(), [
-            static::ORDER_ENABLED . $this->getAcronym() => $enabled,
-            static::ORDER_ASC . $this->getAcronym() => $asc
+            $this->getOrderEnabledQueryParameter() => $enabled,
+            $this->getOrderAscQueryParameter() => $asc
         ]);
+        // remove parameter where is_order_... equals '0' aka not active
+        $removeLater = [];
+        foreach (array_keys($queryData) as $key) {
+            if (substr($key, 0, strlen(SortableColumnInterface::ORDER_ENABLED)) == SortableColumnInterface::ORDER_ENABLED) {
+                if ($queryData[$key] == '0') {
+                    $suffix = substr($key, strlen(SortableColumnInterface::ORDER_ENABLED));
+                    $removeLater[] = SortableColumnInterface::ORDER_ASC.$suffix;
+                    $removeLater[] = $key;
+                }
+            }
+        }
+        foreach ($removeLater as $key) {
+            if (array_key_exists($key, $queryData)) {
+                unset($queryData[$key]);
+            }
+        }
+        return count($queryData) > 0 ? '?'.http_build_query($queryData) : '?';
+    }
 
-        return '?' . http_build_query($queryData);
+    /**
+     * @param string $identifier
+     */
+    public function setTableIdentifier($identifier)
+    {
+        $this->tableIdentifier = $identifier;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrderEnabledQueryParameter()
+    {
+        return static::ORDER_ENABLED.$this->tableIdentifier.'_'.str_replace('.', '_', $this->getAcronym());
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrderAscQueryParameter()
+    {
+        return static::ORDER_ASC.$this->tableIdentifier.'_'.str_replace('.', '_', $this->getAcronym());
     }
 
 }

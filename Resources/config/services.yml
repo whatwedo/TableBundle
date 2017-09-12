@@ -9,10 +9,15 @@ services:
             - '@whatwedo_table.repository.filter'
 
     # Events
-    whatwedo_table.event_listener.order:
-        class: whatwedo\TableBundle\EventListener\OrderEventListener
+    whatwedo_table.event_listener.doctrine_order:
+        class: whatwedo\TableBundle\EventListener\DoctrineOrderEventListener
         tags:
             - { name: kernel.event_listener, event: whatwedo_table.data_load.pre_load, method: orderResultSet, priority: 100 }
+
+    whatwedo_table.event_listener.criteria_order:
+        class: whatwedo\TableBundle\EventListener\CriteriaOrderEventListener
+        tags:
+            - { name: kernel.event_listener, event: whatwedo_table.criteria_load.pre_load, method: orderResultSet, priority: 100 }
 
     whatwedo_table.event_listener.filter:
         class: whatwedo\TableBundle\EventListener\FilterEventListener

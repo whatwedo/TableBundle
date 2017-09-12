@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2016, whatwedo GmbH
+ * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,78 +25,56 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Table;
+namespace whatwedo\TableBundle\Event;
 
-
-use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\EventDispatcher\Event;
+use whatwedo\CrudBundle\Content\RelationContent;
+use whatwedo\TableBundle\Table\Table;
 
 /**
- * @author Nicolo Singer <nicolo@whatwedo.ch>
+ * Class CriteriaLoadEvent
+ * @package whatwedo\TableBundle\Event
  */
-interface SortableColumnInterface
+class CriteriaLoadEvent extends Event
 {
-    const ORDER_ENABLED = 'is_order_';
-    const ORDER_ASC = 'asc_order_';
+
+    const PRE_LOAD = 'whatwedo_table.criteria_load.pre_load';
 
     /**
-     * @return string
+     * @var RelationContent $relationContent
      */
-    public function getSortExpression();
+    protected $relationContent;
 
     /**
-     * @return bool
+     * @var Table $table
      */
-    public function isSortable();
+    protected $table;
 
     /**
-     * @param ParameterBag $query
-     * @return string
+     * CriteriaLoadEvent constructor.
+     * @param RelationContent $relationContent
+     * @param Table $table
      */
-    public function getOrderQueryASC(ParameterBag $query);
+    public function __construct(RelationContent $relationContent, Table $table)
+    {
+        $this->relationContent = $relationContent;
+        $this->table = $table;
+    }
 
     /**
-     * @param ParameterBag $query
-     * @return string
+     * @return RelationContent
      */
-    public function getOrderQueryDESC(ParameterBag $query);
+    public function getRelationContent()
+    {
+        return $this->relationContent;
+    }
 
     /**
-     * @param ParameterBag $query
-     * @return string
+     * @return Table
      */
-    public function getDeleteOrder(ParameterBag $query);
-
-    /**
-     * @param ParameterBag $query
-     * @param $order
-     * @return bool
-     */
-    public function isOrdered(ParameterBag $query, $order);
-
-    /**
-     * @return string
-     */
-    public function getOrderValue($row);
-
-    /**
-     * @return string
-     */
-    public function getOrderEnabledQueryParameter();
-
-    /**
-     * @return string
-     */
-    public function getOrderAscQueryParameter();
-
-    /**
-     * @param string $identifier
-     */
-    public function setTableIdentifier($identifier);
-
-    /**
-     * @param boolean $sortable
-     * @return $this
-     */
-    public function setSortable($sortable);
+    public function getTable()
+    {
+        return $this->table;
+    }
 
 }
