@@ -23,8 +23,8 @@
             </div>
         </div>
         {% endif %}
-        {% if table.hasExtension('whatwedo\\TableBundle\\Extension\\PaginationExtension') %}
-            {% set pagination = table.getExtension('whatwedo\\TableBundle\\Extension\\PaginationExtension') %}
+        {% if table.paginationExtension is not null %}
+            {% set pagination = table.paginationExtension %}
             <p>
                 <small>
                     Resultat {% if table.results|length == 0 %}0{% else %}{{ pagination.offsetResults + 1 }}{% endif %} bis {{ pagination.offsetResults + table.results|length }} von {{ pagination.totalResults }}

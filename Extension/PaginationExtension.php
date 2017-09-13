@@ -32,7 +32,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * Class PaginationExtension
  * @package whatwedo\TableBundle\Extension
  */
-class PaginationExtension implements ExtensionInterface
+class PaginationExtension extends AbstractExtension
 {
 
     const QUERY_PARAMETER_PAGE = 'page';
@@ -52,11 +52,6 @@ class PaginationExtension implements ExtensionInterface
      * @var int
      */
     protected $totalResults = 0;
-
-    /**
-     * @var string
-     */
-    protected $tableIdentifier;
 
     /**
      * PaginationExtension constructor.
@@ -146,16 +141,6 @@ class PaginationExtension implements ExtensionInterface
     protected function getRequest()
     {
         return $this->requestStack->getCurrentRequest();
-    }
-
-    /**
-     * @param string $identifier
-     * @return $this
-     */
-    public function setTableIdentifier($identifier)
-    {
-        $this->tableIdentifier = $identifier;
-        return $this;
     }
 
     /**

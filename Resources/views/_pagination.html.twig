@@ -1,7 +1,7 @@
-{% if table.hasExtension('whatwedo\\TableBundle\\Extension\\PaginationExtension') %}
+{% if table.paginationExtension is not null %}
 
     {% set pageOffset = 5 %}
-    {% set pagination = table.getExtension('whatwedo\\TableBundle\\Extension\\PaginationExtension') %}
+    {% set pagination = table.paginationExtension %}
     <ul class="pagination pagination-sm no-margin pull-right whatwedo_table-pagination">
 
         {# first link #}

@@ -53,7 +53,7 @@ class AjaxManyToManyFilterType extends FilterType
     /**
      * AjaxManyToManyFilterType constructor.
      * @param $column
-     * @param array $targetClass
+     * @param $targetClass
      * @param $doctrine
      * @param array $joins
      */

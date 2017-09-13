@@ -37,6 +37,7 @@ use whatwedo\TableBundle\Event\DataLoadEvent;
 use whatwedo\TableBundle\Exception\DataLoaderNotAvailableException;
 use whatwedo\TableBundle\Exception\ReservedColumnAcronymException;
 use whatwedo\TableBundle\Extension\ExtensionInterface;
+use whatwedo\TableBundle\Extension\FilterExtension;
 use whatwedo\TableBundle\Extension\PaginationExtension;
 use whatwedo\TableBundle\Iterator\RowIterator;
 use whatwedo\TableBundle\Model\TableDataInterface;
@@ -481,6 +482,28 @@ class Table
             ));
         }
         return $this->extensions[$extension]->setTableIdentifier($this->identifier);
+    }
+
+    /**
+     * @return ExtensionInterface
+     */
+    public function getPaginationExtension()
+    {
+        return $this->hasExtension(PaginationExtension::class)
+            ? $this->getExtension(PaginationExtension::class)
+            : null
+        ;
+    }
+
+    /**
+     * @return ExtensionInterface
+     */
+    public function getFilterExtension()
+    {
+        return $this->hasExtension(FilterExtension::class)
+            ? $this->getExtension(FilterExtension::class)
+            : null
+        ;
     }
 
     /**

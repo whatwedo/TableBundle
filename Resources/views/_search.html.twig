@@ -1,8 +1,8 @@
 <div class="box-tools whatwedo_table-search">
     <form action="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : 1 }) }}">
         <div class="input-group input-group-sm">
-            {% if table.hasExtension('whatwedo\\TableBundle\\Extension\\PaginationExtension') %}
-                {% set pagination = table.getExtension('whatwedo\\TableBundle\\Extension\\PaginationExtension') %}
+            {% if table.paginationExtension is not null %}
+                {% set pagination = table.paginationExtension %}
                 <select data-disable-interactive name="{{ table.actionQueryParameter('limit') }}" class="form-control">
                     {% for num in table.options['limit_choices'] %}
                         <option value="{{ num }}"{% if pagination.limit == num %} selected{% endif %}>{{ num }} Einträge</option>
@@ -24,7 +24,7 @@
                         <i class="fa fa-times"></i>
                     </a>
                 {% endif %}
-                {% if table.filters is defined and table.filters|length > 0 %}
+                {% if table.filters is defined and table.filters|length > 0 and table.filterExtension is not null %}
                     <button type="button" data-toggle="filter" class="btn btn-success" title="Filter">
                         <i class="fa fa-filter"></i>
                     </button>

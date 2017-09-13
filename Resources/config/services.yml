@@ -49,6 +49,13 @@ services:
         tags:
             - { name: table.extension, alias: pagination }
 
+    whatwedo_table.extension.filter:
+        class: whatwedo\TableBundle\Extension\FilterExtension
+        arguments:
+            - "@doctrine"
+        tags:
+            - { name: table.extension, alias: filter }
+
     # Twig Extension
     sybio.twig_extension:
         class: whatwedo\TableBundle\Twig\TableExtension
