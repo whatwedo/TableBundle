@@ -36,6 +36,8 @@ use whatwedo\TableBundle\Collection\ColumnCollection;
 use whatwedo\TableBundle\Event\DataLoadEvent;
 use whatwedo\TableBundle\Exception\DataLoaderNotAvailableException;
 use whatwedo\TableBundle\Exception\ReservedColumnAcronymException;
+use whatwedo\TableBundle\Extension\ExtensionInterface;
+use whatwedo\TableBundle\Extension\PaginationExtension;
 use whatwedo\TableBundle\Iterator\RowIterator;
 use whatwedo\TableBundle\Model\TableDataInterface;
 
@@ -46,9 +48,7 @@ class Table
 {
     const ACTION_COLUMN_ACRONYM = '_actions';
 
-    const QUERY_PARAMETER_PAGE = 'page';
     const QUERY_PARAMETER_QUERY = 'query';
-    const QUERY_PARAMETER_LIMIT = 'limit';
 
     /**
      * @var string unique table identifier
@@ -111,6 +111,11 @@ class Table
     protected $loaded = false;
 
     /**
+     * @var ExtensionInterface[]
+     */
+    protected $extensions;
+
+    /**
      * Table constructor.
      *
      * @param string                   $identifier
@@ -118,18 +123,21 @@ class Table
      * @param EventDispatcherInterface $eventDispatcher
      * @param RequestStack             $requestStack
      * @param EngineInterface          $templating
+     * @param ExtensionInterface[]     $extensions
      */
     public function __construct(
         $identifier,
         $options,
         EventDispatcherInterface $eventDispatcher,
         RequestStack $requestStack,
-        EngineInterface $templating
+        EngineInterface $templating,
+        array $extensions
     ) {
         $this->identifier = $identifier;
         $this->eventDispatcher = $eventDispatcher;
         $this->request = $requestStack->getMasterRequest();
         $this->templating = $templating;
+        $this->extensions = $extensions;
 
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);
@@ -337,22 +345,6 @@ class Table
     }
 
     /**
-     * returns current page number.
-     *
-     * @return int
-     */
-    public function getCurrentPage()
-    {
-        $page = $this->request->query->getInt($this->getActionQueryParameter(static::QUERY_PARAMETER_PAGE), 1);
-
-        if ($page < 1) {
-            $page = 1;
-        }
-
-        return $page;
-    }
-
-    /**
      * @return RowIterator
      */
     public function getRows()
@@ -372,64 +364,6 @@ class Table
     }
 
     /**
-     * @return int
-     */
-    public function getLimit()
-    {
-        return $this->limit;
-    }
-
-    /**
-     * @param int $limit
-     * @return Table
-     */
-    public function setLimit($limit)
-    {
-        $this->limit = $limit;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTotalResults()
-    {
-        return $this->totalResults;
-    }
-
-    /**
-     * @param int $totalResults
-     */
-    protected function setTotalResults($totalResults)
-    {
-        $this->totalResults = $totalResults;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTotalPages()
-    {
-        if ($this->limit === -1) {
-            return 1;
-        }
-
-        return ceil($this->getTotalResults() / $this->limit);
-    }
-
-    /**
-     * @return int
-     */
-    public function getOffsetResults()
-    {
-        if ($this->limit === -1) {
-            return 0;
-        }
-        return ($this->getCurrentPage() - 1) * $this->limit;
-    }
-
-    /**
      * loads the data
      * @throws DataLoaderNotAvailableException
      */
@@ -443,11 +377,15 @@ class Table
             return;
         }
 
-        // sets the limit of results
-        $this->setLimit($this->getRequest()->query->getInt(
-            $this->getActionQueryParameter(static::QUERY_PARAMETER_LIMIT),
-            $this->options['default_limit']
-        ));
+        $currentPage = 1;
+        $limit = -1;
+        if ($this->hasExtension(PaginationExtension::class)) {
+            /** @var PaginationExtension $paginationExtension */
+            $paginationExtension = $this->getExtension(PaginationExtension::class);
+            $paginationExtension->setLimit($this->options['default_limit']);
+            $currentPage = $paginationExtension->getCurrentPage();
+            $limit = $paginationExtension->getLimit();
+        }
 
         $this->eventDispatcher->dispatch(DataLoadEvent::PRE_LOAD, new DataLoadEvent($this));
 
@@ -455,10 +393,10 @@ class Table
         $tableData = null;
 
         if (is_callable($this->options['data_loader'])) {
-            $tableData = ($this->options['data_loader'])($this->getCurrentPage(), $this->getLimit());
+            $tableData = ($this->options['data_loader'])($currentPage, $limit);
         }
         if (is_array($this->options['data_loader'])) {
-            $tableData = call_user_func($this->options['data_loader'], $this->getCurrentPage(), $this->getLimit());
+            $tableData = call_user_func($this->options['data_loader'], $currentPage, $limit);
         }
 
         if (!$tableData instanceof TableDataInterface) {
@@ -466,7 +404,11 @@ class Table
         }
 
         $this->results = $tableData->getResults();
-        $this->setTotalResults($tableData->getTotalResults());
+
+        if ($this->hasExtension(PaginationExtension::class)) {
+            /** @var PaginationExtension $paginationExtension */
+            $paginationExtension->setTotalResults($tableData->getTotalResults());
+        }
 
         $this->loaded = true;
 
@@ -525,4 +467,29 @@ class Table
             ? $this->request->query->get($this->getActionQueryParameter(static::QUERY_PARAMETER_QUERY))
             : '';
     }
+
+    /**
+     * @param string $extension
+     * @return ExtensionInterface
+     */
+    public function getExtension($extension)
+    {
+        if (!$this->hasExtension($extension)) {
+            throw new \InvalidArgumentException(sprintf(
+                'Extension %s is not enabled. Please configure it first.',
+                $extension
+            ));
+        }
+        return $this->extensions[$extension]->setTableIdentifier($this->identifier);
+    }
+
+    /**
+     * @param string $extension
+     * @return boolean
+     */
+    public function hasExtension($extension)
+    {
+        return array_key_exists($extension, $this->extensions);
+    }
+
 }

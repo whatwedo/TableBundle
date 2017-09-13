@@ -23,12 +23,14 @@
             </div>
         </div>
         {% endif %}
-
-        <p>
-            <small>
-                Resultat {% if table.results|length == 0 %}0{% else %}{{ table.offsetResults + 1 }}{% endif %} bis {{ table.offsetResults + table.results|length }} von {{ table.totalResults }}
-            </small>
-        </p>
+        {% if table.hasExtension('whatwedo\\TableBundle\\Extension\\PaginationExtension') %}
+            {% set pagination = table.getExtension('whatwedo\\TableBundle\\Extension\\PaginationExtension') %}
+            <p>
+                <small>
+                    Resultat {% if table.results|length == 0 %}0{% else %}{{ pagination.offsetResults + 1 }}{% endif %} bis {{ pagination.offsetResults + table.results|length }} von {{ pagination.totalResults }}
+                </small>
+            </p>
+        {% endif %}
     </div>
 </div>
 

@@ -32,6 +32,7 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Templating\EngineInterface;
+use whatwedo\TableBundle\Extension\ExtensionInterface;
 use whatwedo\TableBundle\Table\DoctrineTable;
 use whatwedo\TableBundle\Table\Table;
 
@@ -56,6 +57,11 @@ class TableFactory
      * @var EntityRepository
      */
     protected $filterRepository;
+
+    /**
+     * @var ExtensionInterface[]
+     */
+    protected $extensions = [];
 
     /**
      * TableFactory constructor.
@@ -92,7 +98,8 @@ class TableFactory
             $options,
             $this->eventDispatcher,
             $this->requestStack,
-            $this->templating
+            $this->templating,
+            $this->extensions
         );
     }
 
@@ -104,7 +111,16 @@ class TableFactory
             $this->eventDispatcher,
             $this->requestStack,
             $this->templating,
+            $this->extensions,
             $this->filterRepository
         );
+    }
+
+    /**
+     * @param ExtensionInterface $extension
+     */
+    public function addExtension(ExtensionInterface $extension)
+    {
+        $this->extensions[get_class($extension)] = $extension;
     }
 }

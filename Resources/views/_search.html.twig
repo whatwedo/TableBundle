@@ -1,11 +1,16 @@
 <div class="box-tools whatwedo_table-search">
     <form action="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : 1 }) }}">
         <div class="input-group input-group-sm">
-            <select data-disable-interactive name="{{ table.actionQueryParameter('limit') }}" class="form-control">
-                {% for num in table.options['limit_choices'] %}
-                    <option value="{{ num }}"{% if table.limit == num %} selected{% endif %}>{{ num }} Einträge</option>
-                {% endfor %}
-            </select>
+            {% if table.hasExtension('whatwedo\\TableBundle\\Extension\\PaginationExtension') %}
+                {% set pagination = table.getExtension('whatwedo\\TableBundle\\Extension\\PaginationExtension') %}
+                <select data-disable-interactive name="{{ table.actionQueryParameter('limit') }}" class="form-control">
+                    {% for num in table.options['limit_choices'] %}
+                        <option value="{{ num }}"{% if pagination.limit == num %} selected{% endif %}>{{ num }} Einträge</option>
+                    {% endfor %}
+                </select>
+            {% else %}
+                <input type="hidden" name="{{ table.actionQueryParameter('limit') }}" value="-1">
+            {% endif %}
             <input type="text" class="form-control" placeholder="Suchbegriff..." value="{{ table.searchQuery }}" name="{{ table.actionQueryParameter('query') }}">
             <span class="input-group-btn">
                 <button class="btn btn-primary" type="submit">

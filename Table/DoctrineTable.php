@@ -34,6 +34,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Templating\EngineInterface;
 use whatwedo\TableBundle\Exception\InvalidFilterAcronymException;
+use whatwedo\TableBundle\Extension\ExtensionInterface;
 use whatwedo\TableBundle\Filter\Type\FilterTypeInterface;
 use whatwedo\TableBundle\Filter\Type\SimpleEnumFilterType;
 use whatwedo\TableBundle\Model\SimpleTableData;
@@ -64,6 +65,7 @@ class DoctrineTable extends Table
      * @param EventDispatcherInterface $eventDispatcher
      * @param RequestStack             $requestStack
      * @param EngineInterface          $templating
+     * @param ExtensionInterface[]     $extensions
      * @param FilterRepository         $filterRepository
      */
     public function __construct(
@@ -72,11 +74,12 @@ class DoctrineTable extends Table
         EventDispatcherInterface $eventDispatcher,
         RequestStack $requestStack,
         EngineInterface $templating,
+        array $extensions,
         FilterRepository $filterRepository
     ) {
         $this->filterRepository = $filterRepository;
 
-        parent::__construct($identifier, $options, $eventDispatcher, $requestStack, $templating);
+        parent::__construct($identifier, $options, $eventDispatcher, $requestStack, $templating, $extensions);
     }
 
     /**
@@ -203,8 +206,10 @@ class DoctrineTable extends Table
      */
     public function dataLoader($page, $limit)
     {
-        $this->getQueryBuilder()->setMaxResults($limit);
-        $this->getQueryBuilder()->setFirstResult(($page - 1) * $limit);
+        if ($limit > 0) {
+            $this->getQueryBuilder()->setMaxResults($limit);
+            $this->getQueryBuilder()->setFirstResult(($page - 1) * $limit);
+        }
 
         $paginator = new Paginator($this->getQueryBuilder());
         $tableData = new SimpleTableData();

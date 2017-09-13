@@ -56,7 +56,12 @@
 {% set app_username = app.user is null ? null : app.user.username %}
 
 <form action="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')): 1 }) }}" class="whatwedo_table__filters {% if filterColumns|length %}active{% endif %}" data-ajax-url="{{ path('whatwedo_table_filter_load_relation_filter') }}">
-    <input type="hidden" name="{{ table.actionQueryParameter('limit') }}" value="{{ table.limit }}" />
+    {% if table.hasExtension('whatwedo\\TableBundle\\Extension\\PaginationExtension') %}
+        {% set pagination = table.getExtension('whatwedo\\TableBundle\\Extension\\PaginationExtension') %}
+        <input type="hidden" name="{{ table.actionQueryParameter('limit') }}" value="{{ pagination.limit }}" />
+    {% else %}
+        <input type="hidden" name="{{ table.actionQueryParameter('limit') }}" value="-1" />
+    {% endif %}
     <div class="row">
         <div class="col-xs-12">
             <strong>
