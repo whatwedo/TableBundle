@@ -56,6 +56,13 @@ services:
         tags:
             - { name: table.extension, alias: filter }
 
+    whatwedo_table.extension.search:
+        class: whatwedo\TableBundle\Extension\SearchExtension
+        arguments:
+            - "@request_stack"
+        tags:
+            - { name: table.extension, alias: search }
+
     # Twig Extension
     sybio.twig_extension:
         class: whatwedo\TableBundle\Twig\TableExtension

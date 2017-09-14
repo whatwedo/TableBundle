@@ -32,6 +32,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use whatwedo\SearchBundle\Entity\Index;
 use whatwedo\SearchBundle\whatwedoSearchBundle;
 use whatwedo\TableBundle\Event\DataLoadEvent;
+use whatwedo\TableBundle\Extension\SearchExtension;
 use whatwedo\TableBundle\Table\DoctrineTable;
 
 /**
@@ -83,7 +84,12 @@ class SearchEventListener
         }
 
         // Exec only if query is set
-        if (!($query = $table->getRequest()->query->get($table->getActionQueryParameter($table::QUERY_PARAMETER_QUERY), false))) {
+        if ($table->hasExtension(SearchExtension::class)) {
+            $query = $table->getSearchExtension()->getSearchQuery();
+            if (strlen(trim($query)) == 0) {
+                return;
+            }
+        } else {
             return;
         }
 

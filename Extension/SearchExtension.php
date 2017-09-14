@@ -26,17 +26,18 @@
  */
 
 namespace whatwedo\TableBundle\Extension;
+
 use Symfony\Component\HttpFoundation\RequestStack;
+use whatwedo\SearchBundle\whatwedoSearchBundle;
 
 /**
- * Class PaginationExtension
+ * Class SearchExtension
  * @package whatwedo\TableBundle\Extension
  */
-class PaginationExtension extends AbstractExtension
+class SearchExtension extends AbstractExtension
 {
 
-    const QUERY_PARAMETER_PAGE = 'page';
-    const QUERY_PARAMETER_LIMIT = 'limit';
+    const QUERY_PARAMETER_QUERY = 'query';
 
     /**
      * @var RequestStack $requestStack
@@ -44,99 +45,26 @@ class PaginationExtension extends AbstractExtension
     protected $requestStack;
 
     /**
-     * @var int
-     */
-    protected $limit = 25;
-
-    /**
-     * @var int
-     */
-    protected $totalResults = 0;
-
-    /**
-     * PaginationExtension constructor.
+     * SearchExtension constructor.
      * @param RequestStack $requestStack
      */
-    public function __construct($requestStack)
+    public function __construct(RequestStack $requestStack)
     {
         $this->requestStack = $requestStack;
     }
 
     /**
-     * returns current page number.
-     * @return int
+     * @return string
      */
-    public function getCurrentPage()
+    public function getSearchQuery()
     {
-        $page = $this->getRequest()->query->getInt($this->getActionQueryParameter(static::QUERY_PARAMETER_PAGE), 1);
-        if ($page < 1) {
-            $page = 1;
-        }
-        return $page;
-    }
-
-    /**
-     * @return int
-     */
-    public function getLimit()
-    {
-        return $this->limit;
-    }
-
-    /**
-     * @param $defaultLimit
-     * @return $this
-     */
-    public function setLimit($defaultLimit)
-    {
-        $this->limit = $this->getRequest()->query->getInt($this->getActionQueryParameter(static::QUERY_PARAMETER_LIMIT), $defaultLimit);
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTotalResults()
-    {
-        return $this->totalResults;
-    }
-
-    /**
-     * @param int $totalResults
-     * @return $this
-     */
-    public function setTotalResults($totalResults)
-    {
-        $this->totalResults = $totalResults;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTotalPages()
-    {
-        if ($this->limit === -1) {
-            return 1;
-        }
-        return ceil($this->getTotalResults() / $this->limit);
-    }
-
-    /**
-     * @return int
-     */
-    public function getOffsetResults()
-    {
-        if ($this->limit === -1) {
-            return 0;
-        }
-        return ($this->getCurrentPage() - 1) * $this->limit;
+        return $this->getRequest()->query->get($this->getActionQueryParameter(static::QUERY_PARAMETER_QUERY), '');
     }
 
     /**
      * @return null|\Symfony\Component\HttpFoundation\Request
      */
-    protected function getRequest()
+    public function getRequest()
     {
         return $this->requestStack->getCurrentRequest();
     }
@@ -147,7 +75,12 @@ class PaginationExtension extends AbstractExtension
      */
     public static function isEnabled($enabledBundles)
     {
-        return true;
+        foreach ($enabledBundles as $bundles) {
+            if (in_array(whatwedoSearchBundle::class, $bundles)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

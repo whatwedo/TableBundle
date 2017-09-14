@@ -46,4 +46,13 @@ abstract class AbstractExtension implements ExtensionInterface
         return $this;
     }
 
+    /**
+     * @param $action
+     * @return string
+     */
+    public function getActionQueryParameter($action)
+    {
+        return sprintf('%s_%s', $this->tableIdentifier, $action);
+    }
+
 }

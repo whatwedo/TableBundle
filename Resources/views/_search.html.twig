@@ -1,35 +1,37 @@
-<div class="box-tools whatwedo_table-search">
-    <form action="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : 1 }) }}">
-        <div class="input-group input-group-sm">
-            {% if table.paginationExtension is not null %}
-                {% set pagination = table.paginationExtension %}
-                <select data-disable-interactive name="{{ table.actionQueryParameter('limit') }}" class="form-control">
-                    {% for num in table.options['limit_choices'] %}
-                        <option value="{{ num }}"{% if pagination.limit == num %} selected{% endif %}>{{ num }} Einträge</option>
-                    {% endfor %}
-                </select>
-            {% else %}
-                <input type="hidden" name="{{ table.actionQueryParameter('limit') }}" value="-1">
-            {% endif %}
-            <input type="text" class="form-control" placeholder="Suchbegriff..." value="{{ table.searchQuery }}" name="{{ table.actionQueryParameter('query') }}">
-            <span class="input-group-btn">
-                <button class="btn btn-primary" type="submit">
-                    <i class="fa fa-search"></i>
-                </button>
-                {% if table.searchQuery|length > 0 %}
-                    <a href="{{ whatwedo_table_generate_route_replace_arguments({
-                        (table.actionQueryParameter('page')) : 1,
-                        (table.actionQueryParameter('query')) : ''
-                    }) }}" class="btn btn-danger" type="button" title="Suche entfernen">
-                        <i class="fa fa-times"></i>
-                    </a>
+{% if table.searchExtension is not null %}
+    <div class="box-tools whatwedo_table-search">
+        <form action="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : 1 }) }}">
+            <div class="input-group input-group-sm">
+                {% if table.paginationExtension is not null %}
+                    {% set pagination = table.paginationExtension %}
+                    <select data-disable-interactive name="{{ table.actionQueryParameter('limit') }}" class="form-control">
+                        {% for num in table.options['limit_choices'] %}
+                            <option value="{{ num }}"{% if pagination.limit == num %} selected{% endif %}>{{ num }} Einträge</option>
+                        {% endfor %}
+                    </select>
+                {% else %}
+                    <input type="hidden" name="{{ table.actionQueryParameter('limit') }}" value="-1">
                 {% endif %}
-                {% if table.filterExtension is not null and table.filterExtension.filters|length > 0 %}
-                    <button type="button" data-toggle="filter" class="btn btn-success" title="Filter">
-                        <i class="fa fa-filter"></i>
+                <input type="text" class="form-control" placeholder="Suchbegriff..." value="{{ table.searchExtension.searchQuery }}" name="{{ table.actionQueryParameter('query') }}">
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fa fa-search"></i>
                     </button>
-                {% endif %}
-            </span>
-        </div>
-    </form>
-</div>
+                    {% if table.searchExtension.searchQuery|length > 0 %}
+                        <a href="{{ whatwedo_table_generate_route_replace_arguments({
+                            (table.actionQueryParameter('page')) : 1,
+                            (table.actionQueryParameter('query')) : ''
+                        }) }}" class="btn btn-danger" type="button" title="Suche entfernen">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    {% endif %}
+                    {% if table.filterExtension is not null and table.filterExtension.filters|length > 0 %}
+                        <button type="button" data-toggle="filter" class="btn btn-success" title="Filter">
+                            <i class="fa fa-filter"></i>
+                        </button>
+                    {% endif %}
+                </span>
+            </div>
+        </form>
+    </div>
+{% endif %}

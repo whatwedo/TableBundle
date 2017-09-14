@@ -39,6 +39,7 @@ use whatwedo\TableBundle\Exception\ReservedColumnAcronymException;
 use whatwedo\TableBundle\Extension\ExtensionInterface;
 use whatwedo\TableBundle\Extension\FilterExtension;
 use whatwedo\TableBundle\Extension\PaginationExtension;
+use whatwedo\TableBundle\Extension\SearchExtension;
 use whatwedo\TableBundle\Iterator\RowIterator;
 use whatwedo\TableBundle\Model\TableDataInterface;
 
@@ -48,8 +49,6 @@ use whatwedo\TableBundle\Model\TableDataInterface;
 class Table
 {
     const ACTION_COLUMN_ACRONYM = '_actions';
-
-    const QUERY_PARAMETER_QUERY = 'query';
 
     /**
      * @var string unique table identifier
@@ -460,16 +459,6 @@ class Table
     }
 
     /**
-     * @return string
-     */
-    public function getSearchQuery()
-    {
-        return $this->options['searchable']
-            ? $this->request->query->get($this->getActionQueryParameter(static::QUERY_PARAMETER_QUERY))
-            : '';
-    }
-
-    /**
      * @param string $extension
      * @return ExtensionInterface
      */
@@ -482,6 +471,17 @@ class Table
             ));
         }
         return $this->extensions[$extension]->setTableIdentifier($this->identifier);
+    }
+
+    /**
+     * @return ExtensionInterface|SearchExtension
+     */
+    public function getSearchExtension()
+    {
+        return $this->hasExtension(SearchExtension::class)
+            ? $this->getExtension(SearchExtension::class)
+            : null
+        ;
     }
 
     /**
