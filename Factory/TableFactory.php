@@ -54,11 +54,6 @@ class TableFactory
     protected $templating;
 
     /**
-     * @var EntityRepository
-     */
-    protected $filterRepository;
-
-    /**
      * @var ExtensionInterface[]
      */
     protected $extensions = [];
@@ -69,18 +64,15 @@ class TableFactory
      * @param EventDispatcherInterface $eventDispatcher
      * @param RequestStack             $requestStack
      * @param EngineInterface          $templating
-     * @param EntityRepository         $filterRepository
      */
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         RequestStack $requestStack,
-        EngineInterface $templating,
-        EntityRepository $filterRepository
+        EngineInterface $templating
     ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->requestStack = $requestStack;
         $this->templating = $templating;
-        $this->filterRepository = $filterRepository;
     }
 
     /**
@@ -111,8 +103,7 @@ class TableFactory
             $this->eventDispatcher,
             $this->requestStack,
             $this->templating,
-            $this->extensions,
-            $this->filterRepository
+            $this->extensions
         );
     }
 

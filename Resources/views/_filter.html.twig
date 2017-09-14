@@ -7,7 +7,7 @@
                 <div class="row">
                     <div class="col-xs-4">
                         <select name="{{ table.actionQueryParameter('filter_column') }}[{{ iBlock }}][{{ i }}]" class="form-control" data-disable-interactive>
-                            {% for f in table.filters %}
+                            {% for f in table.filterExtension.filters %}
                                 <option
                                     value="{{ f.acronym }}"
                                     data-operator-options="{{ f.type.operators|json_encode }}"
@@ -84,15 +84,15 @@
                     </p>
                 {% endif %}
                 {% for i, filterIdentifier in filters %}
-                    {% if table.filters[filterIdentifier] is defined %}
+                    {% if table.filterExtension.filters[filterIdentifier] is defined %}
                         {% set filterValue = filterValues[iBlock][i] is defined ? filterValues[iBlock][i] : '' %}
-                        {{ whatwedo_table_filters.filter(table, iBlock, i, table.filters[filterIdentifier], table.filters, filterOperators[iBlock][i], filterValue) }}
+                        {{ whatwedo_table_filters.filter(table, iBlock, i, table.filterExtension.filters[filterIdentifier], table.filterExtension.filters, filterOperators[iBlock][i], filterValue) }}
                     {% endif %}
                 {% endfor %}
             </div>
         {% else %}
             <div class="whatwedo_table__filters__blocks">
-                {{ whatwedo_table_filters.filter(table, 0, 0, table.filters|first, table.filters) }}
+                {{ whatwedo_table_filters.filter(table, 0, 0, table.filterExtension.filters|first, table.filterExtension.filters) }}
             </div>
         {% endfor %}
 
@@ -113,7 +113,7 @@
         <div class="row">
             <div class="col-xs-12 text-right">
                 <div class="btn-group" role="group">
-                    {% if table.savedFilter(app_username) | length > 0 %}
+                    {% if table.filterExtension.savedFilter(app_username, app.request.attributes.get('_route')) | length > 0 %}
                         <button type="button" class="btn btn-default" onclick="$('#whatwedo_table__{{ table.identifier }}__saved_filters').toggle()">
                             <i class="fa fa-list"></i>
                             Gespeicherte Filter
@@ -142,7 +142,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for filter in table.savedFilter(app_username) %}
+        {% for filter in table.filterExtension.savedFilter(app_username, app.request.attributes.get('_route')) %}
             {% set filter_href = path(filter.route, filter.arguments | merge(filter.conditions)) %}
             <tr data-href="{{ filter_href }}">
                 <td>{{ filter.name }}</td>
@@ -210,7 +210,7 @@
     </div>
 
     <script type="text/template" id="whatwedo_table__{{ table.identifier }}__filters__template__block">
-        {{ whatwedo_table_filters.filter(table, '{iBlock}', '{i}', table.filters|first, table.filters) }}
+        {{ whatwedo_table_filters.filter(table, '{iBlock}', '{i}', table.filterExtension.filters|first, table.filterExtension.filters) }}
     </script>
 
 {% endif %}

@@ -485,7 +485,7 @@ class Table
     }
 
     /**
-     * @return ExtensionInterface
+     * @return ExtensionInterface|PaginationExtension
      */
     public function getPaginationExtension()
     {
@@ -496,7 +496,7 @@ class Table
     }
 
     /**
-     * @return ExtensionInterface
+     * @return ExtensionInterface|FilterExtension
      */
     public function getFilterExtension()
     {

@@ -33,14 +33,19 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\QueryBuilder;
+use whatwedo\TableBundle\Exception\InvalidFilterAcronymException;
 use whatwedo\TableBundle\Filter\Type\AjaxManyToManyFilterType;
 use whatwedo\TableBundle\Filter\Type\AjaxRelationFilterType;
 use whatwedo\TableBundle\Filter\Type\BooleanFilterType;
 use whatwedo\TableBundle\Filter\Type\DateFilterType;
 use whatwedo\TableBundle\Filter\Type\DatetimeFilterType;
+use whatwedo\TableBundle\Filter\Type\FilterTypeInterface;
 use whatwedo\TableBundle\Filter\Type\NumberFilterType;
+use whatwedo\TableBundle\Filter\Type\SimpleEnumFilterType;
 use whatwedo\TableBundle\Filter\Type\TextFilterType;
+use whatwedo\TableBundle\Repository\FilterRepository;
 use whatwedo\TableBundle\Table\DoctrineTable;
+use whatwedo\TableBundle\Table\Filter;
 
 /**
  * Class FilterExtension
@@ -54,9 +59,102 @@ class FilterExtension extends AbstractExtension
      */
     protected $doctrine;
 
-    public function __construct(Registry $doctrine)
+    /**
+     * @var FilterRepository $filterRepository
+     */
+    protected $filterRepository;
+
+    /**
+     * @var array
+     */
+    protected $filters = [];
+
+    /**
+     * FilterExtension constructor.
+     * @param Registry $doctrine
+     * @param FilterRepository $filterRepository
+     */
+    public function __construct(Registry $doctrine, FilterRepository $filterRepository)
     {
         $this->doctrine = $doctrine;
+        $this->filterRepository = $filterRepository;
+    }
+
+    /**
+     * @param $acronym
+     * @param $name
+     * @param FilterTypeInterface $type
+     * @return $this
+     */
+    public function addFilter($acronym, $name, FilterTypeInterface $type)
+    {
+        $this->filters[$acronym] = new Filter($acronym, $name, $type);
+        return $this;
+    }
+
+    /**
+     * @param $acronym
+     * @return $this
+     */
+    public function removeFilter($acronym)
+    {
+        unset($this->filters[$acronym]);
+        return $this;
+    }
+
+    /**
+     * @param $acronym
+     * @return Filter
+     */
+    public function getFilter($acronym)
+    {
+        if (!isset($this->filters[$acronym])) {
+            throw new InvalidFilterAcronymException($acronym);
+        }
+        return $this->filters[$acronym];
+    }
+
+    /**
+     * @return array|Filter[]
+     */
+    public function getFilters()
+    {
+        return $this->filters;
+    }
+
+    /**
+     * @param $acronym
+     * @param $label
+     * @return $this
+     */
+    public function overrideFilterName($acronym, $label)
+    {
+        $this->getFilter($acronym)->setName($label);
+        return $this;
+    }
+
+    /**
+     * @param $acronym
+     * @param $class
+     * @return $this
+     */
+    public function configureSimpleEnumFilter($acronym, $class)
+    {
+        $filter = $this->getFilter($acronym);
+        $name = $filter->getName();
+        $column = $filter->getType()->getColumn();
+        $this->filters[$acronym] = new Filter($acronym, $name, new SimpleEnumFilterType($column, [], $class));
+        return $this;
+    }
+
+    /**
+     * @param $username
+     * @param $route
+     * @return \whatwedo\TableBundle\Entity\Filter[]
+     */
+    public function getSavedFilter($username, $route)
+    {
+        return $this->filterRepository->findSavedFilter($route, $username);
     }
 
     /**
@@ -71,6 +169,7 @@ class FilterExtension extends AbstractExtension
         $reader = new AnnotationReader();
         $reflectionClass = new \ReflectionClass($entityClass);
         $properties = $reflectionClass->getProperties();
+        $filterExtension = $table->getFilterExtension();
 
         foreach ($properties as $property)
         {
@@ -100,21 +199,21 @@ class FilterExtension extends AbstractExtension
                 $accessor = sprintf('%s.%s', $queryAlias, $acronym);
                 switch ($ormColumn->type){
                     case 'string':
-                        $table->addFilter($acronym, $label, new TextFilterType($accessor));
+                        $filterExtension->addFilter($acronym, $label, new TextFilterType($accessor));
                         break;
                     case 'date':
-                        $table->addFilter($acronym, $label, new DateFilterType($accessor));
+                        $filterExtension->addFilter($acronym, $label, new DateFilterType($accessor));
                         break;
                     case 'datetime':
-                        $table->addFilter($acronym, $label, new DatetimeFilterType($accessor));
+                        $filterExtension->addFilter($acronym, $label, new DatetimeFilterType($accessor));
                         break;
                     case 'integer':
                     case 'float':
                     case 'decimal':
-                        $table->addFilter($acronym, $label, new NumberFilterType($accessor));
+                        $filterExtension->addFilter($acronym, $label, new NumberFilterType($accessor));
                         break;
                     case 'boolean':
-                        $table->addFilter($acronym, $label, new BooleanFilterType($accessor));
+                        $filterExtension->addFilter($acronym, $label, new BooleanFilterType($accessor));
                 }
             } else if (!is_null($ormManyToOne)) {
                 $target = $ormManyToOne->targetEntity;
@@ -126,7 +225,7 @@ class FilterExtension extends AbstractExtension
                 if (!in_array($acronym, $queryBuilder->getAllAliases())) {
                     $joins = [$acronym => sprintf('%s.%s', $queryAlias, $acronym)];
                 }
-                $table->addFilter($acronym, $label, new AjaxRelationFilterType($accessor, $target, $this->doctrine, $joins));
+                $filterExtension->addFilter($acronym, $label, new AjaxRelationFilterType($accessor, $target, $this->doctrine, $joins));
             } else if (!is_null($ormManyToMany)) {
                 $accessor = sprintf('%s.%s', $queryAlias, $acronym);
                 $joins = [];
@@ -137,7 +236,7 @@ class FilterExtension extends AbstractExtension
                 if (strpos($target, '\\') === false) {
                     $target = $reflectionClass->getNamespaceName() . '\\' . $target;
                 }
-                $table->addFilter($acronym, $label, new AjaxManyToManyFilterType($accessor, $target, $this->doctrine, $joins));
+                $filterExtension->addFilter($acronym, $label, new AjaxManyToManyFilterType($accessor, $target, $this->doctrine, $joins));
             }
         }
     }

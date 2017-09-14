@@ -24,7 +24,7 @@
                         <i class="fa fa-times"></i>
                     </a>
                 {% endif %}
-                {% if table.filters is defined and table.filters|length > 0 and table.filterExtension is not null %}
+                {% if table.filterExtension is not null and table.filterExtension.filters|length > 0 %}
                     <button type="button" data-toggle="filter" class="btn btn-success" title="Filter">
                         <i class="fa fa-filter"></i>
                     </button>

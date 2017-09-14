@@ -28,11 +28,11 @@
         </div>
     {% endif %}
 
-    {% if table.filters is defined and table.filters|length > 0 %}
+    {% if table.filterExtension is not null and table.filterExtension.filters|length > 0 %}
     <div class="box-body">
         {% include 'whatwedoTableBundle::_filter.html.twig' %}
     </div>
-{% endif %}
+    {% endif %}
 
 <div class="box-body">
 {% include "whatwedoTableBundle::_table.html.twig" %}

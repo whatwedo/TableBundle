@@ -28,6 +28,7 @@
 namespace whatwedo\TableBundle\EventListener;
 
 use whatwedo\TableBundle\Event\DataLoadEvent;
+use whatwedo\TableBundle\Extension\FilterExtension;
 use whatwedo\TableBundle\Table\DoctrineTable;
 use whatwedo\TableBundle\Table\Table;
 
@@ -47,6 +48,10 @@ class FilterEventListener
 
         if (!$this->table instanceof DoctrineTable) {
             // we're only able to filter DoctrineTable
+            return;
+        }
+
+        if (!$this->table->hasExtension(FilterExtension::class)) {
             return;
         }
 
@@ -83,14 +88,14 @@ class FilterEventListener
             // Then, loop all AND's
             $andX = $this->queryBuilder()->expr()->andX();
             foreach ($columns as $andKey => $column) {
-                if (!isset($this->table->getFilters()[$column])
+                if (!isset($this->table->getFilterExtension()->getFilters()[$column])
                     || !isset($queryFilterOperator[$orKey][$andKey])
                     || !isset($queryFilterValue[$orKey][$andKey])) {
                     continue;
                 }
 
 
-                $filter = $this->table->getFilters()[$column];
+                $filter = $this->table->getFilterExtension()->getFilters()[$column];
 
                 foreach ($filter->getType()->getJoins() as $joinAlias => $join) {
                     if (in_array($joinAlias, $addedJoins)) {

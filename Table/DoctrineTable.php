@@ -35,6 +35,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Templating\EngineInterface;
 use whatwedo\TableBundle\Exception\InvalidFilterAcronymException;
 use whatwedo\TableBundle\Extension\ExtensionInterface;
+use whatwedo\TableBundle\Extension\FilterExtension;
 use whatwedo\TableBundle\Filter\Type\FilterTypeInterface;
 use whatwedo\TableBundle\Filter\Type\SimpleEnumFilterType;
 use whatwedo\TableBundle\Model\SimpleTableData;
@@ -48,25 +49,15 @@ class DoctrineTable extends Table
 {
 
     /**
-     * @var FilterRepository
-     */
-    protected $filterRepository;
-
-    /**
-     * @var array
-     */
-    protected $filters = [];
-
-    /**
      * Table constructor.
      *
-     * @param string                   $identifier
-     * @param array                    $options
+     * @param string $identifier
+     * @param array $options
      * @param EventDispatcherInterface $eventDispatcher
-     * @param RequestStack             $requestStack
-     * @param EngineInterface          $templating
-     * @param ExtensionInterface[]     $extensions
-     * @param FilterRepository         $filterRepository
+     * @param RequestStack $requestStack
+     * @param EngineInterface $templating
+     * @param ExtensionInterface[] $extensions
+     * @internal param FilterRepository $filterRepository
      */
     public function __construct(
         $identifier,
@@ -74,11 +65,8 @@ class DoctrineTable extends Table
         EventDispatcherInterface $eventDispatcher,
         RequestStack $requestStack,
         EngineInterface $templating,
-        array $extensions,
-        FilterRepository $filterRepository
+        array $extensions
     ) {
-        $this->filterRepository = $filterRepository;
-
         parent::__construct($identifier, $options, $eventDispatcher, $requestStack, $templating, $extensions);
     }
 
@@ -103,98 +91,6 @@ class DoctrineTable extends Table
         return $this->options['query_builder'];
     }
 
-    /**
-     * adds a new filter
-     *
-     * @param $acronym
-     * @param $name
-     * @param FilterTypeInterface $type
-     * @return DoctrineTable $this
-     */
-    public function addFilter($acronym, $name, FilterTypeInterface $type)
-    {
-        $this->filters[$acronym] = new Filter($acronym, $name, $type);
-
-        return $this;
-    }
-
-    /**
-     * @param $acronym
-     * @return DoctrineTable $this
-     */
-    public function removeFilter($acronym)
-    {
-        unset($this->filters[$acronym]);
-
-        return $this;
-    }
-
-    /**
-     * shortcut to override the name of a filter
-     *
-     * @param $acronym
-     * @param $label
-     * @return DoctrineTable $this
-     */
-    public function overrideFilterName($acronym, $label)
-    {
-        $this->getFilter($acronym)->setName($label);
-
-        return $this;
-    }
-
-    /**
-     * creates a simple enum filter
-     *
-     * @param $acronym
-     * @param $class
-     * @return DoctrineTable $this
-     * @throws \Exception
-     */
-    public function configureSimpleEnumFilter($acronym, $class)
-    {
-        $filter = $this->getFilter($acronym);
-        $name = $filter->getName();
-        $column = $filter->getType()->getColumn();
-        $this->filters[$acronym] = new Filter($acronym, $name, new SimpleEnumFilterType($column, [], $class));
-
-        return $this;
-    }
-
-    /**
-     * @return array|Filter[]
-     */
-    public function getFilters()
-    {
-        return $this->filters;
-    }
-
-    /**
-     * @param string $acronym
-     * @return Filter
-     */
-    public function getFilter($acronym)
-    {
-        if (!isset($this->filters[$acronym])) {
-            throw new InvalidFilterAcronymException($acronym);
-        }
-
-        return $this->filters[$acronym];
-    }
-
-    /**
-     * returns all saved filters of a user
-     *
-     * @param $username
-     * @return \whatwedo\TableBundle\Entity\Filter[]
-     */
-    public function getSavedFilter($username)
-    {
-        // TODO so den path zu definieren ist bekloppt - muss optimiert werden.
-        $path = preg_replace('/_show$/i', '_index', $this->showRoute);
-
-        return $this->filterRepository->findSavedFilter($path, $username);
-    }
 
     /**
      * Doctrine table data loader

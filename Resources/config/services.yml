@@ -6,7 +6,6 @@ services:
             - '@event_dispatcher'
             - '@request_stack'
             - '@templating'
-            - '@whatwedo_table.repository.filter'
 
     # Events
     whatwedo_table.event_listener.doctrine_order:
@@ -53,6 +52,7 @@ services:
         class: whatwedo\TableBundle\Extension\FilterExtension
         arguments:
             - "@doctrine"
+            - "@whatwedo_table.repository.filter"
         tags:
             - { name: table.extension, alias: filter }
 
