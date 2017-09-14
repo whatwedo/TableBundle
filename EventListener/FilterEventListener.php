@@ -66,24 +66,17 @@ class FilterEventListener
         return $this->table->getQueryBuilder();
     }
 
-    /**
-     * @return \Symfony\Component\HttpFoundation\Request
-     */
-    private function request()
-    {
-        return $this->table->getRequest();
-    }
-
     private function addQueryBuilderFilter()
     {
         $addedJoins = [];
 
         $orX = $this->queryBuilder()->expr()->orX();
-        // First, loop all OR's
-        $queryFilterColumn = $this->request()->query->get($this->table->getIdentifier() . '_filter_column', []);
-        $queryFilterOperator = $this->request()->query->get($this->table->getIdentifier() . '_filter_operator', []);
-        $queryFilterValue = $this->request()->query->get($this->table->getIdentifier() . '_filter_value', []);
 
+        $queryFilterColumn = $this->table->getFilterExtension()->getFilterColumns();
+        $queryFilterOperator = $this->table->getFilterExtension()->getFilterOperators();
+        $queryFilterValue = $this->table->getFilterExtension()->getFilterValues();
+
+        // First, loop all OR's
         foreach ($queryFilterColumn as $orKey => $columns) {
             // Then, loop all AND's
             $andX = $this->queryBuilder()->expr()->andX();

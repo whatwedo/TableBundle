@@ -33,6 +33,7 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\HttpFoundation\RequestStack;
 use whatwedo\TableBundle\Exception\InvalidFilterAcronymException;
 use whatwedo\TableBundle\Filter\Type\AjaxManyToManyFilterType;
 use whatwedo\TableBundle\Filter\Type\AjaxRelationFilterType;
@@ -54,6 +55,8 @@ use whatwedo\TableBundle\Table\Filter;
 class FilterExtension extends AbstractExtension
 {
 
+    const QUERY_PREDEFINED_FILTER = 'predefined_filter';
+
     /**
      * @var Registry $doctrine
      */
@@ -65,19 +68,31 @@ class FilterExtension extends AbstractExtension
     protected $filterRepository;
 
     /**
+     * @var RequestStack $requestStack
+     */
+    protected $requestStack;
+
+    /**
      * @var array
      */
     protected $filters = [];
 
     /**
+     * @var array
+     */
+    protected $predefinedFilters = [];
+
+    /**
      * FilterExtension constructor.
      * @param Registry $doctrine
      * @param FilterRepository $filterRepository
+     * @param RequestStack $requestStack
      */
-    public function __construct(Registry $doctrine, FilterRepository $filterRepository)
+    public function __construct(Registry $doctrine, FilterRepository $filterRepository, RequestStack $requestStack)
     {
         $this->doctrine = $doctrine;
         $this->filterRepository = $filterRepository;
+        $this->requestStack = $requestStack;
     }
 
     /**
@@ -241,6 +256,81 @@ class FilterExtension extends AbstractExtension
         }
     }
 
+    /**
+     * @param $id
+     * @param $acronym
+     * @param $operator
+     * @param $value
+     * @return FilterBuilder
+     */
+    public function predefineFilter($id, $acronym, $operator, $value)
+    {
+        $filterBuilder = new FilterBuilder($id, $acronym, $operator, $value, $this);
+        return $filterBuilder;
+    }
+
+    /**
+     * @param $id
+     * @param $filter
+     * @return $this
+     * @internal
+     */
+    public function addPredefinedFilter($id, $filter)
+    {
+        $this->predefinedFilters[$id] = $filter;
+        return $this;
+    }
+
+    /**
+     * @param $id
+     * @return array|null
+     */
+    public function getPredefinedFilter($id)
+    {
+        if (array_key_exists($id, $this->predefinedFilters)) {
+            return $this->predefinedFilters[$id];
+        }
+        return null;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFilterColumns()
+    {
+        $queryFilterColumn = $this->getRequest()->query->get($this->getActionQueryParameter('filter_column'), []);
+        $predefinedFilterId = $this->getRequest()->query->get(static::QUERY_PREDEFINED_FILTER, '');
+        $additionals = $this->getPredefinedFilter($predefinedFilterId);
+        return array_merge($queryFilterColumn, is_null($additionals) ? [] : $additionals['filter_column']);
+    }
+
+    /**
+     * @return array
+     */
+    public function getFilterOperators()
+    {
+        $queryFilterOperator = $this->getRequest()->query->get($this->getActionQueryParameter('filter_operator'), []);
+        $predefinedFilterId = $this->getRequest()->query->get(static::QUERY_PREDEFINED_FILTER, '');
+        $additionals = $this->getPredefinedFilter($predefinedFilterId);
+        return array_merge($queryFilterOperator, is_null($additionals) ? [] : $additionals['filter_operator']);
+    }
+
+    /**
+     * @return array
+     */
+    public function getFilterValues()
+    {
+        $queryFilterValue = $this->getRequest()->query->get($this->getActionQueryParameter('filter_value'), []);
+        $predefinedFilterId = $this->getRequest()->query->get(static::QUERY_PREDEFINED_FILTER, '');
+        $additionals = $this->getPredefinedFilter($predefinedFilterId);
+        return array_merge($queryFilterValue, is_null($additionals) ? [] : $additionals['filter_value']);
+
+    }
+
+    public function getRequest()
+    {
+        return $this->requestStack->getCurrentRequest();
+    }
 
     /**
      * @param $enabledBundles

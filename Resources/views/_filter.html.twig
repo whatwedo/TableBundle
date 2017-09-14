@@ -52,9 +52,9 @@
 
 {% if table.filterExtension is not null %}
 
-    {% set filterColumns = app.request.query.get(table.actionQueryParameter('filter_column'), []) %}
-    {% set filterOperators = app.request.query.get(table.actionQueryParameter('filter_operator'), []) %}
-    {% set filterValues = app.request.query.get(table.actionQueryParameter('filter_value'), []) %}
+    {% set filterColumns = table.filterExtension.filterColumns %}
+    {% set filterOperators = table.filterExtension.filterOperators %}
+    {% set filterValues = table.filterExtension.filterValues %}
     {% set app_username = app.user is null ? null : app.user.username %}
 
     <form action="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')): 1 }) }}" class="whatwedo_table__filters {% if filterColumns|length %}active{% endif %}" data-ajax-url="{{ path('whatwedo_table_filter_load_relation_filter') }}">

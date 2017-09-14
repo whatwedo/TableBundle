@@ -53,6 +53,7 @@ services:
         arguments:
             - "@doctrine"
             - "@whatwedo_table.repository.filter"
+            - "@request_stack"
         tags:
             - { name: table.extension, alias: filter }
 
