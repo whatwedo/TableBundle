@@ -278,6 +278,7 @@ class FilterExtension extends AbstractExtension
     public function addPredefinedFilter($id, $filter)
     {
         $this->predefinedFilters[$id] = $filter;
+        dump($filter);
         return $this;
     }
 
@@ -299,7 +300,7 @@ class FilterExtension extends AbstractExtension
     public function getFilterColumns()
     {
         $queryFilterColumn = $this->getRequest()->query->get($this->getActionQueryParameter('filter_column'), []);
-        $predefinedFilterId = $this->getRequest()->query->get(static::QUERY_PREDEFINED_FILTER, '');
+        $predefinedFilterId = $this->getRequest()->query->get($this->getActionQueryParameter(static::QUERY_PREDEFINED_FILTER), '');
         $additionals = $this->getPredefinedFilter($predefinedFilterId);
         return array_merge($queryFilterColumn, is_null($additionals) ? [] : $additionals['filter_column']);
     }
@@ -310,7 +311,7 @@ class FilterExtension extends AbstractExtension
     public function getFilterOperators()
     {
         $queryFilterOperator = $this->getRequest()->query->get($this->getActionQueryParameter('filter_operator'), []);
-        $predefinedFilterId = $this->getRequest()->query->get(static::QUERY_PREDEFINED_FILTER, '');
+        $predefinedFilterId = $this->getRequest()->query->get($this->getActionQueryParameter(static::QUERY_PREDEFINED_FILTER), '');
         $additionals = $this->getPredefinedFilter($predefinedFilterId);
         return array_merge($queryFilterOperator, is_null($additionals) ? [] : $additionals['filter_operator']);
     }
@@ -321,7 +322,7 @@ class FilterExtension extends AbstractExtension
     public function getFilterValues()
     {
         $queryFilterValue = $this->getRequest()->query->get($this->getActionQueryParameter('filter_value'), []);
-        $predefinedFilterId = $this->getRequest()->query->get(static::QUERY_PREDEFINED_FILTER, '');
+        $predefinedFilterId = $this->getRequest()->query->get($this->getActionQueryParameter(static::QUERY_PREDEFINED_FILTER), '');
         $additionals = $this->getPredefinedFilter($predefinedFilterId);
         return array_merge($queryFilterValue, is_null($additionals) ? [] : $additionals['filter_value']);
 
