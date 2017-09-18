@@ -72,7 +72,7 @@ Lets say your business needs to track some customers very often. You can predefi
             ->end();
     }
 ```
-It is now possible to open `http://[domain].[tld]/[your-site-with-the-table]?index_predefined_filter=custom_query` and the declared filters will be applied. 
+It is now possible to open `http://[domain].[tld]/[your-site-with-the-table]?[table-identifier]_predefined_filter=custom_query` and the declared filters will be applied. 
 
 ### Do I need to call `parent::overrideTableConfiguration($table)` ?
 No, but if you don't call it you will not have the advantage of the automatically created filters. 

@@ -279,7 +279,6 @@ class FilterExtension extends AbstractExtension
     public function addPredefinedFilter($id, $filter)
     {
         $this->predefinedFilters[$id] = $filter;
-        dump($filter);
         return $this;
     }
 
