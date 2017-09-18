@@ -25,11 +25,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Extension;
+namespace whatwedo\TableBundle\Builder;
+
+use whatwedo\TableBundle\Extension\FilterExtension;
 
 /**
  * Class FilterBuilder
- * @package whatwedo\TableBundle\Extension
+ * @package whatwedo\TableBundle\Builder
  * @internal
  */
 class FilterBuilder
