@@ -60,7 +60,7 @@ You can write your own filters with your own custom logic. You will find a lot o
 
 ### Predefine often used filters
 Lets say your business needs to track some customers very often. You can predefine a filter for such situations.
-(For instance we search customers with blonde hair and a height of at least 180cm or women) 
+(For instance we search customers with blonde hair and a height of at least 180cm and women) 
 ```
     public function overrideTableConfiguration(DoctrineTable $table)
     {
@@ -68,11 +68,11 @@ Lets say your business needs to track some customers very often. You can predefi
         $table->getFilterExtension()
             ->predefineFilter('custom_query', 'hair', TextFilterType::CRITERIA_EQUAL, HairColorEnum::BLONDE)
                 ->and('height', NumberFilterType::CRITERIA_BIGGER_THAN, 180)
-                ->or('gender', TextFilterType::CRITERIA_EQUAL, GenderEnum::WOMAN)
+                ->and('gender', TextFilterType::CRITERIA_EQUAL, GenderEnum::WOMAN)
             ->end();
     }
 ```
-It is now possible to open `http://[domain].[tld]/[your-site-with-the-table]?predefined_filter=custom_query` and the declared filters will be applied. 
+It is now possible to open `http://[domain].[tld]/[your-site-with-the-table]?index_predefined_filter=custom_query` and the declared filters will be applied. 
 
 ### Do I need to call `parent::overrideTableConfiguration($table)` ?
 No, but if you don't call it you will not have the advantage of the automatically created filters. 
