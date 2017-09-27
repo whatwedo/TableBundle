@@ -27,6 +27,8 @@
 
 namespace whatwedo\TableBundle\EventListener;
 
+use Doctrine\ORM\Query\Expr;
+use UnexpectedValueException;
 use whatwedo\TableBundle\Event\DataLoadEvent;
 use whatwedo\TableBundle\Extension\FilterExtension;
 use whatwedo\TableBundle\Table\DoctrineTable;
@@ -106,12 +108,17 @@ class FilterEventListener
                 $w = $filter->getType()->addToQueryBuilder(
                     $queryFilterOperator[$orKey][$andKey],
                     $queryFilterValue[$orKey][$andKey],
-                    implode('_', ['filter', (int) $orKey, (int) $andKey, $filter->getAcronym()]),
+                    implode('_', ['filter', (int)$orKey, (int)$andKey, $filter->getAcronym()]),
                     $this->queryBuilder()
                 );
 
-                if ($w) {
+                if ($w instanceof Expr || is_string($w)) {
                     $andX->add($w);
+                } else {
+                    if (!is_bool($w)) {
+                        $classExpr = Expr::class;
+                        throw new UnexpectedValueException("Bool or $classExpr expected as filter-result");
+                    }
                 }
             }
 
@@ -127,6 +134,7 @@ class FilterEventListener
         } elseif (count($orX->getParts()) === 1) {
             $this->queryBuilder()->andWhere($orX->getParts()[0]);
         }
+
     }
 
 }
