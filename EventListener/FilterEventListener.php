@@ -112,15 +112,15 @@ class FilterEventListener
                     $this->queryBuilder()
                 );
 
-                if ($w instanceof Expr || is_string($w)) {
+                if ($w instanceof Expr
+                    || is_string($w)) {
                     $andX->add($w);
-                } else {
-                    if (!is_bool($w)) {
+                } elseif (!is_bool($w)) {
                         $classExpr = Expr::class;
                         throw new UnexpectedValueException("Bool or $classExpr expected as filter-result");
                     }
                 }
-            }
+
 
             if (count($andX->getParts()) > 1) {
                 $orX->add($andX);
