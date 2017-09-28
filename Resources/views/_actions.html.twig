@@ -1,7 +1,7 @@
 <nobr>
     <div class="btn-group" role="group">
         {% for item in items %}
-            {% if is_granted(item.voter_attribute, row) %}
+            {% if not item.voter_attribute or is_granted(item.voter_attribute, row) %}
                 <a href="{{ path(item.route, item.route_parameters|merge({ id: row.id })) }}" class="btn btn-{{ item.button }} btn-xs" title="{{ item.label }}">
                     <i class="fa fa-{{ item.icon }}"></i>
                 </a>

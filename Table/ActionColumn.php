@@ -57,7 +57,7 @@ class ActionColumn extends AbstractColumn
         return 'text-right';
     }
 
-    public function addItem($label, $icon, $button, $route, $routeParameters, $voterAttribute)
+    public function addItem($label, $icon, $button, $route, $routeParameters, $voterAttribute = null)
     {
         $this->options['items'][] = [
             'label' => $label,
