@@ -16,7 +16,7 @@ var whatwedo_select2 = {
         ph = ph !== '' ? ph : whatwedo_select2.empty;
         elem.select2({
             language: 'de',
-            width: 'resolve',
+            width: '100%',
             placeholder: ph,
             allowClear: true
         });
@@ -28,7 +28,7 @@ var whatwedo_select2 = {
         var url = elem.closest('form').data('ajax-url');
         elem.select2({
             language: 'de',
-            width: 'resolve',
+            width: '100%',
             allowClear: false,
             ajax: {
                 url: url,
