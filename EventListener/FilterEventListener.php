@@ -111,15 +111,15 @@ class FilterEventListener
                     implode('_', ['filter', (int)$orKey, (int)$andKey, $filter->getAcronym()]),
                     $this->queryBuilder()
                 );
-
-                if ($w instanceof Expr
+                // $w instanceof Expr does not work. (No extending in doctrine classes.)
+                if ((is_object($w) && substr(get_class($w), 0, strlen(Expr::class)) === Expr::class)
                     || is_string($w)) {
                     $andX->add($w);
                 } elseif (!is_bool($w)) {
-                        $classExpr = Expr::class;
-                        throw new UnexpectedValueException("Bool or $classExpr expected as filter-result");
-                    }
+                    $classExpr = Expr::class;
+                    throw new UnexpectedValueException("Bool or $classExpr expected as filter-result");
                 }
+            }
 
 
             if (count($andX->getParts()) > 1) {
