@@ -474,6 +474,16 @@ class Table
     }
 
     /**
+     * @param string $extension
+     */
+    public function removeExtension($extension)
+    {
+        if ($this->hasExtension($extension)) {
+            unset($this->extensions[$extension]);
+        }
+    }
+
+    /**
      * @return ExtensionInterface|SearchExtension
      */
     public function getSearchExtension()
