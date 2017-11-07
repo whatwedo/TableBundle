@@ -28,11 +28,12 @@
 namespace whatwedo\TableBundle\Table;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Templating\EngineInterface;
+use whatwedo\CoreBundle\Manager\FormatterManager;
 
 /**
  * @author Ueli Banholzer <ueli@whatwedo.ch>
  */
-abstract class AbstractColumn implements ColumnInterface, TemplateableColumnInterface
+abstract class AbstractColumn implements ColumnInterface, TemplateableColumnInterface, FormattableColumnInterface
 {
     /**
      * @var string column acronym
@@ -50,6 +51,11 @@ abstract class AbstractColumn implements ColumnInterface, TemplateableColumnInte
     protected $templating = null;
 
     /**
+     * @var FormatterManager $formatterManager
+     */
+    protected $formatterManager;
+
+    /**
      * {@inheritdoc}
      */
     public function __construct($acronym, array $options = [])
@@ -61,16 +67,35 @@ abstract class AbstractColumn implements ColumnInterface, TemplateableColumnInte
         $this->options = $resolver->resolve($options);
     }
 
+    /**
+     * @return string
+     */
     public function getTdClass()
     {
         return '';
     }
 
+    /**
+     * @param EngineInterface $templating
+     */
     public function setTemplating(EngineInterface $templating)
     {
         $this->templating = $templating;
     }
 
+    /**
+     * @param FormatterManager $formatterManager
+     * @return $this
+     */
+    public function setFormatterManager(FormatterManager $formatterManager)
+    {
+        $this->formatterManager = $formatterManager;
+        return $this;
+    }
+
+    /**
+     * @return EngineInterface
+     */
     protected function getTemplating()
     {
         return $this->templating;

@@ -101,7 +101,8 @@ class Column extends AbstractColumn implements SortableColumnInterface
         $formatter = $this->options['formatter'];
 
         if (is_string($formatter)) {
-            return call_user_func($formatter . '::getHtml', $data);
+            $formatterObj = $this->formatterManager->getFormatter($formatter);
+            return $formatterObj->getHtml($data);
         }
 
         if (is_callable($formatter)) {
@@ -117,7 +118,8 @@ class Column extends AbstractColumn implements SortableColumnInterface
         $formatter = $this->options['formatter'];
 
         if (is_string($formatter)) {
-            return call_user_func($formatter . '::getOrderValue', $data);
+            $formatterObj = $this->formatterManager->getFormatter($formatter);
+            return $formatterObj->getOrderValue($data);
         }
 
         if (is_callable($formatter)) {

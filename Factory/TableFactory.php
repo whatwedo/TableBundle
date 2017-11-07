@@ -32,6 +32,7 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Templating\EngineInterface;
+use whatwedo\CoreBundle\Manager\FormatterManager;
 use whatwedo\TableBundle\Extension\ExtensionInterface;
 use whatwedo\TableBundle\Table\DoctrineTable;
 use whatwedo\TableBundle\Table\Table;
@@ -54,6 +55,11 @@ class TableFactory
     protected $templating;
 
     /**
+     * @var FormatterManager $formatterManager
+     */
+    protected $formatterManager;
+
+    /**
      * @var ExtensionInterface[]
      */
     protected $extensions = [];
@@ -62,17 +68,20 @@ class TableFactory
      * TableFactory constructor.
      *
      * @param EventDispatcherInterface $eventDispatcher
-     * @param RequestStack             $requestStack
-     * @param EngineInterface          $templating
+     * @param RequestStack $requestStack
+     * @param EngineInterface $templating
+     * @param FormatterManager $formatterManager
      */
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         RequestStack $requestStack,
-        EngineInterface $templating
+        EngineInterface $templating,
+        FormatterManager $formatterManager
     ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->requestStack = $requestStack;
         $this->templating = $templating;
+        $this->formatterManager = $formatterManager;
     }
 
     /**
@@ -91,6 +100,7 @@ class TableFactory
             $this->eventDispatcher,
             $this->requestStack,
             $this->templating,
+            $this->formatterManager,
             $this->extensions
         );
     }
@@ -103,6 +113,7 @@ class TableFactory
             $this->eventDispatcher,
             $this->requestStack,
             $this->templating,
+            $this->formatterManager,
             $this->extensions
         );
     }

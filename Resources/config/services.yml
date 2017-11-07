@@ -6,6 +6,7 @@ services:
             - '@event_dispatcher'
             - '@request_stack'
             - '@templating'
+            - '@whatwedo_core.manager.formatter'
 
     # Events
     whatwedo_table.event_listener.doctrine_order:
@@ -79,3 +80,12 @@ services:
         factory: ["@doctrine.orm.entity_manager", getRepository]
         arguments:
             - whatwedo\TableBundle\Entity\Filter
+
+    # Formatter
+    whatwedo\TableBundle\Formatter\:
+            resource: '../../Formatter/*'
+            tags:
+              - core.formatter
+            autowire: true
+            autoconfigure: true
+            public: false

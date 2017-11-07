@@ -33,6 +33,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Templating\EngineInterface;
+use whatwedo\CoreBundle\Manager\FormatterManager;
 use whatwedo\TableBundle\Exception\InvalidFilterAcronymException;
 use whatwedo\TableBundle\Extension\ExtensionInterface;
 use whatwedo\TableBundle\Extension\FilterExtension;
@@ -56,6 +57,7 @@ class DoctrineTable extends Table
      * @param EventDispatcherInterface $eventDispatcher
      * @param RequestStack $requestStack
      * @param EngineInterface $templating
+     * @param FormatterManager $formatterManager
      * @param ExtensionInterface[] $extensions
      * @internal param FilterRepository $filterRepository
      */
@@ -65,9 +67,10 @@ class DoctrineTable extends Table
         EventDispatcherInterface $eventDispatcher,
         RequestStack $requestStack,
         EngineInterface $templating,
+        FormatterManager $formatterManager,
         array $extensions
     ) {
-        parent::__construct($identifier, $options, $eventDispatcher, $requestStack, $templating, $extensions);
+        parent::__construct($identifier, $options, $eventDispatcher, $requestStack, $templating, $formatterManager, $extensions);
     }
 
     /**

@@ -32,6 +32,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Templating\EngineInterface;
+use whatwedo\CoreBundle\Manager\FormatterManager;
 use whatwedo\TableBundle\Collection\ColumnCollection;
 use whatwedo\TableBundle\Event\DataLoadEvent;
 use whatwedo\TableBundle\Exception\DataLoaderNotAvailableException;
@@ -81,6 +82,11 @@ class Table
     protected $eventDispatcher;
 
     /**
+     * @var FormatterManager $formatterManager
+     */
+    protected $formatterManager;
+
+    /**
      * @var int
      */
     protected $totalResults = 0;
@@ -118,12 +124,13 @@ class Table
     /**
      * Table constructor.
      *
-     * @param string                   $identifier
-     * @param array                    $options
+     * @param string $identifier
+     * @param array $options
      * @param EventDispatcherInterface $eventDispatcher
-     * @param RequestStack             $requestStack
-     * @param EngineInterface          $templating
-     * @param ExtensionInterface[]     $extensions
+     * @param RequestStack $requestStack
+     * @param EngineInterface $templating
+     * @param FormatterManager $formatterManager
+     * @param ExtensionInterface[] $extensions
      */
     public function __construct(
         $identifier,
@@ -131,6 +138,7 @@ class Table
         EventDispatcherInterface $eventDispatcher,
         RequestStack $requestStack,
         EngineInterface $templating,
+        FormatterManager $formatterManager,
         array $extensions
     ) {
         $this->identifier = $identifier;
@@ -138,6 +146,7 @@ class Table
         $this->request = $requestStack->getMasterRequest();
         $this->templating = $templating;
         $this->extensions = $extensions;
+        $this->formatterManager = $formatterManager;
 
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);
@@ -259,6 +268,10 @@ class Table
 
         if ($column instanceof SortableColumnInterface) {
             $column->setTableIdentifier($this->getIdentifier());
+        }
+
+        if ($column instanceof FormattableColumnInterface) {
+            $column->setFormatterManager($this->formatterManager);
         }
 
         $this->columns->set($acronym, $column);

@@ -25,18 +25,20 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Formatter;
+namespace whatwedo\TableBundle\Table;
 
+use whatwedo\CoreBundle\Manager\FormatterManager;
 
-use whatwedo\CoreBundle\Formatter\AbstractFormatter;
-use whatwedo\TableBundle\Enum\FilterStateEnum;
-
-class FilterStateFormatter extends AbstractFormatter
+/**
+ * Interface FormattableColumnInterface
+ * @package whatwedo\TableBundle\Table
+ */
+interface FormattableColumnInterface
 {
-    public function getString($value)
-    {
-        $value = FilterStateEnum::getRepresentation($value);
-        return is_null($value) ? 'unbekannt' : $value;
-    }
+
+    /**
+     * @param FormatterManager $formatterManager
+     */
+    public function setFormatterManager(FormatterManager $formatterManager);
 
 }
