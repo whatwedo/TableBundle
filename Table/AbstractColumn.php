@@ -117,4 +117,12 @@ abstract class AbstractColumn implements ColumnInterface, TemplateableColumnInte
         return $this instanceof SortableColumnInterface;
     }
 
+    /**
+     * @param array $newOptions
+     */
+    public function overrideOptions(array $newOptions)
+    {
+        $this->options = array_merge_recursive($this->options, $newOptions);
+    }
+
 }

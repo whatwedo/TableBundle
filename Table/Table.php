@@ -280,6 +280,29 @@ class Table
     }
 
     /**
+     * @param string $acronym
+     * @return $this
+     */
+    public function removeColumn($acronym)
+    {
+        $this->columns->remove($acronym);
+        return $this;
+    }
+
+    /**
+     * @param string $acronym
+     * @param array $newOptions
+     * @return $this
+     */
+    public function overrideColumnOptions($acronym, array $newOptions)
+    {
+        /** @var AbstractColumn $column */
+        $column = $this->columns->get($acronym);
+        $column->overrideOptions($newOptions);
+        return $this;
+    }
+
+    /**
      * @return ActionColumn
      */
     public function getActionColumn()
