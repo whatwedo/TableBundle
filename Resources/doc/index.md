@@ -36,6 +36,14 @@ public function registerBundles()
 }
 ```
 
+thirdly, add our routing file to your ```app/config/routing.yml```
+
+```
+whatwedo_table_bundle:
+    resource: "@whatwedoTableBundle/Resources/config/routing.yml"
+    prefix:   /
+```
+
 ## Use the bundle
 
 In your controller, you have to configure the table:
