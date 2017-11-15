@@ -34,7 +34,7 @@ use whatwedo\TableBundle\Enum\FilterStateEnum;
 /**
  * @author Nicolo Singer <nicolo@whatwedo.ch>
  * @ORM\Table(name="whatwedo_table_filter")
- * @ORM\Entity(repositoryClass="")
+ * @ORM\Entity(repositoryClass="whatwedo\TableBundle\Repository\FilterRepository")
  */
 class Filter
 {
