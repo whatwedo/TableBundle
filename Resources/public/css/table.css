@@ -26,15 +26,17 @@
 }
 
 .whatwedo_table .whatwedo_table-search {
-  width: 35%;
+  width: 300px;
 }
 
 .whatwedo_table .whatwedo_table-search select {
-  width: 30%;
+  width: 70px;
+  float: right;
 }
 
 .whatwedo_table .whatwedo_table-search input {
-  width: 70%;
+  width: 100px;
+  float: right;
 }
 
 .whatwedo_table .whatwedo_table-overlay {

@@ -2,18 +2,18 @@
     <div class="box-tools whatwedo_table-search">
         <form action="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : 1 }) }}">
             <div class="input-group input-group-sm">
+                {% if table.searchExtension is not null %}
+                    <input type="text" class="form-control" placeholder="Suchbegriff..." value="{{ table.searchExtension.searchQuery }}" name="{{ table.actionQueryParameter('query') }}">
+                {% endif %}
                 {% if table.paginationExtension is not null %}
                     {% set pagination = table.paginationExtension %}
-                    <select data-disable-interactive name="{{ table.actionQueryParameter('limit') }}" class="form-control">
+                    <select data-disable-interactive name="{{ table.actionQueryParameter('limit') }}" class="whatwedo_table-limit form-control">
                         {% for num in table.options['limit_choices'] %}
                             <option value="{{ num }}"{% if pagination.limit == num %} selected{% endif %}>{{ num }} Einträge</option>
                         {% endfor %}
                     </select>
                 {% else %}
                     <input type="hidden" name="{{ table.actionQueryParameter('limit') }}" value="-1">
-                {% endif %}
-                {% if table.searchExtension is not null %}
-                    <input type="text" class="form-control" placeholder="Suchbegriff..." value="{{ table.searchExtension.searchQuery }}" name="{{ table.actionQueryParameter('query') }}">
                 {% endif %}
                 <span class="input-group-btn">
                     {% if table.searchExtension is not null %}
