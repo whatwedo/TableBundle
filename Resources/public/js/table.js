@@ -309,7 +309,7 @@ var whatwedoTable = {
         });
 
         $(document).on('submit', '.whatwedo_table__save', function() {
-            return whatwedoTable.updateFormFilterValues();
+            return whatwedoTable.updateFormFilterValues($table);
         });
 
         $('.whatwedo_table__filters_filter').keypress(function(e){
@@ -338,21 +338,20 @@ var whatwedoTable = {
         });
     },
 
-    updateFormFilterValues: function() {
-        // TODO this should be rewritten to accept table identifiers
+    updateFormFilterValues: function($table) {
         if ($('input[name$=filter_name]').val() === '') {
             alert('Filter Name darf nicht leer sein');
             return false;
         }
-        var data = $('#whatwedo_table__filters').serializeArray();
-        var retArray = {
-            'filter_operator'   : [[], []],
-            'filter_value'      : [[], []],
-            'filter_column'     : [[], []]
-        };
+        var data = $table.find('.whatwedo_table__filters').serializeArray();
+        var identifier = $table.data('identifier');
+        var retArray = {};
+        retArray[identifier + '_filter_operator'] = [[], []];
+        retArray[identifier + '_filter_value'] = [[], []];
+        retArray[identifier + '_filter_column'] = [[], []];
         for (var i = 0; i < data.length; i++) {
             var name = data[i]['name'];
-            if (name.endsWith('filter_operator') || name.endsWith('filter_value') || name.endsWith('filter_column')) {
+            if (name.startsWith(identifier+'_filter_operator') || name.startsWith(identifier+'_filter_value') || name.startsWith(identifier+'_filter_column')) {
                 var matches = name.match(/(.+)\[(\d+)\]\[(\d+)\]$/);
                 if (typeof retArray[matches[1]][matches[2]] === 'undefined') {
                     retArray[matches[1]][matches[2]] = [];
