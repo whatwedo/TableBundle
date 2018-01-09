@@ -44,6 +44,12 @@ whatwedo_table_bundle:
     prefix:   /
 ```
 
+fourthly, enable the templating component in your config.
+``` 
+framework:
+    templating:
+        engines: ['twig']
+```
 ## Use the bundle
 
 In your controller, you have to configure the table:
