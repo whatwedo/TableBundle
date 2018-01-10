@@ -41,7 +41,10 @@ class ActionColumn extends AbstractColumn
     {
         $resolver->setDefaults([
             'items' => [],
-            'showActionColumn' => []
+            'showActionColumn' => [],
+            'extraRouteParameters' => function ($data) {
+                return [];
+            },
         ]);
     }
 
@@ -69,6 +72,15 @@ class ActionColumn extends AbstractColumn
     }
 
     /**
+     * @param $data
+     * @return array
+     */
+    public function callExtraRouteParameters($data)
+    {
+        return call_user_func($this->options['extraRouteParameters'], $data);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function render($row)
@@ -85,7 +97,8 @@ class ActionColumn extends AbstractColumn
         }
         return $this->templating->render('whatwedoTableBundle::_actions.html.twig', [
             'row' => $row,
-            'items' => $items
+            'items' => $items,
+            'helper' => $this,
         ]);
     }
 }

@@ -98,6 +98,11 @@ class Table
     protected $exportRoute = '';
 
     /**
+     * @var callable
+     */
+    protected $extraRouteParameters;
+
+    /**
      * @var bool
      */
     protected $loaded = false;
@@ -135,6 +140,9 @@ class Table
         $this->columns = new ColumnCollection();
         $this->templating = $templating;
         $this->filterRepository = $filterRepository;
+        $this->extraRouteParameters = function () {
+            return [];
+        };
     }
 
     /**
@@ -326,7 +334,32 @@ class Table
     }
 
     /**
-     * @return string
+     * @param callable $extraRouteParameters
+     */
+    public function setExtraRouteParameters(callable $extraRouteParameters)
+    {
+        $this->extraRouteParameters = $extraRouteParameters;
+    }
+
+    /**
+     * @return callable
+     */
+    public function getExtraRouteParameters()
+    {
+        return $this->extraRouteParameters;
+    }
+
+    /**
+     * @param $data
+     * @return array
+     */
+    public function callExtraRouteParameters($data)
+    {
+        return call_user_func($this->extraRouteParameters, $data);
+    }
+
+    /**
+     * @return Request
      */
     public function getExportRoute()
     {
@@ -335,6 +368,7 @@ class Table
 
     /**
      * @param string $exportRoute
+     * @return Table
      */
     public function setExportRoute($exportRoute)
     {
