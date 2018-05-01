@@ -25,72 +25,57 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Table;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+namespace whatwedo\TableBundle\Filter\Type;
 
 /**
  * @author Ueli Banholzer <ueli@whatwedo.ch>
  */
-class ActionColumn extends AbstractColumn
+abstract class FilterType implements FilterTypeInterface
 {
+    protected $column = null;
+    protected $joins = [];
+
+    public function __construct($column, $joins = [])
+    {
+        $this->column = $column;
+        $this->joins = $joins;
+    }
+
     /**
-     * @param OptionsResolver $resolver
-     * @return void
+     * @return null
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function getColumn()
     {
-        $resolver->setDefaults([
-            'items' => [],
-            'showActionColumn' => [],
-            'extraRouteParameters' => function ($data) {
-                return [];
-            },
-        ]);
+        return $this->column;
     }
 
     /**
-     * {@inheritdoc}
+     * @param null $column
+     * @return FilterType
      */
-    public function getLabel()
+    public function setColumn($column)
     {
-        return '';
-    }
+        $this->column = $column;
 
-    public function getTdClass()
-    {
-        return 'text-right';
-    }
-
-    public function addItem($label, $icon, $button, $route, $routeParameters, $voterAttribute = null)
-    {
-        $this->options['items'][] = [
-            'label' => $label,
-            'icon' => $icon,
-            'button' => $button,
-            'route' => $route,
-            'route_parameters' => $routeParameters,
-            'voter_attribute' => $voterAttribute,
-        ];
+        return $this;
     }
 
     /**
-     * @param $data
      * @return array
      */
-    public function callExtraRouteParameters($data)
+    public function getJoins()
     {
-        return call_user_func($this->options['extraRouteParameters'], $data);
+        return $this->joins;
     }
 
     /**
-     * {@inheritdoc}
+     * @param array $joins
+     * @return FilterType
      */
-    public function render($row)
+    public function setJoins($joins)
     {
-        return $this->templating->render('whatwedoTableBundle::_actions.html.twig', [
-            'row' => $row,
-            'items' => $items,
-            'helper' => $this,
-        ]);
+        $this->joins = $joins;
+
+        return $this;
     }
 }

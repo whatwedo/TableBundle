@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2016, whatwedo GmbH
+ * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,72 +25,76 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Table;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+namespace whatwedo\TableBundle\Event;
+use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
+ * Class ResultRequestEvent
+ * @package whatwedo\TableBundle\Event
  */
-class ActionColumn extends AbstractColumn
+class ResultRequestEvent extends Event
 {
-    /**
-     * @param OptionsResolver $resolver
-     * @return void
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-            'items' => [],
-            'showActionColumn' => [],
-            'extraRouteParameters' => function ($data) {
-                return [];
-            },
-        ]);
-    }
+    const FILTER_SET = 'whatwedo_ajax.result_request.filter_set';
+    const RELATION_SET = 'whatwedo_ajax.result_request.relation_set';
 
     /**
-     * {@inheritdoc}
+     * @var JsonResponse $result
      */
-    public function getLabel()
-    {
-        return '';
-    }
+    protected $result;
 
-    public function getTdClass()
-    {
-        return 'text-right';
-    }
+    /**
+     * @var string $entity
+     */
+    protected $entity;
 
-    public function addItem($label, $icon, $button, $route, $routeParameters, $voterAttribute = null)
+    /**
+     * @var string $term
+     */
+    protected $term;
+
+    /**
+     * ResultRequestEvent constructor.
+     * @param string $entity
+     * @param string $term
+     */
+    public function __construct($entity, $term)
     {
-        $this->options['items'][] = [
-            'label' => $label,
-            'icon' => $icon,
-            'button' => $button,
-            'route' => $route,
-            'route_parameters' => $routeParameters,
-            'voter_attribute' => $voterAttribute,
-        ];
+        $this->entity = $entity;
+        $this->term = $term;
     }
 
     /**
-     * @param $data
-     * @return array
+     * @return JsonResponse
      */
-    public function callExtraRouteParameters($data)
+    public function getResult()
     {
-        return call_user_func($this->options['extraRouteParameters'], $data);
+        return $this->result;
     }
 
     /**
-     * {@inheritdoc}
+     * @param JsonResponse $result
+     * @return $this
      */
-    public function render($row)
+    public function setResult($result)
     {
-        return $this->templating->render('whatwedoTableBundle::_actions.html.twig', [
-            'row' => $row,
-            'items' => $items,
-            'helper' => $this,
-        ]);
+        $this->result = $result;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEntity()
+    {
+        return $this->entity;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTerm()
+    {
+        return $this->term;
     }
 }

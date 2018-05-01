@@ -25,34 +25,45 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Event;
-use Symfony\Component\EventDispatcher\Event;
-use whatwedo\TableBundle\Table\DoctrineTable;
-use whatwedo\TableBundle\Table\Table;
+namespace whatwedo\TableBundle\Filter\Type;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * @author Ueli Banholzer <ueli@whatwedo.ch>
  */
-class DataLoadEvent extends Event
+class BooleanFilterType extends FilterType
 {
-    const PRE_LOAD = 'whatwedo_table.data_load.pre_load';
-    const POST_LOAD = 'whatwedo_table.data_load.post_load';
+    const CRITERIA_EQUAL = 'equal';
+    const CRITERIA_NOT_EQUAL = 'not_equal';
 
-    /**
-     * @var Table
-     */
-    protected $table;
-
-    public function __construct(Table $table)
+    public function getOperators()
     {
-        $this->table = $table;
+        return [
+            static::CRITERIA_EQUAL => 'ist',
+            static::CRITERIA_NOT_EQUAL => 'ist nicht',
+        ];
     }
 
-    /**
-     * @return DoctrineTable
-     */
-    public function getTable()
+    public function getValueField($value = 1)
     {
-        return $this->table;
+        return sprintf(
+            '<select name="{name}" class="form-control"><option value="1" %s>ausgewählt</option><option value="0" %s>nicht ausgewählt</option></select>',
+            $value == 1 ? 'selected' : '',
+            $value == 0 ? 'selected' : ''
+        );
+    }
+
+    public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
+    {
+        $value = $value == 1 ? 'true' : 'false';
+
+        switch ($operator) {
+            case static::CRITERIA_EQUAL:
+                return $queryBuilder->expr()->eq($this->getColumn(), $value);
+            case static::CRITERIA_NOT_EQUAL:
+                return $queryBuilder->expr()->neq($this->getColumn(), $value);
+        }
+
+        return false;
     }
 }

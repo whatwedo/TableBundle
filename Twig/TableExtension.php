@@ -27,6 +27,8 @@
 
 namespace whatwedo\TableBundle\Twig;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * @author Ueli Banholzer <ueli@whatwedo.ch>
@@ -38,24 +40,63 @@ class TableExtension extends \Twig_Extension
      */
     protected $container;
 
+    /**
+     * @var RouterInterface
+     */
+    protected $router;
+
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
+        $this->router = $container->get('router');
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('whatwedo_table', function() {
-                return $this->container->get('whatwedo_table.table');
+            /**
+             * returns an instance of Table
+             */
+            new \Twig_SimpleFunction('whatwedo_table', function($identifier, $options) {
+                $tableFactory = $this->container->get('whatwedo_table.factory.table');
+                return call_user_func([$tableFactory, 'createTable'], $identifier, $options);
             }),
+            /**
+             * returns an instance of DoctrineTable
+             */
+            new \Twig_SimpleFunction('whatwedo_doctrine_table', function($identifier, $options) {
+                $tableFactory = $this->container->get('whatwedo_table.factory.table');
+
+                return call_user_func([$tableFactory, 'createDoctrineTable'], $identifier, $options);
+            }),
+            /**
+             * generates the same route with replaced or new arguments
+             */
+            new \Twig_SimpleFunction('whatwedo_table_generate_route_replace_arguments', function($arguments) {
+                $request = $this->container->get('request_stack')->getMasterRequest();
+                $attributes = array_filter($request->attributes->all(), function($key) {
+                    return strpos($key, '_') !== 0;
+                }, ARRAY_FILTER_USE_KEY);
+
+                $parameters = array_replace(
+                    array_merge($attributes, $request->query->all()),
+                    $arguments
+                );
+
+                return $this->router->generate(
+                    $request->attributes->get('_route'),
+                    $parameters
+                );
+
+            })
         ];
     }
 
     /**
-     * Returns the name of the extension.
-     *
-     * @return string The extension name
+     * @inheritdoc
      */
     public function getName()
     {

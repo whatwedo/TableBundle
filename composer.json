@@ -25,6 +25,9 @@
         "symfony/http-kernel":      "~3.0|~4.0",
         "whatwedo/core-bundle":     "^0.3"
     },
+    "suggest": {
+        "whatwedo/search-bundle": "Allows searching tables"
+    },
     "autoload": {
         "psr-4": {
             "whatwedo\\TableBundle\\": ""

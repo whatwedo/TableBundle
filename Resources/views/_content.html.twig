@@ -2,16 +2,16 @@
     <tr{% if table.showRoute %} data-href="{{ path(table.showRoute, { id: row.data.id }|merge(table.callExtraRouteParameters(row.data))) }}"{% endif %}>
         {% for column in row %}
             <td class="{{ column.column.tdClass }}"
-                {% if table.queryBuilder is null and column.column.sortableColumn and column.column.sortable %}
+                {% if table.sortable and column.column.sortableColumn and column.column.sortable %}
                     data-order="{{ column.getOrderValue(row) }}"
                 {% endif %}
             >
-                {{ table.mark(column) | raw }}
+                {{ column|raw }}
             </td>
         {% endfor %}
     </tr>
 {% else %}
-    <tr>
+    <tr class="whatwedo_table_inner-no_results_row">
         <td
             colspan="{{ table.columns|length + 1 }}"
             class="text-center"

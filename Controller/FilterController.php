@@ -27,18 +27,28 @@
 
 namespace whatwedo\TableBundle\Controller;
 
-
 use Oepfelchasper\CoreBundle\Controller\CrudController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use whatwedo\TableBundle\Entity\Filter;
 use whatwedo\TableBundle\Enum\FilterStateEnum;
+use whatwedo\TableBundle\Event\ResultRequestEvent;
 
+/**
+ * Class FilterController
+ * @package whatwedo\TableBundle\Controller
+ */
 class FilterController extends Controller
 {
 
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function directCreateAction(Request $request)
     {
         $filter = new Filter();
@@ -66,6 +76,10 @@ class FilterController extends Controller
         return $this->redirectToFilter($filter);
     }
 
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function deleteAction(Request $request)
     {
         if ($request->get('token') !== $this->get('security.csrf.token_manager')->getToken('token')->getValue()) {
@@ -84,7 +98,10 @@ class FilterController extends Controller
         return $this->redirect($referer);
     }
 
-
+    /**
+     * @param Filter $filter
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     private function redirectToFilter(Filter $filter)
     {
         $path = $this->get('router')->generate(
@@ -92,6 +109,19 @@ class FilterController extends Controller
             array_merge($filter->getArguments(), $filter->getConditions())
         );
         return $this->redirect($path);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function loadRelationFilterTypeAction(Request $request)
+    {
+        $class = $request->get('entity', false);
+        $term = $request->get('q', false);
+        $resultRequestEvent = new ResultRequestEvent($class, $term);
+        $this->get('event_dispatcher')->dispatch(ResultRequestEvent::FILTER_SET, $resultRequestEvent);
+        return $resultRequestEvent->getResult();
     }
 
 }

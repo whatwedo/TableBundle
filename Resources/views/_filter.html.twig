@@ -1,19 +1,19 @@
 {% import _self as whatwedo_table_filters %}
 
-{% macro filter(iBlock, i, filter, tableFilters, operation, value) %}
+{% macro filter(table, iBlock, i, filter, tableFilters, operation, value) %}
     <div class="whatwedo_table__filters__block">
         <div class="whatwedo_table__filters_filter row">
             <div class="col-xs-10 col-xs-offset-1">
                 <div class="row">
                     <div class="col-xs-4">
-                        <select name="filter_column[{{ iBlock }}][{{ i }}]" class="form-control" data-disable-interactive>
-                            {% for f in tableFilters %}
+                        <select name="{{ table.actionQueryParameter('filter_column') }}[{{ iBlock }}][{{ i }}]" class="form-control" data-disable-interactive>
+                            {% for f in table.filterExtension.filters %}
                                 <option
-                                    value="{{ f.identifier }}"
+                                    value="{{ f.acronym }}"
                                     data-operator-options="{{ f.type.operators|json_encode }}"
                                     data-value-template="{{ f.type.valueField|raw|e }}"
                                     class="form-control"
-                                    {% if filter.identifier == f.identifier %}selected="selected"{% endif %}
+                                    {% if filter.acronym == f.acronym %}selected="selected"{% endif %}
                                 >
                                     {{ f.name }}
                                 </option>
@@ -21,7 +21,7 @@
                         </select>
                     </div>
                     <div class="col-xs-3">
-                        <select name="filter_operator[{{ iBlock }}][{{ i }}]" class="form-control" data-disable-interactive>
+                        <select name="{{ table.actionQueryParameter('filter_operator') }}[{{ iBlock }}][{{ i }}]" class="form-control" data-disable-interactive>
                             {% for key, name in filter.type.operators %}
                                 <option value="{{ key }}"{% if operation == key %} selected="selected"{% endif %}>
                                     {{ name }}
@@ -31,7 +31,7 @@
                     </div>
                     <div class="col-xs-5">
                         {{ filter.type.valueField(value)|replace({
-                            '{name}': 'filter_value[' ~ iBlock ~ '][' ~ i ~ ']'
+                            '{name}': (table.actionQueryParameter('filter_value')) ~ '[' ~ iBlock ~ '][' ~ i ~ ']'
                         })|raw }}
                     </div>
                 </div>
@@ -50,156 +50,167 @@
     </div>
 {% endmacro %}
 
-        {% set filterColumns = app.request.query.get('filter_column', []) %}
-        {% set filterOperators = app.request.query.get('filter_operator', []) %}
-        {% set filterValues = app.request.query.get('filter_value', []) %}
-        {% set app_username = app.user is null ? null : app.user.username %}
+{% if table.filterExtension is not null %}
 
-<form action="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge(app.request.attributes.all|merge({ page: 1 })) ) }}" id="whatwedo_table__filters" {% if filterColumns|length %}class="active"{% endif %}>
-    <input type="hidden" name="user-searching" />
-    <input type="hidden" name="limit" value="{{ app.request.query.get('limit') == '' ? 25 : app.request.query.get('limit') }}" />
-    <div class="row">
-        <div class="col-xs-12">
-            <strong>
-                Zeige Eintrage, wenn
-            </strong>
+    {% set filterColumns = table.filterExtension.filterColumns %}
+    {% set filterOperators = table.filterExtension.filterOperators %}
+    {% set filterValues = table.filterExtension.filterValues %}
+    {% set app_username = app.user is null ? null : app.user.username %}
+
+    <form action="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')): 1 }) }}" class="whatwedo_table__filters {% if filterColumns|length %}active{% endif %}" data-ajax-url="{{ path('whatwedo_table_filter_load_relation_filter') }}">
+        {% if table.paginationExtension is not null %}
+            {% set pagination = table.paginationExtension %}
+            <input type="hidden" name="{{ table.actionQueryParameter('limit') }}" value="{{ pagination.limit }}" />
+        {% else %}
+            <input type="hidden" name="{{ table.actionQueryParameter('limit') }}" value="-1" />
+        {% endif %}
+        <div class="row">
+            <div class="col-xs-12">
+                <strong>
+                    Zeige Eintrage, wenn
+                </strong>
+            </div>
         </div>
-    </div>
 
-    {% set iCustom = 0 %}
-    {% for iBlock, filters in filterColumns %}
-        {% set iCustom = iCustom + 1 %}
-        <div class="whatwedo_table__filters__blocks">
-            {% if iCustom > 1 %}
+        {% set iCustom = 0 %}
+        {% for iBlock, filters in filterColumns %}
+            {% set iCustom = iCustom + 1 %}
+            <div class="whatwedo_table__filters__blocks">
+                {% if iCustom > 1 %}
+                    <p>
+                        <strong>
+                            oder
+                        </strong>
+                    </p>
+                {% endif %}
+                {% for i, filterIdentifier in filters %}
+                    {% if table.filterExtension.filters[filterIdentifier] is defined %}
+                        {% set filterValue = filterValues[iBlock][i] is defined ? filterValues[iBlock][i] : '' %}
+                        {{ whatwedo_table_filters.filter(table, iBlock, i, table.filterExtension.filters[filterIdentifier], table.filterExtension.filters, filterOperators[iBlock][i], filterValue) }}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="whatwedo_table__filters__blocks">
+                {{ whatwedo_table_filters.filter(table, 0, 0, table.filterExtension.filters|first, table.filterExtension.filters) }}
+            </div>
+        {% endfor %}
+
+        <div class="row">
+            <div class="col-xs-12">
                 <p>
                     <strong>
                         oder
                     </strong>
                 </p>
-            {% endif %}
-            {% for i, filterIdentifier in filters %}
-                {% if table.filters[filterIdentifier] is defined %}
-                    {{ whatwedo_table_filters.filter(iBlock, i, table.filters[filterIdentifier], table.filters, filterOperators[iBlock][i], filterValues[iBlock][i]) }}
-                {% endif %}
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="whatwedo_table__filters__blocks">
-            {{ whatwedo_table_filters.filter(0, 0, table.filters|first, table.filters) }}
-        </div>
-    {% endfor %}
-
-    <div class="row">
-        <div class="col-xs-12">
-            <p>
-                <strong>
-                    oder
-                </strong>
-            </p>
-            <button class="btn-default btn btn-xs" data-filter-action="add-or">
-                Oder-Regel hinzufügen
-            </button>
-        </div>
-    </div>
-
-
-    <div class="row">
-        <div class="col-xs-12 text-right">
-            <div class="btn-group" role="group">
-                {% if table.savedFilter(app_username) | length > 0 %}
-                    <button type="button" class="btn btn-default" onclick="$('#whatwedo_table__saved_filters').toggle()">
-                        <i class="fa fa-list"></i>
-                        Gespeicherte Filter
-                    </button>
-                {% endif %}
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#whatwedo_table__filters__save">
-                    <i class="fa fa-floppy-o"></i>
-                    Filter speichern
-                </button>
-                <button id="whatwedo_table__show_results" type="submit" class="btn btn-primary">
-                    <i class="fa fa-arrow-right"></i>
-                    Resultate anzeigen
+                <button class="btn-default btn btn-xs" data-filter-action="add-or">
+                    Oder-Regel hinzufügen
                 </button>
             </div>
         </div>
-    </div>
-</form>
-<table id="whatwedo_table__saved_filters" style="display: none" class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Beschreibung</th>
-            <th>Sichtbarkeit</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for filter in table.savedFilter(app_username) %}
-        {% set filter_href = path(filter.route, filter.arguments | merge(filter.conditions)) %}
-        <tr data-href="{{ filter_href }}">
-            <td>{{ filter.name }}</td>
-            <td>{{ filter.description }}</td>
-            <td>{{ filter.stateAsString }}</td>
-            <td>
+
+
+        <div class="row">
+            <div class="col-xs-12 text-right">
                 <div class="btn-group" role="group">
-                    {% if app.user.username == filter.creatorUsername %}<form method="post" action="{{ path('whatwedo_table_filter_direct_delete', {'id' : filter.id, 'token': csrf_token('token') }) }}">{% endif %}
-                        <a href="{{ filter_href }}" class="btn btn-primary btn-xs" title="" data-original-title="Aktiviere Filter">
-                            <i class="fa fa-arrow-right"></i>
-                        </a>
-                        {% if app.user.username == filter.creatorUsername %}
-                                <button class="btn btn-danger btn-xs" title="" data-original-title="Filter Löschen">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                        {% endif %}
-                    {% if app.user.username == filter.creatorUsername %}</form>{% endif %}
-                </div>
-            </td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-<!-- Speicher-Modal -->
-<div class="modal fade" id="whatwedo_table__filters__save" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <form id="whatwedo_table__save" method="post" action="{{ path('whatwedo_table_filter_direct_create') }}">
-        <input type="hidden" name="filter_route" value="{{ app.request.attributes.get('_route') }}" />
-        <input type="hidden" name="filter_route_arguments" value="{{ app.request.attributes.get('_route_params') | json_encode }}" />
-        <input type="hidden" name="filter_conditions" value="" />
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Filter als Abfrage speichern</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Name</label>
-                        <input type="text" name="filter_name" class="form-control" max="50">
-                    </div>
-                    <div class="form-group">
-                        <label>Beschreibung</label>
-                        <input type="text" name="filter_description" class="form-control" max="256">
-                    </div>
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" name="filter_public" value="1"> Öffentlich
-                        </label>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">
-                        <i class="fa fa-times"></i>
-                        Schliessen
-                    </button>
-                    <button type="submit" class="btn btn-primary">
+                    {% if table.filterExtension.savedFilter(app_username, app.request.attributes.get('_route')) | length > 0 %}
+                        <button type="button" class="btn btn-default" onclick="$('#whatwedo_table__{{ table.identifier }}__saved_filters').toggle()">
+                            <i class="fa fa-list"></i>
+                            Gespeicherte Filter
+                        </button>
+                    {% endif %}
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#whatwedo_table__filters__save__{{ table.identifier }}">
                         <i class="fa fa-floppy-o"></i>
-                        Speichern
+                        Filter speichern
+                    </button>
+                    <button class="whatwedo_table__show_results btn btn-primary" type="submit">
+                        <i class="fa fa-arrow-right"></i>
+                        Resultate anzeigen
                     </button>
                 </div>
             </div>
         </div>
     </form>
-</div>
 
-<script type="text/template" id="whatwedo_table__filters__template__block">
-    {{ whatwedo_table_filters.filter('{iBlock}', '{i}', table.filters|first, table.filters) }}
-</script>
+    <table id="whatwedo_table__{{ table.identifier }}__saved_filters" class="whatwedo_table__saved_filters table" style="display: none">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Beschreibung</th>
+                <th>Sichtbarkeit</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for filter in table.filterExtension.savedFilter(app_username, app.request.attributes.get('_route')) %}
+            {% set filter_href = path(filter.route, filter.arguments | merge(filter.conditions)) %}
+            <tr data-href="{{ filter_href }}">
+                <td>{{ filter.name }}</td>
+                <td>{{ filter.description }}</td>
+                <td>{{ filter.stateAsString }}</td>
+                <td>
+                    <div class="btn-group" role="group">
+                        {% if app.user.username == filter.creatorUsername %}<form method="post" action="{{ path('whatwedo_table_filter_direct_delete', {'id' : filter.id, 'token': csrf_token('token') }) }}">{% endif %}
+                            <a href="{{ filter_href }}" class="btn btn-primary btn-xs" title="" data-original-title="Aktiviere Filter">
+                                <i class="fa fa-arrow-right"></i>
+                            </a>
+                            {% if app.user.username == filter.creatorUsername %}
+                                    <button class="btn btn-danger btn-xs" title="" data-original-title="Filter Löschen">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                            {% endif %}
+                        {% if app.user.username == filter.creatorUsername %}</form>{% endif %}
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Speicher-Modal -->
+    <div class="modal fade whatwedo_table__filters__save" id="whatwedo_table__filters__save__{{ table.identifier }}" tabindex="-1" role="dialog">
+        <form class="whatwedo_table__save" method="post" action="{{ path('whatwedo_table_filter_direct_create') }}">
+            <input type="hidden" name="filter_route" value="{{ app.request.attributes.get('_route') }}" />
+            <input type="hidden" name="filter_route_arguments" value="{{ app.request.attributes.get('_route_params') | json_encode }}" />
+            <input type="hidden" name="filter_conditions" value="" />
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Schliessen"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Filter als Abfrage speichern</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" name="filter_name" class="form-control" max="50">
+                        </div>
+                        <div class="form-group">
+                            <label>Beschreibung</label>
+                            <input type="text" name="filter_description" class="form-control" max="256">
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="filter_public" value="1"> Öffentlich
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                            <i class="fa fa-times"></i>
+                            Schliessen
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-floppy-o"></i>
+                            Speichern
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script type="text/template" id="whatwedo_table__{{ table.identifier }}__filters__template__block">
+        {{ whatwedo_table_filters.filter(table, '{iBlock}', '{i}', table.filterExtension.filters|first, table.filterExtension.filters) }}
+    </script>
+
+{% endif %}

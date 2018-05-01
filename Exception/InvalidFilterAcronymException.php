@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2016, whatwedo GmbH
+ * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,16 +24,22 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-namespace whatwedo\TableBundle\Model\Type;
-use Doctrine\ORM\QueryBuilder;
-/**
- * @author Nicolo Singer <nicolo@whatwedo.ch>
- */
-interface FilterTypeInterface
+
+namespace whatwedo\TableBundle\Exception;
+
+use Throwable;
+
+class InvalidFilterAcronymException extends \InvalidArgumentException
 {
-    public function getColumn();
-    public function getJoins();
-    public function getOperators();
-    public function getValueField($value);
-    public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder);
+    public function __construct($acronym, $message = "", $code = 0, Throwable $previous = null)
+    {
+        if (!$message) {
+            $message = sprintf(
+                'There is no filter configured with the acronym "%s".',
+                htmlentities($acronym)
+            );
+        }
+
+        parent::__construct($message, $code, $previous);
+    }
 }

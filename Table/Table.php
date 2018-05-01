@@ -27,28 +27,42 @@
 
 namespace whatwedo\TableBundle\Table;
 
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Tools\Pagination\Paginator;
-use DOMNode;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Templating\EngineInterface;
+use whatwedo\CoreBundle\Manager\FormatterManager;
 use whatwedo\TableBundle\Collection\ColumnCollection;
-use whatwedo\TableBundle\Enum\FilterStateEnum;
 use whatwedo\TableBundle\Event\DataLoadEvent;
+use whatwedo\TableBundle\Exception\DataLoaderNotAvailableException;
+use whatwedo\TableBundle\Exception\ReservedColumnAcronymException;
+use whatwedo\TableBundle\Extension\ExtensionInterface;
+use whatwedo\TableBundle\Extension\FilterExtension;
+use whatwedo\TableBundle\Extension\PaginationExtension;
+use whatwedo\TableBundle\Extension\SearchExtension;
 use whatwedo\TableBundle\Iterator\RowIterator;
-use whatwedo\TableBundle\Model\Type\FilterTypeInterface;
-use whatwedo\TableBundle\Model\Type\SimpleEnumFilterType;
+use whatwedo\TableBundle\Model\TableDataInterface;
 
 /**
  * @author Ueli Banholzer <ueli@whatwedo.ch>
  */
 class Table
 {
+    const ACTION_COLUMN_ACRONYM = '_actions';
+
     /**
-     * @var ColumnCollection
+     * @var string unique table identifier
+     */
+    protected $identifier;
+
+    /**
+     * @var array reserved acronyms of columns
+     */
+    protected $reservedColumnAcronyms = [];
+
+    /**
+     * @var ColumnCollection collection of columns
      */
     protected $columns;
 
@@ -68,9 +82,9 @@ class Table
     protected $eventDispatcher;
 
     /**
-     * @var QueryBuilder
+     * @var FormatterManager $formatterManager
      */
-    protected $queryBuilder;
+    protected $formatterManager;
 
     /**
      * @var int
@@ -90,12 +104,12 @@ class Table
     /**
      * @var string
      */
-    protected $rowRoute = '';
+    protected $showRoute;
 
     /**
      * @var string
      */
-    protected $exportRoute = '';
+    protected $exportRoute;
 
     /**
      * @var callable
@@ -108,41 +122,129 @@ class Table
     protected $loaded = false;
 
     /**
-     * @var array
+     * @var ExtensionInterface[]
      */
-    protected $filters = [];
-
-    /**
-     * @var EntityRepository
-     */
-    protected $filterRepository;
-
-    /**
-     * @var string
-     */
-    protected $title = 'Übersicht';
+    protected $extensions;
 
     /**
      * Table constructor.
+     *
+     * @param string $identifier
+     * @param array $options
      * @param EventDispatcherInterface $eventDispatcher
      * @param RequestStack $requestStack
      * @param EngineInterface $templating
-     * @param EntityRepository $filterRepository
+     * @param FormatterManager $formatterManager
+     * @param ExtensionInterface[] $extensions
      */
     public function __construct(
+        $identifier,
+        $options,
         EventDispatcherInterface $eventDispatcher,
         RequestStack $requestStack,
         EngineInterface $templating,
-        EntityRepository $filterRepository
+        FormatterManager $formatterManager,
+        array $extensions
     ) {
+        $this->identifier = $identifier;
         $this->eventDispatcher = $eventDispatcher;
         $this->request = $requestStack->getMasterRequest();
-        $this->columns = new ColumnCollection();
         $this->templating = $templating;
+<<<<<<< HEAD
         $this->filterRepository = $filterRepository;
         $this->extraRouteParameters = function () {
             return [];
         };
+=======
+        $this->extensions = $extensions;
+        $this->formatterManager = $formatterManager;
+
+        $resolver = new OptionsResolver();
+        $this->configureOptions($resolver);
+        $this->options = $resolver->resolve($options);
+
+        $this->reservedColumnAcronyms[] = static::ACTION_COLUMN_ACRONYM;
+        $this->columns = new ColumnCollection();
+>>>>>>> v0.2.0
+    }
+
+    /**
+     * @param OptionsResolver $resolver
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'title' => null,
+            'searchable' => false,
+            'sortable' => true,
+            'attr' => [
+                'class' => null,
+            ],
+            'table_attr' => [
+                'class' => null,
+            ],
+            'default_limit' => 25,
+            'limit_choices' => [10, 25, 50, 100, 200],
+            'table_box_template' => 'whatwedoTableBundle::table.html.twig',
+            'table_template' => 'whatwedoTableBundle::tableOnly.html.twig',
+        ]);
+
+        $resolver->setAllowedTypes('title', ['null', 'string']);
+        $resolver->setAllowedTypes('attr', ['array']);
+        $resolver->setAllowedTypes('searchable', ['boolean']);
+        $resolver->setAllowedTypes('default_limit', ['integer']);
+        $resolver->setAllowedTypes('table_box_template', ['string']);
+        $resolver->setAllowedTypes('table_template', ['string']);
+        $resolver->setAllowedTypes('limit_choices', ['array']);
+
+        /*
+         * Data Loader
+         * ---
+         * Callable Arguments:
+         *  - Current Page
+         *  - Limit of results (-1 equals all results)
+         *
+         * The callable must return a TableDataInterface.
+         * you can pass an array to call_user_func
+         */
+        $resolver->setRequired('data_loader');
+        $resolver->setAllowedTypes('data_loader', ['array', 'callable']);
+    }
+
+    /**
+     * @param $key
+     * @return null
+     */
+    public function getOption($key)
+    {
+        return isset($this->options[$key]) ? $this->options[$key] : null;
+    }
+
+    /**
+     * @param $key
+     * @param $value
+     */
+    public function setOption($key, $value)
+    {
+        $this->options[$key] = $value;
+
+        return;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIdentifier()
+    {
+        return $this->identifier;
+    }
+
+    /**
+     * @return ColumnCollection
+     */
+    public function getColumns()
+    {
+        return $this->columns;
     }
 
     /**
@@ -155,14 +257,33 @@ class Table
      */
     public function addColumn($acronym, $type = null, array $options)
     {
+        if (in_array($acronym, $this->reservedColumnAcronyms)) {
+            throw new ReservedColumnAcronymException($acronym);
+        }
+
         if ($type === null) {
             $type = Column::class;
         }
 
         $column = new $type($acronym, $options);
 
+        // only DoctrineTable can sort nested properties. Therefore disable them for other tables.
+        if (!$this instanceof DoctrineTable && $column instanceof SortableColumnInterface && $column->isSortable()) {
+            if (strpos($column->getSortExpression(), '.') !== false) {
+                $column->setSortable(false);
+            }
+        }
+
         if ($column instanceof TemplateableColumnInterface) {
             $column->setTemplating($this->templating);
+        }
+
+        if ($column instanceof SortableColumnInterface) {
+            $column->setTableIdentifier($this->getIdentifier());
+        }
+
+        if ($column instanceof FormattableColumnInterface) {
+            $column->setFormatterManager($this->formatterManager);
         }
 
         $this->columns->set($acronym, $column);
@@ -171,165 +292,58 @@ class Table
     }
 
     /**
-     * adds a new filter
-     *
-     * @param $identifier
-     * @param $name
-     * @param FilterTypeInterface $type
-     * @return Table $this
+     * @param string $acronym
+     * @return $this
      */
-    public function addFilter($identifier, $name, FilterTypeInterface $type)
+    public function removeColumn($acronym)
     {
-        $this->filters[$identifier] = new Filter($identifier, $name, $type);
+        $this->columns->remove($acronym);
         return $this;
     }
 
     /**
-     * @param $identifier
-     * @param $label
-     * @return Table $this
+     * @param string $acronym
+     * @param array $newOptions
+     * @return $this
      */
-    public function overrideFilterName($identifier, $label)
+    public function overrideColumnOptions($acronym, array $newOptions)
     {
-        $this->filters[$identifier]->setName($label);
+        /** @var AbstractColumn $column */
+        $column = $this->columns->get($acronym);
+        $column->overrideOptions($newOptions);
         return $this;
     }
 
     /**
-     * @param $identifier
-     * @param $class
-     * @return Table $this
-     * @throws \Exception
+     * @return ActionColumn
      */
-    public function simpleEnumFilter($identifier, $class)
+    public function getActionColumn()
     {
-        if (!isset($this->filters[$identifier])) {
-            throw new \Exception(sprintf('no Filter found for "%s". Add one first via addFilter. (simpleEnumFilter only works when field was automatically detected.)', $identifier));
+        if (!isset($this->columns[static::ACTION_COLUMN_ACRONYM])) {
+            $column = new ActionColumn(static::ACTION_COLUMN_ACRONYM, []);
+            $column->setTemplating($this->templating);
+            $this->columns->set(static::ACTION_COLUMN_ACRONYM, $column);
         }
-        $name = $this->filters[$identifier]->getName();
-        $column = $this->filters[$identifier]->getType()->getColumn();
-        $this->filters[$identifier] = new Filter($identifier, $name, new SimpleEnumFilterType($column, [], $class));
-        return $this;
-    }
 
-    /**
-     * @param $identifier
-     * @return Table $this
-     */
-    public function removeFilter($identifier)
-    {
-        unset($this->filters[$identifier]);
-        return $this;
-    }
-
-    /**
-     * @param $label
-     * @param $icon
-     * @param $button
-     * @param $route
-     * @return Table $this
-     * @throws \Exception
-     */
-    public function addActionItem($label, $icon, $button, $route)
-    {
-        /** @var ActionColumn $actionColumn */
-        $actionColumn = null;
-        foreach ($this->columns as $column) {
-            if ($column instanceof ActionColumn) {
-                $actionColumn = $column;
-                break;
-            }
-        }
-        if (is_null($actionColumn)) {
-            throw new \Exception('No ActionColumn found in Table');
-        }
-        $actionColumn->addItem($label, $icon, $button, $route);
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getFilters()
-    {
-        return $this->filters;
-    }
-
-    /**
-     * @return ColumnCollection
-     */
-    public function getColumns()
-    {
-        return $this->columns;
-    }
-
-    /**
-     * @return Request
-     */
-    public function getRequest()
-    {
-        return $this->request;
-    }
-
-    /**
-     * @return EventDispatcherInterface
-     */
-    public function getEventDispatcher()
-    {
-        return $this->eventDispatcher;
-    }
-
-    /**
-     * @param QueryBuilder $queryBuilder
-     * @return Table
-     */
-    public function setQueryBuilder(QueryBuilder $queryBuilder)
-    {
-        $this->queryBuilder = $queryBuilder;
-        return $this;
-    }
-
-    /**
-     * @return QueryBuilder
-     */
-    public function getQueryBuilder()
-    {
-        return $this->queryBuilder;
-    }
-
-    /**
-     * @return int
-     */
-    public function getLimit()
-    {
-        return $this->limit;
-    }
-
-    /**
-     * @param int $limit
-     * @return Table
-     */
-    public function setLimit($limit)
-    {
-        $this->limit = $limit;
-        return $this;
+        return $this->columns[static::ACTION_COLUMN_ACRONYM];
     }
 
     /**
      * @return string
      */
-    public function getRowRoute()
+    public function getShowRoute()
     {
-        return $this->rowRoute;
+        return $this->showRoute;
     }
 
     /**
-     * @param string $rowRoute
-     * @return Table
+     * @param string $showRoute
+     * @return $this
      */
-    public function setRowRoute($rowRoute)
+    public function setShowRoute($showRoute)
     {
-        $this->rowRoute = $rowRoute;
+        $this->showRoute = $showRoute;
+
         return $this;
     }
 
@@ -368,32 +382,43 @@ class Table
 
     /**
      * @param string $exportRoute
+<<<<<<< HEAD
      * @return Table
+=======
+     *
+     * @return $this
+>>>>>>> v0.2.0
      */
     public function setExportRoute($exportRoute)
     {
         $this->exportRoute = $exportRoute;
+
         return $this;
     }
 
     /**
-     *
+     * @return Request
      */
-    public function loadData()
+    public function getRequest()
     {
-        if ($this->loaded === true) {
-            return;
-        }
+        return $this->request;
+    }
 
-        $this->eventDispatcher->dispatch(DataLoadEvent::PRE_LOAD, new DataLoadEvent($this));
+    /**
+     * @return EventDispatcherInterface
+     */
+    public function getEventDispatcher()
+    {
+        return $this->eventDispatcher;
+    }
 
-        $paginator = new Paginator($this->getQueryBuilder());
-        $this->totalResults = count($paginator);
-        $this->results = iterator_to_array($paginator->getIterator());
-
-        $this->eventDispatcher->dispatch(DataLoadEvent::POST_LOAD, new DataLoadEvent($this));
-
-        $this->loaded = true;
+    /**
+     * @param $action
+     * @return string
+     */
+    public function getActionQueryParameter($action)
+    {
+        return sprintf('%s_%s', $this->getIdentifier(), $action);
     }
 
     /**
@@ -408,179 +433,173 @@ class Table
     }
 
     /**
-     * @return int
-     */
-    public function getTotalResults()
-    {
-        return $this->totalResults;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTotalPages()
-    {
-        if ($this->limit === -1) {
-            return 1;
-        }
-        return ceil($this->getTotalResults() / $this->limit);
-    }
-
-
-    /**
      * @return array
      */
     public function getResults()
     {
-        $this->loadData();
-
         return $this->results;
     }
 
-    public function setResults(array $results)
+    /**
+     * loads the data
+     * @throws DataLoaderNotAvailableException
+     */
+    public function loadData()
     {
+        if (!is_callable($this->options['data_loader']) && !is_array($this->options['data_loader'])) {
+            throw new DataLoaderNotAvailableException();
+        }
+
+        if ($this->loaded) {
+            return;
+        }
+
+        $currentPage = 1;
+        $limit = -1;
+        if ($this->hasExtension(PaginationExtension::class)) {
+            /** @var PaginationExtension $paginationExtension */
+            $paginationExtension = $this->getExtension(PaginationExtension::class);
+            $paginationExtension->setLimit($this->options['default_limit']);
+            $currentPage = $paginationExtension->getCurrentPage();
+            $limit = $paginationExtension->getLimit();
+        }
+
+        $this->eventDispatcher->dispatch(DataLoadEvent::PRE_LOAD, new DataLoadEvent($this));
+
+        // loads the data from the data loader callable
+        $tableData = null;
+
+        if (is_callable($this->options['data_loader'])) {
+            $tableData = ($this->options['data_loader'])($currentPage, $limit);
+        }
+        if (is_array($this->options['data_loader'])) {
+            $tableData = call_user_func($this->options['data_loader'], $currentPage, $limit);
+        }
+
+        if (!$tableData instanceof TableDataInterface) {
+            throw new \UnexpectedValueException('Table::dataLoader must return a TableDataInterface');
+        }
+
+        $this->results = $tableData->getResults();
+
+        if ($this->hasExtension(PaginationExtension::class)) {
+            /** @var PaginationExtension $paginationExtension */
+            $paginationExtension->setTotalResults($tableData->getTotalResults());
+        }
+
         $this->loaded = true;
 
-        $this->results = $results;
-    }
-
-    public function getOffsetResults()
-    {
-        if ($this->limit === -1) {
-            return 0;
-        }
-        return ($this->getCurrentPage() - 1) * $this->limit;
-    }
-
-    /**
-     * returns current page number.
-     *
-     * @return int
-     */
-    public function getCurrentPage()
-    {
-        $page = $this->request->query->getInt('page', 1);
-
-        if ($page < 1) {
-            $page = 1;
-        }
-
-        return $page;
+        $this->eventDispatcher->dispatch(DataLoadEvent::POST_LOAD, new DataLoadEvent($this));
     }
 
     /**
      * @return string
-     */
-    public function renderTableOnly()
-    {
-        $this->loadData();
-        return $this->templating->render('whatwedoTableBundle::_table.html.twig', [
-            'table' => $this,
-        ]);
-    }
-
-    /**
-     * @return string
+     * @throws DataLoaderNotAvailableException
      */
     public function renderTable()
     {
         $this->loadData();
-        return $this->templating->render('whatwedoTableBundle::table.html.twig', [
+
+        return $this->templating->render($this->options['table_template'], [
             'table' => $this,
         ]);
     }
 
     /**
-     * @param $raw
      * @return string
+     * @throws DataLoaderNotAvailableException
      */
-    public function mark($raw)
+    public function renderTableBox()
     {
-        /** @var Request $request */
-        $request = $this->getRequest();
-        if (!($q = $request->query->get('q', false))) {
-            return $raw;
-        }
+        $this->loadData();
 
-        $replaceRegex = '/(' . implode('|', array_map('preg_quote', explode(' ', $q), ['/'])) . ')/i';
-
-        if (strpos($raw->__toString(), '<') === false) {
-            return preg_replace($replaceRegex, '<mark class="whatwedo_search__mark">$0</mark>', $raw->__toString());
-        }
-
-        $doc = new \DOMDocument();
-        $doc->loadXML('<html><body>' . $raw->__toString() . '</body></html>');
-        $xp = new \DOMXPath($doc);
-
-        $anchor = $doc->getElementsByTagName('body')->item(0);
-        if (!$anchor)
-        {
-            throw new \Exception('Anchor element not found.');
-        }
-
-        /** @var \DOMNode $node */
-        foreach ($xp->query('//text()') as $node) {
-            if (!$node->parentNode) {
-                continue;
-            }
-
-            $text = preg_replace($replaceRegex, '<mark class="whatwedo_search__mark">$0</mark>', $node->nodeValue);
-            $fragment = $doc->createDocumentFragment();
-            $fragment->appendXML($text);
-            $node->parentNode->replaceChild($fragment, $node);
-        }
-
-        $str = $doc->saveHTML($anchor->firstChild);
-
-        if (trim($str) == '<html><body></body></html>') {
-            return '';
-        }
-
-        return $str;
-    }
-
-    public function getSavedFilter($username)
-    {
-        $path = preg_replace('/_show$/i', '_index', $this->rowRoute);
-        $qb = $this->filterRepository->createQueryBuilder('f');
-        return $qb
-            ->where(
-                $qb->expr()->andX(
-                    $qb->expr()->eq('f.route', ':path'),
-                    $qb->expr()->orX(
-                        $qb->expr()->orX(
-                            $qb->expr()->eq('f.state', FilterStateEnum::ALL),
-                            $qb->expr()->eq('f.state', FilterStateEnum::SYSTEM)
-                        ),
-                        $qb->expr()->andX(
-                            $qb->expr()->eq('f.state', FilterStateEnum::SELF),
-                            $qb->expr()->eq('f.creatorUsername', ':username')
-                        )
-                    )
-                )
-            )
-            ->orderBy('f.name')
-            ->setParameter('path', $path)
-            ->setParameter('username', $username)
-            ->getQuery()->getResult();
+        return $this->templating->render($this->options['table_box_template'], [
+            'title' => $this->options['title'],
+            'table' => $this,
+        ]);
     }
 
     /**
-     * @return string
+     * @return bool
      */
-    public function getTitle()
+    public function isSearchable()
     {
-        return $this->title;
+        return (bool) $this->options['searchable'];
     }
 
     /**
-     * @param string $title
-     * @return Table
+     * @return bool
      */
-    public function setTitle($title)
+    public function isSortable()
     {
-        $this->title = $title;
-
-        return $this;
+        return (bool) $this->options['sortable'];
     }
+
+    /**
+     * @param string $extension
+     * @return ExtensionInterface
+     */
+    public function getExtension($extension)
+    {
+        if (!$this->hasExtension($extension)) {
+            throw new \InvalidArgumentException(sprintf(
+                'Extension %s is not enabled. Please configure it first.',
+                $extension
+            ));
+        }
+        return $this->extensions[$extension]->setTableIdentifier($this->identifier);
+    }
+
+    /**
+     * @param string $extension
+     */
+    public function removeExtension($extension)
+    {
+        if ($this->hasExtension($extension)) {
+            unset($this->extensions[$extension]);
+        }
+    }
+
+    /**
+     * @return ExtensionInterface|SearchExtension
+     */
+    public function getSearchExtension()
+    {
+        return $this->hasExtension(SearchExtension::class)
+            ? $this->getExtension(SearchExtension::class)
+            : null
+        ;
+    }
+
+    /**
+     * @return ExtensionInterface|PaginationExtension
+     */
+    public function getPaginationExtension()
+    {
+        return $this->hasExtension(PaginationExtension::class)
+            ? $this->getExtension(PaginationExtension::class)
+            : null
+        ;
+    }
+
+    /**
+     * @return ExtensionInterface|FilterExtension
+     */
+    public function getFilterExtension()
+    {
+        return $this->hasExtension(FilterExtension::class)
+            ? $this->getExtension(FilterExtension::class)
+            : null
+        ;
+    }
+
+    /**
+     * @param string $extension
+     * @return boolean
+     */
+    public function hasExtension($extension)
+    {
+        return array_key_exists($extension, $this->extensions);
+    }
+
 }
