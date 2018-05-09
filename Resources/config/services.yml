@@ -2,6 +2,7 @@ services:
     # Factory
     whatwedo_table.factory.table:
         class: whatwedo\TableBundle\Factory\TableFactory
+        public: true
         arguments:
             - '@event_dispatcher'
             - '@request_stack'
