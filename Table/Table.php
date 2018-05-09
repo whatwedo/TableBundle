@@ -150,12 +150,12 @@ class Table
         $this->eventDispatcher = $eventDispatcher;
         $this->request = $requestStack->getMasterRequest();
         $this->templating = $templating;
-<<<<<<< HEAD
+
         $this->filterRepository = $filterRepository;
         $this->extraRouteParameters = function () {
             return [];
         };
-=======
+
         $this->extensions = $extensions;
         $this->formatterManager = $formatterManager;
 
@@ -165,7 +165,6 @@ class Table
 
         $this->reservedColumnAcronyms[] = static::ACTION_COLUMN_ACRONYM;
         $this->columns = new ColumnCollection();
->>>>>>> v0.2.0
     }
 
     /**
@@ -382,12 +381,7 @@ class Table
 
     /**
      * @param string $exportRoute
-<<<<<<< HEAD
      * @return Table
-=======
-     *
-     * @return $this
->>>>>>> v0.2.0
      */
     public function setExportRoute($exportRoute)
     {
