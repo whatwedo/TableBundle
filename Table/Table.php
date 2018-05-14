@@ -243,7 +243,7 @@ class Table
      * @param array $options
      * @return $this
      */
-    public function addColumn($acronym, $type = null, array $options)
+    public function addColumn($acronym, $type = null, array $options = [])
     {
         if (in_array($acronym, $this->reservedColumnAcronyms)) {
             throw new ReservedColumnAcronymException($acronym);
