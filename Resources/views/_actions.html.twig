@@ -2,7 +2,7 @@
     <div class="btn-group" role="group">
         {% for item in items %}
             {% if not item.voter_attribute or is_granted(item.voter_attribute, row) %}
-                <a href="{{ path(item.route, item.route_parameters|merge({ id: row.id })|merge(helper.callExtraRouteParameters(row))) }}" class="btn btn-{{ item.button }} btn-xs" title="{{ item.label }}">
+                <a href="{{ path(item.route, item.route_parameters|merge({ id: row.id })) }}" class="btn btn-{{ item.button }} btn-xs" title="{{ item.label }}">
                     <i class="fa fa-{{ item.icon }}"></i>
                 </a>
             {% endif %}

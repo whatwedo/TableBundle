@@ -112,11 +112,6 @@ class Table
     protected $exportRoute;
 
     /**
-     * @var callable
-     */
-    protected $extraRouteParameters;
-
-    /**
      * @var bool
      */
     protected $loaded = false;
@@ -150,11 +145,6 @@ class Table
         $this->eventDispatcher = $eventDispatcher;
         $this->request = $requestStack->getMasterRequest();
         $this->templating = $templating;
-        
-        $this->extraRouteParameters = function () {
-            return [];
-        };
-
         $this->extensions = $extensions;
         $this->formatterManager = $formatterManager;
 
@@ -343,31 +333,6 @@ class Table
         $this->showRoute = $showRoute;
 
         return $this;
-    }
-
-    /**
-     * @param callable $extraRouteParameters
-     */
-    public function setExtraRouteParameters(callable $extraRouteParameters)
-    {
-        $this->extraRouteParameters = $extraRouteParameters;
-    }
-
-    /**
-     * @return callable
-     */
-    public function getExtraRouteParameters()
-    {
-        return $this->extraRouteParameters;
-    }
-
-    /**
-     * @param $data
-     * @return array
-     */
-    public function callExtraRouteParameters($data)
-    {
-        return call_user_func($this->extraRouteParameters, $data);
     }
 
     /**
