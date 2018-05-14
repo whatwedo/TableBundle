@@ -150,8 +150,7 @@ class Table
         $this->eventDispatcher = $eventDispatcher;
         $this->request = $requestStack->getMasterRequest();
         $this->templating = $templating;
-
-        $this->filterRepository = $filterRepository;
+        
         $this->extraRouteParameters = function () {
             return [];
         };
