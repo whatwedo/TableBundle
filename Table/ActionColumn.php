@@ -89,7 +89,7 @@ class ActionColumn extends AbstractColumn
     {
         return $this->templating->render('whatwedoTableBundle::_actions.html.twig', [
             'row' => $row,
-            'items' => $items,
+            'items' => $this->options['items'],
             'helper' => $this,
         ]);
     }
