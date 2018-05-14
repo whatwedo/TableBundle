@@ -1,13 +1,16 @@
 services:
     # Factory
-    whatwedo_table.factory.table:
-        class: whatwedo\TableBundle\Factory\TableFactory
+    whatwedo\TableBundle\Factory\TableFactory:
         public: true
         arguments:
             - '@event_dispatcher'
             - '@request_stack'
             - '@templating'
             - '@whatwedo_core.manager.formatter'
+
+    whatwedo_table.factory.table:
+        alias: whatwedo\TableBundle\Factory\TableFactory
+        public: true
 
     # Events
     whatwedo_table.event_listener.doctrine_order:
