@@ -27,9 +27,7 @@
 
 namespace whatwedo\TableBundle\Controller;
 
-use Oepfelchasper\CoreBundle\Controller\CrudController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
