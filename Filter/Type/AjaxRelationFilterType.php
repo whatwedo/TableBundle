@@ -135,11 +135,13 @@ class AjaxRelationFilterType extends FilterType
             }
         }
 
+        $property = sprintf('%s.%s', $this->getColumn(), $this->propToCheckAgainstId);
+
         switch ($operator) {
             case static::CRITERIA_EQUAL:
-                return $queryBuilder->expr()->eq(sprintf('%s.%s', $this->getColumn(), $this->propToCheckAgainstId), (int) $value);
+                return $queryBuilder->expr()->eq($property, (int) $value);
             case static::CRITERIA_NOT_EQUAL:
-                return $queryBuilder->expr()->neq(sprintf('%s.%s', $this->getColumn(), $this->propToCheckAgainstId), (int) $value);
+                return $queryBuilder->expr()->neq($property, (int) $value);
         }
 
         return false;
