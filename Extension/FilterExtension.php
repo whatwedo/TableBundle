@@ -59,27 +59,27 @@ class FilterExtension extends AbstractExtension
     const QUERY_PREDEFINED_FILTER = 'predefined_filter';
 
     /**
-     * @var Registry $doctrine
+     * @var Registry
      */
     protected $doctrine;
 
     /**
-     * @var FilterRepository $filterRepository
+     * @var FilterRepository
      */
     protected $filterRepository;
 
     /**
-     * @var RequestStack $requestStack
+     * @var RequestStack
      */
     protected $requestStack;
 
     /**
-     * @var array
+     * @var Filter[]
      */
     protected $filters = [];
 
     /**
-     * @var array
+     * @var Filter[]
      */
     protected $predefinedFilters = [];
 
@@ -189,17 +189,13 @@ class FilterExtension extends AbstractExtension
 
         foreach ($properties as $property)
         {
-            /** @var Column $ormColumn */
             $ormColumn = $reader->getPropertyAnnotation($property, Column::class);
-            /** @var ManyToOne $ormManyToOne */
             $ormManyToOne = $reader->getPropertyAnnotation($property, ManyToOne::class);
-            /** @var ManyToMany $ormManyToMany */
             $ormManyToMany = $reader->getPropertyAnnotation($property, ManyToMany::class);
             $acronym = $property->getName();
 
             if (is_null($labelCallable)) {
                 $labelCallable = function (DoctrineTable $table, $property) {
-                    /** @var \whatwedo\TableBundle\Table\Column $column */
                     foreach ($table->getColumns() as $column) {
                         if ($column->getAcronym() == $property) {
                             return $column->getLabel();

@@ -27,6 +27,7 @@
 
 namespace whatwedo\TableBundle\EventListener;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use whatwedo\SearchBundle\whatwedoSearchBundle;
@@ -54,7 +55,7 @@ class AjaxFilterSearchListener
      * @param EntityManager $em
      * @param ContainerInterface $container
      */
-    public function __construct(EntityManager $em, ContainerInterface $container)
+    public function __construct(EntityManagerInterface $em, ContainerInterface $container)
     {
         $this->em = $em;
         $this->container = $container;

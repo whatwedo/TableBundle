@@ -228,7 +228,7 @@ class Table
     }
 
     /**
-     * @return ColumnCollection
+     * @return ColumnCollection|Column[]
      */
     public function getColumns()
     {
