@@ -1,95 +1,29 @@
 services:
-    # Factory
-    whatwedo\TableBundle\Factory\TableFactory:
-        public: true
-        arguments:
-            - '@event_dispatcher'
-            - '@request_stack'
-            - '@templating'
-            - '@whatwedo_core.manager.formatter'
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
 
-    whatwedo_table.factory.table:
-        alias: whatwedo\TableBundle\Factory\TableFactory
-        public: true
+    whatwedo\TableBundle\:
+            resource: '../../*'
 
-    # Events
-    whatwedo_table.event_listener.doctrine_order:
-        class: whatwedo\TableBundle\EventListener\DoctrineOrderEventListener
+    whatwedo\TableBundle\EventListener\DoctrineOrderEventListener:
         tags:
             - { name: kernel.event_listener, event: whatwedo_table.data_load.pre_load, method: orderResultSet, priority: 100 }
 
-    whatwedo_table.event_listener.criteria_order:
-        class: whatwedo\TableBundle\EventListener\CriteriaOrderEventListener
+    whatwedo\TableBundle\EventListener\CriteriaOrderEventListener:
         tags:
             - { name: kernel.event_listener, event: whatwedo_table.criteria_load.pre_load, method: orderResultSet, priority: 100 }
 
-    whatwedo_table.event_listener.filter:
-        class: whatwedo\TableBundle\EventListener\FilterEventListener
+    whatwedo\TableBundle\EventListener\FilterEventListener:
         tags:
             - { name: kernel.event_listener, event: whatwedo_table.data_load.pre_load, method: filterResultSet, priority: 100 }
 
-    whatwedo_table.event_listener.search:
-        class: whatwedo\TableBundle\EventListener\SearchEventListener
-        arguments:
-            - "@doctrine.orm.entity_manager"
-            - "@service_container"
+    whatwedo\TableBundle\EventListener\SearchEventListener:
         tags:
             - { name: kernel.event_listener, event: whatwedo_table.data_load.pre_load, method: searchResultSet, priority: 100 }
 
-    whatwedo_ajax.event_listener.search:
-      class: whatwedo\TableBundle\EventListener\AjaxFilterSearchListener
-      arguments:
-            - "@doctrine.orm.entity_manager"
-            - "@service_container"
+    whatwedo\TableBundle\EventListener\AjaxFilterSearchListener:
       tags:
             - { name: kernel.event_listener, event: whatwedo_ajax.result_request.filter_set, method: searchResultSet, priority: 100 }
             - { name: kernel.event_listener, event: whatwedo_ajax.result_request.relation_set, method: searchResultSet, priority: 100 }
-
-    # Extensions
-    whatwedo_table.extension.pagination:
-        class: whatwedo\TableBundle\Extension\PaginationExtension
-        arguments:
-            - "@request_stack"
-        tags:
-            - { name: table.extension, alias: pagination }
-
-    whatwedo_table.extension.filter:
-        class: whatwedo\TableBundle\Extension\FilterExtension
-        arguments:
-            - "@doctrine"
-            - "@whatwedo_table.repository.filter"
-            - "@request_stack"
-        tags:
-            - { name: table.extension, alias: filter }
-
-    whatwedo_table.extension.search:
-        class: whatwedo\TableBundle\Extension\SearchExtension
-        arguments:
-            - "@request_stack"
-        tags:
-            - { name: table.extension, alias: search }
-
-    # Twig Extension
-    sybio.twig_extension:
-        class: whatwedo\TableBundle\Twig\TableExtension
-        arguments:
-            - "@service_container"
-        public: false
-        tags:
-            - { name: twig.extension, priority: 255 }
-
-    # Repository
-    whatwedo_table.repository.filter:
-        class: Doctrine\ORM\EntityRepository
-        factory: ["@doctrine.orm.entity_manager", getRepository]
-        arguments:
-            - whatwedo\TableBundle\Entity\Filter
-
-    # Formatter
-    whatwedo\TableBundle\Formatter\:
-            resource: '../../Formatter/*'
-            tags:
-              - core.formatter
-            autowire: true
-            autoconfigure: true
-            public: false

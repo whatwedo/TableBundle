@@ -44,7 +44,7 @@ class TableFactoryPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->has('whatwedo_table.factory.table')) {
+        if (!$container->has('whatwedo\TableBundle\Factory\TableFactory')) {
             return;
         }
 

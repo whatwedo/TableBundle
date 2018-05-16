@@ -33,6 +33,7 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use whatwedo\TableBundle\Builder\FilterBuilder;
 use whatwedo\TableBundle\Exception\InvalidFilterAcronymException;
@@ -89,7 +90,7 @@ class FilterExtension extends AbstractExtension
      * @param FilterRepository $filterRepository
      * @param RequestStack $requestStack
      */
-    public function __construct(Registry $doctrine, FilterRepository $filterRepository, RequestStack $requestStack)
+    public function __construct(RegistryInterface $doctrine, FilterRepository $filterRepository, RequestStack $requestStack)
     {
         $this->doctrine = $doctrine;
         $this->filterRepository = $filterRepository;
