@@ -116,11 +116,7 @@ class AjaxRelationFilterType extends FilterType
                 }
             }
 
-            if ($orX->count() == 1) {
-                return $orX->getParts()[0];
-            } else {
-                return $orX;
-            }
+            return $orX;
         }
 
         $property = sprintf('%s.%s', $this->getColumn(), $this->propToCheckAgainstId);
