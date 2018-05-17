@@ -111,7 +111,6 @@ var whatwedoTable = {
         var additionalValue = null;
         var action = null;
 
-        console.log('prop', $this.prop("tagName"));
         if ($this.prop("tagName") !== 'FORM') {
             if ($this.prop("tagName") === 'BUTTON') {
                 additionalName = $this.attr('name');
@@ -126,7 +125,6 @@ var whatwedoTable = {
         } else {
             if (typeof $this.attr('action') !== 'undefined') {
                 action = $this.attr('action');
-                console.log('action', $this.attr('action'));
             }
         }
 
@@ -303,7 +301,6 @@ var whatwedoTable = {
                     whatwedo_select2.select2($field[0]);
                 } else {
                     whatwedo_select2.ajaxSelect2($field[0]);
-                    console.log($field);
                 }
             }
         });
