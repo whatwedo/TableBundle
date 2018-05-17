@@ -69,18 +69,6 @@ class AjaxRelationFilterType extends FilterType
         parent::__construct($column, $joins);
     }
 
-    /**
-     * @return PropertyAccessor
-     */
-    public function getPropertyAccessor()
-    {
-        if (static::$propertyAccessor === null) {
-            static::$propertyAccessor = PropertyAccess::createPropertyAccessor();
-        }
-
-        return static::$propertyAccessor;
-    }
-
     public function getOperators()
     {
         return [
