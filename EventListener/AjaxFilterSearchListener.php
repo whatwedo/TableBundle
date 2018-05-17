@@ -30,6 +30,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use whatwedo\SearchBundle\Repository\IndexRepository;
 use whatwedo\SearchBundle\whatwedoSearchBundle;
 use whatwedo\TableBundle\Event\ResultRequestEvent;
 
@@ -46,19 +47,26 @@ class AjaxFilterSearchListener
     protected $em;
 
     /**
+     * @var IndexRepository
+     */
+    protected $indexRepository;
+
+    /**
      * @var ContainerInterface
      */
     protected $container;
 
     /**
      * AjaxFilterSearchListener constructor.
-     * @param EntityManager $em
+     * @param EntityManagerInterface $em
      * @param ContainerInterface $container
+     * @param IndexRepository $indexRepository
      */
-    public function __construct(EntityManagerInterface $em, ContainerInterface $container)
+    public function __construct(EntityManagerInterface $em, ContainerInterface $container, IndexRepository $indexRepository)
     {
         $this->em = $em;
         $this->container = $container;
+        $this->indexRepository = $indexRepository;
     }
 
     /**
@@ -79,7 +87,7 @@ class AjaxFilterSearchListener
         $result = new \stdClass();
         $result->error = true;
         if ($class !== false && $term !== false) {
-            $ids = $this->em->getRepository('whatwedoSearchBundle:Index')->search($term);
+            $ids = $this->indexRepository->search($term);
             $entities = $this->em->getRepository($class)
                 ->createQueryBuilder('e')
                 ->where('e.id IN (:ids)')
