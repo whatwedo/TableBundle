@@ -48,11 +48,6 @@ class DoctrineOrderEventListener
     private $table;
 
     /**
-     * @var Request $request
-     */
-    private $request;
-
-    /**
      * @var QueryBuilder $queryBuilder
      */
     private $queryBuilder;
@@ -72,7 +67,6 @@ class DoctrineOrderEventListener
         }
 
         $this->table = $event->getTable();
-        $this->request = $this->table->getRequest();
         $this->queryBuilder = $this->table->getQueryBuilder();
         $this->first = true;
         $this->process();
@@ -83,25 +77,22 @@ class DoctrineOrderEventListener
      */
     private function process()
     {
-        $columns = array_filter($this->table->getColumns()->toArray(), function ($column) {
-            return $this->sortThisColumn($column);
-        });
-        array_walk($columns, function ($column) {
-            $this->addOrderBy($column);
-        });
+        foreach($this->table->getSortedColumns() as $column => $order) {
+            $this->addOrderBy($column, $order);
+        }
     }
 
     /**
-     * @param SortableColumnInterface $column
+     * @param string $sortExp
+     * @param string $order
      * @throws \Exception
      */
-    private function addOrderBy(SortableColumnInterface $column)
-    {
+    private function addOrderBy(string $sortExp, string $order) {
         $alias = count($this->queryBuilder->getRootAliases()) > 0 ? $this->queryBuilder->getRootAliases()[0] : '';
 
-        $sortExp = strpos($column->getSortExpression(), '.') !== false
-            ? $column->getSortExpression()
-            : sprintf('%s.%s', $alias, $column->getSortExpression());
+        $sortExp = strpos($sortExp, '.') !== false
+            ? $sortExp
+            : sprintf('%s.%s', $alias, $sortExp);
 
         $addOrderByFunction = $this->first ? 'orderBy' : 'addOrderBy';
 
@@ -111,23 +102,10 @@ class DoctrineOrderEventListener
             $notFound = explode('.', $sortExp)[0];
             throw new \Exception(sprintf('"%s" is not defined in querybuilder. Please override getQueryBuilder in your definition and add a join. For example: %s%s ->leftJoin(sprintf(\'%%s.%s\', self::getQueryAlias()), \'%s\')', $notFound, PHP_EOL, PHP_EOL, $notFound, $notFound));
         }
+
         $this->queryBuilder->$addOrderByFunction(
             $sortExp,
-            $this->request->query->has($column->getOrderAscQueryParameter())
-                && $this->request->query->get($column->getOrderAscQueryParameter()) == '0' ? 'DESC' : 'ASC'
+            $order
         );
     }
-
-    /**
-     * @param AbstractColumn $column
-     * @return boolean
-     */
-    private function sortThisColumn(AbstractColumn $column)
-    {
-        return ($column instanceof SortableColumnInterface
-            && $column->isSortable()
-            && $this->request->query->has($column->getOrderEnabledQueryParameter())
-            && $this->request->query->get($column->getOrderEnabledQueryParameter()) === '1');
-    }
-
 }

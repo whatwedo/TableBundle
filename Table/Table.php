@@ -132,6 +132,8 @@ class Table
      * @param FormatterManager $formatterManager
      * @param ExtensionInterface[] $extensions
      */
+    private $sortedColumns;
+
     public function __construct(
         $identifier,
         $options,
@@ -175,6 +177,7 @@ class Table
             'limit_choices' => [10, 25, 50, 100, 200],
             'table_box_template' => 'whatwedoTableBundle::table.html.twig',
             'table_template' => 'whatwedoTableBundle::tableOnly.html.twig',
+            'default_sort' => [],
         ]);
 
         $resolver->setAllowedTypes('title', ['null', 'string']);
@@ -184,6 +187,7 @@ class Table
         $resolver->setAllowedTypes('table_box_template', ['string']);
         $resolver->setAllowedTypes('table_template', ['string']);
         $resolver->setAllowedTypes('limit_choices', ['array']);
+        $resolver->setAllowedTypes('default_sort', ['array']);
 
         /*
          * Data Loader
@@ -560,4 +564,55 @@ class Table
         return array_key_exists($extension, $this->extensions);
     }
 
+    public function getDefaultSortColumns() {
+        return $this->options['default_sort'];
+    }
+
+    private function getSortOrderFromQuery(SortableColumnInterface $column) {
+        $query = $this->request->query;
+        if($query->get($column->getOrderEnabledQueryParameter()) !== '1') return null;
+
+        $order = $query->get($column->getOrderAscQueryParameter());
+        if($order === null) return null;
+
+        return $order ? 'ASC' : 'DESC';
+    }
+
+    public function getSortOrder(AbstractColumn $column) {
+        if(!$this->isSortable()) return null;
+
+        if(!$column instanceof SortableColumnInterface || !$column->isSortable()) return null;
+
+        $sortedColumns = $this->getSortedColumns();
+        $sortExpression = $column->getSortExpression();
+
+        if(array_key_exists($sortExpression, $sortedColumns)) {
+            return $sortedColumns[$sortExpression];
+        }
+
+        return null;
+    }
+
+    public function getSortedColumns() {
+        if($this->sortedColumns !== null) return $this->sortedColumns;
+
+        $sortedColumns = [];
+
+        foreach($this->getColumns() as $column) {
+            if(!$column instanceof SortableColumnInterface || !$column->isSortable()) continue;
+
+            $order = $this->getSortOrderFromQuery($column);
+            if($order) {
+                $sortedColumns[$column->getSortExpression()] = $order;
+            }
+        }
+
+        $this->sortedColumns = $sortedColumns ? $sortedColumns : $this->getDefaultSortColumns();
+
+        return $this->sortedColumns;
+    }
+
+    public function updateSortOrder(SortableColumnInterface $column, $order = null) {
+
+    }
 }

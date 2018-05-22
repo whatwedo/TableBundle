@@ -41,72 +41,16 @@ use whatwedo\TableBundle\Table\Table;
  */
 class CriteriaOrderEventListener
 {
-
-    /**
-     * @var RelationContent $relationContent
-     */
-    protected $relationContent;
-
-    /**
-     * @var Table $table
-     */
-    protected $table;
-
-    /**
-     * @var Request $request
-     */
-    protected $request;
-
     /**
      * @param CriteriaLoadEvent $event
      */
     public function orderResultSet(CriteriaLoadEvent $event)
     {
-        $this->relationContent = $event->getRelationContent();
-        $this->table = $event->getTable();
-        $this->request = $this->relationContent->getRequest();
-        $this->process();
+        $criteria = $event->getRelationContent()->getCriteria();
+
+        $criteria->orderBy(array_merge(
+            $event->getTable()->getSortedColumns(),
+            $criteria->getOrderings())
+        );
     }
-
-    /**
-     *
-     */
-    protected function process()
-    {
-        $columns = array_filter($this->table->getColumns()->toArray(), function ($column) {
-            return $this->sortThisColumn($column);
-        });
-        array_walk($columns, function ($column) {
-            $this->addOrderBy($column);
-        });
-    }
-
-    /**
-     * @param SortableColumnInterface $column
-     */
-    protected function addOrderBy(SortableColumnInterface $column)
-    {
-        $criteria = $this->relationContent->getCriteria();
-        $sortExp = $column->getSortExpression();
-
-        $criteria->orderBy(array_merge([
-            $sortExp => $this->request->query->has($column->getOrderAscQueryParameter())
-                && $this->request->query->get($column->getOrderAscQueryParameter()) == '0' ? Criteria::DESC : Criteria::ASC
-        ], $criteria->getOrderings()));
-
-
-    }
-
-    /**
-     * @param AbstractColumn $column
-     * @return boolean
-     */
-    protected function sortThisColumn(AbstractColumn $column)
-    {
-        return ($column instanceof SortableColumnInterface
-            && $column->isSortable()
-            && $this->request->query->has($column->getOrderEnabledQueryParameter())
-            && $this->request->query->get($column->getOrderEnabledQueryParameter()) === '1');
-    }
-
 }

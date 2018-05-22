@@ -1,32 +1,22 @@
-{% set currentRoute = app.request.attributes.get('_route') %}
-{% set currentQuery = app.request.query %}
-
+{# @var table \whatwedo\TableBundle\Table\Table #}
 <tr>
     {% for key, column in table.columns %}
-        <th
-        {% if table.sortable and column.sortableColumn and (column.ordered(app.request.query, 'ASC') or column.ordered(app.request.query, 'DESC')) %}
-            class="sorted"
-        {% endif %}
-        >
+        {% set columnSortOrder = table.getSortOrder(column) %}
+
+        <th{% if columnSortOrder %} class="sorted"{% endif %}>
             <nobr>
                 {{ column.label }}
-                {% if table.sortable %}
-                    {% if column.sortableColumn and column.isSortable %}
-                        &nbsp;
-                        {% if column.ordered(app.request.query, 'ASC') %}
-                            <a href="{{ column.orderQueryDESC(app.request.query) }}"><i class="fa fa-sort-asc"></i></a>
-                            <a href="{{ column.deleteOrder(app.request.query) }}"><i class="fa fa-times"></i></a>
-                        {% elseif column.ordered(app.request.query, 'DESC') %}
-                            <a href="{{ column.orderQueryASC(app.request.query) }}"><i class="fa fa-sort-desc"></i></a>
-                            <a href="{{ column.deleteOrder(app.request.query) }}"><i class="fa fa-times"></i></a>
-                        {% else %}
-                            <a class="ordering-test" href="{{ column.orderQueryASC(app.request.query) }}"><i class="fa fa-sort"></i></a>
-                        {% endif %}
+                {% if table.sortable and column.sortableColumn and column.isSortable %}
+                    &nbsp;
+                    {% if columnSortOrder == 'ASC' %}
+                        <a href="{{ column.orderQueryDESC(app.request.query) }}"><i class="fa fa-sort-asc"></i></a>
+                        <a href="{{ column.deleteOrder(app.request.query) }}"><i class="fa fa-times"></i></a>
+                    {% elseif columnSortOrder == 'DESC' %}
+                        <a href="{{ column.orderQueryASC(app.request.query) }}"><i class="fa fa-sort-desc"></i></a>
+                        <a href="{{ column.deleteOrder(app.request.query) }}"><i class="fa fa-times"></i></a>
+                    {% else %}
+                        <a href="{{ column.orderQueryASC(app.request.query) }}"><i class="fa fa-sort"></i></a>
                     {% endif %}
-                {% elseif table.rows.count > 0 and table.sortable %}
-                    <i class="fa fa-sort-asc show-asc"></i>
-                    <i class="fa fa-sort-desc show-desc"></i>
-                    <i class="fa fa-sort show-neither-asc-desc"></i>
                 {% endif %}
             </nobr>
         </th>
