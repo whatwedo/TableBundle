@@ -229,12 +229,17 @@ class Column extends AbstractColumn implements SortableColumnInterface
         $this->tableIdentifier = $identifier;
     }
 
+    private function getColumnIdentifier()
+    {
+        return $this->tableIdentifier.'_'.str_replace('.', '_', $this->getAcronym());
+    }
+
     /**
      * @return string
      */
     public function getOrderEnabledQueryParameter()
     {
-        return static::ORDER_ENABLED.$this->tableIdentifier.'_'.str_replace('.', '_', $this->getAcronym());
+        return static::ORDER_ENABLED.$this->getColumnIdentifier();
     }
 
     /**
@@ -242,7 +247,7 @@ class Column extends AbstractColumn implements SortableColumnInterface
      */
     public function getOrderAscQueryParameter()
     {
-        return static::ORDER_ASC.$this->tableIdentifier.'_'.str_replace('.', '_', $this->getAcronym());
+        return static::ORDER_ASC.$this->getColumnIdentifier();
     }
 
 }
