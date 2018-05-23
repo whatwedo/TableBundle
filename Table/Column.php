@@ -204,12 +204,13 @@ class Column extends AbstractColumn implements SortableColumnInterface
         ]);
         // remove parameter where is_order_... equals '0' aka not active
         $removeLater = [];
+        $offset = strlen(SortableColumnInterface::ORDER_ENABLED);
+
         foreach (array_keys($queryData) as $key) {
-            if (substr($key, 0, strlen(SortableColumnInterface::ORDER_ENABLED)) == SortableColumnInterface::ORDER_ENABLED) {
-                if ($queryData[$key] == '0') {
-                    $suffix = substr($key, strlen(SortableColumnInterface::ORDER_ENABLED));
-                    $removeLater[] = SortableColumnInterface::ORDER_ASC.$suffix;
+            if (substr($key, 0, $offset) == SortableColumnInterface::ORDER_ENABLED) {
+                if (!$queryData[$key]) {
                     $removeLater[] = $key;
+                    $removeLater[] = SortableColumnInterface::ORDER_ASC. substr($key, $offset);
                 }
             }
         }
@@ -218,7 +219,7 @@ class Column extends AbstractColumn implements SortableColumnInterface
                 unset($queryData[$key]);
             }
         }
-        return count($queryData) > 0 ? '?'.http_build_query($queryData) : '?';
+        return !empty($queryData) ? '?'.http_build_query($queryData) : '?';
     }
 
     /**
