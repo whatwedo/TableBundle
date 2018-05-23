@@ -10,12 +10,12 @@
                     &nbsp;
                     {% if columnSortOrder == 'ASC' %}
                         <a href="{{ column.orderQueryDESC(app.request.query) }}"><i class="fa fa-sort-asc"></i></a>
-                        <a href="{{ column.deleteOrder(app.request.query) }}"><i class="fa fa-times"></i></a>
-                    {% elseif columnSortOrder == 'DESC' %}
-                        <a href="{{ column.orderQueryASC(app.request.query) }}"><i class="fa fa-sort-desc"></i></a>
-                        <a href="{{ column.deleteOrder(app.request.query) }}"><i class="fa fa-times"></i></a>
                     {% else %}
-                        <a href="{{ column.orderQueryASC(app.request.query) }}"><i class="fa fa-sort"></i></a>
+                        <a href="{{ column.orderQueryASC(app.request.query) }}"><i class="fa fa-sort{{ columnSortOrder ? '-desc' }}"></i></a>
+                    {% endif %}
+
+                    {% if columnSortOrder and not table.defaultSort %}
+                        <a href="{{ column.deleteOrder(app.request.query) }}"><i class="fa fa-times"></i></a>
                     {% endif %}
                 {% endif %}
             </nobr>

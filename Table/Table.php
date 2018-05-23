@@ -612,6 +612,10 @@ class Table
         return $this->sortedColumns;
     }
 
+    public function isDefaultSort() {
+        return $this->getSortedColumns() == $this->getDefaultSortColumns();
+    }
+
     public function updateSortOrder(SortableColumnInterface $column, $order = null) {
 
     }
