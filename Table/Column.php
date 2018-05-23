@@ -192,19 +192,6 @@ class Column extends AbstractColumn implements SortableColumnInterface
 
     /**
      * @param ParameterBag $query
-     * @param $order
-     * @return bool
-     */
-    public function isOrdered(ParameterBag $query, $order)
-    {
-        return $query->has($this->getOrderEnabledQueryParameter())
-            && $query->get($this->getOrderEnabledQueryParameter()) == '1'
-            && $query->has($this->getOrderAscQueryParameter())
-            && $query->get($this->getOrderAscQueryParameter()) == ($order == 'ASC') ? '1' : '0';
-    }
-
-    /**
-     * @param ParameterBag $query
      * @param $enabled
      * @param $asc
      * @return string

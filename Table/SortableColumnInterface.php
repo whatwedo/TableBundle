@@ -67,13 +67,6 @@ interface SortableColumnInterface
     public function getDeleteOrder(ParameterBag $query);
 
     /**
-     * @param ParameterBag $query
-     * @param $order
-     * @return bool
-     */
-    public function isOrdered(ParameterBag $query, $order);
-
-    /**
      * @return string
      */
     public function getOrderValue($row);
