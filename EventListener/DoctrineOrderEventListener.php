@@ -78,7 +78,9 @@ class DoctrineOrderEventListener
     private function process()
     {
         foreach($this->table->getSortedColumns() as $column => $order) {
-            $this->addOrderBy($column, $order);
+            foreach(explode(',', $column) as $sortExp) {
+                $this->addOrderBy($sortExp, $order);
+            }
         }
     }
 
