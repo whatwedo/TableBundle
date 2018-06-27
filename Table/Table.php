@@ -593,9 +593,7 @@ class Table
         return null;
     }
 
-    public function getSortedColumns() {
-        if($this->sortedColumns !== null) return $this->sortedColumns;
-
+    public function getSortedColumns($useDefault = true) {
         $sortedColumns = [];
 
         foreach($this->getColumns() as $column) {
@@ -607,13 +605,12 @@ class Table
             }
         }
 
-        $this->sortedColumns = $sortedColumns ? $sortedColumns : $this->getDefaultSortColumns();
-
-        return $this->sortedColumns;
+        if(!$sortedColumns && $useDefault) return $this->getDefaultSortColumns();
+        return $sortedColumns;
     }
 
     public function isDefaultSort() {
-        return $this->getSortedColumns() == $this->getDefaultSortColumns();
+        return $this->getSortedColumns(false) != $this->getSortedColumns();
     }
 
     public function updateSortOrder(SortableColumnInterface $column, $order = null) {
