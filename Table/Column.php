@@ -232,7 +232,7 @@ class Column extends AbstractColumn implements SortableColumnInterface
 
     private function getColumnIdentifier()
     {
-        return $this->tableIdentifier.'_'.str_replace('.', '_', $this->getAcronym());
+        return str_replace('.', '_', $this->tableIdentifier.'_'.$this->getAcronym());
     }
 
     /**
