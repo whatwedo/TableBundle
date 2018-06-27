@@ -123,6 +123,16 @@ class FilterExtension extends AbstractExtension
 
     /**
      * @param $acronym
+     * @return $this
+     */
+    public function removeAll()
+    {
+        $this->filters = [];
+        return $this;
+    }
+
+    /**
+     * @param $acronym
      * @return Filter
      */
     public function getFilter($acronym)
