@@ -32,12 +32,14 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use whatwedo\TableBundle\Builder\FilterBuilder;
 use whatwedo\TableBundle\Exception\InvalidFilterAcronymException;
 use whatwedo\TableBundle\Filter\Type\AjaxManyToManyFilterType;
+use whatwedo\TableBundle\Filter\Type\AjaxOneToManyFilterType;
 use whatwedo\TableBundle\Filter\Type\AjaxRelationFilterType;
 use whatwedo\TableBundle\Filter\Type\BooleanFilterType;
 use whatwedo\TableBundle\Filter\Type\DateFilterType;
@@ -191,6 +193,7 @@ class FilterExtension extends AbstractExtension
         foreach ($properties as $property)
         {
             $ormColumn = $reader->getPropertyAnnotation($property, Column::class);
+            $ormOneToMany = $reader->getPropertyAnnotation($property, OneToMany::class);
             $ormManyToOne = $reader->getPropertyAnnotation($property, ManyToOne::class);
             $ormManyToMany = $reader->getPropertyAnnotation($property, ManyToMany::class);
             $acronym = $property->getName();
@@ -228,7 +231,18 @@ class FilterExtension extends AbstractExtension
                     case 'boolean':
                         $filterExtension->addFilter($acronym, $label, new BooleanFilterType($accessor));
                 }
-            } else if (!is_null($ormManyToOne)) {
+            } else if (!is_null($ormOneToMany)) {
+                $target = $ormOneToMany->targetEntity;
+                if (strpos($target, '\\') === false) {
+                    $target = preg_replace('#[a-zA-Z0-9]+$#i', $target, $entityClass);
+                }
+
+                $joins = [];
+                if (!in_array($acronym, $queryBuilder->getAllAliases())) {
+                    $joins = [$acronym => sprintf('%s.%s', $queryAlias, $acronym)];
+                }
+                $filterExtension->addFilter($acronym, $label, new AjaxOneToManyFilterType($accessor, $target, $this->doctrine, $joins));
+            }  else if (!is_null($ormManyToOne)) {
                 $target = $ormManyToOne->targetEntity;
                 if (strpos($target, '\\') === false) {
                     $target = preg_replace('#[a-zA-Z0-9]+$#i', $target, $entityClass);
