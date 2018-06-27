@@ -10,7 +10,7 @@
                 class="disabled"
             {% endif %}
         >
-            <a href="{% if pagination.currentPage > 1 %}{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : 1 }) }}{% else %}#{% endif %}" aria-label="Erste Seite" title="Erste Seite">
+            <a href="{% if pagination.currentPage > 1 %}{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : 1 }) }}#whatwedo_table_{{ table.identifier }}{% else %}#{% endif %}" aria-label="Erste Seite" title="Erste Seite">
                 <span aria-hidden="true"><i class="fa fa-fast-backward"></i></span>
                 <span class="sr-only">Erste Seite</span>
             </a>
@@ -22,7 +22,7 @@
                 class="disabled"
             {% endif %}
         >
-            <a href="{% if pagination.currentPage > 1 %}{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : pagination.currentPage - 1 }) }}{% else %}#{% endif %}" aria-label="Vorherige Seite" title="Vorherige Seite">
+            <a href="{% if pagination.currentPage > 1 %}{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : pagination.currentPage - 1 }) }}#whatwedo_table_{{ table.identifier }}{% else %}#{% endif %}" aria-label="Vorherige Seite" title="Vorherige Seite">
                 <span aria-hidden="true"><i class="fa fa-step-backward"></i></span>
                 <span class="sr-only">Vorherige Seite</span>
             </a>
@@ -33,7 +33,7 @@
             {% set page = pagination.currentPage - i %}
             {% if page > 0 %}
                 <li>
-                    <a href="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : page }) }}">
+                    <a href="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : page }) }}#whatwedo_table_{{ table.identifier }}">
                         {{ page }}
                     </a>
                 </li>
@@ -42,7 +42,7 @@
 
         {# current #}
         <li class="active">
-            <a href="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : pagination.currentPage }) }}">
+            <a href="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : pagination.currentPage }) }}#whatwedo_table_{{ table.identifier }}">
                 {{ pagination.currentPage }}
                 <span class="sr-only">(aktuelle Seite)</span>
             </a>
@@ -54,7 +54,7 @@
             {% set page = pagination.currentPage + i %}
             {% if page < ( pagination.totalPages + 1 ) %}
                 <li>
-                    <a href="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : page }) }}">
+                    <a href="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : page }) }}#whatwedo_table_{{ table.identifier }}">
                         {{ page }}
                     </a>
                 </li>
@@ -68,7 +68,7 @@
                 class="disabled"
             {% endif %}
         >
-            <a href="{% if pagination.currentPage != pagination.totalPages %}{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : pagination.currentPage + 1 }) }}{% else %}#{% endif %}" aria-label="Nächste Seite" title="Nächste Seite">
+            <a href="{% if pagination.currentPage != pagination.totalPages %}{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : pagination.currentPage + 1 }) }}#whatwedo_table_{{ table.identifier }}{% else %}#{% endif %}" aria-label="Nächste Seite" title="Nächste Seite">
                 <span aria-hidden="true"><i class="fa fa-step-forward"></i></span>
                 <span class="sr-only">Nächste Seite</span>
             </a>
@@ -82,7 +82,7 @@
                 class="disabled"
             {% endif %}
         >
-            <a href="{% if pagination.currentPage != pagination.totalPages %}{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : pagination.totalPages }) }}{% else %}#{% endif %}" aria-label="Letzte Seite" title="Letzte Seite">
+            <a href="{% if pagination.currentPage != pagination.totalPages %}{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : pagination.totalPages }) }}#whatwedo_table_{{ table.identifier }}{% else %}#{% endif %}" aria-label="Letzte Seite" title="Letzte Seite">
                 <span aria-hidden="true"><i class="fa fa-fast-forward"></i></span>
                 <span class="sr-only">Letzte Seite</span>
             </a>
