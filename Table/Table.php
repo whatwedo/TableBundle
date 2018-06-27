@@ -380,7 +380,7 @@ class Table
      */
     public function getActionQueryParameter($action)
     {
-        return sprintf('%s_%s', $this->getIdentifier(), $action);
+        return sprintf('%s_%s', str_replace('.', '_', $this->getIdentifier()), $action);
     }
 
     /**
