@@ -212,7 +212,7 @@ class FilterExtension extends AbstractExtension
                 $labelCallable = function (DoctrineTable $table, $property) {
                     foreach ($table->getColumns() as $column) {
                         if ($column->getAcronym() == $property) {
-                            return $column->getLabel();
+                            return $column->getLabel() ?: ucfirst($property);
                         }
                     }
                     return ucfirst($property);
