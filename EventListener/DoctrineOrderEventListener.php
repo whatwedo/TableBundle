@@ -71,7 +71,10 @@ class DoctrineOrderEventListener
      */
     private function process()
     {
-        foreach($this->table->getSortedColumns() as $column => $order) {
+        $sortedColumns = $this->table->getSortedColumns();
+        if(!empty($sortedColumns)) $this->queryBuilder->resetDQLPart('orderBy');
+
+        foreach($sortedColumns as $column => $order) {
             foreach(explode(',', $column) as $sortExp) {
                 $this->addOrderBy($sortExp, $order);
             }
