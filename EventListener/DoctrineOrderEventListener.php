@@ -89,15 +89,23 @@ class DoctrineOrderEventListener
     private function addOrderBy(string $sortExp, string $order) {
         $alias = $this->queryBuilder->getRootAliases()[0];
 
-        $sortExp = strpos($sortExp, '.') ? $sortExp : sprintf('%s.%s', $alias, $sortExp);
-
-        // TODO: handle multi-level sort expressions (split, join all parts in order if not found)
-        if (!in_array(explode('.', $sortExp)[0], $this->queryBuilder->getAllAliases())) {
-
-            $notFound = explode('.', $sortExp)[0];
-
-            $this->queryBuilder->leftJoin(sprintf('%s.%s', $alias, $notFound), $notFound);
+        if(strpos($sortExp, '.') === false) {
+            $sortExp = sprintf('%s.%s', $alias, $sortExp);
         }
+
+        $allAliases = $this->queryBuilder->getAllAliases();
+
+        $sortAliases = array_slice(explode('.', $sortExp), 0, -1);
+
+        foreach($sortAliases as $sortAlias) {
+            if(!in_array($sortAlias, $allAliases)) {
+                $this->queryBuilder->leftJoin(sprintf('%s.%s', $alias, $sortAlias), $sortAlias);
+            }
+
+            $alias = $sortAlias;
+        }
+
+        $sortExp = implode('.', array_slice(explode('.', $sortExp), -2));
 
         $this->queryBuilder->addOrderBy(
             $sortExp,
