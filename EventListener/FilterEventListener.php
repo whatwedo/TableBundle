@@ -70,7 +70,7 @@ class FilterEventListener
 
     private function addQueryBuilderFilter()
     {
-        $addedJoins = [];
+        $addedJoins = $this->queryBuilder()->getAllAliases();
 
         $orX = $this->queryBuilder()->expr()->orX();
 
