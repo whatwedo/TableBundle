@@ -113,9 +113,9 @@ class AjaxOneToManyFilterType extends FilterType
         $queryBuilder->setParameter($targetParameter, $targetValue);
         switch ($operator) {
             case static::CRITERIA_EQUAL:
-                return $queryBuilder->expr()->in(':'.$targetParameter, $this->column);
+                return $queryBuilder->expr()->in($this->column, ':'.$targetParameter);
             case static::CRITERIA_NOT_EQUAL:
-                return sprintf(':%s NOT IN %s', $targetParameter, $this->column);
+                return sprintf(':%s NOT IN %s', $this->column, $targetParameter);
         }
         return false;
     }
