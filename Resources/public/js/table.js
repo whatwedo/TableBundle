@@ -265,10 +265,6 @@ var whatwedoTable = {
             } else {
                 $whatwedoTableFilters.slideDown();
                 $whatwedoTableFilters.addClass('active');
-                var filter_value = $('.whatwedo_table__filters_filter [name^="' + $table.data('identifier') + '_filter_value"]');
-                if (filter_value.is('select')) {
-                    $('.whatwedo_table__filters_filter [name^="' + $table.data('identifier') + '_filter_value"]').select2();
-                }
             }
         });
 
