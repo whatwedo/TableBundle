@@ -53,11 +53,6 @@ class DoctrineOrderEventListener
     private $queryBuilder;
 
     /**
-     * @var bool $first
-     */
-    private $first = true;
-
-    /**
      * @param DataLoadEvent $event
      */
     public function orderResultSet(DataLoadEvent $event)
@@ -68,7 +63,6 @@ class DoctrineOrderEventListener
 
         $this->table = $event->getTable();
         $this->queryBuilder = $this->table->getQueryBuilder();
-        $this->first = true;
         $this->process();
     }
 
@@ -90,22 +84,19 @@ class DoctrineOrderEventListener
      * @throws \Exception
      */
     private function addOrderBy(string $sortExp, string $order) {
-        $alias = count($this->queryBuilder->getRootAliases()) > 0 ? $this->queryBuilder->getRootAliases()[0] : '';
+        $alias = $this->queryBuilder->getRootAliases()[0];
 
-        $sortExp = strpos($sortExp, '.') !== false
-            ? $sortExp
-            : sprintf('%s.%s', $alias, $sortExp);
+        $sortExp = strpos($sortExp, '.') ? $sortExp : sprintf('%s.%s', $alias, $sortExp);
 
-        $addOrderByFunction = $this->first ? 'orderBy' : 'addOrderBy';
-
-        $this->first = false;
-
+        // TODO: handle multi-level sort expressions (split, join all parts in order if not found)
         if (!in_array(explode('.', $sortExp)[0], $this->queryBuilder->getAllAliases())) {
+
             $notFound = explode('.', $sortExp)[0];
-            throw new \Exception(sprintf('"%s" is not defined in querybuilder. Please override getQueryBuilder in your definition and add a join. For example: %s%s ->leftJoin(sprintf(\'%%s.%s\', self::getQueryAlias()), \'%s\')', $notFound, PHP_EOL, PHP_EOL, $notFound, $notFound));
+
+            $this->queryBuilder->leftJoin(sprintf('%s.%s', $alias, $notFound), $notFound);
         }
 
-        $this->queryBuilder->$addOrderByFunction(
+        $this->queryBuilder->addOrderBy(
             $sortExp,
             $order
         );
