@@ -1,7 +1,4 @@
 var whatwedoTable = {
-    /**
-     * Anklickbare Tabellenzeilen
-     */
     clickableRows: function() {
         $(document).on('click', '.whatwedo_table tr[data-href], .dataTable tr[data-href]', function(e) {
             var $this = $(this);
@@ -15,19 +12,8 @@ var whatwedoTable = {
 
     },
 
-    /**
-     * current ongoing AJAX request
-     */
     currentRequest: null,
 
-    /**
-     * loads updated data from the database
-     * @param url
-     * @param data
-     * @param failCallback
-     * @param method
-     * @param animate
-     */
     loadContent: function(url, data, failCallback, method, animate, replace, showLoad, callback) {
         if (typeof data === 'undefined') {
             data = null;
@@ -178,13 +164,8 @@ var whatwedoTable = {
     },
 
     filters: function($table) {
-        // Template
         var filterTemplate = $('#whatwedo_table__' + $table.data('identifier') + '__filters__template__block').text();
 
-        // jQuery Elemente
-        var $whatwedoTableFilters = null;
-
-        // Functiosn
         var optionNameMatcher = /filter_([\w\d]+)\[(\d)\]\[(\d)\]/i;
 
         var findCurrentBlocksBlockIteratorNumber = function($blocksContainer) {
@@ -229,6 +210,7 @@ var whatwedoTable = {
             $blocksContainer.append(block);
         });
 
+        // TODO: fix for empty filters (i.e. $lastBlocksContainer undefined)
         $(document).on('click', '#whatwedo_table_' + $table.data('identifier') + ' [data-filter-action="add-or"]', function(e) {
             e.preventDefault();
             var $lastBlocksContainer = $('#whatwedo_table_' + $table.data('identifier')).find('.whatwedo_table__filters__blocks:last');
@@ -273,14 +255,12 @@ var whatwedoTable = {
             var $parentBlock = $this.parents('.whatwedo_table__filters_filter');
             var $choosenOption = $this.find(":selected");
 
-            // Operator
             var $operator = $parentBlock.find('select[name^="' + $table.data('identifier') + '_filter_operator"]');
             $operator.empty();
             $.each($choosenOption.data('operator-options'), function(key, name) {
                 $operator.append('<option value=' + key + '>' + name + '</option>')
             });
 
-            // Field
             var $field = $parentBlock.find('[name^="' + $table.data('identifier') + '_filter_value"]');
 
             if (typeof $field.data('select2') !== 'undefined') {
@@ -315,7 +295,7 @@ var whatwedoTable = {
 
     tableHeader: function() {
         $('.whatwedo_table_inner[data-fixed-header]').stickyTableHeaders({
-            fixedOffset: 105
+            fixedOffset: 50
         });
     },
 
@@ -381,14 +361,14 @@ var whatwedoTable = {
     init: function() {
         var _ = this;
 
+        _.clickableRows();
+        _.tableHeader();
+        _.initExport();
         $('.whatwedo_table').each(function() {
             var $table = $(this);
 
-            _.clickableRows();
             _.filters($table);
-            _.tableHeader();
             _.setLimit($table);
-            _.initExport($table);
         });
     }
 };
