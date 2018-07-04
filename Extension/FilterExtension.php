@@ -242,10 +242,10 @@ class FilterExtension extends AbstractExtension
      * @param callable $labelCallable
      * @param ReflectionProperty $property
      * @param string $namespace
-     * @return void
+     * @return Filter|null
      * @throws \Doctrine\Common\Annotations\AnnotationException
      */
-    private function addFilterAutomatically(DoctrineTable $table, QueryBuilder $queryBuilder, callable $labelCallable, ReflectionProperty $property, string $namespace): void
+    private function addFilterAutomatically(DoctrineTable $table, QueryBuilder $queryBuilder, callable $labelCallable, ReflectionProperty $property, string $namespace)
     {
         $acronym = $property->getName();
 
@@ -262,9 +262,11 @@ class FilterExtension extends AbstractExtension
             if ($annotation instanceof Column) {
                 if (key_exists($annotation->type, $this->scalarType)) {
                     $this->addFilter($acronym, $label, new $this->scalarType[$annotation->type]($accessor));
+
+                    return $this->getFilter($acronym);
                 }
 
-                return;
+                return null;
             }
 
             if ($annotation instanceof OneToMany || $annotation instanceof ManyToOne || $annotation instanceof ManyToMany) {
@@ -279,7 +281,7 @@ class FilterExtension extends AbstractExtension
 
                 $this->addFilter($acronym, $label, new $filterType($acronym, $target, $this->doctrine, $joins));
 
-                return;
+                return $this->getFilter($acronym);
             }
         }
     }
@@ -325,10 +327,7 @@ class FilterExtension extends AbstractExtension
      */
     public function getFilterColumns()
     {
-        $queryFilterColumn = $this->getRequest()->query->get($this->getActionQueryParameter('filter_column'), []);
-        $predefinedFilterId = $this->getRequest()->query->get($this->getActionQueryParameter(static::QUERY_PREDEFINED_FILTER), '');
-        $additionals = $this->getPredefinedFilter($predefinedFilterId);
-        return array_merge($queryFilterColumn, is_null($additionals) ? [] : $additionals['filter_column']);
+        return $this->getFromRequest('filter_column');
     }
 
     /**
@@ -336,10 +335,7 @@ class FilterExtension extends AbstractExtension
      */
     public function getFilterOperators()
     {
-        $queryFilterOperator = $this->getRequest()->query->get($this->getActionQueryParameter('filter_operator'), []);
-        $predefinedFilterId = $this->getRequest()->query->get($this->getActionQueryParameter(static::QUERY_PREDEFINED_FILTER), '');
-        $additionals = $this->getPredefinedFilter($predefinedFilterId);
-        return array_merge($queryFilterOperator, is_null($additionals) ? [] : $additionals['filter_operator']);
+        return $this->getFromRequest('filter_operator');
     }
 
     /**
@@ -347,10 +343,7 @@ class FilterExtension extends AbstractExtension
      */
     public function getFilterValues()
     {
-        $queryFilterValue = $this->getRequest()->query->get($this->getActionQueryParameter('filter_value'), []);
-        $predefinedFilterId = $this->getRequest()->query->get($this->getActionQueryParameter(static::QUERY_PREDEFINED_FILTER), '');
-        $additionals = $this->getPredefinedFilter($predefinedFilterId);
-        return array_merge($queryFilterValue, is_null($additionals) ? [] : $additionals['filter_value']);
+        return $this->getFromRequest('filter_value');
 
     }
 
@@ -366,5 +359,11 @@ class FilterExtension extends AbstractExtension
     public static function isEnabled($enabledBundles)
     {
         return true;
+    }
+
+    private function getFromRequest(string $param) {
+        $value = $this->getRequest()->query->get($this->getActionQueryParameter($param), []);
+        $predefined = $this->getPredefinedFilter($this->getRequest()->query->get($this->getActionQueryParameter(static::QUERY_PREDEFINED_FILTER), ''));
+        return $predefined ? array_merge($value, $predefined[$param]) : $value;
     }
 }
