@@ -91,11 +91,9 @@ class SearchEventListener
             return;
         }
 
-        $model = $table->getQueryBuilder()->getDQLPart('from')[0]->getFrom();
+        $model = $table->getQueryBuilder()->getRootEntities()[0];
         $ids = $this->em->getRepository(Index::class)->search($query, $model);
-        if (is_numeric($query)) {
-            $ids[] = (int)$query;
-        }
+
         $table->getQueryBuilder()->andWhere(sprintf(
             '%s.id IN (:q_ids)',
             $table->getQueryBuilder()->getRootAliases()[0]
