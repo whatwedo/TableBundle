@@ -340,7 +340,7 @@ var whatwedoTable = {
         $(document).ready(function(){
             $('[data-whatwedo-table-export-csv-current]').on('click', function(event) {
                 event.preventDefault();
-                var trs = $(this).parents('#whatwedo_table').find('tr[data-href]');
+                var trs = $(this).parents('.whatwedo_table').find('tr[data-href]');
                 var q = '';
                 for (var i = 0; i < trs.length; i++) {
                     q += i == 0 ? '?' : '&';
