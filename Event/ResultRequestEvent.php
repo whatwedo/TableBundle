@@ -26,6 +26,7 @@
  */
 
 namespace whatwedo\TableBundle\Event;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -52,6 +53,11 @@ class ResultRequestEvent extends Event
      * @var string $term
      */
     protected $term;
+
+    /**
+     * @var QueryBuilder|null
+     */
+    protected $queryBuilder;
 
     /**
      * ResultRequestEvent constructor.
@@ -91,10 +97,34 @@ class ResultRequestEvent extends Event
     }
 
     /**
+     * @param string $entity
+     */
+    public function setEntity(string $entity): void
+    {
+        $this->entity = $entity;
+    }
+
+    /**
      * @return string
      */
     public function getTerm()
     {
         return $this->term;
+    }
+
+    /**
+     * @return QueryBuilder|null
+     */
+    public function getQueryBuilder(): ?QueryBuilder
+    {
+        return $this->queryBuilder;
+    }
+
+    /**
+     * @param QueryBuilder|null $queryBuilder
+     */
+    public function setQueryBuilder(?QueryBuilder $queryBuilder): void
+    {
+        $this->queryBuilder = $queryBuilder;
     }
 }

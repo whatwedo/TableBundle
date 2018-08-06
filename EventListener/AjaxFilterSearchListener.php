@@ -88,9 +88,9 @@ class AjaxFilterSearchListener
         $result->error = true;
         if ($class !== false && $term !== false) {
             $ids = $this->indexRepository->search($term, $class);
-            $entities = $this->em->getRepository($class)
-                ->createQueryBuilder('e')
-                ->where('e.id IN (:ids)')
+            $queryBuilder = $requestEvent->getQueryBuilder() ?: $this->em->getRepository($class)
+                ->createQueryBuilder('e');
+            $entities = $queryBuilder->andWhere($queryBuilder->getRootAliases()[0].'.id IN (:ids)')
                 ->setParameter('ids', $ids)
                 ->getQuery()
                 ->getResult()
