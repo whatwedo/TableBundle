@@ -16,13 +16,13 @@
 }) %}
 
 <div {{ macros.attributes(contentAttr) }}>
-    {% if title or table.isSearchable %}
+    {% if title or table.isSearchable or table.exportRoute %}
         <div class="box-header">
             {% if title %}
             <h3 class="box-title">{{ title }}</h3>
             {% endif %}
 
-            {% if table.isSearchable %}
+            {% if table.isSearchable or table.exportRoute %}
             {% include 'whatwedoTableBundle::_search.html.twig' %}
             {% endif %}
         </div>

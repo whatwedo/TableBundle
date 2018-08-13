@@ -1,4 +1,4 @@
-{% if table.searchExtension is not null or table.paginationExtension is not null or table.filterExtension is not null %}
+{% if table.searchExtension is not null or table.paginationExtension is not null or table.filterExtension is not null or table.exportRoute %}
     <div class="box-tools whatwedo_table-search">
         <form action="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : 1 }) }}">
             <div class="input-group input-group-sm">
@@ -33,6 +33,26 @@
                         <button type="button" data-toggle="filter" class="btn btn-success" title="Filter">
                             <i class="fa fa-filter"></i>
                         </button>
+                    {% endif %}
+                    {% if table.exportRoute %}
+
+                            <div class="btn-group btn-group-sm dropdown">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data- aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-download"></i><span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li>
+                                        <a href="#" data-whatwedo-table-export-csv-current data-export="{{ path(table.exportRoute) }}">
+                                            Aktuell angezeigte (.csv Excel)
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" data-whatwedo-table-export-csv-all data-export="{{ path(table.exportRoute) }}">
+                                            Alle (.csv Excel)
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                     {% endif %}
                 </span>
             </div>
