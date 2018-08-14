@@ -233,8 +233,8 @@ var whatwedoTable = {
             $block.remove();
 
             if ($blocksContainer.find('.whatwedo_table__filters__block').length === 0) {
+                $blocksContainer.closest('.whatwedo_table__filters').submit();
                 $blocksContainer.remove();
-                $('#whatwedo_table__filters').submit();
             }
         });
 
