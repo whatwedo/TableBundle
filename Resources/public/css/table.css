@@ -25,12 +25,8 @@
   cursor: pointer;
 }
 
-.whatwedo_table .whatwedo_table-search {
-  width: 300px;
-}
-
 .whatwedo_table .whatwedo_table-search select {
-  width: 70px;
+  width: auto;
   float: right;
 }
 
