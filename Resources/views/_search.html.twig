@@ -1,5 +1,5 @@
 {% if table.searchExtension is not null or table.paginationExtension is not null or table.filterExtension is not null or table.exportRoute %}
-    <div class="box-tools whatwedo_table-search">
+    <div class="whatwedo_table-search">
         <form action="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : 1 }) }}">
             <div class="input-group input-group-sm">
                 {% if table.searchExtension is not null %}
