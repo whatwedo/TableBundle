@@ -78,7 +78,7 @@ class ActionColumn extends AbstractColumn
         return $this->templating->render('whatwedoTableBundle::_actions.html.twig', [
             'row' => $row,
             'helper' => $this,
-            'items' => $this->options['items']
+            'items' => is_callable($this->options['items']) ? $this->options['items']($row) : $this->options['items']
         ]);
     }
 }
