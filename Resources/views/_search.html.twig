@@ -47,7 +47,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="{{ path(table.exportRoute, {(table.identifier ~ '_page'): 1, (table.identifier ~ '_limit'): -1}) }}">
+                                        <a href="{{ path(table.exportRoute, {(table.actionQueryParameter('page')): 1, (table.actionQueryParameter('limit')): -1}) }}">
                                             Alle (.csv Excel)
                                         </a>
                                     </li>
