@@ -336,25 +336,6 @@ var whatwedoTable = {
         return true;
     },
 
-    initExport: function() {
-        $(document).ready(function(){
-            $('[data-whatwedo-table-export-csv-current]').on('click', function(event) {
-                event.preventDefault();
-                var trs = $(this).parents('.whatwedo_table').find('tr[data-href]');
-                var q = '';
-                for (var i = 0; i < trs.length; i++) {
-                    q += i == 0 ? '?' : '&';
-                    q += 'ids[]=' + $(trs[i]).data('href').match(/[0-9]+$/g);
-                }
-                window.location.href = $(this).data('export') + q;
-            });
-            $('[data-whatwedo-table-export-csv-all]').on('click', function(event) {
-                event.preventDefault();
-                window.location.href = $(this).data('export') + '?ids[]=-1';
-            })
-        });
-    },
-
     /**
      * initialize class
      */
@@ -363,7 +344,6 @@ var whatwedoTable = {
 
         _.clickableRows();
         _.tableHeader();
-        _.initExport();
         $('.whatwedo_table').each(function() {
             var $table = $(this);
 
