@@ -41,7 +41,6 @@ class AjaxRelationFilterType extends FilterType
     const CRITERIA_NOT_EQUAL = 'not_equal';
 
     protected $emptyQuery;
-    protected $accessorPath;
     private $propToCheckAgainstId;
     protected $targetClass;
 
@@ -55,14 +54,13 @@ class AjaxRelationFilterType extends FilterType
      */
     protected static $propertyAccessor;
 
-    public function __construct($column, $targetClass, $doctrine, $joins = [], $emptyFieldsCheck = false, $accessorPath = false, $propToCheckAgainstId = 'id')
+    public function __construct($column, $targetClass, $doctrine, $joins = [], $emptyFieldsCheck = false, $propToCheckAgainstId = 'id')
     {
         if ($emptyFieldsCheck !== false
             && !is_array($emptyFieldsCheck)) {
             $emptyFieldsCheck = [$emptyFieldsCheck];
         }
         $this->emptyQuery = $emptyFieldsCheck;
-        $this->accessorPath = $accessorPath;
         $this->propToCheckAgainstId = $propToCheckAgainstId;
         $this->targetClass = $targetClass;
         $this->doctrine = $doctrine;
