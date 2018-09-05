@@ -29,8 +29,8 @@
                             </a>
                         {% endif %}
                     {% endif %}
-                    {% if table.filterExtension is not null and table.filterExtension.filters|length > 0 %}
-                        <button type="button" data-toggle="filter" class="btn btn-success" title="Filter">
+                    {% if table.filterExtension.filters|default([]) is not empty %}
+                        <button type="button" data-toggle="filter" class="btn btn-success {% if table.filterExtension.filterColumns is not empty %}active{% endif %}" title="Filter">
                             <i class="fa fa-filter"></i>
                         </button>
                     {% endif %}

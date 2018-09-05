@@ -207,10 +207,16 @@ var whatwedoTable = {
             var block = filterTemplate
                 .replace(/{iBlock}/g, currentBlockIteratorNumber.toString())
                 .replace(/{i}/g, (currentBlocksBlockIteratorNumber + 1).toString());
-            $blocksContainer.append(block);
+
+            var $block = $(block);
+
+            $blocksContainer.append($block);
+
+            $block.find('select').each(function(i, elem) {
+              whatwedo_select2.initElement(elem)
+            })
         });
 
-        // TODO: fix for empty filters (i.e. $lastBlocksContainer undefined)
         $(document).on('click', '#whatwedo_table_' + $table.data('identifier') + ' [data-filter-action="add-or"]', function(e) {
             e.preventDefault();
             var $lastBlocksContainer = $('#whatwedo_table_' + $table.data('identifier')).find('.whatwedo_table__filters__blocks:last');
@@ -220,7 +226,13 @@ var whatwedoTable = {
                 .replace(/{i}/g, '1');
             block = '<div class="whatwedo_table__filters__blocks"><p><strong>oder</strong></p>' + block + '</div>';
 
-            $lastBlocksContainer.after(block);
+            var $block = $(block);
+
+            $lastBlocksContainer.after($block);
+
+            $block.find('select').each(function(i, elem) {
+              whatwedo_select2.initElement(elem)
+            })
         });
 
         $(document).on('click', '#whatwedo_table_' + $table.data('identifier') + ' [data-filter-action="remove"]', function(e) {
@@ -244,9 +256,11 @@ var whatwedoTable = {
             if ($whatwedoTableFilters.hasClass('active')) {
                 $whatwedoTableFilters.slideUp();
                 $whatwedoTableFilters.removeClass('active')
+                $(this).removeClass('active')
             } else {
                 $whatwedoTableFilters.slideDown();
                 $whatwedoTableFilters.addClass('active');
+                $(this).addClass('active')
             }
         });
 
@@ -271,13 +285,8 @@ var whatwedoTable = {
             $field.replaceWith(template.replace(/{name}/g, fieldName));
             $field = $parentBlock.find('[name^="' + $table.data('identifier') + '_filter_value"]');
 
-            if ($field.prop('tagName') === 'SELECT'
-                && typeof $field.attr('data-disable-interactive') === 'undefined') {
-                if (typeof $field.attr('data-ajax-select') === 'undefined') {
-                    whatwedo_select2.select2($field[0]);
-                } else {
-                    whatwedo_select2.ajaxSelect2($field[0]);
-                }
+            if ($field.prop('tagName') === 'SELECT') {
+                whatwedo_select2.initElement($field[0])
             }
         });
 

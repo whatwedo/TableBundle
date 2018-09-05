@@ -325,6 +325,30 @@ class FilterExtension extends AbstractExtension
     /**
      * @return array
      */
+    public function getFilterData() {
+        $operators = $this->getFilterOperators();
+        $values = $this->getFilterValues();
+
+        $data = [];
+        foreach($this->getFilterColumns() as $groupIndex => $columns) {
+            $group = [];
+
+            foreach($columns as $index => $column) {
+                $group[$column] = [
+                    'operator' => $operators[$groupIndex][$index],
+                    'value' => $values[$groupIndex][$index]
+                ];
+            }
+
+            $data[] = $group;
+        }
+
+        return $data;
+    }
+
+    /**
+     * @return array
+     */
     public function getFilterColumns()
     {
         return $this->getFromRequest('filter_column');

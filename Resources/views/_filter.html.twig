@@ -1,13 +1,21 @@
 {% import _self as whatwedo_table_filters %}
 
-{% macro filter(table, iBlock, i, filter, tableFilters, operation, value) %}
+{% macro filter(table, groupIndex, index, column, operator, value) %}
+    {# @var table \whatwedo\TableBundle\Table\Table #}
+
+    {% set tableFilters = table.filterExtension.filters %}
+    {% set filter = tableFilters[column] %}
+
+    {% if filter %}
+
+    {% set indexSuffix = '[' ~ groupIndex ~ '][' ~ index ~ ']' %}
     <div class="whatwedo_table__filters__block">
         <div class="whatwedo_table__filters_filter row">
-            <div class="col-xs-10 col-xs-offset-1">
+            <div class="col-xs-11">
                 <div class="row">
                     <div class="col-xs-4">
-                        <select name="{{ table.actionQueryParameter('filter_column') }}[{{ iBlock }}][{{ i }}]" class="form-control" data-disable-interactive>
-                            {% for f in table.filterExtension.filters %}
+                        <select name="{{ table.actionQueryParameter('filter_column') }}{{ indexSuffix }}" class="form-control">
+                            {% for f in tableFilters %}
                                 <option
                                     value="{{ f.acronym }}"
                                     data-operator-options="{{ f.type.operators|json_encode }}"
@@ -21,9 +29,9 @@
                         </select>
                     </div>
                     <div class="col-xs-3">
-                        <select name="{{ table.actionQueryParameter('filter_operator') }}[{{ iBlock }}][{{ i }}]" class="form-control" data-disable-interactive>
+                        <select name="{{ table.actionQueryParameter('filter_operator') ~ indexSuffix }}" class="form-control">
                             {% for key, name in filter.type.operators %}
-                                <option value="{{ key }}"{% if operation == key %} selected="selected"{% endif %}>
+                                <option value="{{ key }}"{% if operator == key %} selected="selected"{% endif %}>
                                     {{ name }}
                                 </option>
                             {% endfor %}
@@ -31,81 +39,60 @@
                     </div>
                     <div class="col-xs-5">
                         {{ filter.type.valueField(value)|replace({
-                            '{name}': (table.actionQueryParameter('filter_value')) ~ '[' ~ iBlock ~ '][' ~ i ~ ']'
+                            '{name}': (table.actionQueryParameter('filter_value') ~ indexSuffix)
                         })|raw }}
                     </div>
                 </div>
             </div>
             <div class="col-xs-1 text-right">
                 <div class="btn-group btn-group-xs" role="group">
-                    <button class="btn btn-default" data-filter-action="add-and">
-                        und
-                    </button>
-                    <button class="btn btn-danger" data-filter-action="remove">
-                        <i class="fa fa-times"></i>
-                    </button>
+                    <button class="btn btn-default" data-filter-action="add-and">und</button>
+                    <button class="btn btn-danger" data-filter-action="remove"><i class="fa fa-times"></i></button>
                 </div>
             </div>
         </div>
     </div>
+    {% endif %}
 {% endmacro %}
 
-{% if table.filterExtension is not null %}
+{# @var table \whatwedo\TableBundle\Table\Table #}
+{% if table.filterExtension %}
+    {% set app_username = app.user.username|default(null) %}
 
-    {% set filterColumns = table.filterExtension.filterColumns %}
-    {% set filterOperators = table.filterExtension.filterOperators %}
-    {% set filterValues = table.filterExtension.filterValues %}
-    {% set app_username = app.user is null ? null : app.user.username %}
+    {% set filterData = table.filterExtension.filterData %}
 
-    <form action="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')): 1 }) }}" class="whatwedo_table__filters {% if filterColumns|length %}active{% endif %}" data-ajax-url="{{ path('whatwedo_table_filter_load_relation_filter') }}">
-        {% if table.paginationExtension is not null %}
-            {% set pagination = table.paginationExtension %}
-            <input type="hidden" name="{{ table.actionQueryParameter('limit') }}" value="{{ pagination.limit }}" />
-        {% else %}
-            <input type="hidden" name="{{ table.actionQueryParameter('limit') }}" value="-1" />
-        {% endif %}
-        <div class="row">
-            <div class="col-xs-12">
-                <strong>
-                    Zeige Eintrage, wenn
-                </strong>
-            </div>
-        </div>
+    <form action="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')): 1 }) }}" class="whatwedo_table__filters {% if filterData %}active{% endif %} well" data-ajax-url="{{ path('whatwedo_table_filter_load_relation_filter') }}">
+        <input type="hidden" name="{{ table.actionQueryParameter('limit') }}" value="{{ table.paginationExtension.limit|default(-1) }}" />
 
-        {% set iCustom = 0 %}
-        {% for iBlock, filters in filterColumns %}
-            {% set iCustom = iCustom + 1 %}
+        {% for group in filterData %}
             <div class="whatwedo_table__filters__blocks">
-                {% if iCustom > 1 %}
+                {% if not loop.first %}
                     <p>
-                        <strong>
-                            oder
-                        </strong>
+                        <strong>oder</strong>
                     </p>
                 {% endif %}
-                {% for i, filterIdentifier in filters %}
-                    {% if table.filterExtension.filters[filterIdentifier] is defined %}
-                        {% set filterValue = filterValues[iBlock][i] is defined ? filterValues[iBlock][i] : '' %}
-                        {{ whatwedo_table_filters.filter(table, iBlock, i, table.filterExtension.filters[filterIdentifier], table.filterExtension.filters, filterOperators[iBlock][i], filterValue) }}
+                {% for column, data in group %}
+                    {% if table.filterExtension.filters[column] is defined %}
+                        {{ whatwedo_table_filters.filter(
+                            table,
+                            loop.parent.loop.index,
+                            loop.index,
+                            column,
+                            data.operator,
+                            data.value ?: ''
+                        ) }}
                     {% endif %}
                 {% endfor %}
             </div>
         {% else %}
             <div class="whatwedo_table__filters__blocks">
-                {{ whatwedo_table_filters.filter(table, 0, 0, table.filterExtension.filters|first, table.filterExtension.filters) }}
+                {{ whatwedo_table_filters.filter(table, 0, 0, table.filterExtension.filters|keys|first) }}
             </div>
         {% endfor %}
 
         <div class="row">
             <div class="col-xs-12">
-                <p>
-                    <strong>
-                        oder
-                    </strong>
-                </p>
-                <button class="btn-default btn btn-xs" data-filter-action="add-or">
-                    Oder-Regel hinzufügen
-                </button>
+                <button class="btn-default btn btn-xs" data-filter-action="add-or">Oder</button>
             </div>
         </div>
 
@@ -113,7 +100,7 @@
         <div class="row">
             <div class="col-xs-12 text-right">
                 <div class="btn-group" role="group">
-                    {% if table.filterExtension.savedFilter(app_username, app.request.attributes.get('_route')) | length > 0 %}
+                    {% if table.filterExtension.savedFilter(app_username, app.request.attributes.get('_route')) is not empty %}
                         <button type="button" class="btn btn-default" onclick="$('#whatwedo_table__{{ table.identifier }}__saved_filters').toggle()">
                             <i class="fa fa-list"></i>
                             Gespeicherte Filter
@@ -150,16 +137,16 @@
                 <td>{{ filter.stateAsString }}</td>
                 <td>
                     <div class="btn-group" role="group">
-                        {% if app.user.username == filter.creatorUsername %}<form method="post" action="{{ path('whatwedo_table_filter_direct_delete', {'id' : filter.id, 'token': csrf_token('token') }) }}">{% endif %}
-                            <a href="{{ filter_href }}" class="btn btn-primary btn-xs" title="" data-original-title="Aktiviere Filter">
-                                <i class="fa fa-arrow-right"></i>
-                            </a>
-                            {% if app.user.username == filter.creatorUsername %}
+                        <a href="{{ filter_href }}" class="btn btn-primary btn-xs" title="" data-original-title="Aktiviere Filter">
+                            <i class="fa fa-arrow-right"></i>
+                        </a>
+                        {% if app_username == filter.creatorUsername %}
+                        <form method="post" action="{{ path('whatwedo_table_filter_direct_delete', {'id' : filter.id, 'token': csrf_token('token') }) }}">
                                     <button class="btn btn-danger btn-xs" title="" data-original-title="Filter Löschen">
                                         <i class="fa fa-trash"></i>
                                     </button>
-                            {% endif %}
-                        {% if app.user.username == filter.creatorUsername %}</form>{% endif %}
+                            </form>
+                        {% endif %}
                     </div>
                 </td>
             </tr>
@@ -210,7 +197,7 @@
     </div>
 
     <script type="text/template" id="whatwedo_table__{{ table.identifier }}__filters__template__block">
-        {{ whatwedo_table_filters.filter(table, '{iBlock}', '{i}', table.filterExtension.filters|first, table.filterExtension.filters) }}
+        {{ whatwedo_table_filters.filter(table, '{iBlock}', '{i}', table.filterExtension.filters|keys|first) }}
     </script>
 
 {% endif %}
