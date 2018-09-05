@@ -102,7 +102,7 @@ class Table
     protected $templating;
 
     /**
-     * @var string
+     * @var string|callable
      */
     protected $showRoute;
 
@@ -323,13 +323,15 @@ class Table
     /**
      * @return string
      */
-    public function getShowRoute()
+    public function getShowRoute($row)
     {
+        if(is_callable($this->showRoute)) return call_user_func($this->showRoute, $row);
+
         return $this->showRoute;
     }
 
     /**
-     * @param string $showRoute
+     * @param string|callable $showRoute
      * @return $this
      */
     public function setShowRoute($showRoute)
@@ -380,6 +382,8 @@ class Table
      */
     public function getActionQueryParameter($action)
     {
+//        if($this->getIdentifier() === 'index') return $action;
+
         return sprintf('%s_%s', str_replace('.', '_', $this->getIdentifier()), $action);
     }
 
