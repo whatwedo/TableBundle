@@ -320,15 +320,17 @@ var whatwedoTable = {
     },
 
     setLimit: function($table) {
-      var buildUrl = function(base, key, value) {
-        var sep = (base.indexOf('?') > -1) ? '&' : '?';
-        return base + sep + key + '=' + value;
-      };
+        $('#whatwedo_table_' + $table.data('identifier') +' .whatwedo_table-limit').change(function() {
+          var hasQuery = window.location.href.indexOf('?') > -1;
 
-      $('#whatwedo_table_' + $table.data('identifier') +' select[name="limit"]').change(function(e) {
-            window.location.href = buildUrl(buildUrl(window.location.href, $table.data('identifier') + '_page', 1), $table.data('identifier') + '_limit', $(this).val());
-            e.preventDefault();
+          window.location.href += hasQuery ? '&' : '?' + whatwedoTable.prefixIdentifier($table, 'page') + '=1&'+
+                $(this).attr('name') + '=' + $(this).val();
         });
+    },
+
+    prefixIdentifier: function($table, action) {
+        var identifier = $table.data('identifier');
+        return identifier.replace(/\./g, '_') + '_' + action;
     },
 
     updateFormFilterValues: function($table) {
