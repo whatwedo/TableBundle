@@ -244,8 +244,13 @@ var whatwedoTable = {
 
             $block.remove();
 
-            if ($blocksContainer.find('.whatwedo_table__filters__block').length === 0) {
+            // reload page if all filter groups removed
+            if ($blocksContainer.closest('.whatwedo_table__filters').find('.whatwedo_table__filters__block').length === 0) {
                 $blocksContainer.closest('.whatwedo_table__filters').submit();
+            }
+
+            // remove group if all filters within removed
+            if ($blocksContainer.find('.whatwedo_table__filters__block').length === 0) {
                 $blocksContainer.remove();
             }
         });
