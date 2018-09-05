@@ -255,6 +255,12 @@ var whatwedoTable = {
             }
         });
 
+        $table.on('click', '.whatwedo_table__reset_filter', function() {
+            var form = $(this).closest('.whatwedo_table__filters');
+            form.find('.whatwedo_table__filters__block').remove();
+            form.submit()
+        })
+
         $(document).on('click', '#whatwedo_table_' + $table.data('identifier') + ' [data-toggle="filter"]', function() {
             var $whatwedoTableFilters = $('#whatwedo_table_' + $table.data('identifier') + ' .whatwedo_table__filters');
 
