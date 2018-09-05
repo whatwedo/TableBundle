@@ -42,6 +42,11 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-right">
                                     <li>
+                                        <a href="{{ path(table.exportRoute, app.request.query.all|merge({(table.actionQueryParameter('page')): 1, (table.actionQueryParameter('limit')): -1})) }}">
+                                            Aktuell gefilterte (.csv Excel)
+                                        </a>
+                                    </li>
+                                    <li>
                                         <a href="{{ path(table.exportRoute, app.request.query.all) }}">
                                             Aktuell angezeigte (.csv Excel)
                                         </a>
