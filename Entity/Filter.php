@@ -224,4 +224,14 @@ class Filter
         return FilterStateEnum::getRepresentation($this->state);
     }
 
+    public function getStateIcon() {
+        switch($this->state) {
+            case FilterStateEnum::ALL:
+                return 'world';
+            case FilterStateEnum::SELF:
+                return 'lock';
+            case FilterStateEnum::SYSTEM:
+                return 'gears';
+        }
+    }
 }
