@@ -25,45 +25,20 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Repository;
+namespace whatwedo\TableBundle\Table;
 
-use Doctrine\ORM\EntityRepository;
-use whatwedo\TableBundle\Entity\Filter;
-use whatwedo\TableBundle\Enum\FilterStateEnum;
+use whatwedo\CoreBundle\Manager\FormatterManager;
 
 /**
- * @author Nicolo Singer <nicolo@whatwedo.ch>
+ * Interface FormattableColumnInterface
+ * @package whatwedo\TableBundle\Table
  */
-class FilterRepository extends EntityRepository
+interface FormattableColumnInterface
 {
-    /**
-     * @param string $path Route-Path
-     * @param string $username Username
-     * @return Filter[]
-     */
-    public function findSavedFilter($path, $username)
-    {
-        $qb = $this->createQueryBuilder('f');
 
-        return $qb->where(
-                    $qb->expr()->andX(
-                        $qb->expr()->eq('f.route', ':path'),
-                        $qb->expr()->orX(
-                            $qb->expr()->orX(
-                                $qb->expr()->eq('f.state', FilterStateEnum::ALL),
-                                $qb->expr()->eq('f.state', FilterStateEnum::SYSTEM)
-                            ),
-                            $qb->expr()->andX(
-                                $qb->expr()->eq('f.state', FilterStateEnum::SELF),
-                                $qb->expr()->eq('f.creatorUsername', ':username')
-                            )
-                        )
-                    )
-                )
-            ->orderBy('f.name')
-            ->setParameter('path', $path)
-            ->setParameter('username', $username)
-            ->getQuery()
-            ->getResult();
-    }
+    /**
+     * @param FormatterManager $formatterManager
+     */
+    public function setFormatterManager(FormatterManager $formatterManager);
+
 }

@@ -25,45 +25,76 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Repository;
-
-use Doctrine\ORM\EntityRepository;
-use whatwedo\TableBundle\Entity\Filter;
-use whatwedo\TableBundle\Enum\FilterStateEnum;
+namespace whatwedo\TableBundle\Event;
+use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
- * @author Nicolo Singer <nicolo@whatwedo.ch>
+ * Class ResultRequestEvent
+ * @package whatwedo\TableBundle\Event
  */
-class FilterRepository extends EntityRepository
+class ResultRequestEvent extends Event
 {
-    /**
-     * @param string $path Route-Path
-     * @param string $username Username
-     * @return Filter[]
-     */
-    public function findSavedFilter($path, $username)
-    {
-        $qb = $this->createQueryBuilder('f');
+    const FILTER_SET = 'whatwedo_ajax.result_request.filter_set';
+    const RELATION_SET = 'whatwedo_ajax.result_request.relation_set';
 
-        return $qb->where(
-                    $qb->expr()->andX(
-                        $qb->expr()->eq('f.route', ':path'),
-                        $qb->expr()->orX(
-                            $qb->expr()->orX(
-                                $qb->expr()->eq('f.state', FilterStateEnum::ALL),
-                                $qb->expr()->eq('f.state', FilterStateEnum::SYSTEM)
-                            ),
-                            $qb->expr()->andX(
-                                $qb->expr()->eq('f.state', FilterStateEnum::SELF),
-                                $qb->expr()->eq('f.creatorUsername', ':username')
-                            )
-                        )
-                    )
-                )
-            ->orderBy('f.name')
-            ->setParameter('path', $path)
-            ->setParameter('username', $username)
-            ->getQuery()
-            ->getResult();
+    /**
+     * @var JsonResponse $result
+     */
+    protected $result;
+
+    /**
+     * @var string $entity
+     */
+    protected $entity;
+
+    /**
+     * @var string $term
+     */
+    protected $term;
+
+    /**
+     * ResultRequestEvent constructor.
+     * @param string $entity
+     * @param string $term
+     */
+    public function __construct($entity, $term)
+    {
+        $this->entity = $entity;
+        $this->term = $term;
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function getResult()
+    {
+        return $this->result;
+    }
+
+    /**
+     * @param JsonResponse $result
+     * @return $this
+     */
+    public function setResult($result)
+    {
+        $this->result = $result;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEntity()
+    {
+        return $this->entity;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTerm()
+    {
+        return $this->term;
     }
 }

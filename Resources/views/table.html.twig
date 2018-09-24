@@ -1,28 +1,52 @@
-<div class="box" id="whatwedo_table">
-    <div class="box-header">
-        <h3 class="box-title">{{ table.title }}</h3>
-        {% include 'whatwedoTableBundle::_search.html.twig' %}
-    </div>
+{% import "whatwedoTableBundle::_macros.html.twig" as macros %}
 
-    {% if table.filters|length > 0 %}
+{% if table.options.attr.class is not defined %}
+    {% set contentAttr = table.options.attr|merge({
+        class: 'box whatwedo_table whatwedo_table_' ~ table.identifier
+    }) %}
+{% else %}
+    {% set contentAttr = table.options.table_attr|merge({
+        class: 'box whatwedo_table whatwedo_table_' ~ table.identifier ~ ' ' ~ table.options.attr.class
+    }) %}
+{% endif %}
+
+{% set contentAttr = contentAttr|merge({
+    id: 'whatwedo_table_' ~ table.identifier,
+    'data-identifier': table.identifier
+}) %}
+
+<div {{ macros.attributes(contentAttr) }}>
+    {% if title or table.isSearchable %}
+        <div class="box-header">
+            {% if title %}
+            <h3 class="box-title">{{ title }}</h3>
+            {% endif %}
+
+            {% if table.isSearchable %}
+            {% include 'whatwedoTableBundle::_search.html.twig' %}
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% if table.filterExtension is not null and table.filterExtension.filters|length > 0 %}
     <div class="box-body">
         {% include 'whatwedoTableBundle::_filter.html.twig' %}
     </div>
     {% endif %}
 
-    <div class="box-body">
-        {% include "whatwedoTableBundle::_table.html.twig" with { 'tableAttributes': 'data-fixed-header' } %}
-    </div>
+<div class="box-body">
+{% include "whatwedoTableBundle::_table.html.twig" %}
+</div>
 
-    <div class="box-footer clearfix">
-        {% include 'whatwedoTableBundle::_foot.html.twig' %}
-    </div>
+<div class="box-footer clearfix">
+    {% include 'whatwedoTableBundle::_foot.html.twig' %}
+</div>
 
-    <div class="whatwedo_table-overlay">
-        <div class="spinner">
-            <div class="bounce1"></div>
-            <div class="bounce2"></div>
-            <div class="bounce3"></div>
-        </div>
-    </div>
+<div class="whatwedo_table-overlay">
+<div class="spinner">
+    <div class="bounce1"></div>
+    <div class="bounce2"></div>
+    <div class="bounce3"></div>
+</div>
+</div>
 </div>

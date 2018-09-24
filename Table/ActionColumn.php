@@ -35,13 +35,12 @@ class ActionColumn extends AbstractColumn
 {
     /**
      * @param OptionsResolver $resolver
-     * @return mixed
+     * @return void
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'items' => [],
-            'showActionColumn' => []
         ]);
     }
 
@@ -58,13 +57,15 @@ class ActionColumn extends AbstractColumn
         return 'text-right';
     }
 
-    public function addItem($label, $icon, $button, $route)
+    public function addItem($label, $icon, $button, $route, $routeParameters, $voterAttribute = null)
     {
         $this->options['items'][] = [
             'label' => $label,
             'icon' => $icon,
             'button' => $button,
-            'route' => $route
+            'route' => $route,
+            'route_parameters' => $routeParameters,
+            'voter_attribute' => $voterAttribute,
         ];
     }
 
@@ -73,19 +74,9 @@ class ActionColumn extends AbstractColumn
      */
     public function render($row)
     {
-        $items = [];
-        foreach ($this->options['items'] as $item) {
-            if (array_key_exists($item['route'], $this->options['showActionColumn'])) {
-                if (call_user_func($this->options['showActionColumn'][$item['route']], $row)) {
-                    $items[] = $item;
-                }
-            } else {
-                $items[] = $item;
-            }
-        }
         return $this->templating->render('whatwedoTableBundle::_actions.html.twig', [
             'row' => $row,
-            'items' => $items
+            'items' => $this->options['items']
         ]);
     }
 }

@@ -25,13 +25,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Model\Type;
+namespace whatwedo\TableBundle\Filter\Type;
+
 use Doctrine\ORM\QueryBuilder;
 
 /**
  * @author Ueli Banholzer <ueli@whatwedo.ch>
  */
-class DatetimeFilterType extends FilterType
+class DateFilterType extends FilterType
 {
     const CRITERIA_EQUAL = 'equal';
     const CRITERIA_NOT_EQUAL = 'not_equal';
@@ -52,24 +53,25 @@ class DatetimeFilterType extends FilterType
 
     public function getValueField($value = null)
     {
-        $value = \DateTime::createFromFormat('d.m.Y H:i:s', $value);
+        $value = \DateTime::createFromFormat('d.m.Y', $value);
 
         if (!$value) {
             $value = new \DateTime();
         }
         return sprintf(
-            '<input type="text" name="{name}" value="%s" class="form-control" data-provide="datetimepicker" data-date-format="dd.mm.yyyy HH:ii">',
-            $value instanceof \DateTime ? $value->format('d.m.Y H:i') : ''
+            '<input type="text" name="{name}" value="%s" class="form-control" data-provide="datetimepicker" data-date-format="dd.mm.yyyy" data-min-view="2">',
+            $value instanceof \DateTime ? $value->format('d.m.Y') : ''
         );
     }
 
     public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
     {
-        $value = \DateTime::createFromFormat('d.m.Y H:i', $value);
+        $value = \DateTime::createFromFormat('d.m.Y', $value);
+        $value->setTime(0, 0, 0);
         if (!$value) {
             $value = new \DateTime();
         }
-        $stringFormat = 'Y-m-d H:i:s';
+        $stringFormat = 'Y-m-d';
         $dateAsString = $value->format($stringFormat);
 
         switch ($operator) {

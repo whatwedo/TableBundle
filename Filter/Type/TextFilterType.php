@@ -25,46 +25,45 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Model\Type;
+namespace whatwedo\TableBundle\Filter\Type;
+
 use Doctrine\ORM\QueryBuilder;
 
 /**
  * @author Ueli Banholzer <ueli@whatwedo.ch>
  */
-class NumberFilterType extends FilterType
+class TextFilterType extends FilterType
 {
     const CRITERIA_EQUAL = 'equal';
     const CRITERIA_NOT_EQUAL = 'not_equal';
-    const CRITERIA_BIGGER_THAN = 'bigger_than';
-    const CRITERIA_SMALLER_THAN = 'smaller_than';
+    const CRITERIA_STARTS_WITH = 'starts_with';
+    const CRITERIA_ENDS_WITH = 'ends_with';
+    const CRITERIA_CONTAINS = 'contains';
+    const CRITERIA_IS_EMPTY = 'is_empty';
+    const CRITERIA_IS_NOT_EMPTY = 'is_not_empty';
 
     public function getOperators()
     {
         return [
             static::CRITERIA_EQUAL => 'ist gleich',
             static::CRITERIA_NOT_EQUAL => 'ist ungleich',
-            static::CRITERIA_BIGGER_THAN => 'grösser als',
-            static::CRITERIA_SMALLER_THAN => 'kleiner als',
+            static::CRITERIA_CONTAINS => 'enthält',
+            static::CRITERIA_STARTS_WITH => 'beginnt mit',
+            static::CRITERIA_ENDS_WITH => 'endet mit',
+            static::CRITERIA_IS_EMPTY => 'enthält keinen Wert',
+            static::CRITERIA_IS_NOT_EMPTY => 'enthält einen Wert',
         ];
     }
 
-    public function getValueField($value = null)
+    public function getValueField($value = '')
     {
-        if (!is_numeric($value)) {
-            $value = 0;
-        }
-
-        return sprintf('<input type="number" step="any" name="{name}" value="%s" class="form-control">', $value);
+        return sprintf('<input type="text" name="{name}" value="%s" class="form-control">',
+            addcslashes($value, '"')
+        );
     }
 
     public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
     {
-        if (!is_numeric($value)) {
-            $value = 0;
-        }
-
-        $value = (float) $value;
-
         switch ($operator) {
             case static::CRITERIA_EQUAL:
                 $queryBuilder->setParameter($parameterName, $value);
@@ -72,12 +71,27 @@ class NumberFilterType extends FilterType
             case static::CRITERIA_NOT_EQUAL:
                 $queryBuilder->setParameter($parameterName, $value);
                 return $queryBuilder->expr()->neq($this->getColumn(), sprintf(':%s', $parameterName));
-            case static::CRITERIA_BIGGER_THAN:
-                $queryBuilder->setParameter($parameterName, $value);
-                return $queryBuilder->expr()->gt($this->getColumn(), sprintf(':%s', $parameterName));
-            case static::CRITERIA_SMALLER_THAN:
-                $queryBuilder->setParameter($parameterName, $value);
-                return $queryBuilder->expr()->lt($this->getColumn(), sprintf(':%s', $parameterName));
+            case static::CRITERIA_STARTS_WITH:
+                $queryBuilder->setParameter($parameterName, $value . '%');
+                return $queryBuilder->expr()->like($this->getColumn(), sprintf(':%s', $parameterName));
+            case static::CRITERIA_ENDS_WITH:
+                $queryBuilder->setParameter($parameterName, '%' . $value);
+                return $queryBuilder->expr()->like($this->getColumn(), sprintf(':%s', $parameterName));
+            case static::CRITERIA_CONTAINS:
+                $queryBuilder->setParameter($parameterName, '%' . $value . '%');
+                return $queryBuilder->expr()->like($this->getColumn(), sprintf(':%s', $parameterName));
+            case static::CRITERIA_IS_EMPTY:
+                $queryBuilder->setParameter($parameterName, '');
+                return $queryBuilder->expr()->orX()->addMultiple([
+                    $queryBuilder->expr()->isNull($this->getColumn()),
+                    $queryBuilder->expr()->eq($this->getColumn(), sprintf(':%s', $parameterName))
+                ]);
+            case static::CRITERIA_IS_NOT_EMPTY:
+                $queryBuilder->setParameter($parameterName, '');
+                return $queryBuilder->expr()->orX()->addMultiple([
+                    $queryBuilder->expr()->isNotNull($this->getColumn()),
+                    $queryBuilder->expr()->eq($this->getColumn(), sprintf(':%s', $parameterName))
+                ]);
         }
 
         return false;

@@ -10,12 +10,12 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li>
-                        <a href="#" id="export-csv-current" data-export="{{ path(table.exportRoute) }}">
+                        <a href="#" data-whatwedo-table-export-csv-current data-export="{{ path(table.exportRoute) }}">
                             Aktuell angezeigte (.csv Excel)
                         </a>
                     </li>
                     <li>
-                        <a href="#" id="export-csv-all" data-export="{{ path(table.exportRoute) }}">
+                        <a href="#" data-whatwedo-table-export-csv-all data-export="{{ path(table.exportRoute) }}">
                             Alle (.csv Excel)
                         </a>
                     </li>
@@ -23,12 +23,14 @@
             </div>
         </div>
         {% endif %}
-
-        <p>
-            <small>
-                Resultat {% if table.results|length == 0 %}0{% else %}{{ table.offsetResults + 1 }}{% endif %} bis {{ table.offsetResults + table.results|length }} von {{ table.totalResults }}
-            </small>
-        </p>
+        {% if table.paginationExtension is not null %}
+            {% set pagination = table.paginationExtension %}
+            <p>
+                <small>
+                    Resultat {% if table.results|length == 0 %}0{% else %}{{ pagination.offsetResults + 1 }}{% endif %} bis {{ pagination.offsetResults + table.results|length }} von {{ pagination.totalResults }}
+                </small>
+            </p>
+        {% endif %}
     </div>
 </div>
 

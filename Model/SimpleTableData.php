@@ -25,45 +25,49 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Repository;
+namespace whatwedo\TableBundle\Model;
 
-use Doctrine\ORM\EntityRepository;
-use whatwedo\TableBundle\Entity\Filter;
-use whatwedo\TableBundle\Enum\FilterStateEnum;
-
-/**
- * @author Nicolo Singer <nicolo@whatwedo.ch>
- */
-class FilterRepository extends EntityRepository
+class SimpleTableData implements TableDataInterface
 {
     /**
-     * @param string $path Route-Path
-     * @param string $username Username
-     * @return Filter[]
+     * @var array
      */
-    public function findSavedFilter($path, $username)
-    {
-        $qb = $this->createQueryBuilder('f');
+    protected $results;
 
-        return $qb->where(
-                    $qb->expr()->andX(
-                        $qb->expr()->eq('f.route', ':path'),
-                        $qb->expr()->orX(
-                            $qb->expr()->orX(
-                                $qb->expr()->eq('f.state', FilterStateEnum::ALL),
-                                $qb->expr()->eq('f.state', FilterStateEnum::SYSTEM)
-                            ),
-                            $qb->expr()->andX(
-                                $qb->expr()->eq('f.state', FilterStateEnum::SELF),
-                                $qb->expr()->eq('f.creatorUsername', ':username')
-                            )
-                        )
-                    )
-                )
-            ->orderBy('f.name')
-            ->setParameter('path', $path)
-            ->setParameter('username', $username)
-            ->getQuery()
-            ->getResult();
+    /**
+     * @var int
+     */
+    protected $totalResults;
+
+    /**
+     * @return array
+     */
+    public function getResults()
+    {
+        return $this->results;
+    }
+
+    /**
+     * @param array $results
+     */
+    public function setResults($results)
+    {
+        $this->results = $results;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalResults()
+    {
+        return $this->totalResults;
+    }
+
+    /**
+     * @param int $totalResults
+     */
+    public function setTotalResults($totalResults)
+    {
+        $this->totalResults = $totalResults;
     }
 }

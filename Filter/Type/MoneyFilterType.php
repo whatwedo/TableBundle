@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2017, whatwedo GmbH
+ * Copyright (c) 2016, whatwedo GmbH
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,75 +25,62 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Model\Type;
-
+namespace whatwedo\TableBundle\Filter\Type;
 
 use Doctrine\ORM\QueryBuilder;
-use whatwedo\CoreBundle\Enum\AbstractSimpleEnum;
 
 /**
- * @author Nicolo Singer <nicolo@whatwedo.ch>
+ * @author Ueli Banholzer <ueli@whatwedo.ch>
  */
-class SimpleEnumFilterType extends FilterType
+class MoneyFilterType extends FilterType
 {
-
     const CRITERIA_EQUAL = 'equal';
     const CRITERIA_NOT_EQUAL = 'not_equal';
-
-    /**
-     * FQDN of Enum Class
-     * @var string
-     */
-    private $class;
-
-    public function __construct($column, array $joins = [], $class)
-    {
-        parent::__construct($column, $joins);
-        $this->class = $class;
-    }
+    const CRITERIA_BIGGER_THAN = 'bigger_than';
+    const CRITERIA_SMALLER_THAN = 'smaller_than';
 
     public function getOperators()
     {
         return [
-            self::CRITERIA_EQUAL => 'ist gleich',
-            self::CRITERIA_NOT_EQUAL => 'ist ungleich'
+            static::CRITERIA_EQUAL => 'ist gleich',
+            static::CRITERIA_NOT_EQUAL => 'ist ungleich',
+            static::CRITERIA_BIGGER_THAN => 'grösser als',
+            static::CRITERIA_SMALLER_THAN => 'kleiner als',
         ];
     }
 
     public function getValueField($value = null)
     {
-        /** @var AbstractSimpleEnum $enum */
-        $keys = call_user_func($this->class . '::getValues');
-        $options = '';
-        foreach ($keys as $key) {
-            $options .= sprintf(
-                '<option value="%s" %s>%s</option>',
-                $key,
-                $key == $value ? 'selected' : '',
-                call_user_func($this->class . '::getRepresentation', $key)
-            );
+        if (!is_numeric($value)) {
+            $value = 0;
         }
-        return sprintf(
-            '<select name="{name}" class="form-control">%s</select>',
-            $options
-        );
+
+        return sprintf('<input type="number" step="any" name="{name}" value="%s" class="form-control">', $value);
     }
 
     public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
     {
-        $queryBuilder->setParameter($parameterName, $value);
-        switch ($operator) {
-            case self::CRITERIA_EQUAL:
-                return $queryBuilder->expr()->eq(
-                    sprintf(':%s', $parameterName),
-                    sprintf('%s', $this->getColumn())
-                );
-            case self::CRITERIA_NOT_EQUAL:
-                return $queryBuilder->expr()->neq(
-                    sprintf(':%s', $parameterName),
-                    sprintf('%s', $this->getColumn())
-                );
+        if (!is_numeric($value)) {
+            $value = 0;
         }
-    }
 
+        $value = ((float) $value) * 100;
+
+        switch ($operator) {
+            case static::CRITERIA_EQUAL:
+                $queryBuilder->setParameter($parameterName, $value);
+                return $queryBuilder->expr()->eq($this->getColumn(), sprintf(':%s', $parameterName));
+            case static::CRITERIA_NOT_EQUAL:
+                $queryBuilder->setParameter($parameterName, $value);
+                return $queryBuilder->expr()->neq($this->getColumn(), sprintf(':%s', $parameterName));
+            case static::CRITERIA_BIGGER_THAN:
+                $queryBuilder->setParameter($parameterName, $value);
+                return $queryBuilder->expr()->gt($this->getColumn(), sprintf(':%s', $parameterName));
+            case static::CRITERIA_SMALLER_THAN:
+                $queryBuilder->setParameter($parameterName, $value);
+                return $queryBuilder->expr()->lt($this->getColumn(), sprintf(':%s', $parameterName));
+        }
+
+        return false;
+    }
 }

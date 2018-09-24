@@ -1,91 +1,94 @@
-{% set pageOffset = 5 %}
-{% set currentRoute = app.request.attributes.get('_route') %}
-{% set currentQuery = app.request.query.all %}
-<ul class="pagination pagination-sm no-margin pull-right whatwedo_table-pagination">
+{% if table.paginationExtension is not null %}
 
-    {# first link #}
-    <li
-        {% if table.currentPage == 1 %}
-            class="disabled"
-        {% endif %}
-    >
-        <a href="{% if table.currentPage > 1 %}{{ path(currentRoute, app.request.attributes.all|merge(currentQuery|merge({ 'page': 1 }))) }}{% else %}#{% endif %}" aria-label="Erste Seite" title="Erste Seite">
-            <span aria-hidden="true"><i class="fa fa-fast-backward"></i></span>
-            <span class="sr-only">Erste Seite</span>
-        </a>
-    </li>
+    {% set pageOffset = 5 %}
+    {% set pagination = table.paginationExtension %}
+    <ul class="pagination pagination-sm no-margin pull-right whatwedo_table-pagination">
 
-    {# previous link #}
-    <li
-        {% if table.currentPage == 1 %}
-            class="disabled"
-        {% endif %}
-    >
-        <a href="{% if table.currentPage > 1 %}{{ path(currentRoute, app.request.attributes.all|merge(currentQuery|merge({ 'page': table.currentPage - 1 }))) }}{% else %}#{% endif %}" aria-label="Vorherige Seite" title="Vorherige Seite">
-            <span aria-hidden="true"><i class="fa fa-step-backward"></i></span>
-            <span class="sr-only">Vorherige Seite</span>
-        </a>
-    </li>
+        {# first link #}
+        <li
+            {% if pagination.currentPage == 1 %}
+                class="disabled"
+            {% endif %}
+        >
+            <a href="{% if pagination.currentPage > 1 %}{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : 1 }) }}{% else %}#{% endif %}" aria-label="Erste Seite" title="Erste Seite">
+                <span aria-hidden="true"><i class="fa fa-fast-backward"></i></span>
+                <span class="sr-only">Erste Seite</span>
+            </a>
+        </li>
 
-    {# offset before #}
-    {% for i in pageOffset..1 %}
-        {% set page = table.currentPage - i %}
-        {% if page > 0 %}
-            <li>
-                <a href="{{ path(currentRoute, app.request.attributes.all|merge(currentQuery|merge({ 'page': page }))) }}">
-                    {{ page }}
-                </a>
-            </li>
-        {% endif %}
-    {% endfor %}
+        {# previous link #}
+        <li
+            {% if pagination.currentPage == 1 %}
+                class="disabled"
+            {% endif %}
+        >
+            <a href="{% if pagination.currentPage > 1 %}{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : pagination.currentPage - 1 }) }}{% else %}#{% endif %}" aria-label="Vorherige Seite" title="Vorherige Seite">
+                <span aria-hidden="true"><i class="fa fa-step-backward"></i></span>
+                <span class="sr-only">Vorherige Seite</span>
+            </a>
+        </li>
 
-    {# current #}
-    <li class="active">
-        <a href="{{ path(currentRoute, app.request.attributes.all|merge(currentQuery|merge({ 'page': table.currentPage }))) }}">
-            {{ table.currentPage }}
-            <span class="sr-only">(aktuelle Seite)</span>
-        </a>
-    </li>
+        {# offset before #}
+        {% for i in pageOffset..1 %}
+            {% set page = pagination.currentPage - i %}
+            {% if page > 0 %}
+                <li>
+                    <a href="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : page }) }}">
+                        {{ page }}
+                    </a>
+                </li>
+            {% endif %}
+        {% endfor %}
 
-
-    {# offset after #}
-    {% for i in 1..pageOffset %}
-        {% set page = table.currentPage + i %}
-        {% if page < ( table.totalPages + 1 ) %}
-            <li>
-                <a href="{{ path(currentRoute, app.request.attributes.all|merge(currentQuery|merge({ 'page': page }))) }}">
-                    {{ page }}
-                </a>
-            </li>
-        {% endif %}
-    {% endfor %}
+        {# current #}
+        <li class="active">
+            <a href="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : pagination.currentPage }) }}">
+                {{ pagination.currentPage }}
+                <span class="sr-only">(aktuelle Seite)</span>
+            </a>
+        </li>
 
 
-    {# next link #}
-    <li
-        {% if table.currentPage == table.totalPages %}
-            class="disabled"
-        {% endif %}
-    >
-        <a href="{% if table.currentPage != table.totalPages %}{{ path(currentRoute, app.request.attributes.all|merge(currentQuery|merge({ 'page': table.currentPage + 1 }))) }}{% else %}#{% endif %}" aria-label="Nächste Seite" title="Nächste Seite">
-            <span aria-hidden="true"><i class="fa fa-step-forward"></i></span>
-            <span class="sr-only">Nächste Seite</span>
-        </a>
-    </li>
+        {# offset after #}
+        {% for i in 1..pageOffset %}
+            {% set page = pagination.currentPage + i %}
+            {% if page < ( pagination.totalPages + 1 ) %}
+                <li>
+                    <a href="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : page }) }}">
+                        {{ page }}
+                    </a>
+                </li>
+            {% endif %}
+        {% endfor %}
+
+
+        {# next link #}
+        <li
+            {% if pagination.currentPage == pagination.totalPages %}
+                class="disabled"
+            {% endif %}
+        >
+            <a href="{% if pagination.currentPage != pagination.totalPages %}{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : pagination.currentPage + 1 }) }}{% else %}#{% endif %}" aria-label="Nächste Seite" title="Nächste Seite">
+                <span aria-hidden="true"><i class="fa fa-step-forward"></i></span>
+                <span class="sr-only">Nächste Seite</span>
+            </a>
+        </li>
 
 
 
-    {# last link #}
-    <li
-        {% if table.currentPage == table.totalPages %}
-            class="disabled"
-        {% endif %}
-    >
-        <a href="{% if table.currentPage != table.totalPages %}{{ path(currentRoute, app.request.attributes.all|merge(currentQuery|merge({ 'page': table.totalPages }))) }}{% else %}#{% endif %}" aria-label="Letzte Seite" title="Letzte Seite">
-            <span aria-hidden="true"><i class="fa fa-fast-forward"></i></span>
-            <span class="sr-only">Letzte Seite</span>
-        </a>
-    </li>
+        {# last link #}
+        <li
+            {% if pagination.currentPage == pagination.totalPages %}
+                class="disabled"
+            {% endif %}
+        >
+            <a href="{% if pagination.currentPage != pagination.totalPages %}{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : pagination.totalPages }) }}{% else %}#{% endif %}" aria-label="Letzte Seite" title="Letzte Seite">
+                <span aria-hidden="true"><i class="fa fa-fast-forward"></i></span>
+                <span class="sr-only">Letzte Seite</span>
+            </a>
+        </li>
 
 
-</ul>
+    </ul>
+
+{% endif %}

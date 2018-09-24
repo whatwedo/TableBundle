@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2016, whatwedo GmbH
+ * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,34 +25,19 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\EventListener;
+namespace whatwedo\TableBundle\Model;
 
-use whatwedo\TableBundle\Event\DataLoadEvent;
-use whatwedo\TableBundle\Table\Table;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
-class LimitEventListener
+interface TableDataInterface
 {
+    /**
+     * returns the current page results
+     * @return array
+     */
+    public function getResults();
 
     /**
-     * @param DataLoadEvent $event
+     * @return int returns the total number of results available
      */
-    public function limitResultSet(DataLoadEvent $event)
-    {
-        $table = $event->getTable();
-
-        if ($table->getRequest()->query->getInt('limit') === -1) {
-            $table->setLimit(-1);
-            $table->getQueryBuilder()->setMaxResults(null);
-            $table->getQueryBuilder()->setFirstResult(0);
-            return;
-        }
-
-        $table->setLimit($table->getRequest()->query->getInt('limit', 25));
-        $table->getQueryBuilder()->setMaxResults($table->getLimit());
-
-        $table->getQueryBuilder()->setFirstResult(($table->getCurrentPage() - 1) * $table->getLimit());
-    }
+    public function getTotalResults();
 }

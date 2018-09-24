@@ -28,7 +28,6 @@
 namespace whatwedo\TableBundle\Table;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Templating\EngineInterface;
 
 /**
  * @author Ueli Banholzer <ueli@whatwedo.ch>
