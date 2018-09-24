@@ -34,13 +34,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Templating\EngineInterface;
 use whatwedo\CoreBundle\Manager\FormatterManager;
-use whatwedo\TableBundle\Exception\InvalidFilterAcronymException;
 use whatwedo\TableBundle\Extension\ExtensionInterface;
-use whatwedo\TableBundle\Extension\FilterExtension;
-use whatwedo\TableBundle\Filter\Type\FilterTypeInterface;
-use whatwedo\TableBundle\Filter\Type\SimpleEnumFilterType;
 use whatwedo\TableBundle\Model\SimpleTableData;
-use whatwedo\TableBundle\Repository\FilterRepository;
 
 /**
  * Class DoctrineTable

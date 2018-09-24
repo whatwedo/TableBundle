@@ -44,7 +44,7 @@ class TableFactoryPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->has('whatwedo_table.factory.table')) {
+        if (!$container->has('whatwedo\TableBundle\Factory\TableFactory')) {
             return;
         }
 
@@ -70,7 +70,7 @@ class TableFactoryPass implements CompilerPassInterface
 
         // add remaining extensions to table factory
         foreach ($container->findTaggedServiceIds('table.extension') as $id => $tags) {
-            $container->getDefinition('whatwedo_table.factory.table')->addMethodCall('addExtension', [new Reference($id)]);
+            $container->getDefinition('whatwedo\TableBundle\Factory\TableFactory')->addMethodCall('addExtension', [new Reference($id)]);
         }
 
     }

@@ -57,7 +57,7 @@ class PaginationExtension extends AbstractExtension
      * PaginationExtension constructor.
      * @param RequestStack $requestStack
      */
-    public function __construct($requestStack)
+    public function __construct(RequestStack $requestStack)
     {
         $this->requestStack = $requestStack;
     }

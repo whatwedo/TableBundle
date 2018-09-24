@@ -1,5 +1,6 @@
 {% for row in table.rows %}
-    <tr{% if table.showRoute %} data-href="{{ path(table.showRoute, { id: row.data.id }) }}"{% endif %}>
+    {% set showRoute = table.getShowRoute(row.data) %}
+    <tr{% if showRoute %} data-href="{{ path(showRoute, { id: row.data.id }) }}"{% endif %}>
         {% for column in row %}
             <td class="{{ column.column.tdClass }}"
                 {% if table.sortable and column.column.sortableColumn and column.column.sortable %}

@@ -27,15 +27,21 @@
 
 namespace whatwedo\TableBundle\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use whatwedo\TableBundle\Entity\Filter;
 use whatwedo\TableBundle\Enum\FilterStateEnum;
 
 /**
  * @author Nicolo Singer <nicolo@whatwedo.ch>
  */
-class FilterRepository extends EntityRepository
+class FilterRepository extends ServiceEntityRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, Filter::class);
+    }
+
     /**
      * @param string $path Route-Path
      * @param string $username Username

@@ -1,41 +1,65 @@
-{% if table.searchExtension is not null or table.paginationExtension is not null or table.filterExtension is not null %}
-    <div class="box-tools whatwedo_table-search">
-        <form action="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : 1 }) }}">
-            <div class="input-group input-group-sm">
-                {% if table.searchExtension is not null %}
-                    <input type="text" class="form-control" placeholder="Suchbegriff..." value="{{ table.searchExtension.searchQuery }}" name="{{ table.actionQueryParameter('query') }}">
-                {% endif %}
-                {% if table.paginationExtension is not null %}
-                    {% set pagination = table.paginationExtension %}
-                    <select data-disable-interactive name="{{ table.actionQueryParameter('limit') }}" class="whatwedo_table-limit form-control">
-                        {% for num in table.options['limit_choices'] %}
-                            <option value="{{ num }}"{% if pagination.limit == num %} selected{% endif %}>{{ num }} Einträge</option>
-                        {% endfor %}
-                    </select>
-                {% else %}
-                    <input type="hidden" name="{{ table.actionQueryParameter('limit') }}" value="-1">
-                {% endif %}
-                <span class="input-group-btn">
-                    {% if table.searchExtension is not null %}
-                        <button class="btn btn-primary" type="submit">
-                            <i class="fa fa-search"></i>
-                        </button>
-                        {% if table.searchExtension.searchQuery|length > 0 %}
-                            <a href="{{ whatwedo_table_generate_route_replace_arguments({
-                                (table.actionQueryParameter('page')) : 1,
-                                (table.actionQueryParameter('query')) : ''
-                            }) }}" class="btn btn-danger" type="button" title="Suche entfernen">
-                                <i class="fa fa-times"></i>
-                            </a>
-                        {% endif %}
+{# @var table \whatwedo\TableBundle\Table\Table #}
+<div class="whatwedo_table-search">
+    <form action="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : 1 }) }}">
+        <div class="input-group input-group-sm">
+            {% if table.searchExtension and table.isSearchable %}
+                <input type="text" class="form-control" placeholder="Suchbegriff..." value="{{ table.searchExtension.searchQuery }}" name="{{ table.actionQueryParameter('query') }}">
+            {% endif %}
+            {% if table.paginationExtension %}
+                {% set pagination = table.paginationExtension %}
+                <select data-disable-interactive name="{{ table.actionQueryParameter('limit') }}" class="whatwedo_table-limit form-control">
+                    {% for num in table.options['limit_choices'] %}
+                        <option value="{{ num }}"{% if pagination.limit == num %} selected{% endif %}>{{ num }} Einträge</option>
+                    {% endfor %}
+                </select>
+            {% else %}
+                <input type="hidden" name="{{ table.actionQueryParameter('limit') }}" value="-1">
+            {% endif %}
+            <span class="input-group-btn">
+                {% if table.searchExtension %}
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fa fa-search"></i>
+                    </button>
+                    {% if table.searchExtension.searchQuery is not empty %}
+                        <a href="{{ whatwedo_table_generate_route_replace_arguments({
+                            (table.actionQueryParameter('page')) : 1,
+                            (table.actionQueryParameter('query')) : ''
+                        }) }}" class="btn btn-danger" type="button" title="Suche entfernen">
+                            <i class="fa fa-times"></i>
+                        </a>
                     {% endif %}
-                    {% if table.filterExtension is not null and table.filterExtension.filters|length > 0 %}
-                        <button type="button" data-toggle="filter" class="btn btn-success" title="Filter">
-                            <i class="fa fa-filter"></i>
-                        </button>
-                    {% endif %}
-                </span>
-            </div>
-        </form>
-    </div>
-{% endif %}
+                {% endif %}
+                {% if table.filterExtension.filters|default([]) is not empty %}
+                    <button type="button" data-toggle="filter" class="btn btn-success {% if table.filterExtension.filterData is not empty %}active{% endif %}" title="Filter">
+                        <i class="fa fa-filter"></i>
+                    </button>
+                {% endif %}
+                {% if table.exportRoute %}
+                        <div class="btn-group btn-group-sm dropdown">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data- aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-download"></i> <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right">
+                                <li class="dropdown-header">als Excel (CSV) exportieren</li>
+                                <li>
+                                    <a href="{{ path(table.exportRoute, app.request.query.all) }}">
+                                        Aktuelle Ergebnisse (Seite {{ table.paginationExtension.currentPage }})
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ path(table.exportRoute, app.request.query.all|merge({(table.actionQueryParameter('page')): 1, (table.actionQueryParameter('limit')): -1})) }}">
+                                        Aktuelle Ergebnisse (Alle Seiten)
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ path(table.exportRoute, {(table.actionQueryParameter('page')): 1, (table.actionQueryParameter('limit')): -1}) }}">
+                                        Alle
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                {% endif %}
+            </span>
+        </div>
+    </form>
+</div>

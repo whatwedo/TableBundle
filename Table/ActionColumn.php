@@ -41,6 +41,7 @@ class ActionColumn extends AbstractColumn
     {
         $resolver->setDefaults([
             'items' => [],
+            'showActionColumn' => [],
         ]);
     }
 
@@ -76,7 +77,8 @@ class ActionColumn extends AbstractColumn
     {
         return $this->templating->render('whatwedoTableBundle::_actions.html.twig', [
             'row' => $row,
-            'items' => $this->options['items']
+            'helper' => $this,
+            'items' => is_callable($this->options['items']) ? $this->options['items']($row) : $this->options['items']
         ]);
     }
 }

@@ -70,28 +70,30 @@ class FilterEventListener
 
     private function addQueryBuilderFilter()
     {
-        $addedJoins = [];
+        $addedJoins = $this->queryBuilder()->getAllAliases();
 
         $orX = $this->queryBuilder()->expr()->orX();
 
-        $queryFilterColumn = $this->table->getFilterExtension()->getFilterColumns();
-        $queryFilterOperator = $this->table->getFilterExtension()->getFilterOperators();
-        $queryFilterValue = $this->table->getFilterExtension()->getFilterValues();
+        $filterExtension = $this->table->getFilterExtension();
+
+        $filterData = $filterExtension->getFilterData();
 
         // First, loop all OR's
-        foreach ($queryFilterColumn as $orKey => $columns) {
+        foreach ($filterData as $groupIndex => $columns) {
             // Then, loop all AND's
             $andX = $this->queryBuilder()->expr()->andX();
-            foreach ($columns as $andKey => $column) {
-                if (!isset($this->table->getFilterExtension()->getFilters()[$column])
-                    || !isset($queryFilterOperator[$orKey][$andKey])
-                    || !isset($queryFilterValue[$orKey][$andKey])) {
+
+            $filterIndex = 0;
+            foreach ($columns as $column => $data) {
+                $filterIndex++;
+
+                if (!isset($filterExtension->getFilters()[$column])) {
                     continue;
                 }
 
+                $filter = $filterExtension->getFilters()[$column];
 
-                $filter = $this->table->getFilterExtension()->getFilters()[$column];
-
+                // TODO: automatically join (split field on '.')
                 foreach ($filter->getType()->getJoins() as $joinAlias => $join) {
                     if (in_array($joinAlias, $addedJoins)) {
                         continue;
@@ -106,21 +108,18 @@ class FilterEventListener
                 }
 
                 $w = $filter->getType()->addToQueryBuilder(
-                    $queryFilterOperator[$orKey][$andKey],
-                    $queryFilterValue[$orKey][$andKey],
-                    implode('_', ['filter', (int)$orKey, (int)$andKey, $filter->getAcronym()]),
+                    $data['operator'],
+                    $data['value'],
+                    implode('_', ['filter', (int)$groupIndex, $filterIndex, $filter->getAcronym()]),
                     $this->queryBuilder()
                 );
-                // $w instanceof Expr does not work. (No extending in doctrine classes.)
-                if ((is_object($w) && substr(get_class($w), 0, strlen(Expr::class)) === Expr::class)
-                    || is_string($w)) {
+
+                if ($w instanceof Expr\Base || $w instanceof Expr\Comparison) {
                     $andX->add($w);
                 } elseif (!is_bool($w)) {
-                    $classExpr = Expr::class;
-                    throw new UnexpectedValueException("Bool or $classExpr expected as filter-result");
+                    throw new UnexpectedValueException(sprintf("Bool or %s expected as filter-result, got %s", Expr::class, get_class($w)));
                 }
             }
-
 
             if (count($andX->getParts()) > 1) {
                 $orX->add($andX);
@@ -134,7 +133,5 @@ class FilterEventListener
         } elseif (count($orX->getParts()) === 1) {
             $this->queryBuilder()->andWhere($orX->getParts()[0]);
         }
-
     }
-
 }

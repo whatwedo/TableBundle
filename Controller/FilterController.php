@@ -27,12 +27,14 @@
 
 namespace whatwedo\TableBundle\Controller;
 
-use Oepfelchasper\CoreBundle\Controller\CrudController;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use whatwedo\TableBundle\Entity\Filter;
 use whatwedo\TableBundle\Enum\FilterStateEnum;
@@ -42,12 +44,39 @@ use whatwedo\TableBundle\Event\ResultRequestEvent;
  * Class FilterController
  * @package whatwedo\TableBundle\Controller
  */
-class FilterController extends Controller
+class FilterController extends AbstractController
 {
+    /**
+     * @var RouterInterface
+     */
+    private $router;
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
+     * FilterController constructor.
+     * @param RouterInterface $router
+     * @param EntityManagerInterface $entityManager
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function __construct(RouterInterface $router, EntityManagerInterface $entityManager, EventDispatcherInterface $eventDispatcher)
+    {
+        $this->router = $router;
+        $this->entityManager = $entityManager;
+        $this->eventDispatcher = $eventDispatcher;
+    }
 
     /**
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     *
+     * @Route("/whatwedo/table/filter/create", name="whatwedo_table_filter_direct_create", methods="POST")
      */
     public function directCreateAction(Request $request)
     {
@@ -64,63 +93,52 @@ class FilterController extends Controller
         if (!is_array($filter->getConditions()) || !is_array($filter->getArguments())) {
             throw new BadRequestHttpException();
         }
-        if ($this->get('router')->getRouteCollection()->get($filter->getRoute()) === null) {
+
+        if ($this->router->getRouteCollection()->get($filter->getRoute()) === null) {
             throw new BadRequestHttpException();
         }
 
-        $em = $this->get('doctrine.orm.default_entity_manager');
+        $this->entityManager->persist($filter);
+        $this->entityManager->flush();
 
-        $em->persist($filter);
-        $em->flush();
-
-        return $this->redirectToFilter($filter);
+        return $this->redirect($this->router->generate(
+            $filter->getRoute(),
+            array_merge($filter->getArguments(), $filter->getConditions())
+        ));
     }
 
     /**
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     *
+     * @Route("/whatwedo/table/filter/delete/{id}", name="whatwedo_table_filter_direct_delete")
      */
-    public function deleteAction(Request $request)
+    public function deleteAction(Filter $filter, Request $request)
     {
-        if ($request->get('token') !== $this->get('security.csrf.token_manager')->getToken('token')->getValue()) {
+        if (!$this->isCsrfTokenValid('token', $request->get('token'))) {
             throw new InvalidCsrfTokenException('Invalid CSRF token');
         }
-        $em = $this->get('doctrine')->getManager();
-        $filter = $em->getRepository('whatwedoTableBundle:Filter')->find($request->query->getInt('id'));
-        if (!is_null($filter)) {
-            $username = $this->get('security.token_storage')->getToken()->getUsername();
-            if ($filter->getCreatorUsername() == $username) {
-                $em->remove($filter);
-                $em->flush();
-            }
-        }
-        $referer = $request->headers->get('referer');
-        return $this->redirect($referer);
-    }
 
-    /**
-     * @param Filter $filter
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    private function redirectToFilter(Filter $filter)
-    {
-        $path = $this->get('router')->generate(
-            $filter->getRoute(),
-            array_merge($filter->getArguments(), $filter->getConditions())
-        );
-        return $this->redirect($path);
+        if ($filter->getCreatorUsername() !== $this->getUser()->getUsername()) throw $this->createAccessDeniedException();
+
+        $this->entityManager->remove($filter);
+        $this->entityManager->flush();
+
+        return $this->redirect($request->headers->get('referer'));
     }
 
     /**
      * @param Request $request
      * @return JsonResponse
+     *
+     * @Route("/whatwedo/table/filter/relation", name="whatwedo_table_filter_load_relation_filter", methods="GET")
      */
     public function loadRelationFilterTypeAction(Request $request)
     {
-        $class = $request->get('entity', false);
-        $term = $request->get('q', false);
+        $class = $request->get('entity');
+        $term = $request->get('q');
         $resultRequestEvent = new ResultRequestEvent($class, $term);
-        $this->get('event_dispatcher')->dispatch(ResultRequestEvent::FILTER_SET, $resultRequestEvent);
+        $this->eventDispatcher->dispatch(ResultRequestEvent::FILTER_SET, $resultRequestEvent);
         return $resultRequestEvent->getResult();
     }
 

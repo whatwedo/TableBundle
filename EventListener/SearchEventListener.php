@@ -28,6 +28,7 @@
 namespace whatwedo\TableBundle\EventListener;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use whatwedo\SearchBundle\Entity\Index;
 use whatwedo\SearchBundle\whatwedoSearchBundle;
@@ -57,7 +58,7 @@ class SearchEventListener
      * @param EntityManager $em
      * @param ContainerInterface $container
      */
-    public function __construct(EntityManager $em, ContainerInterface $container)
+    public function __construct(EntityManagerInterface $em, ContainerInterface $container)
     {
         $this->em = $em;
         $this->container = $container;
@@ -70,15 +71,12 @@ class SearchEventListener
      */
     public function searchResultSet(DataLoadEvent $event)
     {
-        // Check if whatwedo search bundle is enabled
         if (!in_array(whatwedoSearchBundle::class, $this->container->getParameter('kernel.bundles'))) {
             return;
         }
 
-        // Get table
         $table = $event->getTable();
 
-        // Exec only on DoctrineTable's
         if (!$table instanceof DoctrineTable) {
             return;
         }
@@ -93,12 +91,9 @@ class SearchEventListener
             return;
         }
 
-        // Filter
-        $model = $table->getQueryBuilder()->getDQLPart('from')[0]->getFrom();
+        $model = $table->getQueryBuilder()->getRootEntities()[0];
         $ids = $this->em->getRepository(Index::class)->search($query, $model);
-        if (is_numeric($query)) {
-            $ids[] = (int)$query;
-        }
+
         $table->getQueryBuilder()->andWhere(sprintf(
             '%s.id IN (:q_ids)',
             $table->getQueryBuilder()->getRootAliases()[0]
