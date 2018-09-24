@@ -28,7 +28,9 @@
 namespace whatwedo\TableBundle\Twig;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
+use whatwedo\TableBundle\Factory\TableFactory;
 
 /**
  * @author Ueli Banholzer <ueli@whatwedo.ch>
@@ -36,19 +38,19 @@ use Symfony\Component\Routing\RouterInterface;
 class TableExtension extends \Twig_Extension
 {
     /**
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    /**
      * @var RouterInterface
      */
     protected $router;
 
-    public function __construct(ContainerInterface $container)
+    protected $requestStack;
+
+    protected $tableFactory;
+
+    public function __construct(RequestStack $requestStack, TableFactory $tableFactory, RouterInterface $router)
     {
-        $this->container = $container;
-        $this->router = $container->get('router');
+        $this->tableFactory = $tableFactory;
+        $this->requestStack = $requestStack;
+        $this->router = $router;
     }
 
     /**
@@ -57,26 +59,18 @@ class TableExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            /**
-             * returns an instance of Table
-             */
             new \Twig_SimpleFunction('whatwedo_table', function($identifier, $options) {
-                $tableFactory = $this->container->get('whatwedo_table.factory.table');
-                return call_user_func([$tableFactory, 'createTable'], $identifier, $options);
+                return $this->tableFactory->createTable($identifier, $options);
             }),
-            /**
-             * returns an instance of DoctrineTable
-             */
-            new \Twig_SimpleFunction('whatwedo_doctrine_table', function($identifier, $options) {
-                $tableFactory = $this->container->get('whatwedo_table.factory.table');
 
-                return call_user_func([$tableFactory, 'createDoctrineTable'], $identifier, $options);
+            new \Twig_SimpleFunction('whatwedo_doctrine_table', function($identifier, $options) {
+                return $this->tableFactory->createDoctrineTable($identifier, $options);
             }),
             /**
              * generates the same route with replaced or new arguments
              */
             new \Twig_SimpleFunction('whatwedo_table_generate_route_replace_arguments', function($arguments) {
-                $request = $this->container->get('request_stack')->getMasterRequest();
+                $request = $this->requestStack->getMasterRequest();
                 $attributes = array_filter($request->attributes->all(), function($key) {
                     return strpos($key, '_') !== 0;
                 }, ARRAY_FILTER_USE_KEY);

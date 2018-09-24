@@ -52,7 +52,7 @@ abstract class AbstractExtension implements ExtensionInterface
      */
     public function getActionQueryParameter($action)
     {
-        return sprintf('%s_%s', $this->tableIdentifier, $action);
+        return sprintf('%s_%s', str_replace('.', '_', $this->tableIdentifier), $action);
     }
 
 }

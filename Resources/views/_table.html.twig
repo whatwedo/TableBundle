@@ -1,16 +1,21 @@
 {% import "whatwedoTableBundle::_macros.html.twig" as macros %}
 
-<div class="table-responsive">
-    {% if table.options.table_attr.class is not defined %}
-        {% set contentAttr = table.options.table_attr|merge({
-            class: 'table table-striped table-hover whatwedo_table_inner whatwedo_table_inner_' ~ table.identifier
-        }) %}
-    {% else %}
-        {% set contentAttr = table.options.table_attr|merge({
-            class: 'table table-striped table-hover whatwedo_table_inner whatwedo_table_inner_' ~ table.identifier ~ ' ' ~ table.options.table_attr.class
-        }) %}
-    {% endif %}
+{% if table.options.table_attr.class is not defined %}
+    {% set contentAttr = table.options.table_attr|merge({
+        class: 'table table-striped table-hover whatwedo_table_inner whatwedo_table_inner_' ~ table.identifier
+    }) %}
+{% else %}
+    {% set contentAttr = table.options.table_attr|merge({
+        class: 'table table-striped table-hover whatwedo_table_inner whatwedo_table_inner_' ~ table.identifier ~ ' ' ~ table.options.table_attr.class
+    }) %}
+{% endif %}
 
+{% set contentAttr = contentAttr|merge({
+    id: 'whatwedo_table_' ~ table.identifier,
+    'data-identifier': table.identifier
+}) %}
+
+<div class="table-responsive">
     <table {{ macros.attributes(contentAttr) }}>
         <thead class="thead-default">
         {% include 'whatwedoTableBundle::_head.html.twig' %}

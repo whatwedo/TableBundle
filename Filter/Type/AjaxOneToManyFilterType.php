@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2016, whatwedo GmbH
+ * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,24 +25,20 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Filter\Type;
 
+namespace whatwedo\TableBundle\Filter\Type;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\PropertyAccess\PropertyAccess;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
+ * Class AjaxManyToManyFilterType
+ * @package whatwedo\TableBundle\Filter\Type
  */
-class AjaxRelationFilterType extends FilterType
+class AjaxOneToManyFilterType extends FilterType
 {
+
     const CRITERIA_EQUAL = 'equal';
     const CRITERIA_NOT_EQUAL = 'not_equal';
-
-    protected $emptyQuery;
-    private $propToCheckAgainstId;
-    protected $targetClass;
 
     /**
      * @var Registry $doctrine
@@ -50,47 +46,52 @@ class AjaxRelationFilterType extends FilterType
     protected $doctrine;
 
     /**
-     * @var PropertyAccessor
+     * @var string $targetClass
      */
-    protected static $propertyAccessor;
+    protected $targetClass;
 
-    public function __construct($column, $targetClass, $doctrine, $joins = [], $emptyFieldsCheck = false, $propToCheckAgainstId = 'id')
+    /**
+     * AjaxManyToManyFilterType constructor.
+     * @param $column
+     * @param $targetClass
+     * @param $doctrine
+     * @param array $joins
+     */
+    public function __construct($column, $targetClass, $doctrine, array $joins = [])
     {
-        if ($emptyFieldsCheck !== false
-            && !is_array($emptyFieldsCheck)) {
-            $emptyFieldsCheck = [$emptyFieldsCheck];
-        }
-        $this->emptyQuery = $emptyFieldsCheck;
-        $this->propToCheckAgainstId = $propToCheckAgainstId;
-        $this->targetClass = $targetClass;
-        $this->doctrine = $doctrine;
         parent::__construct($column, $joins);
+        $this->doctrine = $doctrine;
+        $this->targetClass = $targetClass;
     }
 
+    /**
+     * @return array
+     */
     public function getOperators()
     {
         return [
-            static::CRITERIA_EQUAL => 'ist',
-            static::CRITERIA_NOT_EQUAL => 'ist nicht',
+            static::CRITERIA_EQUAL => 'enthält',
+            static::CRITERIA_NOT_EQUAL => 'enthält nicht',
         ];
     }
 
+    /**
+     * @param int $value
+     * @return string
+     */
     public function getValueField($value = 0)
     {
         $field = sprintf(
             '<select name="{name}" class="form-control" data-ajax-select data-ajax-entity="%s">',
             $this->targetClass
         );
-
-        $curentSelection = null;
+        $currentSelection = null;
         if ($value > 0) {
-            $curentSelection = $this->doctrine->getRepository($this->targetClass)->find($value);
+            $currentSelection = $this->doctrine->getRepository($this->targetClass)->find($value);
         }
 
-        if (!is_null($curentSelection)) {
-            $field .= sprintf('<option value="%s">%s</option>', $value, $curentSelection->__toString());
-        } elseif ($this->emptyQuery) {
-            $field .= "<option selected value='0'>- leer -</option>";
+        if (!is_null($currentSelection)) {
+            $field .= sprintf('<option value="%s">%s</option>', $value, $currentSelection->__toString());
         }
 
         $field .= '</select>';
@@ -98,34 +99,25 @@ class AjaxRelationFilterType extends FilterType
         return $field;
     }
 
+    /**
+     * @param $operator
+     * @param $value
+     * @param $parameterName
+     * @param QueryBuilder $queryBuilder
+     * @return bool|\Doctrine\ORM\Query\Expr\Comparison|string
+     */
     public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
     {
-        if ($value == 'empty'
-            && is_array($this->emptyQuery)) {
-            $orX = $queryBuilder->expr()->orX();
-            foreach ($this->emptyQuery as $field) {
-                switch ($operator) {
-                    case static::CRITERIA_EQUAL:
-                        $orX->add($field);
-                        break;
-                    case static::CRITERIA_NOT_EQUAL:
-                        $orX->add($queryBuilder->expr()->not($field));
-                        break;
-                }
-            }
-
-            return $orX;
-        }
-
-        $property = sprintf('%s.%s', $this->getColumn(), $this->propToCheckAgainstId);
-
+        $targetParameter = 'target_'.md5(rand());
+        $targetValue = $this->doctrine->getRepository($this->targetClass)->find($value);
+        $queryBuilder->setParameter($targetParameter, $targetValue);
         switch ($operator) {
             case static::CRITERIA_EQUAL:
-                return $queryBuilder->expr()->eq($property, (int) $value);
+                return $queryBuilder->expr()->in($this->column, ':'.$targetParameter);
             case static::CRITERIA_NOT_EQUAL:
-                return $queryBuilder->expr()->neq($property, (int) $value);
+                return sprintf(':%s NOT IN %s', $this->column, $targetParameter);
         }
-
         return false;
     }
+
 }

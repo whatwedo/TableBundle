@@ -1,28 +1,6 @@
 <div class="row whatwedo_table-foot">
     <div class="col-xs-12">
         {% include 'whatwedoTableBundle::_pagination.html.twig' %}
-
-        {% if table.exportRoute %}
-        <div class="btn-group pull-right" style="margin-right: 20px" role="group" aria-label="Aktionen">
-            <div class="btn-group btn-group-sm">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fa fa-download"></i> Exportieren <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a href="#" data-whatwedo-table-export-csv-current data-export="{{ path(table.exportRoute) }}">
-                            Aktuell angezeigte (.csv Excel)
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" data-whatwedo-table-export-csv-all data-export="{{ path(table.exportRoute) }}">
-                            Alle (.csv Excel)
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        {% endif %}
         {% if table.paginationExtension is not null %}
             {% set pagination = table.paginationExtension %}
             <p>

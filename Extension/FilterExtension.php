@@ -32,11 +32,15 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\QueryBuilder;
+use ReflectionProperty;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use whatwedo\TableBundle\Builder\FilterBuilder;
 use whatwedo\TableBundle\Exception\InvalidFilterAcronymException;
 use whatwedo\TableBundle\Filter\Type\AjaxManyToManyFilterType;
+use whatwedo\TableBundle\Filter\Type\AjaxOneToManyFilterType;
 use whatwedo\TableBundle\Filter\Type\AjaxRelationFilterType;
 use whatwedo\TableBundle\Filter\Type\BooleanFilterType;
 use whatwedo\TableBundle\Filter\Type\DateFilterType;
@@ -59,29 +63,45 @@ class FilterExtension extends AbstractExtension
     const QUERY_PREDEFINED_FILTER = 'predefined_filter';
 
     /**
-     * @var Registry $doctrine
+     * @var Registry
      */
     protected $doctrine;
 
     /**
-     * @var FilterRepository $filterRepository
+     * @var FilterRepository
      */
     protected $filterRepository;
 
     /**
-     * @var RequestStack $requestStack
+     * @var RequestStack
      */
     protected $requestStack;
 
     /**
-     * @var array
+     * @var Filter[]
      */
     protected $filters = [];
 
     /**
-     * @var array
+     * @var Filter[]
      */
     protected $predefinedFilters = [];
+
+    private $scalarType = [
+        'string' => TextFilterType::class,
+        'date' => DateFilterType::class,
+        'datetime' => DatetimeFilterType::class,
+        'integer' => NumberFilterType::class,
+        'float' => NumberFilterType::class,
+        'decimal' => NumberFilterType::class,
+        'boolean' => BooleanFilterType::class,
+    ];
+
+    private $relationType = [
+        OneToMany::class => AjaxOneToManyFilterType::class,
+        ManyToOne::class => AjaxRelationFilterType::class,
+        ManyToMany::class => AjaxManyToManyFilterType::class
+    ];
 
     /**
      * FilterExtension constructor.
@@ -89,7 +109,7 @@ class FilterExtension extends AbstractExtension
      * @param FilterRepository $filterRepository
      * @param RequestStack $requestStack
      */
-    public function __construct(Registry $doctrine, FilterRepository $filterRepository, RequestStack $requestStack)
+    public function __construct(RegistryInterface $doctrine, FilterRepository $filterRepository, RequestStack $requestStack)
     {
         $this->doctrine = $doctrine;
         $this->filterRepository = $filterRepository;
@@ -115,6 +135,16 @@ class FilterExtension extends AbstractExtension
     public function removeFilter($acronym)
     {
         unset($this->filters[$acronym]);
+        return $this;
+    }
+
+    /**
+     * @param $acronym
+     * @return $this
+     */
+    public function removeAll()
+    {
+        $this->filters = [];
         return $this;
     }
 
@@ -173,86 +203,85 @@ class FilterExtension extends AbstractExtension
         return $this->filterRepository->findSavedFilter($route, $username);
     }
 
+    private static function labelCallable(DoctrineTable $table, $property)
+    {
+        foreach ($table->getColumns() as $column) {
+            if ($column->getAcronym() == $property) {
+                return $column->getLabel() ?: ucfirst($property);
+            }
+        }
+
+        return ucfirst($property);
+    }
+
     /**
      * @param DoctrineTable $table
-     * @param string $entityClass
-     * @param string $queryAlias
+     * @param callable $labelCallable
+     * @param string[] $propertyNames
+     * @throws \Doctrine\Common\Annotations\AnnotationException
+     * @throws \ReflectionException
+     */
+    public function addFiltersAutomatically(DoctrineTable $table, callable $labelCallable = null, array $propertyNames = null)
+    {
+        $queryBuilder = $table->getQueryBuilder();
+        $entityClass = $queryBuilder->getRootEntities()[0];
+
+        $reflectionClass = new \ReflectionClass($entityClass);
+        $labelCallable = is_callable($labelCallable) ? $labelCallable : [$this, 'labelCallable'];
+
+        $properties = $propertyNames ? array_map([$reflectionClass, 'getProperty'], $propertyNames) : $reflectionClass->getProperties();
+
+        foreach ($properties as $property) {
+            $this->addFilterAutomatically($table, $queryBuilder, $labelCallable, $property, $reflectionClass->getNamespaceName());
+        }
+    }
+
+    /**
+     * @param DoctrineTable $table
      * @param QueryBuilder $queryBuilder
      * @param callable $labelCallable
+     * @param ReflectionProperty $property
+     * @param string $namespace
+     * @return Filter|null
+     * @throws \Doctrine\Common\Annotations\AnnotationException
      */
-    public function addFiltersAutomatically(DoctrineTable $table, $entityClass, $queryAlias, $queryBuilder, $labelCallable = null)
+    private function addFilterAutomatically(DoctrineTable $table, QueryBuilder $queryBuilder, callable $labelCallable, ReflectionProperty $property, string $namespace)
     {
-        $reader = new AnnotationReader();
-        $reflectionClass = new \ReflectionClass($entityClass);
-        $properties = $reflectionClass->getProperties();
-        $filterExtension = $table->getFilterExtension();
+        $acronym = $property->getName();
 
-        foreach ($properties as $property)
-        {
-            /** @var Column $ormColumn */
-            $ormColumn = $reader->getPropertyAnnotation($property, Column::class);
-            /** @var ManyToOne $ormManyToOne */
-            $ormManyToOne = $reader->getPropertyAnnotation($property, ManyToOne::class);
-            /** @var ManyToMany $ormManyToMany */
-            $ormManyToMany = $reader->getPropertyAnnotation($property, ManyToMany::class);
-            $acronym = $property->getName();
+        $label = call_user_func($labelCallable, $table, $property->getName());
 
-            if (is_null($labelCallable)) {
-                $labelCallable = function (DoctrineTable $table, $property) {
-                    /** @var \whatwedo\TableBundle\Table\Column $column */
-                    foreach ($table->getColumns() as $column) {
-                        if ($column->getAcronym() == $property) {
-                            return $column->getLabel();
-                        }
-                    }
-                    return ucfirst($property);
-                };
+        $annotations = (new AnnotationReader())->getPropertyAnnotations($property);
+
+        $allAliases = $queryBuilder->getAllAliases();
+        $isPropertySelected = in_array($acronym, $allAliases);
+
+        $accessor = sprintf('%s.%s', $allAliases[0], $acronym);
+
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof Column) {
+                if (key_exists($annotation->type, $this->scalarType)) {
+                    $this->addFilter($acronym, $label, new $this->scalarType[$annotation->type]($accessor));
+
+                    return $this->getFilter($acronym);
+                }
+
+                return null;
             }
 
-            $label = call_user_func($labelCallable, $table, $property->getName());
-            $accessor = $acronym;
-            if (!is_null($ormColumn)) {
-                $accessor = sprintf('%s.%s', $queryAlias, $acronym);
-                switch ($ormColumn->type){
-                    case 'string':
-                        $filterExtension->addFilter($acronym, $label, new TextFilterType($accessor));
-                        break;
-                    case 'date':
-                        $filterExtension->addFilter($acronym, $label, new DateFilterType($accessor));
-                        break;
-                    case 'datetime':
-                        $filterExtension->addFilter($acronym, $label, new DatetimeFilterType($accessor));
-                        break;
-                    case 'integer':
-                    case 'float':
-                    case 'decimal':
-                        $filterExtension->addFilter($acronym, $label, new NumberFilterType($accessor));
-                        break;
-                    case 'boolean':
-                        $filterExtension->addFilter($acronym, $label, new BooleanFilterType($accessor));
-                }
-            } else if (!is_null($ormManyToOne)) {
-                $target = $ormManyToOne->targetEntity;
+            if ($annotation instanceof OneToMany || $annotation instanceof ManyToOne || $annotation instanceof ManyToMany) {
+                $target = $annotation->targetEntity;
                 if (strpos($target, '\\') === false) {
-                    $target = preg_replace('#[a-zA-Z0-9]+$#i', $target, $entityClass);
+                    $target = $namespace . '\\' . $target;
                 }
 
-                $joins = [];
-                if (!in_array($acronym, $queryBuilder->getAllAliases())) {
-                    $joins = [$acronym => sprintf('%s.%s', $queryAlias, $acronym)];
-                }
-                $filterExtension->addFilter($acronym, $label, new AjaxRelationFilterType($accessor, $target, $this->doctrine, $joins));
-            } else if (!is_null($ormManyToMany)) {
-                $accessor = sprintf('%s.%s', $queryAlias, $acronym);
-                $joins = [];
-                if (!in_array($acronym, $queryBuilder->getAllAliases())) {
-                    $joins = [$acronym => ['leftJoin', sprintf('%s.%s', $queryAlias, $acronym)]];
-                }
-                $target = $ormManyToMany->targetEntity;
-                if (strpos($target, '\\') === false) {
-                    $target = $reflectionClass->getNamespaceName() . '\\' . $target;
-                }
-                $filterExtension->addFilter($acronym, $label, new AjaxManyToManyFilterType($accessor, $target, $this->doctrine, $joins));
+                $filterType = $this->relationType[get_class($annotation)];
+
+                $joins = !$isPropertySelected ? [$acronym => $annotation instanceof ManyToMany ? ['leftJoin', $accessor] : $accessor] : [];
+
+                $this->addFilter($acronym, $label, new $filterType($acronym, $target, $this->doctrine, $joins));
+
+                return $this->getFilter($acronym);
             }
         }
     }
@@ -266,8 +295,7 @@ class FilterExtension extends AbstractExtension
      */
     public function predefineFilter($id, $acronym, $operator, $value)
     {
-        $filterBuilder = new FilterBuilder($id, $acronym, $operator, $value, $this);
-        return $filterBuilder;
+        return new FilterBuilder($id, $acronym, $operator, $value, $this);
     }
 
     /**
@@ -297,12 +325,33 @@ class FilterExtension extends AbstractExtension
     /**
      * @return array
      */
+    public function getFilterData() {
+        $operators = $this->getFilterOperators();
+        $values = $this->getFilterValues();
+
+        $data = [];
+        foreach($this->getFilterColumns() as $groupIndex => $columns) {
+            $group = [];
+
+            foreach($columns as $index => $column) {
+                $group[$column] = [
+                    'operator' => $operators[$groupIndex][$index],
+                    'value' => $values[$groupIndex][$index]
+                ];
+            }
+
+            $data[] = $group;
+        }
+
+        return $data;
+    }
+
+    /**
+     * @return array
+     */
     public function getFilterColumns()
     {
-        $queryFilterColumn = $this->getRequest()->query->get($this->getActionQueryParameter('filter_column'), []);
-        $predefinedFilterId = $this->getRequest()->query->get($this->getActionQueryParameter(static::QUERY_PREDEFINED_FILTER), '');
-        $additionals = $this->getPredefinedFilter($predefinedFilterId);
-        return array_merge($queryFilterColumn, is_null($additionals) ? [] : $additionals['filter_column']);
+        return $this->getFromRequest('filter_column');
     }
 
     /**
@@ -310,10 +359,7 @@ class FilterExtension extends AbstractExtension
      */
     public function getFilterOperators()
     {
-        $queryFilterOperator = $this->getRequest()->query->get($this->getActionQueryParameter('filter_operator'), []);
-        $predefinedFilterId = $this->getRequest()->query->get($this->getActionQueryParameter(static::QUERY_PREDEFINED_FILTER), '');
-        $additionals = $this->getPredefinedFilter($predefinedFilterId);
-        return array_merge($queryFilterOperator, is_null($additionals) ? [] : $additionals['filter_operator']);
+        return $this->getFromRequest('filter_operator');
     }
 
     /**
@@ -321,10 +367,7 @@ class FilterExtension extends AbstractExtension
      */
     public function getFilterValues()
     {
-        $queryFilterValue = $this->getRequest()->query->get($this->getActionQueryParameter('filter_value'), []);
-        $predefinedFilterId = $this->getRequest()->query->get($this->getActionQueryParameter(static::QUERY_PREDEFINED_FILTER), '');
-        $additionals = $this->getPredefinedFilter($predefinedFilterId);
-        return array_merge($queryFilterValue, is_null($additionals) ? [] : $additionals['filter_value']);
+        return $this->getFromRequest('filter_value');
 
     }
 
@@ -340,5 +383,11 @@ class FilterExtension extends AbstractExtension
     public static function isEnabled($enabledBundles)
     {
         return true;
+    }
+
+    private function getFromRequest(string $param) {
+        $value = $this->getRequest()->query->get($this->getActionQueryParameter($param), []);
+        $predefined = $this->getPredefinedFilter($this->getRequest()->query->get($this->getActionQueryParameter(static::QUERY_PREDEFINED_FILTER), ''));
+        return $predefined ? array_merge($value, $predefined[$param]) : $value;
     }
 }

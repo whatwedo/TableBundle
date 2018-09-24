@@ -25,12 +25,8 @@
   cursor: pointer;
 }
 
-.whatwedo_table .whatwedo_table-search {
-  width: 300px;
-}
-
 .whatwedo_table .whatwedo_table-search select {
-  width: 70px;
+  width: auto;
   float: right;
 }
 
@@ -108,10 +104,6 @@
   font-size: 10px;
 }
 
-.whatwedo_table.whatwedo_table__large .table-responsive {
-  overflow-x: scroll;
-}
-
 .whatwedo_table.whatwedo_table__large .table-responsive td {
   white-space: nowrap;
 }
@@ -179,10 +171,6 @@
 
 .whatwedo_table__filters .whatwedo_table__filters_filter .btn-group {
   margin-top: 5px;
-}
-
-.table-responsive {
-  overflow-x: visible;
 }
 
 .dataTable tr[data-href] {

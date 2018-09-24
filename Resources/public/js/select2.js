@@ -1,23 +1,23 @@
 var whatwedo_select2 = {
     empty: '-- leer --',
     init: function() {
-        $('select').not('[data-disable-interactive]').not('[data-ajax-select]').each(function(i, elem) {
-            whatwedo_select2.select2(elem);
-        });
-
-        $('select[data-ajax-select]').not('[data-disable-interactive]').each(function(i, elem) {
-            whatwedo_select2.ajaxSelect2(elem);
+        $('select').each(function(i, elem) {
+          whatwedo_select2.initElement(elem)
         });
     },
 
+    initElement: function(elem) {
+        if($(elem).is('[data-disable-interactive]')) return;
+
+        if($(elem).is('[data-ajax-select]')) whatwedo_select2.ajaxSelect2(elem);
+        else whatwedo_select2.select2(elem);
+    },
+
     select2: function(elem) {
-        elem = $(elem);
-        var ph = elem.find('option[value=""]').text();
-        ph = ph !== '' ? ph : whatwedo_select2.empty;
-        elem.select2({
+        $(elem).select2({
             language: 'de',
             width: '100%',
-            placeholder: ph,
+            placeholder: $(elem).find('option[value=""]').text() || whatwedo_select2.empty,
             allowClear: true
         });
     },
@@ -44,8 +44,7 @@ var whatwedo_select2 = {
                     return {
                         results: data.items
                     };
-                },
-                cache: true
+                }
             },
             minimumInputLength: 2
         });

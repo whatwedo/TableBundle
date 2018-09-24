@@ -192,19 +192,6 @@ class Column extends AbstractColumn implements SortableColumnInterface
 
     /**
      * @param ParameterBag $query
-     * @param $order
-     * @return bool
-     */
-    public function isOrdered(ParameterBag $query, $order)
-    {
-        return $query->has($this->getOrderEnabledQueryParameter())
-            && $query->get($this->getOrderEnabledQueryParameter()) == '1'
-            && $query->has($this->getOrderAscQueryParameter())
-            && $query->get($this->getOrderAscQueryParameter()) == ($order == 'ASC') ? '1' : '0';
-    }
-
-    /**
-     * @param ParameterBag $query
      * @param $enabled
      * @param $asc
      * @return string
@@ -217,12 +204,13 @@ class Column extends AbstractColumn implements SortableColumnInterface
         ]);
         // remove parameter where is_order_... equals '0' aka not active
         $removeLater = [];
+        $offset = strlen(SortableColumnInterface::ORDER_ENABLED);
+
         foreach (array_keys($queryData) as $key) {
-            if (substr($key, 0, strlen(SortableColumnInterface::ORDER_ENABLED)) == SortableColumnInterface::ORDER_ENABLED) {
-                if ($queryData[$key] == '0') {
-                    $suffix = substr($key, strlen(SortableColumnInterface::ORDER_ENABLED));
-                    $removeLater[] = SortableColumnInterface::ORDER_ASC.$suffix;
+            if (substr($key, 0, $offset) == SortableColumnInterface::ORDER_ENABLED) {
+                if (!$queryData[$key]) {
                     $removeLater[] = $key;
+                    $removeLater[] = SortableColumnInterface::ORDER_ASC. substr($key, $offset);
                 }
             }
         }
@@ -231,7 +219,7 @@ class Column extends AbstractColumn implements SortableColumnInterface
                 unset($queryData[$key]);
             }
         }
-        return count($queryData) > 0 ? '?'.http_build_query($queryData) : '?';
+        return !empty($queryData) ? '?'.http_build_query($queryData) : '?';
     }
 
     /**
@@ -242,12 +230,17 @@ class Column extends AbstractColumn implements SortableColumnInterface
         $this->tableIdentifier = $identifier;
     }
 
+    private function getColumnIdentifier()
+    {
+        return str_replace('.', '_', $this->tableIdentifier.'_'.$this->getAcronym());
+    }
+
     /**
      * @return string
      */
     public function getOrderEnabledQueryParameter()
     {
-        return static::ORDER_ENABLED.$this->tableIdentifier.'_'.str_replace('.', '_', $this->getAcronym());
+        return static::ORDER_ENABLED.$this->getColumnIdentifier();
     }
 
     /**
@@ -255,7 +248,7 @@ class Column extends AbstractColumn implements SortableColumnInterface
      */
     public function getOrderAscQueryParameter()
     {
-        return static::ORDER_ASC.$this->tableIdentifier.'_'.str_replace('.', '_', $this->getAcronym());
+        return static::ORDER_ASC.$this->getColumnIdentifier();
     }
 
 }
