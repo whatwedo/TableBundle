@@ -25,34 +25,38 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Model\Type;
+namespace whatwedo\TableBundle\Filter\Type;
+
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
  * @author Ueli Banholzer <ueli@whatwedo.ch>
  */
-class RelationFilterType extends FilterType
+class AjaxRelationFilterType extends FilterType
 {
     const CRITERIA_EQUAL = 'equal';
     const CRITERIA_NOT_EQUAL = 'not_equal';
 
-    protected $choices;
     protected $emptyQuery;
     protected $accessorPath;
     private $propToCheckAgainstId;
+    protected $targetClass;
+
+    /**
+     * @var Registry $doctrine
+     */
+    protected $doctrine;
 
     /**
      * @var PropertyAccessor
      */
     protected static $propertyAccessor;
 
-    public function __construct($column, $choices, $joins = [], $emptyFieldsCheck = false, $accessorPath = false, $propToCheckAgainstId = 'id')
+    public function __construct($column, $targetClass, $doctrine, $joins = [], $emptyFieldsCheck = false, $accessorPath = false, $propToCheckAgainstId = 'id')
     {
-        $this->choices = $choices;
-
         if ($emptyFieldsCheck !== false
             && !is_array($emptyFieldsCheck)) {
             $emptyFieldsCheck = [$emptyFieldsCheck];
@@ -60,6 +64,8 @@ class RelationFilterType extends FilterType
         $this->emptyQuery = $emptyFieldsCheck;
         $this->accessorPath = $accessorPath;
         $this->propToCheckAgainstId = $propToCheckAgainstId;
+        $this->targetClass = $targetClass;
+        $this->doctrine = $doctrine;
         parent::__construct($column, $joins);
     }
 
@@ -85,29 +91,20 @@ class RelationFilterType extends FilterType
 
     public function getValueField($value = 0)
     {
-        $field = sprintf('<select name="{name}" class="form-control" %s>', count($this->choices) < 10 ? 'data-disable-interactive' : '');
+        $field = sprintf(
+            '<select name="{name}" class="form-control" data-ajax-select data-ajax-entity="%s">',
+            $this->targetClass
+        );
 
-        if ($this->emptyQuery) {
-            $field .= "<option value='empty'>- leer -</option>";
+        $curentSelection = null;
+        if ($value > 0) {
+            $curentSelection = $this->doctrine->getRepository($this->targetClass)->find($value);
         }
 
-        foreach ($this->choices as $choice) {
-            if ($this->accessorPath) {
-                $strValue = '';
-                try {
-                    $strValue = $this->getPropertyAccessor()->getValue($choice, $this->accessorPath);
-                } catch (UnexpectedTypeException $e) { }
-            } else {
-                $strValue = $choice->__toString();
-            }
-
-            /** @noinspection PhpUndefinedMethodInspection */
-            $field .= sprintf(
-                '<option value="%s" %s>%s</option>',
-                $choice->getId(),
-                $choice->getId() == (int) $value ? 'selected="selected"' : '',
-                $strValue
-            );
+        if (!is_null($curentSelection)) {
+            $field .= sprintf('<option value="%s">%s</option>', $value, $curentSelection->__toString());
+        } elseif ($this->emptyQuery) {
+            $field .= "<option selected value='0'>- leer -</option>";
         }
 
         $field .= '</select>';

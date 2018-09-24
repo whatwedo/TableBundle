@@ -27,7 +27,11 @@
 
 namespace whatwedo\TableBundle\EventListener;
 
+use Doctrine\ORM\Query\Expr;
+use UnexpectedValueException;
 use whatwedo\TableBundle\Event\DataLoadEvent;
+use whatwedo\TableBundle\Extension\FilterExtension;
+use whatwedo\TableBundle\Table\DoctrineTable;
 use whatwedo\TableBundle\Table\Table;
 
 /**
@@ -35,15 +39,24 @@ use whatwedo\TableBundle\Table\Table;
  */
 class FilterEventListener
 {
-
     /**
-     * @var Table $table
+     * @var DoctrineTable $table
      */
     protected $table;
 
     public function filterResultSet(DataLoadEvent $event)
     {
         $this->table = $event->getTable();
+
+        if (!$this->table instanceof DoctrineTable) {
+            // we're only able to filter DoctrineTable
+            return;
+        }
+
+        if (!$this->table->hasExtension(FilterExtension::class)) {
+            return;
+        }
+
         $this->addQueryBuilderFilter();
     }
 
@@ -55,36 +68,29 @@ class FilterEventListener
         return $this->table->getQueryBuilder();
     }
 
-    /**
-     * @return \Symfony\Component\HttpFoundation\Request
-     */
-    private function request()
-    {
-        return $this->table->getRequest();
-    }
-
     private function addQueryBuilderFilter()
     {
         $addedJoins = [];
 
         $orX = $this->queryBuilder()->expr()->orX();
-        // First, loop all OR's
-        $queryFilterColumn = $this->request()->query->get('filter_column', []);
-        $queryFilterOperator = $this->request()->query->get('filter_operator', []);
-        $queryFilterValue = $this->request()->query->get('filter_value', []);
 
+        $queryFilterColumn = $this->table->getFilterExtension()->getFilterColumns();
+        $queryFilterOperator = $this->table->getFilterExtension()->getFilterOperators();
+        $queryFilterValue = $this->table->getFilterExtension()->getFilterValues();
+
+        // First, loop all OR's
         foreach ($queryFilterColumn as $orKey => $columns) {
             // Then, loop all AND's
             $andX = $this->queryBuilder()->expr()->andX();
             foreach ($columns as $andKey => $column) {
-                if (!isset($this->table->getFilters()[$column])
+                if (!isset($this->table->getFilterExtension()->getFilters()[$column])
                     || !isset($queryFilterOperator[$orKey][$andKey])
                     || !isset($queryFilterValue[$orKey][$andKey])) {
                     continue;
                 }
 
 
-                $filter = $this->table->getFilters()[$column];
+                $filter = $this->table->getFilterExtension()->getFilters()[$column];
 
                 foreach ($filter->getType()->getJoins() as $joinAlias => $join) {
                     if (in_array($joinAlias, $addedJoins)) {
@@ -102,14 +108,19 @@ class FilterEventListener
                 $w = $filter->getType()->addToQueryBuilder(
                     $queryFilterOperator[$orKey][$andKey],
                     $queryFilterValue[$orKey][$andKey],
-                    implode('_', ['filter', (int) $orKey, (int) $andKey, $filter->getIdentifier()]),
+                    implode('_', ['filter', (int)$orKey, (int)$andKey, $filter->getAcronym()]),
                     $this->queryBuilder()
                 );
-
-                if ($w) {
+                // $w instanceof Expr does not work. (No extending in doctrine classes.)
+                if ((is_object($w) && substr(get_class($w), 0, strlen(Expr::class)) === Expr::class)
+                    || is_string($w)) {
                     $andX->add($w);
+                } elseif (!is_bool($w)) {
+                    $classExpr = Expr::class;
+                    throw new UnexpectedValueException("Bool or $classExpr expected as filter-result");
                 }
             }
+
 
             if (count($andX->getParts()) > 1) {
                 $orX->add($andX);
@@ -123,6 +134,7 @@ class FilterEventListener
         } elseif (count($orX->getParts()) === 1) {
             $this->queryBuilder()->andWhere($orX->getParts()[0]);
         }
+
     }
 
 }

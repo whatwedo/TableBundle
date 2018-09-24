@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2016, whatwedo GmbH
+ * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,57 +25,25 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Model\Type;
+namespace whatwedo\TableBundle\Extension;
 
 /**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
+ * Interface ExtensionInterface
+ * @package whatwedo\TableBundle\Extension
  */
-abstract class FilterType implements FilterTypeInterface
+interface ExtensionInterface
 {
-    protected $column = null;
-    protected $joins = [];
-
-    public function __construct($column, $joins = [])
-    {
-        $this->column = $column;
-        $this->joins = $joins;
-    }
+    /**
+     * returns true if extension is enabled
+     *
+     * @return bool
+     */
+    public static function isEnabled($enabledBundles);
 
     /**
-     * @return null
+     * @param string $identifier
+     * @return ExtensionInterface
      */
-    public function getColumn()
-    {
-        return $this->column;
-    }
+    public function setTableIdentifier($identifier);
 
-    /**
-     * @param null $column
-     * @return FilterType
-     */
-    public function setColumn($column)
-    {
-        $this->column = $column;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getJoins()
-    {
-        return $this->joins;
-    }
-
-    /**
-     * @param array $joins
-     * @return FilterType
-     */
-    public function setJoins($joins)
-    {
-        $this->joins = $joins;
-
-        return $this;
-    }
 }

@@ -25,34 +25,57 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Event;
-use Symfony\Component\EventDispatcher\Event;
-use whatwedo\TableBundle\Table\DoctrineTable;
-use whatwedo\TableBundle\Table\Table;
+namespace whatwedo\TableBundle\Filter\Type;
 
 /**
  * @author Ueli Banholzer <ueli@whatwedo.ch>
  */
-class DataLoadEvent extends Event
+abstract class FilterType implements FilterTypeInterface
 {
-    const PRE_LOAD = 'whatwedo_table.data_load.pre_load';
-    const POST_LOAD = 'whatwedo_table.data_load.post_load';
+    protected $column = null;
+    protected $joins = [];
 
-    /**
-     * @var Table
-     */
-    protected $table;
-
-    public function __construct(Table $table)
+    public function __construct($column, $joins = [])
     {
-        $this->table = $table;
+        $this->column = $column;
+        $this->joins = $joins;
     }
 
     /**
-     * @return DoctrineTable
+     * @return null
      */
-    public function getTable()
+    public function getColumn()
     {
-        return $this->table;
+        return $this->column;
+    }
+
+    /**
+     * @param null $column
+     * @return FilterType
+     */
+    public function setColumn($column)
+    {
+        $this->column = $column;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getJoins()
+    {
+        return $this->joins;
+    }
+
+    /**
+     * @param array $joins
+     * @return FilterType
+     */
+    public function setJoins($joins)
+    {
+        $this->joins = $joins;
+
+        return $this;
     }
 }

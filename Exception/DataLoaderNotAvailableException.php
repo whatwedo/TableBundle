@@ -25,45 +25,18 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Repository;
+namespace whatwedo\TableBundle\Exception;
 
-use Doctrine\ORM\EntityRepository;
-use whatwedo\TableBundle\Entity\Filter;
-use whatwedo\TableBundle\Enum\FilterStateEnum;
+use Throwable;
 
-/**
- * @author Nicolo Singer <nicolo@whatwedo.ch>
- */
-class FilterRepository extends EntityRepository
+class DataLoaderNotAvailableException extends \Exception
 {
-    /**
-     * @param string $path Route-Path
-     * @param string $username Username
-     * @return Filter[]
-     */
-    public function findSavedFilter($path, $username)
+    public function __construct($message = "", $code = 0, Throwable $previous = null)
     {
-        $qb = $this->createQueryBuilder('f');
+        if (!$message) {
+            $message = 'Table data loader is not availabe. Please set one by calling Table::setDataLoader($dataLoader)';
+        }
 
-        return $qb->where(
-                    $qb->expr()->andX(
-                        $qb->expr()->eq('f.route', ':path'),
-                        $qb->expr()->orX(
-                            $qb->expr()->orX(
-                                $qb->expr()->eq('f.state', FilterStateEnum::ALL),
-                                $qb->expr()->eq('f.state', FilterStateEnum::SYSTEM)
-                            ),
-                            $qb->expr()->andX(
-                                $qb->expr()->eq('f.state', FilterStateEnum::SELF),
-                                $qb->expr()->eq('f.creatorUsername', ':username')
-                            )
-                        )
-                    )
-                )
-            ->orderBy('f.name')
-            ->setParameter('path', $path)
-            ->setParameter('username', $username)
-            ->getQuery()
-            ->getResult();
+        parent::__construct($message, $code, $previous);
     }
 }

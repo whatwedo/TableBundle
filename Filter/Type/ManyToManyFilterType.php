@@ -25,11 +25,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Model\Type;
-
+namespace whatwedo\TableBundle\Filter\Type;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class ManyToManyFilterType extends FilterType
 {
@@ -53,9 +53,9 @@ class ManyToManyFilterType extends FilterType
     protected $callable;
 
     /**
-     * @var string $toStringMethod
+     * @var string $labelAccessorPath
      */
-    protected $toStringMethod = '__toString';
+    protected $labelAccessorPath = '__toString';
 
     /**
      * ManyToManyFilterType constructor.
@@ -89,13 +89,11 @@ class ManyToManyFilterType extends FilterType
     }
 
     /**
-     * @param string $toStringMethod
-     * @return ManyToManyFilterType $this
+     * @param string $labelAccessorPath
      */
-    public function setToStringMethod($toStringMethod)
+    public function setLabelAccessorPath($labelAccessorPath)
     {
-        $this->toStringMethod = $toStringMethod;
-        return $this;
+        $this->labelAccessorPath = $labelAccessorPath;
     }
 
     /**
@@ -116,13 +114,21 @@ class ManyToManyFilterType extends FilterType
     public function getValueField($value = 0)
     {
         $field = '<select name="{name}" class="form-control">';
-        $method = $this->toStringMethod;
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+
         foreach (call_user_func($this->callable) as $entity) {
+            $value = null;
+            if ($this->labelAccessorPath == '__toString') {
+                $value = $entity->__toString();
+            } else {
+                $value = $propertyAccessor->getValue($entity, $this->labelAccessorPath);
+            }
+
             $field .= sprintf(
                 '<option value="%s" %s>%s</option>',
                 $entity->getId(),
                 $entity->getId() == (int) $value ? 'selected="selected"' : '',
-                $entity->$method()
+                $value
             );
         }
         $field .= '</select>';

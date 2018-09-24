@@ -33,7 +33,7 @@ use whatwedo\TableBundle\Enum\FilterStateEnum;
 
 class FilterStateFormatter extends AbstractFormatter
 {
-    public static function getString($value)
+    public function getString($value)
     {
         $value = FilterStateEnum::getRepresentation($value);
         return is_null($value) ? 'unbekannt' : $value;

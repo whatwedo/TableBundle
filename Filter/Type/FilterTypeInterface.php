@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2017, whatwedo GmbH
+ * Copyright (c) 2016, whatwedo GmbH
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,45 +25,17 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Repository;
+namespace whatwedo\TableBundle\Filter\Type;
 
-use Doctrine\ORM\EntityRepository;
-use whatwedo\TableBundle\Entity\Filter;
-use whatwedo\TableBundle\Enum\FilterStateEnum;
-
+use Doctrine\ORM\QueryBuilder;
 /**
  * @author Nicolo Singer <nicolo@whatwedo.ch>
  */
-class FilterRepository extends EntityRepository
+interface FilterTypeInterface
 {
-    /**
-     * @param string $path Route-Path
-     * @param string $username Username
-     * @return Filter[]
-     */
-    public function findSavedFilter($path, $username)
-    {
-        $qb = $this->createQueryBuilder('f');
-
-        return $qb->where(
-                    $qb->expr()->andX(
-                        $qb->expr()->eq('f.route', ':path'),
-                        $qb->expr()->orX(
-                            $qb->expr()->orX(
-                                $qb->expr()->eq('f.state', FilterStateEnum::ALL),
-                                $qb->expr()->eq('f.state', FilterStateEnum::SYSTEM)
-                            ),
-                            $qb->expr()->andX(
-                                $qb->expr()->eq('f.state', FilterStateEnum::SELF),
-                                $qb->expr()->eq('f.creatorUsername', ':username')
-                            )
-                        )
-                    )
-                )
-            ->orderBy('f.name')
-            ->setParameter('path', $path)
-            ->setParameter('username', $username)
-            ->getQuery()
-            ->getResult();
-    }
+    public function getColumn();
+    public function getJoins();
+    public function getOperators();
+    public function getValueField($value);
+    public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder);
 }

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2016, whatwedo GmbH
+ * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,45 +25,56 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Model\Type;
-use Doctrine\ORM\QueryBuilder;
+namespace whatwedo\TableBundle\Event;
+
+use Symfony\Component\EventDispatcher\Event;
+use whatwedo\CrudBundle\Content\RelationContent;
+use whatwedo\TableBundle\Table\Table;
 
 /**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
+ * Class CriteriaLoadEvent
+ * @package whatwedo\TableBundle\Event
  */
-class BooleanFilterType extends FilterType
+class CriteriaLoadEvent extends Event
 {
-    const CRITERIA_EQUAL = 'equal';
-    const CRITERIA_NOT_EQUAL = 'not_equal';
 
-    public function getOperators()
+    const PRE_LOAD = 'whatwedo_table.criteria_load.pre_load';
+
+    /**
+     * @var RelationContent $relationContent
+     */
+    protected $relationContent;
+
+    /**
+     * @var Table $table
+     */
+    protected $table;
+
+    /**
+     * CriteriaLoadEvent constructor.
+     * @param RelationContent $relationContent
+     * @param Table $table
+     */
+    public function __construct(RelationContent $relationContent, Table $table)
     {
-        return [
-            static::CRITERIA_EQUAL => 'ist',
-            static::CRITERIA_NOT_EQUAL => 'ist nicht',
-        ];
+        $this->relationContent = $relationContent;
+        $this->table = $table;
     }
 
-    public function getValueField($value = 1)
+    /**
+     * @return RelationContent
+     */
+    public function getRelationContent()
     {
-        return sprintf(
-            '<select name="{name}" class="form-control"><option value="1" %s>ausgewählt</option><option value="0" %s>nicht ausgewählt</option></select>',
-            $value == 1 ? 'selected' : '',
-            $value == 0 ? 'selected' : ''
-        );
+        return $this->relationContent;
     }
 
-    public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
+    /**
+     * @return Table
+     */
+    public function getTable()
     {
-        $value = $value == 1 ? 'true' : 'false';
-
-        switch ($operator) {
-            case static::CRITERIA_EQUAL:
-                return $queryBuilder->expr()->eq($this->getColumn(), $value);
-            case static::CRITERIA_NOT_EQUAL:
-                return $queryBuilder->expr()->neq($this->getColumn(), $value);
-        }
-
-        return false;
+        return $this->table;
     }
+
 }

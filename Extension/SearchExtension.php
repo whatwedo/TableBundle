@@ -25,45 +25,62 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Repository;
+namespace whatwedo\TableBundle\Extension;
 
-use Doctrine\ORM\EntityRepository;
-use whatwedo\TableBundle\Entity\Filter;
-use whatwedo\TableBundle\Enum\FilterStateEnum;
+use Symfony\Component\HttpFoundation\RequestStack;
+use whatwedo\SearchBundle\whatwedoSearchBundle;
 
 /**
- * @author Nicolo Singer <nicolo@whatwedo.ch>
+ * Class SearchExtension
+ * @package whatwedo\TableBundle\Extension
  */
-class FilterRepository extends EntityRepository
+class SearchExtension extends AbstractExtension
 {
-    /**
-     * @param string $path Route-Path
-     * @param string $username Username
-     * @return Filter[]
-     */
-    public function findSavedFilter($path, $username)
-    {
-        $qb = $this->createQueryBuilder('f');
 
-        return $qb->where(
-                    $qb->expr()->andX(
-                        $qb->expr()->eq('f.route', ':path'),
-                        $qb->expr()->orX(
-                            $qb->expr()->orX(
-                                $qb->expr()->eq('f.state', FilterStateEnum::ALL),
-                                $qb->expr()->eq('f.state', FilterStateEnum::SYSTEM)
-                            ),
-                            $qb->expr()->andX(
-                                $qb->expr()->eq('f.state', FilterStateEnum::SELF),
-                                $qb->expr()->eq('f.creatorUsername', ':username')
-                            )
-                        )
-                    )
-                )
-            ->orderBy('f.name')
-            ->setParameter('path', $path)
-            ->setParameter('username', $username)
-            ->getQuery()
-            ->getResult();
+    const QUERY_PARAMETER_QUERY = 'query';
+
+    /**
+     * @var RequestStack $requestStack
+     */
+    protected $requestStack;
+
+    /**
+     * SearchExtension constructor.
+     * @param RequestStack $requestStack
+     */
+    public function __construct(RequestStack $requestStack)
+    {
+        $this->requestStack = $requestStack;
     }
+
+    /**
+     * @return string
+     */
+    public function getSearchQuery()
+    {
+        return $this->getRequest()->query->get($this->getActionQueryParameter(static::QUERY_PARAMETER_QUERY), '');
+    }
+
+    /**
+     * @return null|\Symfony\Component\HttpFoundation\Request
+     */
+    public function getRequest()
+    {
+        return $this->requestStack->getCurrentRequest();
+    }
+
+    /**
+     * @param $enabledBundles
+     * @return boolean
+     */
+    public static function isEnabled($enabledBundles)
+    {
+        foreach ($enabledBundles as $bundles) {
+            if (in_array(whatwedoSearchBundle::class, $bundles)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

@@ -25,45 +25,34 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Repository;
-
-use Doctrine\ORM\EntityRepository;
-use whatwedo\TableBundle\Entity\Filter;
-use whatwedo\TableBundle\Enum\FilterStateEnum;
+namespace whatwedo\TableBundle\Extension;
 
 /**
- * @author Nicolo Singer <nicolo@whatwedo.ch>
+ * Class AbstractExtension
+ * @package whatwedo\TableBundle\Extension
  */
-class FilterRepository extends EntityRepository
+abstract class AbstractExtension implements ExtensionInterface
 {
-    /**
-     * @param string $path Route-Path
-     * @param string $username Username
-     * @return Filter[]
-     */
-    public function findSavedFilter($path, $username)
-    {
-        $qb = $this->createQueryBuilder('f');
 
-        return $qb->where(
-                    $qb->expr()->andX(
-                        $qb->expr()->eq('f.route', ':path'),
-                        $qb->expr()->orX(
-                            $qb->expr()->orX(
-                                $qb->expr()->eq('f.state', FilterStateEnum::ALL),
-                                $qb->expr()->eq('f.state', FilterStateEnum::SYSTEM)
-                            ),
-                            $qb->expr()->andX(
-                                $qb->expr()->eq('f.state', FilterStateEnum::SELF),
-                                $qb->expr()->eq('f.creatorUsername', ':username')
-                            )
-                        )
-                    )
-                )
-            ->orderBy('f.name')
-            ->setParameter('path', $path)
-            ->setParameter('username', $username)
-            ->getQuery()
-            ->getResult();
+    protected $tableIdentifier;
+
+    /**
+     * @param mixed $tableIdentifier
+     * @return $this
+     */
+    public function setTableIdentifier($tableIdentifier)
+    {
+        $this->tableIdentifier = $tableIdentifier;
+        return $this;
     }
+
+    /**
+     * @param $action
+     * @return string
+     */
+    public function getActionQueryParameter($action)
+    {
+        return sprintf('%s_%s', $this->tableIdentifier, $action);
+    }
+
 }

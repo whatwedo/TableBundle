@@ -35,7 +35,6 @@ use Symfony\Component\HttpFoundation\ParameterBag;
  */
 interface SortableColumnInterface
 {
-
     const ORDER_ENABLED = 'is_order_';
     const ORDER_ASC = 'asc_order_';
 
@@ -78,5 +77,26 @@ interface SortableColumnInterface
      * @return string
      */
     public function getOrderValue($row);
+
+    /**
+     * @return string
+     */
+    public function getOrderEnabledQueryParameter();
+
+    /**
+     * @return string
+     */
+    public function getOrderAscQueryParameter();
+
+    /**
+     * @param string $identifier
+     */
+    public function setTableIdentifier($identifier);
+
+    /**
+     * @param boolean $sortable
+     * @return $this
+     */
+    public function setSortable($sortable);
 
 }
