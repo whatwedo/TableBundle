@@ -69,11 +69,6 @@ interface SortableColumnInterface
     /**
      * @return string
      */
-    public function getOrderValue($row);
-
-    /**
-     * @return string
-     */
     public function getOrderEnabledQueryParameter();
 
     /**

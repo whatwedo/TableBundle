@@ -64,15 +64,6 @@ class ColumnReflection
         return $this->row;
     }
 
-    public function getOrderValue()
-    {
-        if ($this->column instanceof SortableColumnInterface) {
-            return $this->column->getOrderValue($this->row);
-        } else {
-            return $this->__toString();
-        }
-    }
-
     /**
      * @return string
      */

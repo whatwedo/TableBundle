@@ -112,20 +112,6 @@ class Column extends AbstractColumn implements SortableColumnInterface
         return $data;
     }
 
-    public function getOrderValue($row)
-    {
-        $data = $this->getContents($row);
-        $formatter = $this->options['formatter'];
-
-        if (is_string($formatter)) {
-            $formatterObj = $this->formatterManager->getFormatter($formatter);
-            return $formatterObj->getOrderValue($data);
-        }
-
-        if (is_callable($formatter)) {
-            return $formatter($data);
-        }
-
         return $data;
     }
 

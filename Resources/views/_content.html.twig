@@ -2,11 +2,7 @@
     {% set showRoute = table.getShowRoute(row.data) %}
     <tr{% if showRoute %} data-href="{{ path(showRoute, { id: row.data.id }) }}"{% endif %}>
         {% for column in row %}
-            <td class="{{ column.column.tdClass }}"
-                {% if table.sortable and column.column.sortableColumn and column.column.sortable %}
-                    data-order="{{ column.getOrderValue(row) }}"
-                {% endif %}
-            >
+            <td class="{{ column.column.tdClass }}">
                 {{ column|raw }}
             </td>
         {% endfor %}
