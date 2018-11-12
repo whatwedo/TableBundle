@@ -56,6 +56,7 @@ class Column extends AbstractColumn implements SortableColumnInterface
             'callable' => null,
             'accessor_path' => $this->acronym,
             'formatter' => DefaultFormatter::class,
+            'formatter_options' => [],
             'sortable' => true,
         ]);
 
@@ -91,17 +92,10 @@ class Column extends AbstractColumn implements SortableColumnInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function render($row)
-    {
-        $data = $this->getContents($row);
-
-        $formatter = $this->options['formatter'];
-
+    protected function formatData($data, $formatter, $formatterOptions) {
         if (is_string($formatter)) {
             $formatterObj = $this->formatterManager->getFormatter($formatter);
+            $formatterObj->processOptions($formatterOptions);
             return $formatterObj->getHtml($data);
         }
 
@@ -109,24 +103,23 @@ class Column extends AbstractColumn implements SortableColumnInterface
             return $formatter($data);
         }
 
+        if (is_array($formatter)) {
+            foreach($formatter as $index => $aFormatter) {
+                $data = $this->formatData($data, $aFormatter, $formatterOptions[$index]);
+            }
+
+            return $data;
+        }
+
         return $data;
     }
 
-    public function getOrderValue($row)
+    /**
+     * {@inheritdoc}
+     */
+    public function render($row)
     {
-        $data = $this->getContents($row);
-        $formatter = $this->options['formatter'];
-
-        if (is_string($formatter)) {
-            $formatterObj = $this->formatterManager->getFormatter($formatter);
-            return $formatterObj->getOrderValue($data);
-        }
-
-        if (is_callable($formatter)) {
-            return $formatter($data);
-        }
-
-        return $data;
+        return (string) $this->formatData($this->getContents($row), $this->options['formatter'], $this->options['formatter_options']);
     }
 
     /**
