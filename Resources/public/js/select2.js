@@ -29,7 +29,11 @@ var whatwedo_select2 = {
         elem.select2({
             language: 'de',
             width: '100%',
-            allowClear: false,
+            allowClear: typeof elem.attr('required') === 'undefined',
+            placeholder: {
+              id: '',
+              placeholder: 'Leer'
+            },
             ajax: {
                 url: url,
                 dataType: 'json',
