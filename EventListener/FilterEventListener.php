@@ -101,10 +101,14 @@ class FilterEventListener
                     $addedJoins[] = $joinAlias;
                     $method = 'join';
                     if (is_array($join)) {
+                        if (sizeof($join) > 3) {
+                            $conditionType = $join[2];
+                            $condition = $join[3];
+                        }
                         $method = $join[0];
                         $join = $join[1];
                     }
-                    $this->queryBuilder()->$method($join, $joinAlias);
+                    $this->queryBuilder()->$method($join, $joinAlias, $conditionType, $condition);
                 }
 
                 $w = $filter->getType()->addToQueryBuilder(
