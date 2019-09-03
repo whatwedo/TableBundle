@@ -28,6 +28,7 @@
 namespace whatwedo\TableBundle\EventListener;
 
 use Doctrine\ORM\Query\Expr;
+use InvalidArgumentException;
 use UnexpectedValueException;
 use whatwedo\TableBundle\Event\DataLoadEvent;
 use whatwedo\TableBundle\Extension\FilterExtension;
@@ -104,6 +105,8 @@ class FilterEventListener
                         if (sizeof($join) > 3) {
                             $conditionType = $join[2];
                             $condition = $join[3];
+                        } else if (sizeof($join) == 3 || sizeof($join) > 4) {
+                            throw new InvalidArgumentException('Join-array with three elements is not supportet. See join-alias: ' . $joinAlias );
                         }
                         $method = $join[0];
                         $join = $join[1];
