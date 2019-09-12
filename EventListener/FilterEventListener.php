@@ -102,11 +102,11 @@ class FilterEventListener
                     $addedJoins[] = $joinAlias;
                     $method = 'join';
                     if (is_array($join)) {
-                        if (sizeof($join) > 3) {
+                        if (sizeof($join) == 4) {
                             $conditionType = $join[2];
                             $condition = $join[3];
-                        } else if (sizeof($join) == 3 || sizeof($join) > 4) {
-                            throw new InvalidArgumentException('Join-array with three elements is not supportet. See join-alias: ' . $joinAlias );
+                        } else if (sizeof($join) != 2) {
+                            throw new InvalidArgumentException(sprintf('Invalid join options supplied for "%s".', $joinAlias));
                         }
                         $method = $join[0];
                         $join = $join[1];
