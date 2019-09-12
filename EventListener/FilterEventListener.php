@@ -101,6 +101,8 @@ class FilterEventListener
                     }
                     $addedJoins[] = $joinAlias;
                     $method = 'join';
+                    $conditionType = null;
+                    $condition = null;
                     if (is_array($join)) {
                         if (sizeof($join) == 4) {
                             $conditionType = $join[2];
