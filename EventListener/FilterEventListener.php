@@ -28,6 +28,7 @@
 namespace whatwedo\TableBundle\EventListener;
 
 use Doctrine\ORM\Query\Expr;
+use InvalidArgumentException;
 use UnexpectedValueException;
 use whatwedo\TableBundle\Event\DataLoadEvent;
 use whatwedo\TableBundle\Extension\FilterExtension;
@@ -100,11 +101,19 @@ class FilterEventListener
                     }
                     $addedJoins[] = $joinAlias;
                     $method = 'join';
+                    $conditionType = null;
+                    $condition = null;
                     if (is_array($join)) {
+                        if (sizeof($join) == 4) {
+                            $conditionType = $join[2];
+                            $condition = $join[3];
+                        } else if (sizeof($join) != 2) {
+                            throw new InvalidArgumentException(sprintf('Invalid join options supplied for "%s".', $joinAlias));
+                        }
                         $method = $join[0];
                         $join = $join[1];
                     }
-                    $this->queryBuilder()->$method($join, $joinAlias);
+                    $this->queryBuilder()->$method($join, $joinAlias, $conditionType, $condition);
                 }
 
                 $w = $filter->getType()->addToQueryBuilder(
