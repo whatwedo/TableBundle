@@ -20,23 +20,18 @@ First, add the bundle to your dependencies and install it.
 composer require whatwedo/table-bundle
 ```
 
-Secondly, enable this bundle and the whatwedoTableBundle in your kernel.
+Secondly, enable this bundle and the whatwedoTableBundle in your ```config/bundles.php```. Normaly not needed for Symfony 4.                                                                  
 
 ```
 <?php
-// app/AppKernel.php
-
-public function registerBundles()
-{
-    $bundles = array(
-        // ...
-        new whatwedo\TableBundle\whatwedoTableBundle(),
-        // ...
-    );
-}
+return [
+// ...
+    whatwedo\TableBundle\whatwedoTableBundle::class => ['all' => true],
+// ...
+];
 ```
 
-thirdly, add our routing file to your ```app/config/routing.yml```
+thirdly, add our routing file to your ```config/routes.yaml```
 
 ```
 whatwedo_table_bundle:
