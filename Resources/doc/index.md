@@ -20,23 +20,18 @@ First, add the bundle to your dependencies and install it.
 composer require whatwedo/table-bundle
 ```
 
-Secondly, enable this bundle and the whatwedoTableBundle in your kernel.
+Secondly, enable this bundle and the whatwedoTableBundle in your ```config/bundles.php```. Normaly not needed for Symfony 4.                                                                  
 
 ```
 <?php
-// app/AppKernel.php
-
-public function registerBundles()
-{
-    $bundles = array(
-        // ...
-        new whatwedo\TableBundle\whatwedoTableBundle(),
-        // ...
-    );
-}
+return [
+// ...
+    whatwedo\TableBundle\whatwedoTableBundle::class => ['all' => true],
+// ...
+];
 ```
 
-thirdly, add our routing file to your ```app/config/routing.yml```
+thirdly, add our routing file to your ```config/routes.yaml```
 
 ```
 whatwedo_table_bundle:
@@ -120,6 +115,22 @@ In your controller, you have to configure the table:
         ]);
     }
 // ...
+```
+
+add JS to your Tempalate, popover is needed for the filter
+
+```html
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+
+<script>
+$(function () {
+    $('[data-toggle="popover"]').popover({
+        // importatant!!
+        sanitize: false,
+    });
+</script>
+
 ```
 
 and in your template
