@@ -2,6 +2,21 @@
 
 In the table configuration you define all the columns of the table
 
+## Table Options
+
+
+- `title`: null
+- `searchable`: false
+- `sortable`: true
+- `attr`:
+- `table_attr`: 
+- `default_limit` : dafault 25
+- `limit_choices`:  [10, 25, 50, 100, 200]
+- `table_box_template`: Box Template default: `whatwedoTableBundle::table.html.twig`
+- `table_template`: Table Template default  `whatwedoTableBundle::tableOnly.html.twig`
+- `default_sort`:,
+
+
 ## Column Options
 
 - `label`: Column name
@@ -17,10 +32,10 @@ This column has a special template to render the links.
 ### Options
 
 - `items`: Array of columns. Every item has this options:
- - `label`: Name of the button
- - `icon`: Icon (in our templates, we're using Font Awesome 4)
- - `button`: Type of button (f.ex. primary, we're using Bootstrap Button's in our base template)
- - `route`: Route to call. Parameter `id` is always given
+- `label`: Name of the button
+- `icon`: Icon (in our templates, we're using Font Awesome 4)
+- `button`: Type of button (f.ex. primary, we're using Bootstrap Button's in our base template)
+- `route`: Route to call. Parameter `id` is always given
 
 ## Filters
 Our Tables can be easily filtered. Most of it works automatically, what you can do is:
