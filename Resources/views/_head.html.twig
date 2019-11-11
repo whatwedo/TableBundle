@@ -5,7 +5,7 @@
 
         <th{% if columnSortOrder %} class="sorted"{% endif %}>
             <nobr>
-                {{ column.label }}
+                {{ column.label | trans }}
                 {% if table.sortable and column.sortableColumn and column.isSortable %}
                     &nbsp;
                     {% if columnSortOrder == 'ASC' %}
