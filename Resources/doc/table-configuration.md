@@ -23,6 +23,7 @@ In the table configuration you define all the columns of the table
 - `callable`: Callable to get the data
 - `accessor_path`: defaults to the acronym
 - `formatter`: [Formatter](formatter.md)
+- `sort_expression`: ex.  'trainerGroup.name',
 
 ## Action Columns
 
