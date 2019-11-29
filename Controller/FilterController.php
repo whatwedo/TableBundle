@@ -138,7 +138,7 @@ class FilterController extends AbstractController
         $class = $request->get('entity');
         $term = $request->get('q');
         $resultRequestEvent = new ResultRequestEvent($class, $term);
-        $this->eventDispatcher->dispatch(ResultRequestEvent::FILTER_SET, $resultRequestEvent);
+        $this->eventDispatcher->dispatch($resultRequestEvent, ResultRequestEvent::FILTER_SET);
         return $resultRequestEvent->getResult();
     }
 
