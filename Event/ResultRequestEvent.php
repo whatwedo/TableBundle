@@ -27,7 +27,7 @@
 
 namespace whatwedo\TableBundle\Event;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**

@@ -32,7 +32,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 use whatwedo\CoreBundle\Manager\FormatterManager;
 use whatwedo\TableBundle\Extension\ExtensionInterface;
 use whatwedo\TableBundle\Model\SimpleTableData;
@@ -51,7 +51,7 @@ class DoctrineTable extends Table
      * @param array $options
      * @param EventDispatcherInterface $eventDispatcher
      * @param RequestStack $requestStack
-     * @param EngineInterface $templating
+     * @param Environment $templating
      * @param FormatterManager $formatterManager
      * @param ExtensionInterface[] $extensions
      * @internal param FilterRepository $filterRepository
@@ -61,7 +61,7 @@ class DoctrineTable extends Table
         $options,
         EventDispatcherInterface $eventDispatcher,
         RequestStack $requestStack,
-        EngineInterface $templating,
+        Environment $templating,
         FormatterManager $formatterManager,
         array $extensions
     ) {

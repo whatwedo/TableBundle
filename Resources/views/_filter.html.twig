@@ -73,7 +73,7 @@
                         <form method="post" action="{{ path('whatwedo_table_filter_direct_delete', {'id' : filter.id, 'token': csrf_token('token') }) }}">
                         {% endif %}
                         <div class="btn-group" role="group" style="white-space: nowrap;">
-                            {% spaceless %}
+                            {% apply spaceless %}
                             <a href="{{ filter_href }}" class="btn btn-primary btn-xs" title="" data-original-title="Aktiviere Filter" style="float: none;">
                                 <i class="fa fa-arrow-right"></i>
                             </a>
@@ -82,7 +82,7 @@
                                 <i class="fa fa-trash"></i>
                             </button>
                             {% endif %}
-                            {% endspaceless %}
+                            {% endapply %}
                         </div>
                         {% if isCreator %}
                         </form>
