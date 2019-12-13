@@ -12,8 +12,8 @@ In the table configuration you define all the columns of the table
 - `table_attr`: 
 - `default_limit` : dafault 25
 - `limit_choices`:  [10, 25, 50, 100, 200]
-- `table_box_template`: Box Template default: `whatwedoTableBundle::table.html.twig`
-- `table_template`: Table Template default  `whatwedoTableBundle::tableOnly.html.twig`
+- `table_box_template`: Box Template default: `@whatwedoTable/table.html.twig`
+- `table_template`: Table Template default  `@whatwedoTable/tableOnly.html.twig`
 - `default_sort`:,
 
 

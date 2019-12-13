@@ -1,4 +1,4 @@
-{% import "whatwedoTableBundle::_macros.html.twig" as macros %}
+{% import "@whatwedoTable/_macros.html.twig" as macros %}
 
 {% if table.options.table_attr.class is not defined %}
     {% set contentAttr = table.options.table_attr|merge({
@@ -18,10 +18,10 @@
 <div class="table-responsive">
     <table {{ macros.attributes(contentAttr) }}>
         <thead class="thead-default">
-        {% include 'whatwedoTableBundle::_head.html.twig' %}
+        {% include '@whatwedoTable/_head.html.twig' %}
         </thead>
         <tbody>
-        {% include 'whatwedoTableBundle::_content.html.twig' %}
+        {% include '@whatwedoTable/_content.html.twig' %}
         </tbody>
     </table>
 </div>
