@@ -175,8 +175,8 @@ class Table
             ],
             'default_limit' => 25,
             'limit_choices' => [10, 25, 50, 100, 200],
-            'table_box_template' => 'whatwedoTableBundle::table.html.twig',
-            'table_template' => 'whatwedoTableBundle::tableOnly.html.twig',
+            'table_box_template' => '@whatwedoTable/table.html.twig',
+            'table_template' => '@whatwedoTable/tableOnly.html.twig',
             'default_sort' => [],
         ]);
 
