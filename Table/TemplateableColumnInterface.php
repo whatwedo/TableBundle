@@ -27,7 +27,7 @@
 
 
 namespace whatwedo\TableBundle\Table;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 
 
 /**
@@ -38,8 +38,8 @@ interface TemplateableColumnInterface
     /**
      * set templating engine
      *
-     * @param EngineInterface $templating
+     * @param Environment $templating
      * @return mixed
      */
-    public function setTemplating(EngineInterface $templating);
+    public function setTemplating(Environment $templating);
 }

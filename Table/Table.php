@@ -31,7 +31,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 use whatwedo\CoreBundle\Manager\FormatterManager;
 use whatwedo\TableBundle\Collection\ColumnCollection;
 use whatwedo\TableBundle\Event\DataLoadEvent;
@@ -97,7 +97,7 @@ class Table
     protected $results = [];
 
     /**
-     * @var EngineInterface
+     * @var Environment
      */
     protected $templating;
 
@@ -128,7 +128,7 @@ class Table
      * @param array $options
      * @param EventDispatcherInterface $eventDispatcher
      * @param RequestStack $requestStack
-     * @param EngineInterface $templating
+     * @param Environment $templating
      * @param FormatterManager $formatterManager
      * @param ExtensionInterface[] $extensions
      */
@@ -139,7 +139,7 @@ class Table
         $options,
         EventDispatcherInterface $eventDispatcher,
         RequestStack $requestStack,
-        EngineInterface $templating,
+        Environment $templating,
         FormatterManager $formatterManager,
         array $extensions
     ) {

@@ -27,7 +27,7 @@
 
 namespace whatwedo\TableBundle\Table;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 use whatwedo\CoreBundle\Manager\FormatterManager;
 
 /**
@@ -46,7 +46,7 @@ abstract class AbstractColumn implements ColumnInterface, TemplateableColumnInte
     protected $options = [];
 
     /**
-     * @var EngineInterface
+     * @var Environment
      */
     protected $templating = null;
 
@@ -76,9 +76,9 @@ abstract class AbstractColumn implements ColumnInterface, TemplateableColumnInte
     }
 
     /**
-     * @param EngineInterface $templating
+     * @param Environment $templating
      */
-    public function setTemplating(EngineInterface $templating)
+    public function setTemplating(Environment $templating)
     {
         $this->templating = $templating;
     }
@@ -94,7 +94,7 @@ abstract class AbstractColumn implements ColumnInterface, TemplateableColumnInte
     }
 
     /**
-     * @return EngineInterface
+     * @return Environment
      */
     protected function getTemplating()
     {
