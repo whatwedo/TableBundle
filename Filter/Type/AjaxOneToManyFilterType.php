@@ -51,12 +51,12 @@ class AjaxOneToManyFilterType extends FilterType
 
     /**
      * AjaxManyToManyFilterType constructor.
-     * @param $column
-     * @param $targetClass
-     * @param $doctrine
+     * @param mixed $column
+     * @param string $targetClass
+     * @param Registry $doctrine
      * @param array $joins
      */
-    public function __construct($column, $targetClass, $doctrine, array $joins = [])
+    public function __construct($column, string $targetClass, Registry $doctrine, array $joins = [])
     {
         parent::__construct($column, $joins);
         $this->doctrine = $doctrine;
@@ -100,9 +100,9 @@ class AjaxOneToManyFilterType extends FilterType
 
 
     /**
-     * @param $operator
-     * @param $value
-     * @param $parameterName
+     * @param string $operator
+     * @param mixed $value
+     * @param string $parameterName
      * @param QueryBuilder $queryBuilder
      * @return bool|\Doctrine\ORM\Query\Expr\Comparison|string
      */

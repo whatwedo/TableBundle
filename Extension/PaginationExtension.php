@@ -53,20 +53,13 @@ class PaginationExtension extends AbstractExtension
      */
     protected $totalResults = 0;
 
-    /**
-     * PaginationExtension constructor.
-     * @param RequestStack $requestStack
-     */
+
     public function __construct(RequestStack $requestStack)
     {
         $this->requestStack = $requestStack;
     }
 
-    /**
-     * returns current page number.
-     * @return int
-     */
-    public function getCurrentPage()
+    public function getCurrentPage(): int
     {
         $page = $this->getRequest()->query->getInt($this->getActionQueryParameter(static::QUERY_PARAMETER_PAGE), 1);
         if ($page < 1) {
@@ -75,46 +68,29 @@ class PaginationExtension extends AbstractExtension
         return $page;
     }
 
-    /**
-     * @return int
-     */
-    public function getLimit()
+    public function getLimit(): int
     {
         return $this->limit;
     }
 
-    /**
-     * @param $defaultLimit
-     * @return $this
-     */
-    public function setLimit($defaultLimit)
+    public function setLimit(int $defaultLimit): self
     {
         $this->limit = $this->getRequest()->query->getInt($this->getActionQueryParameter(static::QUERY_PARAMETER_LIMIT), $defaultLimit);
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getTotalResults()
+    public function getTotalResults(): int
     {
         return $this->totalResults;
     }
 
-    /**
-     * @param int $totalResults
-     * @return $this
-     */
-    public function setTotalResults($totalResults)
+    public function setTotalResults(int $totalResults): self
     {
         $this->totalResults = $totalResults;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getTotalPages()
+    public function getTotalPages(): int
     {
         if ($this->limit === -1) {
             return 1;
@@ -122,10 +98,7 @@ class PaginationExtension extends AbstractExtension
         return ceil($this->getTotalResults() / $this->limit);
     }
 
-    /**
-     * @return int
-     */
-    public function getOffsetResults()
+    public function getOffsetResults(): int
     {
         if ($this->limit === -1) {
             return 0;
@@ -142,10 +115,10 @@ class PaginationExtension extends AbstractExtension
     }
 
     /**
-     * @param $enabledBundles
+     * @param array $enabledBundles
      * @return boolean
      */
-    public static function isEnabled($enabledBundles)
+    public static function isEnabled($enabledBundles): bool
     {
         return true;
     }

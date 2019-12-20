@@ -38,9 +38,9 @@ class AjaxManyToManyFilterType extends AjaxOneToManyFilterType
 {
 
     /**
-     * @param $operator
-     * @param $value
-     * @param $parameterName
+     * @param string $operator
+     * @param mixed $value
+     * @param string $parameterName
      * @param QueryBuilder $queryBuilder
      * @return bool|\Doctrine\ORM\Query\Expr\Comparison|string
      */

@@ -68,7 +68,7 @@ class Column extends AbstractColumn implements SortableColumnInterface
     /**
      * gets the content of the row
      *
-     * @param $row
+     * @param mixed $row
      * @return string
      */
     public function getContents($row)
@@ -183,13 +183,7 @@ class Column extends AbstractColumn implements SortableColumnInterface
         return $this->getOrderQuery($query, '0', '1');
     }
 
-    /**
-     * @param ParameterBag $query
-     * @param $enabled
-     * @param $asc
-     * @return string
-     */
-    private function getOrderQuery(ParameterBag $query, $enabled, $asc)
+    private function getOrderQuery(ParameterBag $query, string $enabled, string $asc):string
     {
         $queryData = array_replace($query->all(), [
             $this->getOrderEnabledQueryParameter() => $enabled,
