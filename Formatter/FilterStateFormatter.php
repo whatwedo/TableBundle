@@ -38,5 +38,4 @@ class FilterStateFormatter extends AbstractFormatter
         $value = FilterStateEnum::getRepresentation($value);
         return is_null($value) ? 'unbekannt' : $value;
     }
-
 }
