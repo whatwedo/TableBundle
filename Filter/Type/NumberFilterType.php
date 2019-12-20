@@ -60,11 +60,7 @@ class NumberFilterType extends FilterType
 
     public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
     {
-        if (!is_numeric($value)) {
-            $value = 0;
-        }
-
-        $value = (float) $value;
+        $value = $this->prepareQueryValue($value);
 
         switch ($operator) {
             case static::CRITERIA_EQUAL:
@@ -82,5 +78,19 @@ class NumberFilterType extends FilterType
         }
 
         return false;
+    }
+
+    /**
+     * @param $value
+     * @return float|int
+     */
+    protected function prepareQueryValue($value)
+    {
+        if (!is_numeric($value)) {
+            $value = 0;
+        }
+
+        $value = (float)$value;
+        return $value;
     }
 }
