@@ -94,5 +94,4 @@ class SimpleEnumFilterType extends FilterType
                 );
         }
     }
-
 }

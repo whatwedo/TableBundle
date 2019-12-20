@@ -59,7 +59,6 @@ class TableFactoryPass implements CompilerPassInterface
                     ExtensionInterface::class,
                     $tableExtension->getClass()
                 ));
-                continue;
             }
 
             // remove when not enabled
