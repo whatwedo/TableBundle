@@ -49,19 +49,19 @@ class SearchEventListener
     protected $em;
 
     /**
-     * @var ContainerInterface
+     * @var string
      */
-    protected $container;
+    protected $kernelBundles;
 
     /**
      * TableSearchEventListener constructor.
      * @param EntityManager $em
-     * @param ContainerInterface $container
+     * @param string $kernelBundles
      */
-    public function __construct(EntityManagerInterface $em, ContainerInterface $container)
+    public function __construct(EntityManagerInterface $em, string $kernelBundles)
     {
         $this->em = $em;
-        $this->container = $container;
+        $this->kernelBundles = $kernelBundles;
     }
 
     /**
@@ -71,7 +71,7 @@ class SearchEventListener
      */
     public function searchResultSet(DataLoadEvent $event)
     {
-        if (!in_array(whatwedoSearchBundle::class, $this->container->getParameter('kernel.bundles'))) {
+        if (!in_array(whatwedoSearchBundle::class, $this->kernelBundles)) {
             return;
         }
 
