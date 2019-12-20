@@ -52,20 +52,20 @@ class AjaxFilterSearchListener
     protected $indexRepository;
 
     /**
-     * @var ContainerInterface
+     * @var string
      */
-    protected $container;
+    protected $kernelBundles;
 
     /**
      * AjaxFilterSearchListener constructor.
      * @param EntityManagerInterface $em
-     * @param ContainerInterface $container
+     * @param string $kernelBundles
      * @param IndexRepository $indexRepository
      */
-    public function __construct(EntityManagerInterface $em, ContainerInterface $container, IndexRepository $indexRepository)
+    public function __construct(EntityManagerInterface $em, string $kernelBundles, IndexRepository $indexRepository)
     {
         $this->em = $em;
-        $this->container = $container;
+        $this->kernelBundles = $kernelBundles;
         $this->indexRepository = $indexRepository;
     }
 
@@ -75,7 +75,7 @@ class AjaxFilterSearchListener
     public function searchResultSet(ResultRequestEvent $requestEvent)
     {
         // check if whatwedo serach bundle is enabled
-        if (!in_array(whatwedoSearchBundle::class, $this->container->getParameter('kernel.bundles'))) {
+        if (!in_array(whatwedoSearchBundle::class, $this->kernelBundles)) {
             $result = new \stdClass();
             $result->items = [];
             $result->error = false;
