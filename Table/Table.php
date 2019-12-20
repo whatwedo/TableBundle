@@ -132,8 +132,6 @@ class Table
      * @param FormatterManager $formatterManager
      * @param ExtensionInterface[] $extensions
      */
-    private $sortedColumns;
-
     public function __construct(
         $identifier,
         $options,
@@ -382,8 +380,6 @@ class Table
      */
     public function getActionQueryParameter($action)
     {
-//        if($this->getIdentifier() === 'index') return $action;
-
         return sprintf('%s_%s', str_replace('.', '_', $this->getIdentifier()), $action);
     }
 
