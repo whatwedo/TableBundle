@@ -96,10 +96,7 @@ class ManyToManyFilterType extends FilterType
         $this->labelAccessorPath = $labelAccessorPath;
     }
 
-    /**
-     * @return array
-     */
-    public function getOperators()
+    public function getOperators(): array
     {
         return [
             static::CRITERIA_EQUAL => 'enthält',
@@ -111,7 +108,7 @@ class ManyToManyFilterType extends FilterType
      * @param int $value
      * @return string
      */
-    public function getValueField($value = 0)
+    public function getValueField($value = 0):string
     {
         $field = '<select name="{name}" class="form-control">';
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
@@ -136,9 +133,9 @@ class ManyToManyFilterType extends FilterType
     }
 
     /**
-     * @param $operator
-     * @param $value
-     * @param $parameterName
+     * @param string $operator
+     * @param mixed $value
+     * @param string $parameterName
      * @param QueryBuilder $queryBuilder
      * @return bool|\Doctrine\ORM\Query\Expr\Comparison|string
      */

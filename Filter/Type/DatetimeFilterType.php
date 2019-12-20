@@ -34,6 +34,13 @@ use Doctrine\ORM\QueryBuilder;
  */
 class DatetimeFilterType extends FilterType
 {
+
+    const CRITERIA_EQUAL = 'equal';
+    const CRITERIA_NOT_EQUAL = 'not_equal';
+    const CRITERIA_BEFORE = 'before';
+    const CRITERIA_AFTER = 'after';
+    const CRITERIA_IN_YEAR = 'in_year';
+
     public function getOperators()
     {
         return [

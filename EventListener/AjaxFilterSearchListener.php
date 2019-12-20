@@ -52,17 +52,17 @@ class AjaxFilterSearchListener
     protected $indexRepository;
 
     /**
-     * @var string
+     * @var array
      */
     protected $kernelBundles;
 
     /**
      * AjaxFilterSearchListener constructor.
      * @param EntityManagerInterface $em
-     * @param string $kernelBundles
+     * @param array $kernelBundles
      * @param IndexRepository $indexRepository
      */
-    public function __construct(EntityManagerInterface $em, string $kernelBundles, IndexRepository $indexRepository)
+    public function __construct(EntityManagerInterface $em, array $kernelBundles, IndexRepository $indexRepository)
     {
         $this->em = $em;
         $this->kernelBundles = $kernelBundles;

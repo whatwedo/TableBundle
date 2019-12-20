@@ -48,7 +48,7 @@ class RowColumnIterator implements Iterator
     protected $keys = [];
 
     /**
-     * @var
+     * @var mixed
      */
     protected $row;
 

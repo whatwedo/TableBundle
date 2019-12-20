@@ -121,6 +121,12 @@ class Table
      */
     protected $extensions;
 
+
+    /*
+     * @var array
+     */
+    public $options = [];
+
     /**
      * Table constructor.
      *
@@ -133,8 +139,8 @@ class Table
      * @param ExtensionInterface[] $extensions
      */
     public function __construct(
-        $identifier,
-        $options,
+        string $identifier,
+        array $options,
         EventDispatcherInterface $eventDispatcher,
         RequestStack $requestStack,
         Environment $templating,
@@ -201,24 +207,18 @@ class Table
         $resolver->setAllowedTypes('data_loader', ['array', 'callable']);
     }
 
-    /**
-     * @param $key
-     * @return null
-     */
-    public function getOption($key)
+    public function getOption(string $key): ?string
     {
         return isset($this->options[$key]) ? $this->options[$key] : null;
     }
 
     /**
-     * @param $key
-     * @param $value
+     * @param string $key
+     * @param mixed $value
      */
-    public function setOption($key, $value)
+    public function setOption(string $key, $value): void
     {
         $this->options[$key] = $value;
-
-        return;
     }
 
     /**
@@ -374,11 +374,7 @@ class Table
         return $this->eventDispatcher;
     }
 
-    /**
-     * @param $action
-     * @return string
-     */
-    public function getActionQueryParameter($action)
+    public function getActionQueryParameter(string $action): string
     {
         return sprintf('%s_%s', str_replace('.', '_', $this->getIdentifier()), $action);
     }
@@ -418,6 +414,9 @@ class Table
 
         $currentPage = 1;
         $limit = -1;
+
+        $paginationExtension = null;
+
         if ($this->hasExtension(PaginationExtension::class)) {
             /** @var PaginationExtension $paginationExtension */
             $paginationExtension = $this->getExtension(PaginationExtension::class);
@@ -445,7 +444,6 @@ class Table
         $this->results = $tableData->getResults();
 
         if ($this->hasExtension(PaginationExtension::class)) {
-            /** @var PaginationExtension $paginationExtension */
             $paginationExtension->setTotalResults($tableData->getTotalResults());
         }
 

@@ -70,7 +70,7 @@ class SearchExtension extends AbstractExtension
     }
 
     /**
-     * @param $enabledBundles
+     * @param array $enabledBundles
      * @return boolean
      */
     public static function isEnabled($enabledBundles)

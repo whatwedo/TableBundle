@@ -49,7 +49,7 @@ class SearchEventListener
     protected $em;
 
     /**
-     * @var string
+     * @var array
      */
     protected $kernelBundles;
 
@@ -58,7 +58,7 @@ class SearchEventListener
      * @param EntityManager $em
      * @param string $kernelBundles
      */
-    public function __construct(EntityManagerInterface $em, string $kernelBundles)
+    public function __construct(EntityManagerInterface $em, array $kernelBundles)
     {
         $this->em = $em;
         $this->kernelBundles = $kernelBundles;

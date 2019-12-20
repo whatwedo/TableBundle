@@ -36,7 +36,7 @@ class MoneyFilterType extends NumberFilterType
 {
 
     /**
-     * @param $value
+     * @param mixed $value
      * @return float|int
      */
     protected function prepareQueryValue($value)
