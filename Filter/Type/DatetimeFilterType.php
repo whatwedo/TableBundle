@@ -34,27 +34,9 @@ use Doctrine\ORM\QueryBuilder;
  */
 class DatetimeFilterType extends FilterType
 {
-    const CRITERIA_EQUAL = 'equal';
-    const CRITERIA_NOT_EQUAL = 'not_equal';
-    const CRITERIA_BEFORE = 'before';
-    const CRITERIA_AFTER = 'after';
-    const CRITERIA_IN_YEAR = 'in_year';
-
-    public function getOperators()
-    {
-        return [
-            static::CRITERIA_EQUAL => 'ist gleich',
-            static::CRITERIA_NOT_EQUAL => 'ist ungleich',
-            static::CRITERIA_BEFORE => 'vor',
-            static::CRITERIA_AFTER => 'nach',
-            static::CRITERIA_IN_YEAR => 'im selben Jahr wie'
-        ];
-    }
-
-    public function getValueField($value = null)
+    public function getValueField($value = null):string
     {
         $value = \DateTime::createFromFormat('d.m.Y H:i:s', $value);
-
         if (!$value) {
             $value = new \DateTime();
         }
@@ -64,14 +46,43 @@ class DatetimeFilterType extends FilterType
         );
     }
 
-    public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
+    /**
+     * @return string
+     */
+    protected function getDateFormat(): string
     {
-        $value = \DateTime::createFromFormat('d.m.Y H:i', $value);
+        return 'd.m.Y H:i';
+    }
+
+    /**
+     * @return string
+     */
+    protected function getQueryDataFormat(): string
+    {
+        return 'Y-m-d H:i:s';
+    }
+
+    /**
+     * @param string $value
+     * @return \DateTime|false
+     * @throws \Exception
+     */
+    protected function prepareDateValue(string $value): \DateTime
+    {
+        $value = \DateTime::createFromFormat($this->getDateFormat(), $value);
         if (!$value) {
             $value = new \DateTime();
         }
-        $stringFormat = 'Y-m-d H:i:s';
-        $dateAsString = $value->format($stringFormat);
+        return $value;
+    }
+
+
+
+    public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
+    {
+        $value = $this->prepareDateValue($value);
+
+        $dateAsString = $value->format($this->getQueryDataFormat());
 
         switch ($operator) {
             case static::CRITERIA_EQUAL:
@@ -97,8 +108,8 @@ class DatetimeFilterType extends FilterType
                 $endYear = clone $value;
                 $startYear->modify('first day of January ' . date('Y'))->setTime(0, 0, 0);
                 $endYear->modify('last day of December ' . date('Y'))->setTime(23, 59, 59);
-                $queryBuilder->setParameter($parameterName . '_start', $startYear->format($stringFormat));
-                $queryBuilder->setParameter($parameterName. '_end', $endYear->format($stringFormat));
+                $queryBuilder->setParameter($parameterName . '_start', $startYear->format($this->getQueryDataFormat()));
+                $queryBuilder->setParameter($parameterName. '_end', $endYear->format($this->getQueryDataFormat()));
                 return $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->gte($this->getColumn(), sprintf(':%s', $parameterName . '_start')),
                     $queryBuilder->expr()->lte($this->getColumn(), sprintf(':%s', $parameterName . '_end'))
