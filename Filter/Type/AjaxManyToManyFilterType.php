@@ -34,7 +34,7 @@ use Doctrine\ORM\QueryBuilder;
  * Class AjaxManyToManyFilterType
  * @package whatwedo\TableBundle\Filter\Type
  */
-class AjaxManyToManyFilterType extends AbstractAjaxAssociationFilterType
+class AjaxManyToManyFilterType extends AjaxOneToManyFilterType
 {
 
     /**

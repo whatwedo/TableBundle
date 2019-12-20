@@ -34,6 +34,17 @@ use Doctrine\ORM\QueryBuilder;
  */
 class DatetimeFilterType extends FilterType
 {
+    public function getOperators()
+    {
+        return [
+            static::CRITERIA_EQUAL => 'ist gleich',
+            static::CRITERIA_NOT_EQUAL => 'ist ungleich',
+            static::CRITERIA_BEFORE => 'vor',
+            static::CRITERIA_AFTER => 'nach',
+            static::CRITERIA_IN_YEAR => 'im selben Jahr wie'
+        ];
+    }
+
     public function getValueField($value = null):string
     {
         $value = \DateTime::createFromFormat('d.m.Y H:i:s', $value);
