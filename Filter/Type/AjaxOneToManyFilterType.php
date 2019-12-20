@@ -37,68 +37,6 @@ use Doctrine\ORM\QueryBuilder;
 class AjaxOneToManyFilterType extends FilterType
 {
 
-    const CRITERIA_EQUAL = 'equal';
-    const CRITERIA_NOT_EQUAL = 'not_equal';
-
-    /**
-     * @var Registry $doctrine
-     */
-    protected $doctrine;
-
-    /**
-     * @var string $targetClass
-     */
-    protected $targetClass;
-
-    /**
-     * AjaxManyToManyFilterType constructor.
-     * @param $column
-     * @param $targetClass
-     * @param $doctrine
-     * @param array $joins
-     */
-    public function __construct($column, $targetClass, $doctrine, array $joins = [])
-    {
-        parent::__construct($column, $joins);
-        $this->doctrine = $doctrine;
-        $this->targetClass = $targetClass;
-    }
-
-    /**
-     * @return array
-     */
-    public function getOperators()
-    {
-        return [
-            static::CRITERIA_EQUAL => 'enthält',
-            static::CRITERIA_NOT_EQUAL => 'enthält nicht',
-        ];
-    }
-
-    /**
-     * @param int $value
-     * @return string
-     */
-    public function getValueField($value = 0)
-    {
-        $field = sprintf(
-            '<select name="{name}" class="form-control" data-ajax-select data-ajax-entity="%s">',
-            $this->targetClass
-        );
-        $currentSelection = null;
-        if ($value > 0) {
-            $currentSelection = $this->doctrine->getRepository($this->targetClass)->find($value);
-        }
-
-        if (!is_null($currentSelection)) {
-            $field .= sprintf('<option value="%s">%s</option>', $value, $currentSelection->__toString());
-        }
-
-        $field .= '</select>';
-
-        return $field;
-    }
-
     /**
      * @param $operator
      * @param $value

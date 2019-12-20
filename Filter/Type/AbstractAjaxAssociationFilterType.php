@@ -34,28 +34,70 @@ use Doctrine\ORM\QueryBuilder;
  * Class AjaxManyToManyFilterType
  * @package whatwedo\TableBundle\Filter\Type
  */
-class AjaxManyToManyFilterType extends AbstractAjaxAssociationFilterType
+abstract class AbstractAjaxAssociationFilterType extends FilterType
 {
 
+    const CRITERIA_EQUAL = 'equal';
+    const CRITERIA_NOT_EQUAL = 'not_equal';
+
     /**
-     * @param $operator
-     * @param $value
-     * @param $parameterName
-     * @param QueryBuilder $queryBuilder
-     * @return bool|\Doctrine\ORM\Query\Expr\Comparison|string
+     * @var Registry $doctrine
      */
-    public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
+    protected $doctrine;
+
+    /**
+     * @var string $targetClass
+     */
+    protected $targetClass;
+
+    /**
+     * AjaxManyToManyFilterType constructor.
+     * @param $column
+     * @param $targetClass
+     * @param $doctrine
+     * @param array $joins
+     */
+    public function __construct($column, $targetClass, $doctrine, array $joins = [])
     {
-        $targetParameter = 'target_'.md5(rand());
-        $targetValue = $this->doctrine->getRepository($this->targetClass)->find($value);
-        $queryBuilder->setParameter($targetParameter, $targetValue);
-        switch ($operator) {
-            case static::CRITERIA_EQUAL:
-                return $queryBuilder->expr()->isMemberOf(':'.$targetParameter, $this->column);
-            case static::CRITERIA_NOT_EQUAL:
-                return sprintf(':%s NOT MEMBER OF %s', $targetParameter, $this->column);
-        }
-        return false;
+        parent::__construct($column, $joins);
+        $this->doctrine = $doctrine;
+        $this->targetClass = $targetClass;
     }
+
+    /**
+     * @return array
+     */
+    public function getOperators()
+    {
+        return [
+            static::CRITERIA_EQUAL => 'enthält',
+            static::CRITERIA_NOT_EQUAL => 'enthält nicht',
+        ];
+    }
+
+    /**
+     * @param int $value
+     * @return string
+     */
+    public function getValueField($value = 0)
+    {
+        $field = sprintf(
+            '<select name="{name}" class="form-control" data-ajax-select data-ajax-entity="%s">',
+            $this->targetClass
+        );
+        $currentSelection = null;
+        if ($value > 0) {
+            $currentSelection = $this->doctrine->getRepository($this->targetClass)->find($value);
+        }
+
+        if (!is_null($currentSelection)) {
+            $field .= sprintf('<option value="%s">%s</option>', $value, $currentSelection->__toString());
+        }
+
+        $field .= '</select>';
+
+        return $field;
+    }
+
 
 }

@@ -94,7 +94,6 @@ class FilterEventListener
 
                 $filter = $filterExtension->getFilters()[$column];
 
-                // TODO: automatically join (split field on '.')
                 foreach ($filter->getType()->getJoins() as $joinAlias => $join) {
                     if (in_array($joinAlias, $addedJoins)) {
                         continue;
