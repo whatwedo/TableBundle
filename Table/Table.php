@@ -241,7 +241,7 @@ class Table
      * adds a new column
      *
      * @param string $acronym
-     * @param null $type
+     * @param string $type
      * @param array $options
      * @return $this
      */
