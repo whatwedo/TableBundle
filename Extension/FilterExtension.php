@@ -59,18 +59,12 @@ use whatwedo\TableBundle\Table\Filter;
  */
 class FilterExtension extends AbstractExtension
 {
-
     const QUERY_PREDEFINED_FILTER = 'predefined_filter';
 
     /**
      * @var Registry
      */
     protected $doctrine;
-
-    /**
-     * @var FilterRepository
-     */
-    protected $filterRepository;
 
     /**
      * @var RequestStack
@@ -106,13 +100,11 @@ class FilterExtension extends AbstractExtension
     /**
      * FilterExtension constructor.
      * @param Registry $doctrine
-     * @param FilterRepository $filterRepository
      * @param RequestStack $requestStack
      */
-    public function __construct(ManagerRegistry $doctrine, FilterRepository $filterRepository, RequestStack $requestStack)
+    public function __construct(ManagerRegistry $doctrine, RequestStack $requestStack)
     {
         $this->doctrine = $doctrine;
-        $this->filterRepository = $filterRepository;
         $this->requestStack = $requestStack;
     }
 
@@ -200,7 +192,7 @@ class FilterExtension extends AbstractExtension
      */
     public function getSavedFilter($username, $route)
     {
-        return $this->filterRepository->findSavedFilter($route, $username);
+        return $this->doctrine->getRepository(Filter::class)->findSavedFilter($route, $username);
     }
 
     private static function labelCallable(DoctrineTable $table, $property)
