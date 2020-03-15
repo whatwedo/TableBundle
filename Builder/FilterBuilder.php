@@ -30,15 +30,14 @@ namespace whatwedo\TableBundle\Builder;
 use whatwedo\TableBundle\Extension\FilterExtension;
 
 /**
- * Class FilterBuilder
- * @package whatwedo\TableBundle\Builder
+ * Class FilterBuilder.
+ *
  * @internal
  */
 class FilterBuilder
 {
-
     /**
-     * @var string $id
+     * @var string
      */
     protected $id;
 
@@ -52,11 +51,11 @@ class FilterBuilder
 
     /**
      * FilterBuilder constructor.
+     *
      * @param $id
      * @param $acronym
      * @param $operator
      * @param $value
-     * @param FilterExtension $filterExtension
      */
     public function __construct($id, $acronym, $operator, $value, FilterExtension $filterExtension)
     {
@@ -69,14 +68,16 @@ class FilterBuilder
      * @param $acronym
      * @param $operator
      * @param $value
+     *
      * @return $this
      */
     public function and($acronym, $operator, $value)
     {
-        $idx = count($this->filters['filter_column']) - 1;
+        $idx = \count($this->filters['filter_column']) - 1;
         $this->filters['filter_column'][$idx][] = $acronym;
         $this->filters['filter_operator'][$idx][] = $operator;
         $this->filters['filter_value'][$idx][] = $value;
+
         return $this;
     }
 
@@ -84,6 +85,7 @@ class FilterBuilder
      * @param $acronym
      * @param $operator
      * @param $value
+     *
      * @return $this
      */
     public function or($acronym, $operator, $value)
@@ -91,6 +93,7 @@ class FilterBuilder
         $this->filters['filter_column'][] = [$acronym];
         $this->filters['filter_operator'][] = [$operator];
         $this->filters['filter_value'][] = [$value];
+
         return $this;
     }
 
@@ -101,5 +104,4 @@ class FilterBuilder
     {
         return $this->filterExtension->addPredefinedFilter($this->id, $this->filters);
     }
-
 }

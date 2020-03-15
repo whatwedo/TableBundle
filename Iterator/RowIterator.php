@@ -85,9 +85,6 @@ class RowIterator implements Iterator
         return isset($this->data[$this->position]);
     }
 
-    /**
-     *
-     */
     public function rewind()
     {
         $this->position = 0;
@@ -95,6 +92,6 @@ class RowIterator implements Iterator
 
     public function count()
     {
-        return count($this->data);
+        return \count($this->data);
     }
 }

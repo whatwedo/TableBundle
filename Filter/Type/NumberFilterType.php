@@ -65,15 +65,19 @@ class NumberFilterType extends FilterType
         switch ($operator) {
             case static::CRITERIA_EQUAL:
                 $queryBuilder->setParameter($parameterName, $value);
+
                 return $queryBuilder->expr()->eq($this->getColumn(), sprintf(':%s', $parameterName));
             case static::CRITERIA_NOT_EQUAL:
                 $queryBuilder->setParameter($parameterName, $value);
+
                 return $queryBuilder->expr()->neq($this->getColumn(), sprintf(':%s', $parameterName));
             case static::CRITERIA_BIGGER_THAN:
                 $queryBuilder->setParameter($parameterName, $value);
+
                 return $queryBuilder->expr()->gt($this->getColumn(), sprintf(':%s', $parameterName));
             case static::CRITERIA_SMALLER_THAN:
                 $queryBuilder->setParameter($parameterName, $value);
+
                 return $queryBuilder->expr()->lt($this->getColumn(), sprintf(':%s', $parameterName));
         }
 
@@ -81,7 +85,6 @@ class NumberFilterType extends FilterType
     }
 
     /**
-     * @param mixed $value
      * @return float|int
      */
     protected function prepareQueryValue($value)
@@ -90,7 +93,8 @@ class NumberFilterType extends FilterType
             $value = 0;
         }
 
-        $value = (float)$value;
+        $value = (float) $value;
+
         return $value;
     }
 }

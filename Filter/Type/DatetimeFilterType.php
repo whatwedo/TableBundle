@@ -34,7 +34,6 @@ use Doctrine\ORM\QueryBuilder;
  */
 class DatetimeFilterType extends FilterType
 {
-
     const CRITERIA_EQUAL = 'equal';
     const CRITERIA_NOT_EQUAL = 'not_equal';
     const CRITERIA_BEFORE = 'before';
@@ -48,42 +47,37 @@ class DatetimeFilterType extends FilterType
             static::CRITERIA_NOT_EQUAL => 'ist ungleich',
             static::CRITERIA_BEFORE => 'vor',
             static::CRITERIA_AFTER => 'nach',
-            static::CRITERIA_IN_YEAR => 'im selben Jahr wie'
+            static::CRITERIA_IN_YEAR => 'im selben Jahr wie',
         ];
     }
 
-    public function getValueField($value = null):string
+    public function getValueField($value = null): string
     {
         $value = \DateTime::createFromFormat('d.m.Y H:i:s', $value);
         if (!$value) {
             $value = new \DateTime();
         }
+
         return sprintf(
             '<input type="text" name="{name}" value="%s" class="form-control" data-provide="datetimepicker" data-date-format="dd.mm.yyyy HH:ii">',
             $value instanceof \DateTime ? $value->format('d.m.Y H:i') : ''
         );
     }
 
-    /**
-     * @return string
-     */
     protected function getDateFormat(): string
     {
         return 'd.m.Y H:i';
     }
 
-    /**
-     * @return string
-     */
     protected function getQueryDataFormat(): string
     {
         return 'Y-m-d H:i:s';
     }
 
     /**
-     * @param string $value
-     * @return \DateTime|false
      * @throws \Exception
+     *
+     * @return \DateTime|false
      */
     protected function prepareDateValue(string $value): \DateTime
     {
@@ -91,10 +85,9 @@ class DatetimeFilterType extends FilterType
         if (!$value) {
             $value = new \DateTime();
         }
+
         return $value;
     }
-
-
 
     public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
     {
@@ -105,32 +98,37 @@ class DatetimeFilterType extends FilterType
         switch ($operator) {
             case static::CRITERIA_EQUAL:
                 $queryBuilder->setParameter($parameterName, $dateAsString);
+
                 return $queryBuilder->expr()->eq(
                     sprintf(':%s', $parameterName),
                     sprintf('%s', $this->getColumn())
                 );
             case static::CRITERIA_NOT_EQUAL:
                 $queryBuilder->setParameter($parameterName, $dateAsString);
+
                 return $queryBuilder->expr()->neq(
                     sprintf(':%s', $parameterName),
                     sprintf('%s', $this->getColumn())
                 );
             case static::CRITERIA_BEFORE:
                 $queryBuilder->setParameter($parameterName, $dateAsString);
+
                 return $queryBuilder->expr()->lt($this->getColumn(), sprintf(':%s', $parameterName));
             case static::CRITERIA_AFTER:
                 $queryBuilder->setParameter($parameterName, $dateAsString);
+
                 return $queryBuilder->expr()->gt($this->getColumn(), sprintf(':%s', $parameterName));
             case static::CRITERIA_IN_YEAR:
                 $startYear = clone $value;
                 $endYear = clone $value;
-                $startYear->modify('first day of January ' . date('Y'))->setTime(0, 0, 0);
-                $endYear->modify('last day of December ' . date('Y'))->setTime(23, 59, 59);
-                $queryBuilder->setParameter($parameterName . '_start', $startYear->format($this->getQueryDataFormat()));
-                $queryBuilder->setParameter($parameterName. '_end', $endYear->format($this->getQueryDataFormat()));
+                $startYear->modify('first day of January '.date('Y'))->setTime(0, 0, 0);
+                $endYear->modify('last day of December '.date('Y'))->setTime(23, 59, 59);
+                $queryBuilder->setParameter($parameterName.'_start', $startYear->format($this->getQueryDataFormat()));
+                $queryBuilder->setParameter($parameterName.'_end', $endYear->format($this->getQueryDataFormat()));
+
                 return $queryBuilder->expr()->andX(
-                    $queryBuilder->expr()->gte($this->getColumn(), sprintf(':%s', $parameterName . '_start')),
-                    $queryBuilder->expr()->lte($this->getColumn(), sprintf(':%s', $parameterName . '_end'))
+                    $queryBuilder->expr()->gte($this->getColumn(), sprintf(':%s', $parameterName.'_start')),
+                    $queryBuilder->expr()->lte($this->getColumn(), sprintf(':%s', $parameterName.'_end'))
                 );
         }
 

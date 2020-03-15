@@ -26,20 +26,19 @@
  */
 
 namespace whatwedo\TableBundle\Extension;
+
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * Class PaginationExtension
- * @package whatwedo\TableBundle\Extension
+ * Class PaginationExtension.
  */
 class PaginationExtension extends AbstractExtension
 {
-
     const QUERY_PARAMETER_PAGE = 'page';
     const QUERY_PARAMETER_LIMIT = 'limit';
 
     /**
-     * @var RequestStack $requestStack
+     * @var RequestStack
      */
     protected $requestStack;
 
@@ -53,7 +52,6 @@ class PaginationExtension extends AbstractExtension
      */
     protected $totalResults = 0;
 
-
     public function __construct(RequestStack $requestStack)
     {
         $this->requestStack = $requestStack;
@@ -65,6 +63,7 @@ class PaginationExtension extends AbstractExtension
         if ($page < 1) {
             $page = 1;
         }
+
         return $page;
     }
 
@@ -76,6 +75,7 @@ class PaginationExtension extends AbstractExtension
     public function setLimit(int $defaultLimit): self
     {
         $this->limit = $this->getRequest()->query->getInt($this->getActionQueryParameter(static::QUERY_PARAMETER_LIMIT), $defaultLimit);
+
         return $this;
     }
 
@@ -87,27 +87,30 @@ class PaginationExtension extends AbstractExtension
     public function setTotalResults(int $totalResults): self
     {
         $this->totalResults = $totalResults;
+
         return $this;
     }
 
     public function getTotalPages(): int
     {
-        if ($this->limit === -1) {
+        if (-1 === $this->limit) {
             return 1;
         }
+
         return ceil($this->getTotalResults() / $this->limit);
     }
 
     public function getOffsetResults(): int
     {
-        if ($this->limit === -1) {
+        if (-1 === $this->limit) {
             return 0;
         }
+
         return ($this->getCurrentPage() - 1) * $this->limit;
     }
 
     /**
-     * @return null|\Symfony\Component\HttpFoundation\Request
+     * @return \Symfony\Component\HttpFoundation\Request|null
      */
     protected function getRequest()
     {
@@ -116,11 +119,9 @@ class PaginationExtension extends AbstractExtension
 
     /**
      * @param array $enabledBundles
-     * @return boolean
      */
     public static function isEnabled($enabledBundles): bool
     {
         return true;
     }
-
 }

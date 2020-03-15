@@ -33,38 +33,36 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class ManyToManyFilterType extends FilterType
 {
-
     const CRITERIA_EQUAL = 'equal';
     const CRITERIA_NOT_EQUAL = 'not_equal';
 
     /**
-     * @var EntityManager $em
+     * @var EntityManager
      */
     protected $em;
 
     /**
-     * @var string $targetClazz
+     * @var string
      */
     protected $targetClazz;
 
     /**
-     * @var Callable $callable
+     * @var callable
      */
     protected $callable;
 
     /**
-     * @var string $labelAccessorPath
+     * @var string
      */
     protected $labelAccessorPath = '__toString';
 
     /**
      * ManyToManyFilterType constructor.
+     *
      * @param string $column
-     * @param array $joins
-     * @param EntityManager $em
      * @param string $targetClazz
      */
-    public function __construct($column, array $joins = [], EntityManager $em, $targetClazz)
+    public function __construct($column, array $joins, EntityManager $em, $targetClazz)
     {
         parent::__construct($column, $joins);
         $this->em = $em;
@@ -73,18 +71,20 @@ class ManyToManyFilterType extends FilterType
     }
 
     /**
-     * @param Callable|null $callable
+     * @param callable|null $callable
+     *
      * @return ManyToManyFilterType $this
      */
     public function setCallable($callable = null)
     {
-        if (is_null($callable)) {
+        if (null === $callable) {
             $this->callable = function () {
                 return $this->em->getRepository($this->targetClazz)->findAll();
             };
         } else {
             $this->callable = $callable;
         }
+
         return $this;
     }
 
@@ -106,16 +106,15 @@ class ManyToManyFilterType extends FilterType
 
     /**
      * @param int $value
-     * @return string
      */
-    public function getValueField($value = 0):string
+    public function getValueField($value = 0): string
     {
         $field = '<select name="{name}" class="form-control">';
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
 
-        foreach (call_user_func($this->callable) as $entity) {
+        foreach (\call_user_func($this->callable) as $entity) {
             $value = null;
-            if ($this->labelAccessorPath == '__toString') {
+            if ('__toString' === $this->labelAccessorPath) {
                 $value = $entity->__toString();
             } else {
                 $value = $propertyAccessor->getValue($entity, $this->labelAccessorPath);
@@ -124,19 +123,19 @@ class ManyToManyFilterType extends FilterType
             $field .= sprintf(
                 '<option value="%s" %s>%s</option>',
                 $entity->getId(),
-                $entity->getId() == (int) $value ? 'selected="selected"' : '',
+                $entity->getId() === (int) $value ? 'selected="selected"' : '',
                 $value
             );
         }
         $field .= '</select>';
+
         return $field;
     }
 
     /**
      * @param string $operator
-     * @param mixed $value
      * @param string $parameterName
-     * @param QueryBuilder $queryBuilder
+     *
      * @return bool|\Doctrine\ORM\Query\Expr\Comparison|string
      */
     public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
@@ -146,16 +145,16 @@ class ManyToManyFilterType extends FilterType
         $targetValue = $this->em->getRepository($this->targetClazz)->find($value);
         $queryBuilder->setParameter($targetParameter, $targetValue);
         switch ($operator) {
-            case (static::CRITERIA_EQUAL):
-                return $queryBuilder->expr()->isMemberOf(':' . $targetParameter, $this->column);
-            case (static::CRITERIA_NOT_EQUAL):
+            case static::CRITERIA_EQUAL:
+                return $queryBuilder->expr()->isMemberOf(':'.$targetParameter, $this->column);
+            case static::CRITERIA_NOT_EQUAL:
                 return sprintf(
                     ':%s NOT MEMBER OF %s',
                     $targetParameter,
                     $this->column
                 );
         }
+
         return false;
     }
-
 }

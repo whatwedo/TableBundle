@@ -54,8 +54,8 @@ class RelationFilterType extends FilterType
     {
         $this->choices = $choices;
 
-        if ($emptyFieldsCheck !== false
-            && !is_array($emptyFieldsCheck)) {
+        if (false !== $emptyFieldsCheck
+            && !\is_array($emptyFieldsCheck)) {
             $emptyFieldsCheck = [$emptyFieldsCheck];
         }
         $this->emptyQuery = $emptyFieldsCheck;
@@ -69,7 +69,7 @@ class RelationFilterType extends FilterType
      */
     public function getPropertyAccessor()
     {
-        if (static::$propertyAccessor === null) {
+        if (null === static::$propertyAccessor) {
             static::$propertyAccessor = PropertyAccess::createPropertyAccessor();
         }
 
@@ -86,7 +86,7 @@ class RelationFilterType extends FilterType
 
     public function getValueField($value = 0)
     {
-        $field = sprintf('<select name="{name}" class="form-control" %s>', count($this->choices) < 10 ? 'data-disable-interactive' : '');
+        $field = sprintf('<select name="{name}" class="form-control" %s>', \count($this->choices) < 10 ? 'data-disable-interactive' : '');
 
         if ($this->emptyQuery) {
             $field .= "<option value='empty'>- leer -</option>";
@@ -97,16 +97,17 @@ class RelationFilterType extends FilterType
                 $strValue = '';
                 try {
                     $strValue = $this->getPropertyAccessor()->getValue($choice, $this->accessorPath);
-                } catch (UnexpectedTypeException $e) { }
+                } catch (UnexpectedTypeException $e) {
+                }
             } else {
                 $strValue = $choice->__toString();
             }
 
-            /** @noinspection PhpUndefinedMethodInspection */
+            /* @noinspection PhpUndefinedMethodInspection */
             $field .= sprintf(
                 '<option value="%s" %s>%s</option>',
                 $choice->getId(),
-                $choice->getId() == (int) $value ? 'selected="selected"' : '',
+                $choice->getId() === (int) $value ? 'selected="selected"' : '',
                 $strValue
             );
         }
@@ -118,8 +119,8 @@ class RelationFilterType extends FilterType
 
     public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
     {
-        if ($value == 'empty'
-            && is_array($this->emptyQuery)) {
+        if ('empty' === $value
+            && \is_array($this->emptyQuery)) {
             $orX = $queryBuilder->expr()->orX();
             foreach ($this->emptyQuery as $field) {
                 switch ($operator) {
@@ -132,11 +133,11 @@ class RelationFilterType extends FilterType
                 }
             }
 
-            if ($orX->count() == 1) {
+            if (1 === $orX->count()) {
                 return $orX->getParts()[0];
-            } else {
-                return $orX;
             }
+
+            return $orX;
         }
 
         switch ($operator) {

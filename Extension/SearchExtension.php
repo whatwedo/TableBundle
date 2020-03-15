@@ -31,22 +31,19 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use whatwedo\SearchBundle\whatwedoSearchBundle;
 
 /**
- * Class SearchExtension
- * @package whatwedo\TableBundle\Extension
+ * Class SearchExtension.
  */
 class SearchExtension extends AbstractExtension
 {
-
     const QUERY_PARAMETER_QUERY = 'query';
 
     /**
-     * @var RequestStack $requestStack
+     * @var RequestStack
      */
     protected $requestStack;
 
     /**
      * SearchExtension constructor.
-     * @param RequestStack $requestStack
      */
     public function __construct(RequestStack $requestStack)
     {
@@ -62,7 +59,7 @@ class SearchExtension extends AbstractExtension
     }
 
     /**
-     * @return null|\Symfony\Component\HttpFoundation\Request
+     * @return \Symfony\Component\HttpFoundation\Request|null
      */
     public function getRequest()
     {
@@ -71,16 +68,17 @@ class SearchExtension extends AbstractExtension
 
     /**
      * @param array $enabledBundles
-     * @return boolean
+     *
+     * @return bool
      */
     public static function isEnabled($enabledBundles)
     {
         foreach ($enabledBundles as $bundles) {
-            if (in_array(whatwedoSearchBundle::class, $bundles)) {
+            if (\in_array(whatwedoSearchBundle::class, $bundles, true)) {
                 return true;
             }
         }
+
         return false;
     }
-
 }

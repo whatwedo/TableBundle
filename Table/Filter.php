@@ -73,6 +73,7 @@ class Filter
     public function setAcronym(string $acronym): self
     {
         $this->acronym = $acronym;
+
         return $this;
     }
 

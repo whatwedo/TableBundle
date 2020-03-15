@@ -43,8 +43,9 @@ class FilterRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param string $path Route-Path
+     * @param string $path     Route-Path
      * @param string $username Username
+     *
      * @return Filter[]
      */
     public function findSavedFilter($path, $username)

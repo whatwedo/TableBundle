@@ -25,23 +25,19 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 namespace whatwedo\TableBundle\Filter\Type;
-use Doctrine\Bundle\DoctrineBundle\Registry;
+
 use Doctrine\ORM\QueryBuilder;
 
 /**
- * Class AjaxManyToManyFilterType
- * @package whatwedo\TableBundle\Filter\Type
+ * Class AjaxManyToManyFilterType.
  */
 class AjaxManyToManyFilterType extends AjaxOneToManyFilterType
 {
-
     /**
      * @param string $operator
-     * @param mixed $value
      * @param string $parameterName
-     * @param QueryBuilder $queryBuilder
+     *
      * @return bool|\Doctrine\ORM\Query\Expr\Comparison|string
      */
     public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
@@ -55,7 +51,7 @@ class AjaxManyToManyFilterType extends AjaxOneToManyFilterType
             case static::CRITERIA_NOT_EQUAL:
                 return sprintf(':%s NOT MEMBER OF %s', $targetParameter, $this->column);
         }
+
         return false;
     }
-
 }

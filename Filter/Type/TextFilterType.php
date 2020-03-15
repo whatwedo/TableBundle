@@ -67,30 +67,37 @@ class TextFilterType extends FilterType
         switch ($operator) {
             case static::CRITERIA_EQUAL:
                 $queryBuilder->setParameter($parameterName, $value);
+
                 return $queryBuilder->expr()->eq($this->getColumn(), sprintf(':%s', $parameterName));
             case static::CRITERIA_NOT_EQUAL:
                 $queryBuilder->setParameter($parameterName, $value);
+
                 return $queryBuilder->expr()->neq($this->getColumn(), sprintf(':%s', $parameterName));
             case static::CRITERIA_STARTS_WITH:
-                $queryBuilder->setParameter($parameterName, $value . '%');
+                $queryBuilder->setParameter($parameterName, $value.'%');
+
                 return $queryBuilder->expr()->like($this->getColumn(), sprintf(':%s', $parameterName));
             case static::CRITERIA_ENDS_WITH:
-                $queryBuilder->setParameter($parameterName, '%' . $value);
+                $queryBuilder->setParameter($parameterName, '%'.$value);
+
                 return $queryBuilder->expr()->like($this->getColumn(), sprintf(':%s', $parameterName));
             case static::CRITERIA_CONTAINS:
-                $queryBuilder->setParameter($parameterName, '%' . $value . '%');
+                $queryBuilder->setParameter($parameterName, '%'.$value.'%');
+
                 return $queryBuilder->expr()->like($this->getColumn(), sprintf(':%s', $parameterName));
             case static::CRITERIA_IS_EMPTY:
                 $queryBuilder->setParameter($parameterName, '');
+
                 return $queryBuilder->expr()->orX()->addMultiple([
                     $queryBuilder->expr()->isNull($this->getColumn()),
-                    $queryBuilder->expr()->eq($this->getColumn(), sprintf(':%s', $parameterName))
+                    $queryBuilder->expr()->eq($this->getColumn(), sprintf(':%s', $parameterName)),
                 ]);
             case static::CRITERIA_IS_NOT_EMPTY:
                 $queryBuilder->setParameter($parameterName, '');
+
                 return $queryBuilder->expr()->orX()->addMultiple([
                     $queryBuilder->expr()->isNotNull($this->getColumn()),
-                    $queryBuilder->expr()->eq($this->getColumn(), sprintf(':%s', $parameterName))
+                    $queryBuilder->expr()->eq($this->getColumn(), sprintf(':%s', $parameterName)),
                 ]);
         }
 

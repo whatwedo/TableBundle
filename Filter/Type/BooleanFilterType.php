@@ -26,6 +26,7 @@
  */
 
 namespace whatwedo\TableBundle\Filter\Type;
+
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -48,14 +49,14 @@ class BooleanFilterType extends FilterType
     {
         return sprintf(
             '<select name="{name}" class="form-control"><option value="1" %s>ausgewählt</option><option value="0" %s>nicht ausgewählt</option></select>',
-            $value == 1 ? 'selected' : '',
-            $value == 0 ? 'selected' : ''
+            1 === $value ? 'selected' : '',
+            0 === $value ? 'selected' : ''
         );
     }
 
     public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
     {
-        $value = $value == 1 ? 'true' : 'false';
+        $value = 1 === $value ? 'true' : 'false';
 
         switch ($operator) {
             case static::CRITERIA_EQUAL:
