@@ -38,7 +38,6 @@ use whatwedo\TableBundle\Enum\FilterStateEnum;
  */
 class Filter
 {
-
     /**
      * @var int
      * @ORM\Column(name="id", type="integer")
@@ -55,13 +54,13 @@ class Filter
     protected $name;
 
     /**
-     * @var string $route
+     * @var string
      * @ORM\Column(name="path", type="string", length=256, nullable=false)
      */
     protected $route;
 
     /**
-     * @var array $arguments
+     * @var array
      * @ORM\Column(name="arguments", type="array", nullable=false)
      */
     protected $arguments;
@@ -224,8 +223,9 @@ class Filter
         return FilterStateEnum::getRepresentation($this->state);
     }
 
-    public function getStateIcon() {
-        switch($this->state) {
+    public function getStateIcon()
+    {
+        switch ($this->state) {
             case FilterStateEnum::ALL:
                 return 'world';
             case FilterStateEnum::SELF:

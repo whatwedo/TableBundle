@@ -26,8 +26,7 @@
  */
 
 namespace whatwedo\TableBundle\Twig;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
+
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Extension\AbstractExtension;
@@ -56,25 +55,25 @@ class TableExtension extends AbstractExtension
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getFunctions()
     {
         return [
-            new TwigFunction('whatwedo_table', function($identifier, $options) {
+            new TwigFunction('whatwedo_table', function ($identifier, $options) {
                 return $this->tableFactory->createTable($identifier, $options);
             }),
 
-            new TwigFunction('whatwedo_doctrine_table', function($identifier, $options) {
+            new TwigFunction('whatwedo_doctrine_table', function ($identifier, $options) {
                 return $this->tableFactory->createDoctrineTable($identifier, $options);
             }),
-            /**
+            /*
              * generates the same route with replaced or new arguments
              */
-            new TwigFunction('whatwedo_table_generate_route_replace_arguments', function($arguments) {
+            new TwigFunction('whatwedo_table_generate_route_replace_arguments', function ($arguments) {
                 $request = $this->requestStack->getMasterRequest();
-                $attributes = array_filter($request->attributes->all(), function($key) {
-                    return strpos($key, '_') !== 0;
+                $attributes = array_filter($request->attributes->all(), function ($key) {
+                    return 0 !== mb_strpos($key, '_');
                 }, ARRAY_FILTER_USE_KEY);
 
                 $parameters = array_replace(
@@ -86,13 +85,12 @@ class TableExtension extends AbstractExtension
                     $request->attributes->get('_route'),
                     $parameters
                 );
-
-            })
+            }),
         ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getName()
     {

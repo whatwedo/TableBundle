@@ -40,9 +40,8 @@ use whatwedo\CoreBundle\Formatter\DefaultFormatter;
  */
 class Column extends AbstractColumn implements SortableColumnInterface
 {
-
     /**
-     * @var string $tableIdentifier
+     * @var string
      */
     protected $tableIdentifier;
 
@@ -66,16 +65,15 @@ class Column extends AbstractColumn implements SortableColumnInterface
     }
 
     /**
-     * gets the content of the row
+     * gets the content of the row.
      *
-     * @param mixed $row
      * @return string
      */
     public function getContents($row)
     {
-        if (is_callable($this->options['callable'])) {
-            if (is_array($this->options['callable'])) {
-                return call_user_func($this->options['callable'], [$row]);
+        if (\is_callable($this->options['callable'])) {
+            if (\is_array($this->options['callable'])) {
+                return \call_user_func($this->options['callable'], [$row]);
             }
 
             return $this->options['callable']($row);
@@ -92,19 +90,21 @@ class Column extends AbstractColumn implements SortableColumnInterface
         }
     }
 
-    protected function formatData($data, $formatter, $formatterOptions) {
-        if (is_string($formatter)) {
+    protected function formatData($data, $formatter, $formatterOptions)
+    {
+        if (\is_string($formatter)) {
             $formatterObj = $this->formatterManager->getFormatter($formatter);
             $formatterObj->processOptions($formatterOptions);
+
             return $formatterObj->getHtml($data);
         }
 
-        if (is_callable($formatter)) {
+        if (\is_callable($formatter)) {
             return $formatter($data);
         }
 
-        if (is_array($formatter)) {
-            foreach($formatter as $index => $aFormatter) {
+        if (\is_array($formatter)) {
+            foreach ($formatter as $index => $aFormatter) {
                 $data = $this->formatData($data, $aFormatter, $formatterOptions[$index]);
             }
 
@@ -147,17 +147,18 @@ class Column extends AbstractColumn implements SortableColumnInterface
     }
 
     /**
-     * @param boolean $sortable
+     * @param bool $sortable
+     *
      * @return $this
      */
     public function setSortable($sortable)
     {
         $this->options['sortable'] = $sortable;
+
         return $this;
     }
 
     /**
-     * @param ParameterBag $query
      * @return string
      */
     public function getOrderQueryASC(ParameterBag $query)
@@ -166,7 +167,6 @@ class Column extends AbstractColumn implements SortableColumnInterface
     }
 
     /**
-     * @param ParameterBag $query
      * @return string
      */
     public function getOrderQueryDESC(ParameterBag $query)
@@ -175,7 +175,6 @@ class Column extends AbstractColumn implements SortableColumnInterface
     }
 
     /**
-     * @param ParameterBag $query
      * @return string
      */
     public function getDeleteOrder(ParameterBag $query)
@@ -183,29 +182,30 @@ class Column extends AbstractColumn implements SortableColumnInterface
         return $this->getOrderQuery($query, '0', '1');
     }
 
-    private function getOrderQuery(ParameterBag $query, string $enabled, string $asc):string
+    private function getOrderQuery(ParameterBag $query, string $enabled, string $asc): string
     {
         $queryData = array_replace($query->all(), [
             $this->getOrderEnabledQueryParameter() => $enabled,
-            $this->getOrderAscQueryParameter() => $asc
+            $this->getOrderAscQueryParameter() => $asc,
         ]);
         // remove parameter where is_order_... equals '0' aka not active
         $removeLater = [];
-        $offset = strlen(SortableColumnInterface::ORDER_ENABLED);
+        $offset = \mb_strlen(SortableColumnInterface::ORDER_ENABLED);
 
         foreach (array_keys($queryData) as $key) {
-            if (substr($key, 0, $offset) == SortableColumnInterface::ORDER_ENABLED) {
+            if (SortableColumnInterface::ORDER_ENABLED === mb_substr($key, 0, $offset)) {
                 if (!$queryData[$key]) {
                     $removeLater[] = $key;
-                    $removeLater[] = SortableColumnInterface::ORDER_ASC. substr($key, $offset);
+                    $removeLater[] = SortableColumnInterface::ORDER_ASC.mb_substr($key, $offset);
                 }
             }
         }
         foreach ($removeLater as $key) {
-            if (array_key_exists($key, $queryData)) {
+            if (\array_key_exists($key, $queryData)) {
                 unset($queryData[$key]);
             }
         }
+
         return !empty($queryData) ? '?'.http_build_query($queryData) : '?';
     }
 
@@ -237,5 +237,4 @@ class Column extends AbstractColumn implements SortableColumnInterface
     {
         return static::ORDER_ASC.$this->getColumnIdentifier();
     }
-
 }

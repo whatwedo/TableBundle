@@ -27,16 +27,12 @@
 
 namespace whatwedo\TableBundle\Filter\Type;
 
-use Doctrine\ORM\QueryBuilder;
-
 /**
  * @author Ueli Banholzer <ueli@whatwedo.ch>
  */
 class MoneyFilterType extends NumberFilterType
 {
-
     /**
-     * @param mixed $value
      * @return float|int
      */
     protected function prepareQueryValue($value)
@@ -45,7 +41,8 @@ class MoneyFilterType extends NumberFilterType
             $value = 0;
         }
 
-        $value = ((float)$value) * 100;
+        $value = ((float) $value) * 100;
+
         return $value;
     }
 }

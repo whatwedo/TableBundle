@@ -26,6 +26,7 @@
  */
 
 namespace whatwedo\TableBundle\Table;
+
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -37,7 +38,6 @@ class ActionColumn extends AbstractColumn
     protected $label = '';
 
     /**
-     * @param OptionsResolver $resolver
      * @return void
      */
     public function configureOptions(OptionsResolver $resolver)
@@ -94,7 +94,7 @@ class ActionColumn extends AbstractColumn
         return $this->templating->render('@whatwedoTable/_actions.html.twig', [
             'row' => $row,
             'helper' => $this,
-            'items' => is_callable($this->options['items']) ? $this->options['items']($row) : $this->options['items']
+            'items' => \is_callable($this->options['items']) ? $this->options['items']($row) : $this->options['items'],
         ]);
     }
 }

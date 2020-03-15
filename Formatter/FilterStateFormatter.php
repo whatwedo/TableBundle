@@ -27,7 +27,6 @@
 
 namespace whatwedo\TableBundle\Formatter;
 
-
 use whatwedo\CoreBundle\Formatter\AbstractFormatter;
 use whatwedo\TableBundle\Enum\FilterStateEnum;
 
@@ -36,6 +35,7 @@ class FilterStateFormatter extends AbstractFormatter
     public function getString($value)
     {
         $value = FilterStateEnum::getRepresentation($value);
-        return is_null($value) ? 'unbekannt' : $value;
+
+        return null === $value ? 'unbekannt' : $value;
     }
 }

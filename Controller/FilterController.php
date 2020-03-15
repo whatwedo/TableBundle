@@ -41,8 +41,7 @@ use whatwedo\TableBundle\Enum\FilterStateEnum;
 use whatwedo\TableBundle\Event\ResultRequestEvent;
 
 /**
- * Class FilterController
- * @package whatwedo\TableBundle\Controller
+ * Class FilterController.
  */
 class FilterController extends AbstractController
 {
@@ -61,9 +60,6 @@ class FilterController extends AbstractController
 
     /**
      * FilterController constructor.
-     * @param RouterInterface $router
-     * @param EntityManagerInterface $entityManager
-     * @param EventDispatcherInterface $eventDispatcher
      */
     public function __construct(RouterInterface $router, EntityManagerInterface $entityManager, EventDispatcherInterface $eventDispatcher)
     {
@@ -73,7 +69,6 @@ class FilterController extends AbstractController
     }
 
     /**
-     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
      * @Route("/whatwedo/table/filter/create", name="whatwedo_table_filter_direct_create", methods="POST")
@@ -90,11 +85,11 @@ class FilterController extends AbstractController
         $filter->setArguments(json_decode($request->request->get('filter_route_arguments'), true));
         $filter->setConditions(json_decode($request->get('filter_conditions'), true));
 
-        if (!is_array($filter->getConditions()) || !is_array($filter->getArguments())) {
+        if (!\is_array($filter->getConditions()) || !\is_array($filter->getArguments())) {
             throw new BadRequestHttpException();
         }
 
-        if ($this->router->getRouteCollection()->get($filter->getRoute()) === null) {
+        if (null === $this->router->getRouteCollection()->get($filter->getRoute())) {
             throw new BadRequestHttpException();
         }
 
@@ -108,7 +103,6 @@ class FilterController extends AbstractController
     }
 
     /**
-     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
      * @Route("/whatwedo/table/filter/delete/{id}", name="whatwedo_table_filter_direct_delete")
@@ -119,8 +113,9 @@ class FilterController extends AbstractController
             throw new InvalidCsrfTokenException('Invalid CSRF token');
         }
 
-        if ($filter->getCreatorUsername() !== $this->getUser()->getUsername()) throw $this->createAccessDeniedException();
-
+        if ($filter->getCreatorUsername() !== $this->getUser()->getUsername()) {
+            throw $this->createAccessDeniedException();
+        }
         $this->entityManager->remove($filter);
         $this->entityManager->flush();
 
@@ -128,7 +123,6 @@ class FilterController extends AbstractController
     }
 
     /**
-     * @param Request $request
      * @return JsonResponse
      *
      * @Route("/whatwedo/table/filter/relation", name="whatwedo_table_filter_load_relation_filter", methods="GET")
@@ -139,7 +133,7 @@ class FilterController extends AbstractController
         $term = $request->get('q');
         $resultRequestEvent = new ResultRequestEvent($class, $term);
         $this->eventDispatcher->dispatch($resultRequestEvent, ResultRequestEvent::FILTER_SET);
+
         return $resultRequestEvent->getResult();
     }
-
 }

@@ -34,5 +34,4 @@ use whatwedo\CoreBundle\Collection\ArrayCollection;
  */
 class ColumnCollection extends ArrayCollection
 {
-
 }

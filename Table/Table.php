@@ -82,7 +82,7 @@ class Table
     protected $eventDispatcher;
 
     /**
-     * @var FormatterManager $formatterManager
+     * @var FormatterManager
      */
     protected $formatterManager;
 
@@ -121,7 +121,6 @@ class Table
      */
     protected $extensions;
 
-
     /*
      * @var array
      */
@@ -130,12 +129,6 @@ class Table
     /**
      * Table constructor.
      *
-     * @param string $identifier
-     * @param array $options
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param RequestStack $requestStack
-     * @param Environment $templating
-     * @param FormatterManager $formatterManager
      * @param ExtensionInterface[] $extensions
      */
     public function __construct(
@@ -162,9 +155,6 @@ class Table
         $this->columns = new ColumnCollection();
     }
 
-    /**
-     * @param OptionsResolver $resolver
-     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
@@ -212,10 +202,6 @@ class Table
         return isset($this->options[$key]) ? $this->options[$key] : null;
     }
 
-    /**
-     * @param string $key
-     * @param mixed $value
-     */
     public function setOption(string $key, $value): void
     {
         $this->options[$key] = $value;
@@ -238,20 +224,20 @@ class Table
     }
 
     /**
-     * adds a new column
+     * adds a new column.
      *
      * @param string $acronym
      * @param string $type
-     * @param array $options
+     *
      * @return $this
      */
     public function addColumn($acronym, $type = null, array $options = [])
     {
-        if (in_array($acronym, $this->reservedColumnAcronyms)) {
+        if (\in_array($acronym, $this->reservedColumnAcronyms, true)) {
             throw new ReservedColumnAcronymException($acronym);
         }
 
-        if ($type === null) {
+        if (null === $type) {
             $type = Column::class;
         }
 
@@ -259,7 +245,7 @@ class Table
 
         // only DoctrineTable can sort nested properties. Therefore disable them for other tables.
         if (!$this instanceof DoctrineTable && $column instanceof SortableColumnInterface && $column->isSortable()) {
-            if (strpos($column->getSortExpression(), '.') !== false) {
+            if (false !== mb_strpos($column->getSortExpression(), '.')) {
                 $column->setSortable(false);
             }
         }
@@ -283,17 +269,19 @@ class Table
 
     /**
      * @param string $acronym
+     *
      * @return $this
      */
     public function removeColumn($acronym)
     {
         $this->columns->remove($acronym);
+
         return $this;
     }
 
     /**
      * @param string $acronym
-     * @param array $newOptions
+     *
      * @return $this
      */
     public function overrideColumnOptions($acronym, array $newOptions)
@@ -301,6 +289,7 @@ class Table
         /** @var AbstractColumn $column */
         $column = $this->columns->get($acronym);
         $column->overrideOptions($newOptions);
+
         return $this;
     }
 
@@ -323,13 +312,16 @@ class Table
      */
     public function getShowRoute($row)
     {
-        if(is_callable($this->showRoute)) return call_user_func($this->showRoute, $row);
+        if (\is_callable($this->showRoute)) {
+            return \call_user_func($this->showRoute, $row);
+        }
 
         return $this->showRoute;
     }
 
     /**
      * @param string|callable $showRoute
+     *
      * @return $this
      */
     public function setShowRoute($showRoute)
@@ -349,6 +341,7 @@ class Table
 
     /**
      * @param string $exportRoute
+     *
      * @return Table
      */
     public function setExportRoute($exportRoute)
@@ -399,12 +392,13 @@ class Table
     }
 
     /**
-     * loads the data
+     * loads the data.
+     *
      * @throws DataLoaderNotAvailableException
      */
     public function loadData()
     {
-        if (!is_callable($this->options['data_loader']) && !is_array($this->options['data_loader'])) {
+        if (!\is_callable($this->options['data_loader']) && !\is_array($this->options['data_loader'])) {
             throw new DataLoaderNotAvailableException();
         }
 
@@ -430,11 +424,11 @@ class Table
         // loads the data from the data loader callable
         $tableData = null;
 
-        if (is_callable($this->options['data_loader'])) {
+        if (\is_callable($this->options['data_loader'])) {
             $tableData = ($this->options['data_loader'])($currentPage, $limit);
         }
-        if (is_array($this->options['data_loader'])) {
-            $tableData = call_user_func($this->options['data_loader'], $currentPage, $limit);
+        if (\is_array($this->options['data_loader'])) {
+            $tableData = \call_user_func($this->options['data_loader'], $currentPage, $limit);
         }
 
         if (!$tableData instanceof TableDataInterface) {
@@ -453,8 +447,9 @@ class Table
     }
 
     /**
-     * @return string
      * @throws DataLoaderNotAvailableException
+     *
+     * @return string
      */
     public function renderTable()
     {
@@ -466,8 +461,9 @@ class Table
     }
 
     /**
-     * @return string
      * @throws DataLoaderNotAvailableException
+     *
+     * @return string
      */
     public function renderTableBox()
     {
@@ -497,16 +493,15 @@ class Table
 
     /**
      * @param string $extension
+     *
      * @return ExtensionInterface
      */
     public function getExtension($extension)
     {
         if (!$this->hasExtension($extension)) {
-            throw new \InvalidArgumentException(sprintf(
-                'Extension %s is not enabled. Please configure it first.',
-                $extension
-            ));
+            throw new \InvalidArgumentException(sprintf('Extension %s is not enabled. Please configure it first.', $extension));
         }
+
         return $this->extensions[$extension]->setTableIdentifier($this->identifier);
     }
 
@@ -555,63 +550,81 @@ class Table
 
     /**
      * @param string $extension
-     * @return boolean
+     *
+     * @return bool
      */
     public function hasExtension($extension)
     {
-        return array_key_exists($extension, $this->extensions);
+        return \array_key_exists($extension, $this->extensions);
     }
 
-    public function getDefaultSortColumns() {
+    public function getDefaultSortColumns()
+    {
         return $this->options['default_sort'];
     }
 
-    private function getSortOrderFromQuery(SortableColumnInterface $column) {
+    private function getSortOrderFromQuery(SortableColumnInterface $column)
+    {
         $query = $this->request->query;
-        if($query->get($column->getOrderEnabledQueryParameter()) !== '1') return null;
+        if ('1' !== $query->get($column->getOrderEnabledQueryParameter())) {
+            return null;
+        }
 
         $order = $query->get($column->getOrderAscQueryParameter());
-        if($order === null) return null;
+        if (null === $order) {
+            return null;
+        }
 
         return $order ? 'ASC' : 'DESC';
     }
 
-    public function getSortOrder(AbstractColumn $column) {
-        if(!$this->isSortable()) return null;
+    public function getSortOrder(AbstractColumn $column)
+    {
+        if (!$this->isSortable()) {
+            return null;
+        }
 
-        if(!$column instanceof SortableColumnInterface || !$column->isSortable()) return null;
+        if (!$column instanceof SortableColumnInterface || !$column->isSortable()) {
+            return null;
+        }
 
         $sortedColumns = $this->getSortedColumns();
         $sortExpression = $column->getSortExpression();
 
-        if(array_key_exists($sortExpression, $sortedColumns)) {
+        if (\array_key_exists($sortExpression, $sortedColumns)) {
             return $sortedColumns[$sortExpression];
         }
 
         return null;
     }
 
-    public function getSortedColumns($useDefault = true) {
+    public function getSortedColumns($useDefault = true)
+    {
         $sortedColumns = [];
 
-        foreach($this->getColumns() as $column) {
-            if(!$column instanceof SortableColumnInterface || !$column->isSortable()) continue;
-
+        foreach ($this->getColumns() as $column) {
+            if (!$column instanceof SortableColumnInterface || !$column->isSortable()) {
+                continue;
+            }
             $order = $this->getSortOrderFromQuery($column);
-            if($order) {
+            if ($order) {
                 $sortedColumns[$column->getSortExpression()] = $order;
             }
         }
 
-        if(!$sortedColumns && $useDefault) return $this->getDefaultSortColumns();
+        if (!$sortedColumns && $useDefault) {
+            return $this->getDefaultSortColumns();
+        }
+
         return $sortedColumns;
     }
 
-    public function isDefaultSort() {
-        return $this->getSortedColumns(false) != $this->getSortedColumns();
+    public function isDefaultSort()
+    {
+        return $this->getSortedColumns(false) !== $this->getSortedColumns();
     }
 
-    public function updateSortOrder(SortableColumnInterface $column, $order = null) {
-
+    public function updateSortOrder(SortableColumnInterface $column, $order = null)
+    {
     }
 }

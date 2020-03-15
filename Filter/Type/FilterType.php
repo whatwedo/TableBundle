@@ -51,6 +51,7 @@ abstract class FilterType implements FilterTypeInterface
 
     /**
      * @param null $column
+     *
      * @return FilterType
      */
     public function setColumn($column)
@@ -70,6 +71,7 @@ abstract class FilterType implements FilterTypeInterface
 
     /**
      * @param array $joins
+     *
      * @return FilterType
      */
     public function setJoins($joins)

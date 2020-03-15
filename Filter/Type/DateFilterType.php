@@ -27,53 +27,47 @@
 
 namespace whatwedo\TableBundle\Filter\Type;
 
-use Doctrine\ORM\QueryBuilder;
-
 /**
  * @author Ueli Banholzer <ueli@whatwedo.ch>
  */
 class DateFilterType extends DatetimeFilterType
 {
-    public function getValueField($value = null):string
+    public function getValueField($value = null): string
     {
         $value = \DateTime::createFromFormat('d.m.Y', $value);
         if (!$value) {
             $value = new \DateTime();
         }
+
         return sprintf(
             '<input type="text" name="{name}" value="%s" class="form-control" data-provide="datetimepicker" data-date-format="dd.mm.yyyy" data-min-view="2">',
             $value instanceof \DateTime ? $value->format('d.m.Y') : ''
         );
     }
 
-    /**
-     * @return string
-     */
     protected function getDateFormat(): string
     {
         return 'd.m.Y';
     }
 
-    /**
-     * @return string
-     */
-    protected  function getQueryDataFormat(): string
+    protected function getQueryDataFormat(): string
     {
         return  'Y-m-d';
     }
 
     /**
-     * @param string $value
-     * @return \DateTime|false
      * @throws \Exception
+     *
+     * @return \DateTime|false
      */
-    protected  function prepareDateValue(string $value): \DateTime
+    protected function prepareDateValue(string $value): \DateTime
     {
         $value = \DateTime::createFromFormat($this->getDateFormat(), $value);
         $value->setTime(0, 0, 0);
         if (!$value) {
             $value = new \DateTime();
         }
+
         return $value;
     }
 }

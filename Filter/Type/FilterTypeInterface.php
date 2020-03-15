@@ -28,14 +28,19 @@
 namespace whatwedo\TableBundle\Filter\Type;
 
 use Doctrine\ORM\QueryBuilder;
+
 /**
  * @author Nicolo Singer <nicolo@whatwedo.ch>
  */
 interface FilterTypeInterface
 {
     public function getColumn();
+
     public function getJoins();
+
     public function getOperators();
+
     public function getValueField($value);
+
     public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder);
 }

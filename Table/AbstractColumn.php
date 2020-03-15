@@ -26,6 +26,7 @@
  */
 
 namespace whatwedo\TableBundle\Table;
+
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Twig\Environment;
 use whatwedo\CoreBundle\Manager\FormatterManager;
@@ -91,7 +92,6 @@ abstract class AbstractColumn implements ColumnInterface, TemplateableColumnInte
     }
 
     /**
-     * @param FormatterManager $formatterManager
      * @return $this
      */
     public function setFormatterManager(FormatterManager $formatterManager)
@@ -124,12 +124,8 @@ abstract class AbstractColumn implements ColumnInterface, TemplateableColumnInte
         return $this instanceof SortableColumnInterface;
     }
 
-    /**
-     * @param array $newOptions
-     */
     public function overrideOptions(array $newOptions)
     {
         $this->options = array_merge_recursive($this->options, $newOptions);
     }
-
 }

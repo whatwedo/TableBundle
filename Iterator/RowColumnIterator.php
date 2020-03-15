@@ -47,9 +47,6 @@ class RowColumnIterator implements Iterator
      */
     protected $keys = [];
 
-    /**
-     * @var mixed
-     */
     protected $row;
 
     /**
@@ -104,9 +101,6 @@ class RowColumnIterator implements Iterator
         return isset($this->columns[$this->position]);
     }
 
-    /**
-     *
-     */
     public function rewind()
     {
         $this->position = 0;

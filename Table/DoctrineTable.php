@@ -38,22 +38,17 @@ use whatwedo\TableBundle\Extension\ExtensionInterface;
 use whatwedo\TableBundle\Model\SimpleTableData;
 
 /**
- * Class DoctrineTable
- * @package whatwedo\TableBundle\Table
+ * Class DoctrineTable.
  */
 class DoctrineTable extends Table
 {
-
     /**
      * Table constructor.
      *
-     * @param string $identifier
-     * @param array $options
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param RequestStack $requestStack
-     * @param Environment $templating
-     * @param FormatterManager $formatterManager
+     * @param string               $identifier
+     * @param array                $options
      * @param ExtensionInterface[] $extensions
+     *
      * @internal param FilterRepository $filterRepository
      */
     public function __construct(
@@ -68,9 +63,6 @@ class DoctrineTable extends Table
         parent::__construct($identifier, $options, $eventDispatcher, $requestStack, $templating, $formatterManager, $extensions);
     }
 
-    /**
-     * @param OptionsResolver $resolver
-     */
     public function configureOptions(OptionsResolver $resolver)
     {
         parent::configureOptions($resolver);
@@ -89,9 +81,8 @@ class DoctrineTable extends Table
         return $this->options['query_builder'];
     }
 
-
     /**
-     * Doctrine table data loader
+     * Doctrine table data loader.
      *
      * @param int $page
      * @param int $limit
@@ -107,7 +98,7 @@ class DoctrineTable extends Table
 
         $paginator = new Paginator($this->getQueryBuilder());
         $tableData = new SimpleTableData();
-        $tableData->setTotalResults(count($paginator));
+        $tableData->setTotalResults(\count($paginator));
         $tableData->setResults(iterator_to_array($paginator->getIterator()));
 
         return $tableData;

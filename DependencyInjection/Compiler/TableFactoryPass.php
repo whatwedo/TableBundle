@@ -33,15 +33,10 @@ use Symfony\Component\DependencyInjection\Reference;
 use whatwedo\TableBundle\Extension\ExtensionInterface;
 
 /**
- * Class TableFactoryPass
- * @package whatwedo\TableBundle\DependencyInjection\Compiler
+ * Class TableFactoryPass.
  */
 class TableFactoryPass implements CompilerPassInterface
 {
-
-    /**
-     * @param ContainerBuilder $container
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->has('whatwedo\TableBundle\Factory\TableFactory')) {
@@ -54,15 +49,11 @@ class TableFactoryPass implements CompilerPassInterface
 
             // must implement ExtensionInterface
             if (!is_subclass_of($tableExtension->getClass(), ExtensionInterface::class)) {
-                throw new \UnexpectedValueException(sprintf(
-                    'Extensions tagged with table.extension must implement %s - %s given.',
-                    ExtensionInterface::class,
-                    $tableExtension->getClass()
-                ));
+                throw new \UnexpectedValueException(sprintf('Extensions tagged with table.extension must implement %s - %s given.', ExtensionInterface::class, $tableExtension->getClass()));
             }
 
             // remove when not enabled
-            if (!call_user_func([$tableExtension->getClass(), 'isEnabled'], [$container->getParameter('kernel.bundles')])) {
+            if (!\call_user_func([$tableExtension->getClass(), 'isEnabled'], [$container->getParameter('kernel.bundles')])) {
                 $container->removeDefinition($id);
             }
         }
@@ -71,7 +62,5 @@ class TableFactoryPass implements CompilerPassInterface
         foreach ($container->findTaggedServiceIds('table.extension') as $id => $tags) {
             $container->getDefinition('whatwedo\TableBundle\Factory\TableFactory')->addMethodCall('addExtension', [new Reference($id)]);
         }
-
     }
-
 }

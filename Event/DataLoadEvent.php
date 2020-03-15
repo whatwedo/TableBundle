@@ -26,6 +26,7 @@
  */
 
 namespace whatwedo\TableBundle\Event;
+
 use Symfony\Contracts\EventDispatcher\Event;
 use whatwedo\TableBundle\Table\DoctrineTable;
 use whatwedo\TableBundle\Table\Table;

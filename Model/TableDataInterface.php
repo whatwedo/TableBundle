@@ -27,11 +27,11 @@
 
 namespace whatwedo\TableBundle\Model;
 
-
 interface TableDataInterface
 {
     /**
-     * returns the current page results
+     * returns the current page results.
+     *
      * @return array
      */
     public function getResults();

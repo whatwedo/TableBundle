@@ -25,14 +25,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 namespace whatwedo\TableBundle\Filter\Type;
+
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\QueryBuilder;
 
 /**
- * Class AjaxManyToManyFilterType
- * @package whatwedo\TableBundle\Filter\Type
+ * Class AjaxManyToManyFilterType.
  */
 class AjaxOneToManyFilterType extends FilterType
 {
@@ -40,21 +39,17 @@ class AjaxOneToManyFilterType extends FilterType
     const CRITERIA_NOT_EQUAL = 'not_equal';
 
     /**
-     * @var Registry $doctrine
+     * @var Registry
      */
     protected $doctrine;
 
     /**
-     * @var string $targetClass
+     * @var string
      */
     protected $targetClass;
 
     /**
      * AjaxManyToManyFilterType constructor.
-     * @param mixed $column
-     * @param string $targetClass
-     * @param Registry $doctrine
-     * @param array $joins
      */
     public function __construct($column, string $targetClass, Registry $doctrine, array $joins = [])
     {
@@ -76,6 +71,7 @@ class AjaxOneToManyFilterType extends FilterType
 
     /**
      * @param int $value
+     *
      * @return string
      */
     public function getValueField($value = 0)
@@ -89,7 +85,7 @@ class AjaxOneToManyFilterType extends FilterType
             $currentSelection = $this->doctrine->getRepository($this->targetClass)->find($value);
         }
 
-        if (!is_null($currentSelection)) {
+        if (null !== $currentSelection) {
             $field .= sprintf('<option value="%s">%s</option>', $value, $currentSelection->__toString());
         }
 
@@ -98,12 +94,10 @@ class AjaxOneToManyFilterType extends FilterType
         return $field;
     }
 
-
     /**
      * @param string $operator
-     * @param mixed $value
      * @param string $parameterName
-     * @param QueryBuilder $queryBuilder
+     *
      * @return bool|\Doctrine\ORM\Query\Expr\Comparison|string
      */
     public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
@@ -117,7 +111,7 @@ class AjaxOneToManyFilterType extends FilterType
             case static::CRITERIA_NOT_EQUAL:
                 return sprintf(':%s NOT IN %s', $this->column, $targetParameter);
         }
+
         return false;
     }
-
 }

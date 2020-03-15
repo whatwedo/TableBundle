@@ -25,10 +25,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 namespace whatwedo\TableBundle\Table;
-use Twig\Environment;
 
+use Twig\Environment;
 
 /**
  * @author Ueli Banholzer <ueli@whatwedo.ch>
@@ -36,10 +35,7 @@ use Twig\Environment;
 interface TemplateableColumnInterface
 {
     /**
-     * set templating engine
-     *
-     * @param Environment $templating
-     * @return mixed
+     * set templating engine.
      */
     public function setTemplating(Environment $templating);
 }

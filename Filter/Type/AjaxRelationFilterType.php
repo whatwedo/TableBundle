@@ -29,7 +29,6 @@ namespace whatwedo\TableBundle\Filter\Type;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
@@ -45,7 +44,7 @@ class AjaxRelationFilterType extends FilterType
     protected $targetClass;
 
     /**
-     * @var Registry $doctrine
+     * @var Registry
      */
     protected $doctrine;
 
@@ -56,8 +55,8 @@ class AjaxRelationFilterType extends FilterType
 
     public function __construct($column, $targetClass, $doctrine, $joins = [], $emptyFieldsCheck = false, $propToCheckAgainstId = 'id')
     {
-        if ($emptyFieldsCheck !== false
-            && !is_array($emptyFieldsCheck)) {
+        if (false !== $emptyFieldsCheck
+            && !\is_array($emptyFieldsCheck)) {
             $emptyFieldsCheck = [$emptyFieldsCheck];
         }
         $this->emptyQuery = $emptyFieldsCheck;
@@ -87,7 +86,7 @@ class AjaxRelationFilterType extends FilterType
             $curentSelection = $this->doctrine->getRepository($this->targetClass)->find($value);
         }
 
-        if (!is_null($curentSelection)) {
+        if (null !== $curentSelection) {
             $field .= sprintf('<option value="%s">%s</option>', $value, $curentSelection->__toString());
         } elseif ($this->emptyQuery) {
             $field .= "<option selected value='0'>- leer -</option>";
@@ -100,8 +99,8 @@ class AjaxRelationFilterType extends FilterType
 
     public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
     {
-        if ($value == 'empty'
-            && is_array($this->emptyQuery)) {
+        if ('empty' === $value
+            && \is_array($this->emptyQuery)) {
             $orX = $queryBuilder->expr()->orX();
             foreach ($this->emptyQuery as $field) {
                 switch ($operator) {
