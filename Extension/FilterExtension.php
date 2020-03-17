@@ -51,6 +51,7 @@ use whatwedo\TableBundle\Filter\Type\SimpleEnumFilterType;
 use whatwedo\TableBundle\Filter\Type\TextFilterType;
 use whatwedo\TableBundle\Table\DoctrineTable;
 use whatwedo\TableBundle\Table\Filter;
+use whatwedo\TableBundle\Entity\Filter as FilterEntity;
 
 /**
  * Class FilterExtension.
@@ -162,7 +163,7 @@ class FilterExtension extends AbstractExtension
     /**
      * @param $acronym
      * @param $label
-     *
+     *M
      * @return $this
      */
     public function overrideFilterName($acronym, $label)
@@ -182,6 +183,7 @@ class FilterExtension extends AbstractExtension
     {
         $filter = $this->getFilter($acronym);
         $name = $filter->getName();
+        $name = $filter->getName();
         $column = $filter->getType()->getColumn();
         $this->filters[$acronym] = new Filter($acronym, $name, new SimpleEnumFilterType($column, [], $class));
 
@@ -196,7 +198,7 @@ class FilterExtension extends AbstractExtension
      */
     public function getSavedFilter($username, $route)
     {
-        return $this->doctrine->getRepository(Filter::class)->findSavedFilter($route, $username);
+        return $this->doctrine->getRepository(FilterEntity::class)->findSavedFilter($route, $username);
     }
 
     private static function labelCallable(DoctrineTable $table, $property)
