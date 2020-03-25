@@ -64,8 +64,8 @@ class AjaxOneToManyFilterType extends FilterType
     public function getOperators()
     {
         return [
-            static::CRITERIA_EQUAL => 'enthält',
-            static::CRITERIA_NOT_EQUAL => 'enthält nicht',
+            static::CRITERIA_EQUAL => 'whatwedo_table.filter.operator.contains',
+            static::CRITERIA_NOT_EQUAL => 'whatwedo_table.filter.operator.contains_not',
         ];
     }
 

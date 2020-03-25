@@ -11,9 +11,8 @@
     <tr class="whatwedo_table_inner-no_results_row">
         <td
             colspan="{{ table.columns|length + 1 }}"
-            class="text-center"
-        >
-            <em>Keine Resultate gefunden</em>
+            class="text-center">
+            <em>{{ 'whatwedo_table.no_results'|trans }}</em>
         </td>
     </tr>
 {% endfor %}

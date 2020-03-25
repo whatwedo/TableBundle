@@ -40,8 +40,8 @@ class BooleanFilterType extends FilterType
     public function getOperators()
     {
         return [
-            static::CRITERIA_EQUAL => 'ist',
-            static::CRITERIA_NOT_EQUAL => 'ist nicht',
+            static::CRITERIA_EQUAL => 'whatwedo_table.filter.operator.is',
+            static::CRITERIA_NOT_EQUAL => 'whatwedo_table.filter.operator.is_not',
         ];
     }
 
