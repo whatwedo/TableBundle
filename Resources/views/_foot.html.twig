@@ -5,7 +5,12 @@
             {% set pagination = table.paginationExtension %}
             <p>
                 <small>
-                    Resultat {% if table.results|length == 0 %}0{% else %}{{ pagination.offsetResults + 1 }}{% endif %} bis {{ pagination.offsetResults + table.results|length }} von {{ pagination.totalResults }}
+                    {% set offsetResults = 0 %}
+                    {% if table.results|length %}{%  set offsetResults = pagination.offsetResults + 1 %}{% endif %}
+                    {% set offsetLength = pagination.offsetResults + table.results|length %}
+                    {% set totalResults = pagination.totalResults %}
+
+                    {{ 'whatwedo_table.foot.result'|trans({'%offsetResults%': offsetResults, '%offsetLength%': offsetLength, '%totalResults%': totalResults }) }}
                 </small>
             </p>
         {% endif %}

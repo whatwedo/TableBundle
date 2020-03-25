@@ -45,13 +45,13 @@ class TextFilterType extends FilterType
     public function getOperators()
     {
         return [
-            static::CRITERIA_EQUAL => 'ist gleich',
-            static::CRITERIA_NOT_EQUAL => 'ist ungleich',
-            static::CRITERIA_CONTAINS => 'enthält',
-            static::CRITERIA_STARTS_WITH => 'beginnt mit',
-            static::CRITERIA_ENDS_WITH => 'endet mit',
-            static::CRITERIA_IS_EMPTY => 'enthält keinen Wert',
-            static::CRITERIA_IS_NOT_EMPTY => 'enthält einen Wert',
+            static::CRITERIA_EQUAL => 'whatwedo_table.filter.operator.equal',
+            static::CRITERIA_NOT_EQUAL => 'whatwedo_table.filter.operator.not_equal',
+            static::CRITERIA_CONTAINS => 'whatwedo_table.filter.operator.contains',
+            static::CRITERIA_STARTS_WITH => 'whatwedo_table.filter.operator.starts_with',
+            static::CRITERIA_ENDS_WITH => 'whatwedo_table.filter.operator.ends_with',
+            static::CRITERIA_IS_EMPTY => 'whatwedo_table.filter.operator.is_empty',
+            static::CRITERIA_IS_NOT_EMPTY => 'whatwedo_table.filter.operator.is_not_empty',
         ];
     }
 

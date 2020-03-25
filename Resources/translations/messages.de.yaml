@@ -1,0 +1,51 @@
+whatwedo_table:
+    or: Oder
+    and: und
+    saved_filters: Gespeicherte Filter
+    reset: Zurücksetzen
+    apply: Anwenden
+    save_filter: Filter als Abfrage speichern
+    filter_name: Name
+    filter_description: Beschreibung
+    filter_public: Öffentlich
+    close: Schliessen
+    save: Speichern
+    no_results: Keine Resultate gefunden
+    delete_filter: Filter Löschen
+    restore_filter: Aktiviere Filter
+    entries: '%num% Einträge'
+    unknown: unbekannt
+    search:
+        filter: Filter
+        remove_search: Suche entfernen
+        placeholder: Suchbegriff...
+        export: als Excel (CSV) exportieren
+        all_pages: Aktuelle Ergebnisse (Alle Seiten)
+        all: Alle
+        actual: Aktuelle Ergebnisse (Seite %current_page%)
+    foot:
+        result: Resultat %offsetResults% bis %offsetLength% von %totalResults%
+    pagination:
+        first_page: Erste Seite
+        previous_page: Vorherige Seite
+        current_page: (aktuelle Seite)
+        next_page: Nächste Seite
+        last_page: Letzte Seite
+    filter:
+        operator:
+            contains: enthält
+            contains_not: enthält nicht
+            is: ist
+            is_not: ist nicht
+            equal: ist gleich
+            not_equal: ist ungleich
+            before: vor
+            after: nach
+            same_year: im selben Jahr wie
+            bigger_than: grösser als
+            smaller_than: kleiner als
+            starts_with: beginnt mit
+            ends_with: endet mit
+            is_empty: enthält keinen Wert
+            is_not_empty: enthält einen Wert
+

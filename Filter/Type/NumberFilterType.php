@@ -42,10 +42,10 @@ class NumberFilterType extends FilterType
     public function getOperators()
     {
         return [
-            static::CRITERIA_EQUAL => 'ist gleich',
-            static::CRITERIA_NOT_EQUAL => 'ist ungleich',
-            static::CRITERIA_BIGGER_THAN => 'grösser als',
-            static::CRITERIA_SMALLER_THAN => 'kleiner als',
+            static::CRITERIA_EQUAL => 'whatwedo_table.filter.operator.equal',
+            static::CRITERIA_NOT_EQUAL => 'whatwedo_table.filter.operator.not_equal',
+            static::CRITERIA_BIGGER_THAN => 'whatwedo_table.filter.operator.bigger_than',
+            static::CRITERIA_SMALLER_THAN => 'whatwedo_table.filter.operator.smaller_than',
         ];
     }
 

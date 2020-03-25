@@ -43,11 +43,11 @@ class DatetimeFilterType extends FilterType
     public function getOperators()
     {
         return [
-            static::CRITERIA_EQUAL => 'ist gleich',
-            static::CRITERIA_NOT_EQUAL => 'ist ungleich',
-            static::CRITERIA_BEFORE => 'vor',
-            static::CRITERIA_AFTER => 'nach',
-            static::CRITERIA_IN_YEAR => 'im selben Jahr wie',
+            static::CRITERIA_EQUAL => 'whatwedo_table.filter.operator.equal',
+            static::CRITERIA_NOT_EQUAL => 'whatwedo_table.filter.operator.not_equal',
+            static::CRITERIA_BEFORE => 'whatwedo_table.filter.operator.before',
+            static::CRITERIA_AFTER => 'whatwedo_table.filter.operator.after',
+            static::CRITERIA_IN_YEAR => 'whatwedo_table.filter.operator.same_year',
         ];
     }
 

@@ -27,15 +27,29 @@
 
 namespace whatwedo\TableBundle\Formatter;
 
+use Symfony\Contracts\Translation\TranslatorInterface;
 use whatwedo\CoreBundle\Formatter\AbstractFormatter;
 use whatwedo\TableBundle\Enum\FilterStateEnum;
 
 class FilterStateFormatter extends AbstractFormatter
 {
+    /**
+     * @var TranslatorInterface;
+     */
+    private $translator;
+
+    /**
+     * @required
+     */
+    public function setTranslator(TranslatorInterface $translator): void
+    {
+        $this->translator = $translator;
+    }
+
     public function getString($value)
     {
         $value = FilterStateEnum::getRepresentation($value);
 
-        return null === $value ? 'unbekannt' : $value;
+        return null === $value ? $this->translator->trans('whatwedo_table.unknown') : $value;
     }
 }
