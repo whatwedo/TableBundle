@@ -29,7 +29,9 @@ namespace whatwedo\TableBundle\Twig;
 
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 use Twig\TwigFunction;
 use whatwedo\TableBundle\Factory\TableFactory;
 
@@ -47,11 +49,22 @@ class TableExtension extends AbstractExtension
 
     protected $tableFactory;
 
-    public function __construct(RequestStack $requestStack, TableFactory $tableFactory, RouterInterface $router)
+    /**
+     * @var TranslatorInterface
+     */
+    protected $translator;
+
+    public function __construct(
+        RequestStack $requestStack,
+        TableFactory $tableFactory,
+        RouterInterface $router,
+        TranslatorInterface $translator
+    )
     {
         $this->tableFactory = $tableFactory;
         $this->requestStack = $requestStack;
         $this->router = $router;
+        $this->translator = $translator;
     }
 
     /**
@@ -86,6 +99,18 @@ class TableExtension extends AbstractExtension
                     $parameters
                 );
             }),
+        ];
+    }
+
+    public function getFilters()
+    {
+        return [
+            new TwigFilter('whatwedo_operators', function ($data) {
+                foreach (array_keys($data) as $key) {
+                    $data[$key] = $this->translator->trans($data[$key]);
+                }
+                return json_encode($data);
+            })
         ];
     }
 

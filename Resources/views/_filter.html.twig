@@ -16,7 +16,7 @@
                     {% for f in tableFilters %}
                         <option
                             value="{{ f.acronym }}"
-                            data-operator-options="{{ f.type.operators|json_encode }}"
+                            data-operator-options="{{ f.type.operators|whatwedo_operators }}"
                             data-value-template="{{ f.type.valueField|raw|e }}"
                             class="form-control"
                             {% if filter.acronym == f.acronym %}selected="selected"{% endif %}
