@@ -27,8 +27,8 @@
 
 namespace whatwedo\TableBundle\Filter\Type;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * Class AjaxManyToManyFilterType.
@@ -39,7 +39,7 @@ class AjaxOneToManyFilterType extends FilterType
     const CRITERIA_NOT_EQUAL = 'not_equal';
 
     /**
-     * @var Registry
+     * @var ManagerRegistry
      */
     protected $doctrine;
 
@@ -51,7 +51,7 @@ class AjaxOneToManyFilterType extends FilterType
     /**
      * AjaxManyToManyFilterType constructor.
      */
-    public function __construct($column, string $targetClass, Registry $doctrine, array $joins = [])
+    public function __construct($column, string $targetClass, ManagerRegistry $doctrine, array $joins = [])
     {
         parent::__construct($column, $joins);
         $this->doctrine = $doctrine;
