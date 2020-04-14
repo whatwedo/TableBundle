@@ -27,9 +27,6 @@
 
 namespace whatwedo\TableBundle\Table;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 class ColumnReflection
 {
     /**

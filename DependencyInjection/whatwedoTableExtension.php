@@ -15,9 +15,6 @@ use whatwedo\TableBundle\Extension\ExtensionInterface;
  */
 class whatwedoTableExtension extends Extension
 {
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = new Configuration();

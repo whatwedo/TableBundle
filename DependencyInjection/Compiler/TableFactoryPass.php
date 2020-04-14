@@ -44,7 +44,7 @@ class TableFactoryPass implements CompilerPassInterface
         }
 
         // load table extensions
-        foreach ($container->findTaggedServiceIds('table.extension') as $id => $tags) {
+        foreach (array_keys($container->findTaggedServiceIds('table.extension')) as $id) {
             $tableExtension = $container->getDefinition($id);
 
             // must implement ExtensionInterface
@@ -59,7 +59,7 @@ class TableFactoryPass implements CompilerPassInterface
         }
 
         // add remaining extensions to table factory
-        foreach ($container->findTaggedServiceIds('table.extension') as $id => $tags) {
+        foreach (array_keys($container->findTaggedServiceIds('table.extension')) as $id) {
             $container->getDefinition('whatwedo\TableBundle\Factory\TableFactory')->addMethodCall('addExtension', [new Reference($id)]);
         }
     }

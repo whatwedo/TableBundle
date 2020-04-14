@@ -27,15 +27,11 @@
 
 namespace whatwedo\TableBundle\Iterator;
 
-use Iterator;
 use whatwedo\TableBundle\Collection\ColumnCollection;
 use whatwedo\TableBundle\Table\Column;
 use whatwedo\TableBundle\Table\ColumnReflection;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
-class RowColumnIterator implements Iterator
+class RowColumnIterator implements \Iterator
 {
     /**
      * @var int

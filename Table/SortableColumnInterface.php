@@ -29,12 +29,10 @@ namespace whatwedo\TableBundle\Table;
 
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-/**
- * @author Nicolo Singer <nicolo@whatwedo.ch>
- */
 interface SortableColumnInterface
 {
     const ORDER_ENABLED = 'is_order_';
+
     const ORDER_ASC = 'asc_order_';
 
     /**

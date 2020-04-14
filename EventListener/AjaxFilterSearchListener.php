@@ -86,8 +86,7 @@ class AjaxFilterSearchListener
             $entities = $queryBuilder->andWhere($queryBuilder->getRootAliases()[0].'.id IN (:ids)')
                 ->setParameter('ids', $ids)
                 ->getQuery()
-                ->getResult()
-            ;
+                ->getResult();
             $items = array_map(function ($entity) {
                 $std = new \stdClass();
                 $std->id = $entity->getId();

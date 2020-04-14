@@ -31,12 +31,10 @@ use Symfony\Contracts\EventDispatcher\Event;
 use whatwedo\TableBundle\Table\DoctrineTable;
 use whatwedo\TableBundle\Table\Table;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 class DataLoadEvent extends Event
 {
     const PRE_LOAD = 'whatwedo_table.data_load.pre_load';
+
     const POST_LOAD = 'whatwedo_table.data_load.post_load';
 
     /**

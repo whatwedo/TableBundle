@@ -27,13 +27,12 @@
 
 namespace whatwedo\TableBundle\Enum;
 
-/**
- * @author Nicolo Singer <nicolo@whatwedo.ch>
- */
 class FilterStateEnum
 {
     const ALL = 1;
+
     const SELF = 2;
+
     const SYSTEM = 3;
 
     protected static $values = [

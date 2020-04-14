@@ -29,15 +29,16 @@ namespace whatwedo\TableBundle\Filter\Type;
 
 use Doctrine\ORM\QueryBuilder;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 class DatetimeFilterType extends FilterType
 {
     const CRITERIA_EQUAL = 'equal';
+
     const CRITERIA_NOT_EQUAL = 'not_equal';
+
     const CRITERIA_BEFORE = 'before';
+
     const CRITERIA_AFTER = 'after';
+
     const CRITERIA_IN_YEAR = 'in_year';
 
     public function getOperators()
@@ -62,31 +63,6 @@ class DatetimeFilterType extends FilterType
             '<input type="text" name="{name}" value="%s" class="form-control" data-provide="datetimepicker" data-date-format="dd.mm.yyyy HH:ii">',
             $value instanceof \DateTime ? $value->format('d.m.Y H:i') : ''
         );
-    }
-
-    protected function getDateFormat(): string
-    {
-        return 'd.m.Y H:i';
-    }
-
-    protected function getQueryDataFormat(): string
-    {
-        return 'Y-m-d H:i:s';
-    }
-
-    /**
-     * @throws \Exception
-     *
-     * @return \DateTime|false
-     */
-    protected function prepareDateValue(string $value): \DateTime
-    {
-        $value = \DateTime::createFromFormat($this->getDateFormat(), $value);
-        if (!$value) {
-            $value = new \DateTime();
-        }
-
-        return $value;
     }
 
     public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
@@ -133,5 +109,30 @@ class DatetimeFilterType extends FilterType
         }
 
         return false;
+    }
+
+    protected function getDateFormat(): string
+    {
+        return 'd.m.Y H:i';
+    }
+
+    protected function getQueryDataFormat(): string
+    {
+        return 'Y-m-d H:i:s';
+    }
+
+    /**
+     * @throws \Exception
+     *
+     * @return \DateTime|false
+     */
+    protected function prepareDateValue(string $value): \DateTime
+    {
+        $value = \DateTime::createFromFormat($this->getDateFormat(), $value);
+        if (!$value) {
+            $value = new \DateTime();
+        }
+
+        return $value;
     }
 }

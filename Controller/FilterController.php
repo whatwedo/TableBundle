@@ -49,10 +49,12 @@ class FilterController extends AbstractController
      * @var RouterInterface
      */
     private $router;
+
     /**
      * @var EntityManagerInterface
      */
     private $entityManager;
+
     /**
      * @var EventDispatcherInterface
      */

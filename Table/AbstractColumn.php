@@ -31,9 +31,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Twig\Environment;
 use whatwedo\CoreBundle\Manager\FormatterManager;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 abstract class AbstractColumn implements ColumnInterface, TemplateableColumnInterface, FormattableColumnInterface
 {
     /**
@@ -56,9 +53,6 @@ abstract class AbstractColumn implements ColumnInterface, TemplateableColumnInte
      */
     protected $formatterManager;
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct($acronym, array $options = [])
     {
         $this->acronym = $acronym;
@@ -101,14 +95,6 @@ abstract class AbstractColumn implements ColumnInterface, TemplateableColumnInte
     }
 
     /**
-     * @return Environment
-     */
-    protected function getTemplating()
-    {
-        return $this->templating;
-    }
-
-    /**
      * @return string
      */
     public function getAcronym()
@@ -127,5 +113,13 @@ abstract class AbstractColumn implements ColumnInterface, TemplateableColumnInte
     public function overrideOptions(array $newOptions)
     {
         $this->options = array_merge_recursive($this->options, $newOptions);
+    }
+
+    /**
+     * @return Environment
+     */
+    protected function getTemplating()
+    {
+        return $this->templating;
     }
 }
