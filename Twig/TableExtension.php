@@ -35,9 +35,6 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 use whatwedo\TableBundle\Factory\TableFactory;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 class TableExtension extends AbstractExtension
 {
     /**
@@ -59,17 +56,13 @@ class TableExtension extends AbstractExtension
         TableFactory $tableFactory,
         RouterInterface $router,
         TranslatorInterface $translator
-    )
-    {
+    ) {
         $this->tableFactory = $tableFactory;
         $this->requestStack = $requestStack;
         $this->router = $router;
         $this->translator = $translator;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getFunctions()
     {
         return [
@@ -110,13 +103,10 @@ class TableExtension extends AbstractExtension
                     $data[$key] = $this->translator->trans($data[$key]);
                 }
                 return json_encode($data);
-            })
+            }),
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getName()
     {
         return 'whatwedo_table_table_extension';

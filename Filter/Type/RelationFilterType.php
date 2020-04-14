@@ -32,23 +32,24 @@ use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 class RelationFilterType extends FilterType
 {
     const CRITERIA_EQUAL = 'equal';
+
     const CRITERIA_NOT_EQUAL = 'not_equal';
 
     protected $choices;
+
     protected $emptyQuery;
+
     protected $accessorPath;
-    private $propToCheckAgainstId;
 
     /**
      * @var PropertyAccessor
      */
     protected static $propertyAccessor;
+
+    private $propToCheckAgainstId;
 
     public function __construct($column, $choices, $joins = [], $emptyFieldsCheck = false, $accessorPath = false, $propToCheckAgainstId = 'id')
     {

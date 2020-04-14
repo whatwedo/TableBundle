@@ -33,9 +33,6 @@ use whatwedo\TableBundle\Enum\FilterStateEnum;
 
 class FilterStateFormatter extends AbstractFormatter
 {
-    /**
-     * @var TranslatorInterface;
-     */
     private $translator;
 
     /**

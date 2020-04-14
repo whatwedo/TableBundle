@@ -28,15 +28,10 @@
 namespace whatwedo\TableBundle\EventListener;
 
 use Doctrine\ORM\Query\Expr;
-use InvalidArgumentException;
-use UnexpectedValueException;
 use whatwedo\TableBundle\Event\DataLoadEvent;
 use whatwedo\TableBundle\Extension\FilterExtension;
 use whatwedo\TableBundle\Table\DoctrineTable;
 
-/**
- * @author Nicolo Singer <nicolo@whatwedo.ch>
- */
 class FilterEventListener
 {
     /**
@@ -107,12 +102,12 @@ class FilterEventListener
                             $conditionType = $join[2];
                             $condition = $join[3];
                         } elseif (2 !== count($join)) {
-                            throw new InvalidArgumentException(sprintf('Invalid join options supplied for "%s".', $joinAlias));
+                            throw new \InvalidArgumentException(sprintf('Invalid join options supplied for "%s".', $joinAlias));
                         }
                         $method = $join[0];
                         $join = $join[1];
                     }
-                    $this->queryBuilder()->$method($join, $joinAlias, $conditionType, $condition);
+                    $this->queryBuilder()->{$method}($join, $joinAlias, $conditionType, $condition);
                 }
 
                 $w = $filter->getType()->addToQueryBuilder(
@@ -125,7 +120,7 @@ class FilterEventListener
                 if ($w instanceof Expr\Base || $w instanceof Expr\Comparison) {
                     $andX->add($w);
                 } elseif (!\is_bool($w)) {
-                    throw new UnexpectedValueException(sprintf('Bool or %s expected as filter-result, got %s', Expr::class, \get_class($w)));
+                    throw new \UnexpectedValueException(sprintf('Bool or %s expected as filter-result, got %s', Expr::class, \get_class($w)));
                 }
             }
 

@@ -27,13 +27,9 @@
 
 namespace whatwedo\TableBundle\Iterator;
 
-use Iterator;
 use whatwedo\TableBundle\Collection\ColumnCollection;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
-class RowIterator implements Iterator
+class RowIterator implements \Iterator
 {
     /**
      * @var int

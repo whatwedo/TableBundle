@@ -29,9 +29,6 @@ namespace whatwedo\TableBundle\Filter\Type;
 
 use Doctrine\ORM\QueryBuilder;
 
-/**
- * @author Nicolo Singer <nicolo@whatwedo.ch>
- */
 interface FilterTypeInterface
 {
     public function getColumn();

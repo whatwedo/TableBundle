@@ -30,12 +30,10 @@ namespace whatwedo\TableBundle\Filter\Type;
 use Doctrine\ORM\QueryBuilder;
 use whatwedo\CoreBundle\Enum\AbstractSimpleEnum;
 
-/**
- * @author Nicolo Singer <nicolo@whatwedo.ch>
- */
 class SimpleEnumFilterType extends FilterType
 {
     const CRITERIA_EQUAL = 'equal';
+
     const CRITERIA_NOT_EQUAL = 'not_equal';
 
     /**

@@ -32,7 +32,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 use whatwedo\TableBundle\Enum\FilterStateEnum;
 
 /**
- * @author Nicolo Singer <nicolo@whatwedo.ch>
  * @ORM\Table(name="whatwedo_table_filter")
  * @ORM\Entity(repositoryClass="whatwedo\TableBundle\Repository\FilterRepository")
  */

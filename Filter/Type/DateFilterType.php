@@ -27,9 +27,6 @@
 
 namespace whatwedo\TableBundle\Filter\Type;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 class DateFilterType extends DatetimeFilterType
 {
     public function getValueField($value = null): string

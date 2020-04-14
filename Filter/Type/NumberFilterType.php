@@ -29,14 +29,14 @@ namespace whatwedo\TableBundle\Filter\Type;
 
 use Doctrine\ORM\QueryBuilder;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 class NumberFilterType extends FilterType
 {
     const CRITERIA_EQUAL = 'equal';
+
     const CRITERIA_NOT_EQUAL = 'not_equal';
+
     const CRITERIA_BIGGER_THAN = 'bigger_than';
+
     const CRITERIA_SMALLER_THAN = 'smaller_than';
 
     public function getOperators()

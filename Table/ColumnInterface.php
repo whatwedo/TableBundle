@@ -29,9 +29,6 @@ namespace whatwedo\TableBundle\Table;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 interface ColumnInterface
 {
     /**

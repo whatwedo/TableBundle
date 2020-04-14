@@ -35,9 +35,6 @@ use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use whatwedo\CoreBundle\Formatter\DefaultFormatter;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 class Column extends AbstractColumn implements SortableColumnInterface
 {
     /**
@@ -45,9 +42,6 @@ class Column extends AbstractColumn implements SortableColumnInterface
      */
     protected $tableIdentifier;
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
@@ -90,41 +84,11 @@ class Column extends AbstractColumn implements SortableColumnInterface
         }
     }
 
-    protected function formatData($data, $formatter, $formatterOptions)
-    {
-        if (\is_string($formatter)) {
-            $formatterObj = $this->formatterManager->getFormatter($formatter);
-            $formatterObj->processOptions($formatterOptions);
-
-            return $formatterObj->getHtml($data);
-        }
-
-        if (\is_callable($formatter)) {
-            return $formatter($data);
-        }
-
-        if (\is_array($formatter)) {
-            foreach ($formatter as $index => $aFormatter) {
-                $data = $this->formatData($data, $aFormatter, $formatterOptions[$index]);
-            }
-
-            return $data;
-        }
-
-        return $data;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function render($row)
     {
         return (string) $this->formatData($this->getContents($row), $this->options['formatter'], $this->options['formatter_options']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getLabel()
     {
         return $this->options['label'];
@@ -182,6 +146,54 @@ class Column extends AbstractColumn implements SortableColumnInterface
         return $this->getOrderQuery($query, '0', '1');
     }
 
+    /**
+     * @param string $identifier
+     */
+    public function setTableIdentifier($identifier)
+    {
+        $this->tableIdentifier = $identifier;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrderEnabledQueryParameter()
+    {
+        return static::ORDER_ENABLED.$this->getColumnIdentifier();
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrderAscQueryParameter()
+    {
+        return static::ORDER_ASC.$this->getColumnIdentifier();
+    }
+
+    protected function formatData($data, $formatter, $formatterOptions)
+    {
+        if (\is_string($formatter)) {
+            $formatterObj = $this->formatterManager->getFormatter($formatter);
+            $formatterObj->processOptions($formatterOptions);
+
+            return $formatterObj->getHtml($data);
+        }
+
+        if (\is_callable($formatter)) {
+            return $formatter($data);
+        }
+
+        if (\is_array($formatter)) {
+            foreach ($formatter as $index => $aFormatter) {
+                $data = $this->formatData($data, $aFormatter, $formatterOptions[$index]);
+            }
+
+            return $data;
+        }
+
+        return $data;
+    }
+
     private function getOrderQuery(ParameterBag $query, string $enabled, string $asc): string
     {
         $queryData = array_replace($query->all(), [
@@ -209,32 +221,8 @@ class Column extends AbstractColumn implements SortableColumnInterface
         return !empty($queryData) ? '?'.http_build_query($queryData) : '?';
     }
 
-    /**
-     * @param string $identifier
-     */
-    public function setTableIdentifier($identifier)
-    {
-        $this->tableIdentifier = $identifier;
-    }
-
     private function getColumnIdentifier()
     {
         return str_replace('.', '_', $this->tableIdentifier.'_'.$this->getAcronym());
-    }
-
-    /**
-     * @return string
-     */
-    public function getOrderEnabledQueryParameter()
-    {
-        return static::ORDER_ENABLED.$this->getColumnIdentifier();
-    }
-
-    /**
-     * @return string
-     */
-    public function getOrderAscQueryParameter()
-    {
-        return static::ORDER_ASC.$this->getColumnIdentifier();
     }
 }

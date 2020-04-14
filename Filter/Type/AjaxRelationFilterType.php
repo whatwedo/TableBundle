@@ -31,16 +31,14 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 class AjaxRelationFilterType extends FilterType
 {
     const CRITERIA_EQUAL = 'equal';
+
     const CRITERIA_NOT_EQUAL = 'not_equal';
 
     protected $emptyQuery;
-    private $propToCheckAgainstId;
+
     protected $targetClass;
 
     /**
@@ -52,6 +50,8 @@ class AjaxRelationFilterType extends FilterType
      * @var PropertyAccessor
      */
     protected static $propertyAccessor;
+
+    private $propToCheckAgainstId;
 
     public function __construct($column, $targetClass, $doctrine, $joins = [], $emptyFieldsCheck = false, $propToCheckAgainstId = 'id')
     {

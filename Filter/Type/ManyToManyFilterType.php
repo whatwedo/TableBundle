@@ -34,6 +34,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 class ManyToManyFilterType extends FilterType
 {
     const CRITERIA_EQUAL = 'equal';
+
     const CRITERIA_NOT_EQUAL = 'not_equal';
 
     /**
@@ -73,7 +74,7 @@ class ManyToManyFilterType extends FilterType
     /**
      * @param callable|null $callable
      *
-     * @return ManyToManyFilterType $this
+     * @return self $this
      */
     public function setCallable($callable = null)
     {

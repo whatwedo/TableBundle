@@ -29,9 +29,6 @@ namespace whatwedo\TableBundle\Table;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 class ActionColumn extends AbstractColumn
 {
     /**
@@ -45,9 +42,6 @@ class ActionColumn extends AbstractColumn
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getLabel()
     {
         return '';
@@ -70,9 +64,6 @@ class ActionColumn extends AbstractColumn
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function render($row)
     {
         return $this->templating->render('@whatwedoTable/_actions.html.twig', [

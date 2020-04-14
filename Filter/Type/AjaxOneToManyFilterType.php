@@ -36,6 +36,7 @@ use Doctrine\Persistence\ManagerRegistry;
 class AjaxOneToManyFilterType extends FilterType
 {
     const CRITERIA_EQUAL = 'equal';
+
     const CRITERIA_NOT_EQUAL = 'not_equal';
 
     /**

@@ -29,9 +29,6 @@ namespace whatwedo\TableBundle\Table;
 
 use Twig\Environment;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 interface TemplateableColumnInterface
 {
     /**

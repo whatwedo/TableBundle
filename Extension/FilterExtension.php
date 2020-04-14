@@ -35,9 +35,9 @@ use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use ReflectionProperty;
 use Symfony\Component\HttpFoundation\RequestStack;
 use whatwedo\TableBundle\Builder\FilterBuilder;
+use whatwedo\TableBundle\Entity\Filter as FilterEntity;
 use whatwedo\TableBundle\Exception\InvalidFilterAcronymException;
 use whatwedo\TableBundle\Filter\Type\AjaxManyToManyFilterType;
 use whatwedo\TableBundle\Filter\Type\AjaxOneToManyFilterType;
@@ -51,7 +51,6 @@ use whatwedo\TableBundle\Filter\Type\SimpleEnumFilterType;
 use whatwedo\TableBundle\Filter\Type\TextFilterType;
 use whatwedo\TableBundle\Table\DoctrineTable;
 use whatwedo\TableBundle\Table\Filter;
-use whatwedo\TableBundle\Entity\Filter as FilterEntity;
 
 /**
  * Class FilterExtension.
@@ -154,7 +153,7 @@ class FilterExtension extends AbstractExtension
     }
 
     /**
-     * @return array|Filter[]
+     * @return Filter[]
      */
     public function getFilters()
     {
@@ -202,17 +201,6 @@ class FilterExtension extends AbstractExtension
         return $this->doctrine->getRepository(FilterEntity::class)->findSavedFilter($route, $username);
     }
 
-    private static function labelCallable(DoctrineTable $table, $property)
-    {
-        foreach ($table->getColumns() as $column) {
-            if ($column->getAcronym() === $property) {
-                return $column->getLabel() ?: ucfirst($property);
-            }
-        }
-
-        return ucfirst($property);
-    }
-
     /**
      * @param callable $labelCallable
      * @param string[] $propertyNames
@@ -232,52 +220,6 @@ class FilterExtension extends AbstractExtension
 
         foreach ($properties as $property) {
             $this->addFilterAutomatically($table, $queryBuilder, $labelCallable, $property, $reflectionClass->getNamespaceName());
-        }
-    }
-
-    /**
-     * @throws \Doctrine\Common\Annotations\AnnotationException
-     *
-     * @return Filter|null
-     */
-    private function addFilterAutomatically(DoctrineTable $table, QueryBuilder $queryBuilder, callable $labelCallable, ReflectionProperty $property, string $namespace)
-    {
-        $acronym = $property->getName();
-
-        $label = \call_user_func($labelCallable, $table, $property->getName());
-
-        $annotations = (new AnnotationReader())->getPropertyAnnotations($property);
-
-        $allAliases = $queryBuilder->getAllAliases();
-        $isPropertySelected = \in_array($acronym, $allAliases, true);
-
-        $accessor = sprintf('%s.%s', $allAliases[0], $acronym);
-
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Column) {
-                if (array_key_exists($annotation->type, $this->scalarType)) {
-                    $this->addFilter($acronym, $label, new $this->scalarType[$annotation->type]($accessor));
-
-                    return $this->getFilter($acronym);
-                }
-
-                return null;
-            }
-
-            if ($annotation instanceof OneToMany || $annotation instanceof ManyToOne || $annotation instanceof ManyToMany) {
-                $target = $annotation->targetEntity;
-                if (false === mb_strpos($target, '\\')) {
-                    $target = $namespace.'\\'.$target;
-                }
-
-                $filterType = $this->relationType[\get_class($annotation)];
-
-                $joins = !$isPropertySelected ? [$acronym => $annotation instanceof ManyToMany ? ['leftJoin', $accessor] : $accessor] : [];
-
-                $this->addFilter($acronym, $label, new $filterType($acronym, $target, $this->doctrine, $joins));
-
-                return $this->getFilter($acronym);
-            }
         }
     }
 
@@ -385,6 +327,63 @@ class FilterExtension extends AbstractExtension
     public static function isEnabled($enabledBundles)
     {
         return true;
+    }
+
+    private static function labelCallable(DoctrineTable $table, $property)
+    {
+        foreach ($table->getColumns() as $column) {
+            if ($column->getAcronym() === $property) {
+                return $column->getLabel() ?: ucfirst($property);
+            }
+        }
+
+        return ucfirst($property);
+    }
+
+    /**
+     * @throws \Doctrine\Common\Annotations\AnnotationException
+     *
+     * @return Filter|null
+     */
+    private function addFilterAutomatically(DoctrineTable $table, QueryBuilder $queryBuilder, callable $labelCallable, \ReflectionProperty $property, string $namespace)
+    {
+        $acronym = $property->getName();
+
+        $label = \call_user_func($labelCallable, $table, $property->getName());
+
+        $annotations = (new AnnotationReader())->getPropertyAnnotations($property);
+
+        $allAliases = $queryBuilder->getAllAliases();
+        $isPropertySelected = \in_array($acronym, $allAliases, true);
+
+        $accessor = sprintf('%s.%s', $allAliases[0], $acronym);
+
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof Column) {
+                if (array_key_exists($annotation->type, $this->scalarType)) {
+                    $this->addFilter($acronym, $label, new $this->scalarType[$annotation->type]($accessor));
+
+                    return $this->getFilter($acronym);
+                }
+
+                return null;
+            }
+
+            if ($annotation instanceof OneToMany || $annotation instanceof ManyToOne || $annotation instanceof ManyToMany) {
+                $target = $annotation->targetEntity;
+                if (false === mb_strpos($target, '\\')) {
+                    $target = $namespace.'\\'.$target;
+                }
+
+                $filterType = $this->relationType[\get_class($annotation)];
+
+                $joins = !$isPropertySelected ? [$acronym => $annotation instanceof ManyToMany ? ['leftJoin', $accessor] : $accessor] : [];
+
+                $this->addFilter($acronym, $label, new $filterType($acronym, $target, $this->doctrine, $joins));
+
+                return $this->getFilter($acronym);
+            }
+        }
     }
 
     private function getFromRequest(string $param)

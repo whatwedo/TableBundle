@@ -29,12 +29,10 @@ namespace whatwedo\TableBundle\Filter\Type;
 
 use Doctrine\ORM\QueryBuilder;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 class BooleanFilterType extends FilterType
 {
     const CRITERIA_EQUAL = 'equal';
+
     const CRITERIA_NOT_EQUAL = 'not_equal';
 
     public function getOperators()

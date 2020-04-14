@@ -35,6 +35,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class PaginationExtension extends AbstractExtension
 {
     const QUERY_PARAMETER_PAGE = 'page';
+
     const QUERY_PARAMETER_LIMIT = 'limit';
 
     /**
@@ -110,18 +111,18 @@ class PaginationExtension extends AbstractExtension
     }
 
     /**
-     * @return \Symfony\Component\HttpFoundation\Request|null
-     */
-    protected function getRequest()
-    {
-        return $this->requestStack->getCurrentRequest();
-    }
-
-    /**
      * @param array $enabledBundles
      */
     public static function isEnabled($enabledBundles): bool
     {
         return true;
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Request|null
+     */
+    protected function getRequest()
+    {
+        return $this->requestStack->getCurrentRequest();
     }
 }

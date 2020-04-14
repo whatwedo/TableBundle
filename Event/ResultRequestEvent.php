@@ -37,6 +37,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 class ResultRequestEvent extends Event
 {
     const FILTER_SET = 'whatwedo_ajax.result_request.filter_set';
+
     const RELATION_SET = 'whatwedo_ajax.result_request.relation_set';
 
     /**

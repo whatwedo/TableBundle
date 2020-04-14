@@ -42,7 +42,7 @@ interface ExtensionInterface
     /**
      * @param string $identifier
      *
-     * @return ExtensionInterface
+     * @return self
      */
     public function setTableIdentifier($identifier);
 }

@@ -29,17 +29,20 @@ namespace whatwedo\TableBundle\Filter\Type;
 
 use Doctrine\ORM\QueryBuilder;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 class TextFilterType extends FilterType
 {
     const CRITERIA_EQUAL = 'equal';
+
     const CRITERIA_NOT_EQUAL = 'not_equal';
+
     const CRITERIA_STARTS_WITH = 'starts_with';
+
     const CRITERIA_ENDS_WITH = 'ends_with';
+
     const CRITERIA_CONTAINS = 'contains';
+
     const CRITERIA_IS_EMPTY = 'is_empty';
+
     const CRITERIA_IS_NOT_EMPTY = 'is_not_empty';
 
     public function getOperators()
@@ -57,7 +60,8 @@ class TextFilterType extends FilterType
 
     public function getValueField($value = '')
     {
-        return sprintf('<input type="text" name="{name}" value="%s" class="form-control">',
+        return sprintf(
+            '<input type="text" name="{name}" value="%s" class="form-control">',
             addcslashes($value, '"')
         );
     }

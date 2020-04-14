@@ -44,12 +44,14 @@ use whatwedo\TableBundle\Extension\SearchExtension;
 use whatwedo\TableBundle\Iterator\RowIterator;
 use whatwedo\TableBundle\Model\TableDataInterface;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 class Table
 {
     const ACTION_COLUMN_ACRONYM = '_actions';
+
+    /*
+     * @var array
+     */
+    public $options = [];
 
     /**
      * @var string unique table identifier
@@ -120,11 +122,6 @@ class Table
      * @var ExtensionInterface[]
      */
     protected $extensions;
-
-    /*
-     * @var array
-     */
-    public $options = [];
 
     /**
      * Table constructor.
@@ -342,7 +339,7 @@ class Table
     /**
      * @param string $exportRoute
      *
-     * @return Table
+     * @return self
      */
     public function setExportRoute($exportRoute)
     {
@@ -563,21 +560,6 @@ class Table
         return $this->options['default_sort'];
     }
 
-    private function getSortOrderFromQuery(SortableColumnInterface $column)
-    {
-        $query = $this->request->query;
-        if ('1' !== $query->get($column->getOrderEnabledQueryParameter())) {
-            return null;
-        }
-
-        $order = $query->get($column->getOrderAscQueryParameter());
-        if (null === $order) {
-            return null;
-        }
-
-        return $order ? 'ASC' : 'DESC';
-    }
-
     public function getSortOrder(AbstractColumn $column)
     {
         if (!$this->isSortable()) {
@@ -626,5 +608,20 @@ class Table
 
     public function updateSortOrder(SortableColumnInterface $column, $order = null)
     {
+    }
+
+    private function getSortOrderFromQuery(SortableColumnInterface $column)
+    {
+        $query = $this->request->query;
+        if ('1' !== $query->get($column->getOrderEnabledQueryParameter())) {
+            return null;
+        }
+
+        $order = $query->get($column->getOrderAscQueryParameter());
+        if (null === $order) {
+            return null;
+        }
+
+        return $order ? 'ASC' : 'DESC';
     }
 }
