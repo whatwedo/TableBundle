@@ -76,6 +76,13 @@ abstract class AbstractColumn implements ColumnInterface, TemplateableColumnInte
     }
 
     /**
+     * @return string
+     */
+    public function getThClass() {
+        return '';
+    }
+
+    /**
      * @param EngineInterface $templating
      */
     public function setTemplating(EngineInterface $templating)
