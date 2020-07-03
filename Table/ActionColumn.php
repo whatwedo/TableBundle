@@ -33,6 +33,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ActionColumn extends AbstractColumn
 {
+    /** @var string  */
+    protected $label = '';
+
     /**
      * @param OptionsResolver $resolver
      * @return void
@@ -50,7 +53,20 @@ class ActionColumn extends AbstractColumn
      */
     public function getLabel()
     {
-        return '';
+        return $this->label;
+    }
+
+    /**
+     * @param string $label
+     */
+    public function setLabel(string $label): void
+    {
+        $this->label = $label;
+    }
+
+    public function getThClass()
+    {
+        return 'text-right';
     }
 
     public function getTdClass()
