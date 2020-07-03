@@ -430,7 +430,7 @@ class Table
             $limit = $paginationExtension->getLimit();
         }
 
-        $this->eventDispatcher->dispatch(DataLoadEvent::PRE_LOAD, new DataLoadEvent($this));
+        $this->eventDispatcher->dispatch(new DataLoadEvent($this), DataLoadEvent::PRE_LOAD);
 
         // loads the data from the data loader callable
         $tableData = null;
@@ -455,7 +455,7 @@ class Table
 
         $this->loaded = true;
 
-        $this->eventDispatcher->dispatch(DataLoadEvent::POST_LOAD, new DataLoadEvent($this));
+        $this->eventDispatcher->dispatch(new DataLoadEvent($this), DataLoadEvent::POST_LOAD);
     }
 
     /**

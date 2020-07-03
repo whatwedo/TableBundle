@@ -21,7 +21,7 @@
     {% if title or hasSearchArea %}
         <div class="box-header">
             {% if title %}
-            <h3 class="box-title">{{ title }}</h3>
+            <h3 class="box-title">{{ title|trans }}</h3>
             {% endif %}
 
             {% if hasSearchArea %}

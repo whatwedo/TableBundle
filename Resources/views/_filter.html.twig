@@ -27,7 +27,7 @@
             <div class="col-xs-3">
                 <select name="{{ table.actionQueryParameter('filter_operator') ~ indexSuffix }}" class="form-control">
                     {% for key, name in filter.type.operators %}
-                        <option value="{{ key }}"{% if operator == key %} selected="selected"{% endif %}>{{ name }}</option>
+                        <option value="{{ key }}"{% if operator == key %} selected="selected"{% endif %}>{{ name | trans }}</option>
                     {% endfor %}
                 </select>
             </div>
