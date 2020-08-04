@@ -194,7 +194,11 @@ class Table
         $resolver->setAllowedTypes('data_loader', ['array', 'callable']);
     }
 
-    public function getOption(string $key): ?string
+    /**
+     * @param string $key
+     * @return null|string|array
+     */
+    public function getOption(string $key)
     {
         return isset($this->options[$key]) ? $this->options[$key] : null;
     }
