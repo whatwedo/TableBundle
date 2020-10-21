@@ -276,7 +276,7 @@ class FilterExtension extends AbstractExtension
         foreach ($this->getFilterColumns() as $groupIndex => $columns) {
             $group = [];
 
-            foreach($columns as $index => $column) {
+            foreach ($columns as $index => $column) {
                 $group[$index] = [
                     'column' => $column,
                     'operator' => $operators[$groupIndex][$index],

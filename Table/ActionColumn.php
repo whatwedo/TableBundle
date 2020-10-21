@@ -31,7 +31,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ActionColumn extends AbstractColumn
 {
-    /** @var string  */
+    /**
+     * @var string
+     */
     protected $label = '';
 
     /**
@@ -50,9 +52,6 @@ class ActionColumn extends AbstractColumn
         return $this->label;
     }
 
-    /**
-     * @param string $label
-     */
     public function setLabel(string $label): void
     {
         $this->label = $label;

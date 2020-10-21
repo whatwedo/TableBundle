@@ -195,8 +195,7 @@ class Table
     }
 
     /**
-     * @param string $key
-     * @return null|string|array
+     * @return string|array|null
      */
     public function getOption(string $key)
     {

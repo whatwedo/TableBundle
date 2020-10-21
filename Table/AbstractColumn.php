@@ -49,7 +49,7 @@ abstract class AbstractColumn implements ColumnInterface, TemplateableColumnInte
     protected $templating = null;
 
     /**
-     * @var FormatterManager $formatterManager
+     * @var FormatterManager
      */
     protected $formatterManager;
 
@@ -73,13 +73,11 @@ abstract class AbstractColumn implements ColumnInterface, TemplateableColumnInte
     /**
      * @return string
      */
-    public function getThClass() {
+    public function getThClass()
+    {
         return '';
     }
 
-    /**
-     * @param Environment $templating
-     */
     public function setTemplating(Environment $templating)
     {
         $this->templating = $templating;
