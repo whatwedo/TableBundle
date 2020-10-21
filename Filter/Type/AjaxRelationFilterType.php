@@ -29,6 +29,7 @@ namespace whatwedo\TableBundle\Filter\Type;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 class AjaxRelationFilterType extends FilterType
@@ -53,6 +54,15 @@ class AjaxRelationFilterType extends FilterType
 
     private $propToCheckAgainstId;
 
+    /**
+     * AjaxRelationFilterType constructor.
+     * @param string $column
+     * @param string $targetClass
+     * @param ManagerRegistry $doctrine
+     * @param array $joins
+     * @param false $emptyFieldsCheck
+     * @param string $propToCheckAgainstId
+     */
     public function __construct($column, $targetClass, $doctrine, $joins = [], $emptyFieldsCheck = false, $propToCheckAgainstId = 'id')
     {
         if (false !== $emptyFieldsCheck

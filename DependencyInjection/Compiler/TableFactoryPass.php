@@ -32,9 +32,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use whatwedo\TableBundle\Extension\ExtensionInterface;
 
-/**
- * Class TableFactoryPass.
- */
 class TableFactoryPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)

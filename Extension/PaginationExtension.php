@@ -29,9 +29,6 @@ namespace whatwedo\TableBundle\Extension;
 
 use Symfony\Component\HttpFoundation\RequestStack;
 
-/**
- * Class PaginationExtension.
- */
 class PaginationExtension extends AbstractExtension
 {
     const QUERY_PARAMETER_PAGE = 'page';

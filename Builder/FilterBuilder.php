@@ -30,8 +30,6 @@ namespace whatwedo\TableBundle\Builder;
 use whatwedo\TableBundle\Extension\FilterExtension;
 
 /**
- * Class FilterBuilder.
- *
  * @internal
  */
 class FilterBuilder
@@ -50,12 +48,10 @@ class FilterBuilder
     ];
 
     /**
-     * FilterBuilder constructor.
-     *
-     * @param $id
-     * @param $acronym
-     * @param $operator
-     * @param $value
+     * @param string $id
+     * @param string $acronym
+     * @param string $operator
+     * @param string $value
      */
     public function __construct($id, $acronym, $operator, $value, FilterExtension $filterExtension)
     {
@@ -65,9 +61,9 @@ class FilterBuilder
     }
 
     /**
-     * @param $acronym
-     * @param $operator
-     * @param $value
+     * @param string $acronym
+     * @param string $operator
+     * @param string $value
      *
      * @return $this
      */
@@ -82,9 +78,9 @@ class FilterBuilder
     }
 
     /**
-     * @param $acronym
-     * @param $operator
-     * @param $value
+     * @param string $acronym
+     * @param string $operator
+     * @param string $value
      *
      * @return $this
      */

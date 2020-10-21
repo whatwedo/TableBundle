@@ -35,9 +35,6 @@ use whatwedo\TableBundle\Event\DataLoadEvent;
 use whatwedo\TableBundle\Extension\SearchExtension;
 use whatwedo\TableBundle\Table\DoctrineTable;
 
-/**
- * Class SearchEventListener.
- */
 class SearchEventListener
 {
     /**

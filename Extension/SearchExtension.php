@@ -30,9 +30,6 @@ namespace whatwedo\TableBundle\Extension;
 use Symfony\Component\HttpFoundation\RequestStack;
 use whatwedo\SearchBundle\whatwedoSearchBundle;
 
-/**
- * Class SearchExtension.
- */
 class SearchExtension extends AbstractExtension
 {
     const QUERY_PARAMETER_QUERY = 'query';
@@ -42,9 +39,6 @@ class SearchExtension extends AbstractExtension
      */
     protected $requestStack;
 
-    /**
-     * SearchExtension constructor.
-     */
     public function __construct(RequestStack $requestStack)
     {
         $this->requestStack = $requestStack;

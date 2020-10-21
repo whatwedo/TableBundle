@@ -37,9 +37,6 @@ use whatwedo\CoreBundle\Manager\FormatterManager;
 use whatwedo\TableBundle\Extension\ExtensionInterface;
 use whatwedo\TableBundle\Model\SimpleTableData;
 
-/**
- * Class DoctrineTable.
- */
 class DoctrineTable extends Table
 {
     /**

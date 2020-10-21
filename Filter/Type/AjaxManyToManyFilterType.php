@@ -29,9 +29,6 @@ namespace whatwedo\TableBundle\Filter\Type;
 
 use Doctrine\ORM\QueryBuilder;
 
-/**
- * Class AjaxManyToManyFilterType.
- */
 class AjaxManyToManyFilterType extends AjaxOneToManyFilterType
 {
     /**
