@@ -115,7 +115,8 @@
                                 <strong>{{ 'whatwedo_table.or'|trans }}</strong>
                             </p>
                         {% endif %}
-                        {% for column, data in group %}
+                        {% for data in group %}
+                            {% set column = data.column  %}
                             {% if table.filterExtension.filters[column] is defined %}
                                 {{ whatwedo_table_filters.filter(
                                     table,

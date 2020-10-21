@@ -278,7 +278,8 @@ class FilterExtension extends AbstractExtension
             $group = [];
 
             foreach ($columns as $index => $column) {
-                $group[$column] = [
+                $group[$index] = [
+                    'column' => $column,
                     'operator' => $operators[$groupIndex][$index],
                     'value' => $values[$groupIndex][$index],
                 ];
