@@ -40,9 +40,6 @@ use whatwedo\TableBundle\Entity\Filter;
 use whatwedo\TableBundle\Enum\FilterStateEnum;
 use whatwedo\TableBundle\Event\ResultRequestEvent;
 
-/**
- * Class FilterController.
- */
 class FilterController extends AbstractController
 {
     /**
@@ -60,9 +57,6 @@ class FilterController extends AbstractController
      */
     private $eventDispatcher;
 
-    /**
-     * FilterController constructor.
-     */
     public function __construct(RouterInterface $router, EntityManagerInterface $entityManager, EventDispatcherInterface $eventDispatcher)
     {
         $this->router = $router;

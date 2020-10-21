@@ -34,9 +34,6 @@ use whatwedo\SearchBundle\Repository\IndexRepository;
 use whatwedo\SearchBundle\whatwedoSearchBundle;
 use whatwedo\TableBundle\Event\ResultRequestEvent;
 
-/**
- * Class AjaxFilterSearchListener.
- */
 class AjaxFilterSearchListener
 {
     /**
@@ -54,9 +51,6 @@ class AjaxFilterSearchListener
      */
     protected $kernelBundles;
 
-    /**
-     * AjaxFilterSearchListener constructor.
-     */
     public function __construct(EntityManagerInterface $em, array $kernelBundles, IndexRepository $indexRepository)
     {
         $this->em = $em;

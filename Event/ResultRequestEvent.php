@@ -31,9 +31,6 @@ use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Contracts\EventDispatcher\Event;
 
-/**
- * Class ResultRequestEvent.
- */
 class ResultRequestEvent extends Event
 {
     const FILTER_SET = 'whatwedo_ajax.result_request.filter_set';

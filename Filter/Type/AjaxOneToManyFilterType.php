@@ -30,9 +30,6 @@ namespace whatwedo\TableBundle\Filter\Type;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * Class AjaxManyToManyFilterType.
- */
 class AjaxOneToManyFilterType extends FilterType
 {
     const CRITERIA_EQUAL = 'equal';
@@ -49,9 +46,6 @@ class AjaxOneToManyFilterType extends FilterType
      */
     protected $targetClass;
 
-    /**
-     * AjaxManyToManyFilterType constructor.
-     */
     public function __construct($column, string $targetClass, ManagerRegistry $doctrine, array $joins = [])
     {
         parent::__construct($column, $joins);

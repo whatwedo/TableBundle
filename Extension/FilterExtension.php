@@ -52,9 +52,6 @@ use whatwedo\TableBundle\Filter\Type\TextFilterType;
 use whatwedo\TableBundle\Table\DoctrineTable;
 use whatwedo\TableBundle\Table\Filter;
 
-/**
- * Class FilterExtension.
- */
 class FilterExtension extends AbstractExtension
 {
     const QUERY_PREDEFINED_FILTER = 'predefined_filter';

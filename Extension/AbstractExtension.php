@@ -27,9 +27,6 @@
 
 namespace whatwedo\TableBundle\Extension;
 
-/**
- * Class AbstractExtension.
- */
 abstract class AbstractExtension implements ExtensionInterface
 {
     protected $tableIdentifier;

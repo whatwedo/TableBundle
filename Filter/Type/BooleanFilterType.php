@@ -29,7 +29,7 @@ namespace whatwedo\TableBundle\Filter\Type;
 
 use Doctrine\ORM\QueryBuilder;
 
-class BooleanFilterType extends FilterType
+class   BooleanFilterType extends FilterType
 {
     const CRITERIA_EQUAL = 'equal';
 

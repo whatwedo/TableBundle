@@ -31,9 +31,6 @@ use Doctrine\ORM\QueryBuilder;
 use whatwedo\TableBundle\Event\DataLoadEvent;
 use whatwedo\TableBundle\Table\DoctrineTable;
 
-/**
- * Class DoctrineOrderEventListener.
- */
 class DoctrineOrderEventListener
 {
     /**
