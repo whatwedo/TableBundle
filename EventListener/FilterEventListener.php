@@ -85,7 +85,8 @@ class FilterEventListener
             $andX = $this->queryBuilder()->expr()->andX();
 
             $filterIndex = 0;
-            foreach ($columns as $column => $data) {
+            foreach ($columns as $data) {
+                $column = $data['column'];
                 $filterIndex++;
 
                 if (!isset($filterExtension->getFilters()[$column])) {
