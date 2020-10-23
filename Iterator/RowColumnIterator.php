@@ -27,15 +27,11 @@
 
 namespace whatwedo\TableBundle\Iterator;
 
-use Iterator;
 use whatwedo\TableBundle\Collection\ColumnCollection;
 use whatwedo\TableBundle\Table\Column;
 use whatwedo\TableBundle\Table\ColumnReflection;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
-class RowColumnIterator implements Iterator
+class RowColumnIterator implements \Iterator
 {
     /**
      * @var int
@@ -47,9 +43,6 @@ class RowColumnIterator implements Iterator
      */
     protected $keys = [];
 
-    /**
-     * @var
-     */
     protected $row;
 
     /**
@@ -104,9 +97,6 @@ class RowColumnIterator implements Iterator
         return isset($this->columns[$this->position]);
     }
 
-    /**
-     *
-     */
     public function rewind()
     {
         $this->position = 0;

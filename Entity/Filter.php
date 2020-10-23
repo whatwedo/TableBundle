@@ -32,13 +32,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 use whatwedo\TableBundle\Enum\FilterStateEnum;
 
 /**
- * @author Nicolo Singer <nicolo@whatwedo.ch>
  * @ORM\Table(name="whatwedo_table_filter")
  * @ORM\Entity(repositoryClass="whatwedo\TableBundle\Repository\FilterRepository")
  */
 class Filter
 {
-
     /**
      * @var int
      * @ORM\Column(name="id", type="integer")
@@ -55,13 +53,13 @@ class Filter
     protected $name;
 
     /**
-     * @var string $route
+     * @var string
      * @ORM\Column(name="path", type="string", length=256, nullable=false)
      */
     protected $route;
 
     /**
-     * @var array $arguments
+     * @var array
      * @ORM\Column(name="arguments", type="array", nullable=false)
      */
     protected $arguments;
@@ -224,8 +222,9 @@ class Filter
         return FilterStateEnum::getRepresentation($this->state);
     }
 
-    public function getStateIcon() {
-        switch($this->state) {
+    public function getStateIcon()
+    {
+        switch ($this->state) {
             case FilterStateEnum::ALL:
                 return 'world';
             case FilterStateEnum::SELF:

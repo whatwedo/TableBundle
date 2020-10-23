@@ -28,13 +28,12 @@
 namespace whatwedo\TableBundle\Extension;
 
 /**
- * Interface ExtensionInterface
- * @package whatwedo\TableBundle\Extension
+ * Interface ExtensionInterface.
  */
 interface ExtensionInterface
 {
     /**
-     * returns true if extension is enabled
+     * returns true if extension is enabled.
      *
      * @return bool
      */
@@ -42,8 +41,8 @@ interface ExtensionInterface
 
     /**
      * @param string $identifier
-     * @return ExtensionInterface
+     *
+     * @return self
      */
     public function setTableIdentifier($identifier);
-
 }

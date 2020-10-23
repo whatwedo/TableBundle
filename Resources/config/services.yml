@@ -4,6 +4,9 @@ services:
         autoconfigure: true
         public: false
 
+        bind:
+            $kernelBundles: '%kernel.bundles%'
+
     whatwedo\TableBundle\:
             resource: '../../*'
 

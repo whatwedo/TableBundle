@@ -29,26 +29,19 @@ namespace whatwedo\TableBundle\Table;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 interface ColumnInterface
 {
     /**
      * ColumnInterface constructor.
+     *
      * @param string $acronym
-     * @param array $options
      */
     public function __construct($acronym, array $options = []);
 
-    /**
-     * @param OptionsResolver $resolver
-     * @return mixed
-     */
     public function configureOptions(OptionsResolver $resolver);
 
     /**
-     * gets the label
+     * gets the label.
      *
      * @return string
      */
@@ -57,9 +50,10 @@ interface ColumnInterface
     public function getTdClass();
 
     /**
-     * returns content
+     * returns content.
      *
      * @param object $row current row
+     *
      * @return string
      */
     public function render($row);

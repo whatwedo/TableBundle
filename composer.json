@@ -20,11 +20,11 @@
         }
     ],
     "require": {
-        "php":                      ">=5.6",
-        "symfony/framework-bundle": "~3.0|~4.0",
-        "symfony/http-kernel":      "~3.0|~4.0",
-        "symfony/validator":        "~3.0|~4.0",
-        "whatwedo/core-bundle":     "^0.3"
+        "php":                      ">=7.2",
+        "symfony/framework-bundle": "~4.0|~5.0",
+        "symfony/http-kernel":      "~4.0|~5.0",
+        "symfony/validator":        "~4.0|~5.0",
+        "whatwedo/core-bundle":     "^0.4"
     },
     "suggest": {
         "whatwedo/search-bundle": "Allows searching tables"

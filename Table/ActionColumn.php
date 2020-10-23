@@ -26,18 +26,17 @@
  */
 
 namespace whatwedo\TableBundle\Table;
+
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 class ActionColumn extends AbstractColumn
 {
-    /** @var string  */
+    /**
+     * @var string
+     */
     protected $label = '';
 
     /**
-     * @param OptionsResolver $resolver
      * @return void
      */
     public function configureOptions(OptionsResolver $resolver)
@@ -48,17 +47,11 @@ class ActionColumn extends AbstractColumn
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getLabel()
     {
         return $this->label;
     }
 
-    /**
-     * @param string $label
-     */
     public function setLabel(string $label): void
     {
         $this->label = $label;
@@ -86,15 +79,12 @@ class ActionColumn extends AbstractColumn
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function render($row)
     {
-        return $this->templating->render('whatwedoTableBundle::_actions.html.twig', [
+        return $this->templating->render('@whatwedoTable/_actions.html.twig', [
             'row' => $row,
             'helper' => $this,
-            'items' => is_callable($this->options['items']) ? $this->options['items']($row) : $this->options['items']
+            'items' => \is_callable($this->options['items']) ? $this->options['items']($row) : $this->options['items'],
         ]);
     }
 }

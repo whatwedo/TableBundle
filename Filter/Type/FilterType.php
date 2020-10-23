@@ -27,12 +27,10 @@
 
 namespace whatwedo\TableBundle\Filter\Type;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 abstract class FilterType implements FilterTypeInterface
 {
     protected $column = null;
+
     protected $joins = [];
 
     public function __construct($column, $joins = [])
@@ -51,7 +49,8 @@ abstract class FilterType implements FilterTypeInterface
 
     /**
      * @param null $column
-     * @return FilterType
+     *
+     * @return self
      */
     public function setColumn($column)
     {
@@ -70,7 +69,8 @@ abstract class FilterType implements FilterTypeInterface
 
     /**
      * @param array $joins
-     * @return FilterType
+     *
+     * @return self
      */
     public function setJoins($joins)
     {

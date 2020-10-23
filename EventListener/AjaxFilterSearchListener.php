@@ -26,23 +26,18 @@
  */
 
 namespace whatwedo\TableBundle\EventListener;
+
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use whatwedo\SearchBundle\Repository\IndexRepository;
 use whatwedo\SearchBundle\whatwedoSearchBundle;
 use whatwedo\TableBundle\Event\ResultRequestEvent;
 
-/**
- * Class AjaxFilterSearchListener
- * @package whatwedo\TableBundle\EventListener
- */
 class AjaxFilterSearchListener
 {
-
     /**
-     * @var EntityManager $em
+     * @var EntityManager
      */
     protected $em;
 
@@ -52,53 +47,45 @@ class AjaxFilterSearchListener
     protected $indexRepository;
 
     /**
-     * @var ContainerInterface
+     * @var array
      */
-    protected $container;
+    protected $kernelBundles;
 
-    /**
-     * AjaxFilterSearchListener constructor.
-     * @param EntityManagerInterface $em
-     * @param ContainerInterface $container
-     * @param IndexRepository $indexRepository
-     */
-    public function __construct(EntityManagerInterface $em, ContainerInterface $container, IndexRepository $indexRepository)
+    public function __construct(EntityManagerInterface $em, array $kernelBundles, IndexRepository $indexRepository)
     {
         $this->em = $em;
-        $this->container = $container;
+        $this->kernelBundles = $kernelBundles;
         $this->indexRepository = $indexRepository;
     }
 
-    /**
-     * @param ResultRequestEvent $requestEvent
-     */
     public function searchResultSet(ResultRequestEvent $requestEvent)
     {
         // check if whatwedo serach bundle is enabled
-        if (!in_array(whatwedoSearchBundle::class, $this->container->getParameter('kernel.bundles'))) {
+        if (!\in_array(whatwedoSearchBundle::class, $this->kernelBundles, true)) {
             $result = new \stdClass();
             $result->items = [];
             $result->error = false;
             $requestEvent->setResult(new JsonResponse($result));
+
             return;
         }
         $class = $requestEvent->getEntity();
         $term = $requestEvent->getTerm();
         $result = new \stdClass();
         $result->error = true;
-        if ($class !== false && $term !== false) {
+        if (false !== $class && false !== $term) {
             $ids = $this->indexRepository->search($term, $class);
             $queryBuilder = $requestEvent->getQueryBuilder() ?: $this->em->getRepository($class)
                 ->createQueryBuilder('e');
             $entities = $queryBuilder->andWhere($queryBuilder->getRootAliases()[0].'.id IN (:ids)')
                 ->setParameter('ids', $ids)
                 ->getQuery()
-                ->getResult()
-            ;
-            $items = array_map(function($entity) {
+                ->getResult();
+            $items = array_map(function ($entity) {
                 $std = new \stdClass();
                 $std->id = $entity->getId();
                 $std->text = $entity->__toString();
+
                 return $std;
             }, $entities);
             $result->items = $items;

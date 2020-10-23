@@ -46,46 +46,35 @@ class Filter
      */
     protected $acronym;
 
-    public function __construct($acronym, $name, FilterTypeInterface $type)
+    public function __construct(string $acronym, string $name, FilterTypeInterface $type)
     {
         $this->acronym = $acronym;
         $this->name = $name;
         $this->type = $type;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param mixed $name
-     * @return Filter
-     */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->name = $name;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getAcronym()
+    public function getAcronym(): string
     {
         return $this->acronym;
     }
 
-    /**
-     * @param string $acronym
-     */
-    public function setAcronym($acronym)
+    public function setAcronym(string $acronym): self
     {
         $this->acronym = $acronym;
+
+        return $this;
     }
 
     /**
@@ -96,11 +85,7 @@ class Filter
         return $this->type;
     }
 
-    /**
-     * @param FilterTypeInterface $type
-     * @return Filter
-     */
-    public function setType($type)
+    public function setType(FilterTypeInterface $type): self
     {
         $this->type = $type;
 

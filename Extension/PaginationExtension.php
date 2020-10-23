@@ -26,20 +26,17 @@
  */
 
 namespace whatwedo\TableBundle\Extension;
+
 use Symfony\Component\HttpFoundation\RequestStack;
 
-/**
- * Class PaginationExtension
- * @package whatwedo\TableBundle\Extension
- */
 class PaginationExtension extends AbstractExtension
 {
-
     const QUERY_PARAMETER_PAGE = 'page';
+
     const QUERY_PARAMETER_LIMIT = 'limit';
 
     /**
-     * @var RequestStack $requestStack
+     * @var RequestStack
      */
     protected $requestStack;
 
@@ -53,101 +50,76 @@ class PaginationExtension extends AbstractExtension
      */
     protected $totalResults = 0;
 
-    /**
-     * PaginationExtension constructor.
-     * @param RequestStack $requestStack
-     */
     public function __construct(RequestStack $requestStack)
     {
         $this->requestStack = $requestStack;
     }
 
-    /**
-     * returns current page number.
-     * @return int
-     */
-    public function getCurrentPage()
+    public function getCurrentPage(): int
     {
         $page = $this->getRequest()->query->getInt($this->getActionQueryParameter(static::QUERY_PARAMETER_PAGE), 1);
         if ($page < 1) {
             $page = 1;
         }
+
         return $page;
     }
 
-    /**
-     * @return int
-     */
-    public function getLimit()
+    public function getLimit(): int
     {
         return $this->limit;
     }
 
-    /**
-     * @param $defaultLimit
-     * @return $this
-     */
-    public function setLimit($defaultLimit)
+    public function setLimit(int $defaultLimit): self
     {
         $this->limit = $this->getRequest()->query->getInt($this->getActionQueryParameter(static::QUERY_PARAMETER_LIMIT), $defaultLimit);
+
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getTotalResults()
+    public function getTotalResults(): int
     {
         return $this->totalResults;
     }
 
-    /**
-     * @param int $totalResults
-     * @return $this
-     */
-    public function setTotalResults($totalResults)
+    public function setTotalResults(int $totalResults): self
     {
         $this->totalResults = $totalResults;
+
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getTotalPages()
+    public function getTotalPages(): int
     {
-        if ($this->limit === -1) {
+        if (-1 === $this->limit) {
             return 1;
         }
+
         return ceil($this->getTotalResults() / $this->limit);
     }
 
-    /**
-     * @return int
-     */
-    public function getOffsetResults()
+    public function getOffsetResults(): int
     {
-        if ($this->limit === -1) {
+        if (-1 === $this->limit) {
             return 0;
         }
+
         return ($this->getCurrentPage() - 1) * $this->limit;
     }
 
     /**
-     * @return null|\Symfony\Component\HttpFoundation\Request
+     * @param array $enabledBundles
+     */
+    public static function isEnabled($enabledBundles): bool
+    {
+        return true;
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Request|null
      */
     protected function getRequest()
     {
         return $this->requestStack->getCurrentRequest();
     }
-
-    /**
-     * @param $enabledBundles
-     * @return boolean
-     */
-    public static function isEnabled($enabledBundles)
-    {
-        return true;
-    }
-
 }

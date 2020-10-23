@@ -27,32 +27,27 @@
 
 namespace whatwedo\TableBundle\Extension;
 
-/**
- * Class AbstractExtension
- * @package whatwedo\TableBundle\Extension
- */
 abstract class AbstractExtension implements ExtensionInterface
 {
-
     protected $tableIdentifier;
 
     /**
-     * @param mixed $tableIdentifier
      * @return $this
      */
     public function setTableIdentifier($tableIdentifier)
     {
         $this->tableIdentifier = $tableIdentifier;
+
         return $this;
     }
 
     /**
      * @param $action
+     *
      * @return string
      */
     public function getActionQueryParameter($action)
     {
         return sprintf('%s_%s', str_replace('.', '_', $this->tableIdentifier), $action);
     }
-
 }

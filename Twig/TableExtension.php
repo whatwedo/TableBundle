@@ -26,16 +26,16 @@
  */
 
 namespace whatwedo\TableBundle\Twig;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
+
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
 use whatwedo\TableBundle\Factory\TableFactory;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
-class TableExtension extends \Twig_Extension
+class TableExtension extends AbstractExtension
 {
     /**
      * @var RouterInterface
@@ -46,33 +46,40 @@ class TableExtension extends \Twig_Extension
 
     protected $tableFactory;
 
-    public function __construct(RequestStack $requestStack, TableFactory $tableFactory, RouterInterface $router)
-    {
+    /**
+     * @var TranslatorInterface
+     */
+    protected $translator;
+
+    public function __construct(
+        RequestStack $requestStack,
+        TableFactory $tableFactory,
+        RouterInterface $router,
+        TranslatorInterface $translator
+    ) {
         $this->tableFactory = $tableFactory;
         $this->requestStack = $requestStack;
         $this->router = $router;
+        $this->translator = $translator;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('whatwedo_table', function($identifier, $options) {
+            new TwigFunction('whatwedo_table', function ($identifier, $options) {
                 return $this->tableFactory->createTable($identifier, $options);
             }),
 
-            new \Twig_SimpleFunction('whatwedo_doctrine_table', function($identifier, $options) {
+            new TwigFunction('whatwedo_doctrine_table', function ($identifier, $options) {
                 return $this->tableFactory->createDoctrineTable($identifier, $options);
             }),
-            /**
+            /*
              * generates the same route with replaced or new arguments
              */
-            new \Twig_SimpleFunction('whatwedo_table_generate_route_replace_arguments', function($arguments) {
+            new TwigFunction('whatwedo_table_generate_route_replace_arguments', function ($arguments) {
                 $request = $this->requestStack->getMasterRequest();
-                $attributes = array_filter($request->attributes->all(), function($key) {
-                    return strpos($key, '_') !== 0;
+                $attributes = array_filter($request->attributes->all(), function ($key) {
+                    return 0 !== mb_strpos($key, '_');
                 }, ARRAY_FILTER_USE_KEY);
 
                 $parameters = array_replace(
@@ -84,14 +91,22 @@ class TableExtension extends \Twig_Extension
                     $request->attributes->get('_route'),
                     $parameters
                 );
-
-            })
+            }),
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
+    public function getFilters()
+    {
+        return [
+            new TwigFilter('whatwedo_operators', function ($data) {
+                foreach (array_keys($data) as $key) {
+                    $data[$key] = $this->translator->trans($data[$key]);
+                }
+                return json_encode($data);
+            }),
+        ];
+    }
+
     public function getName()
     {
         return 'whatwedo_table_table_extension';

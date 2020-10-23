@@ -27,20 +27,18 @@
 
 namespace whatwedo\TableBundle\Enum;
 
-/**
- * @author Nicolo Singer <nicolo@whatwedo.ch>
- */
 class FilterStateEnum
 {
+    const ALL = 1;
 
-    const ALL       = 1;
-    const SELF      = 2;
-    const SYSTEM    = 3;
+    const SELF = 2;
+
+    const SYSTEM = 3;
 
     protected static $values = [
-        FilterStateEnum::ALL        =>  'Öffentlich',
-        FilterStateEnum::SELF       =>  'Privat',
-        FilterStateEnum::SYSTEM     =>  'System'
+        self::ALL => 'Öffentlich',
+        self::SELF => 'Privat',
+        self::SYSTEM => 'System',
     ];
 
     public static function getArray()
@@ -71,5 +69,4 @@ class FilterStateEnum
     {
         return array_flip(static::$values);
     }
-
 }

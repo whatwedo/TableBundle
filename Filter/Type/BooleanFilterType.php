@@ -26,21 +26,20 @@
  */
 
 namespace whatwedo\TableBundle\Filter\Type;
+
 use Doctrine\ORM\QueryBuilder;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
-class BooleanFilterType extends FilterType
+class   BooleanFilterType extends FilterType
 {
     const CRITERIA_EQUAL = 'equal';
+
     const CRITERIA_NOT_EQUAL = 'not_equal';
 
     public function getOperators()
     {
         return [
-            static::CRITERIA_EQUAL => 'ist',
-            static::CRITERIA_NOT_EQUAL => 'ist nicht',
+            static::CRITERIA_EQUAL => 'whatwedo_table.filter.operator.is',
+            static::CRITERIA_NOT_EQUAL => 'whatwedo_table.filter.operator.is_not',
         ];
     }
 
@@ -48,14 +47,14 @@ class BooleanFilterType extends FilterType
     {
         return sprintf(
             '<select name="{name}" class="form-control"><option value="1" %s>ausgewählt</option><option value="0" %s>nicht ausgewählt</option></select>',
-            $value == 1 ? 'selected' : '',
-            $value == 0 ? 'selected' : ''
+            1 === $value ? 'selected' : '',
+            0 === $value ? 'selected' : ''
         );
     }
 
     public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
     {
-        $value = $value == 1 ? 'true' : 'false';
+        $value = 1 === $value ? 'true' : 'false';
 
         switch ($operator) {
             case static::CRITERIA_EQUAL:

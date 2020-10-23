@@ -29,35 +29,36 @@ namespace whatwedo\TableBundle\Filter\Type;
 
 use Doctrine\ORM\QueryBuilder;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 class DatetimeFilterType extends FilterType
 {
     const CRITERIA_EQUAL = 'equal';
+
     const CRITERIA_NOT_EQUAL = 'not_equal';
+
     const CRITERIA_BEFORE = 'before';
+
     const CRITERIA_AFTER = 'after';
+
     const CRITERIA_IN_YEAR = 'in_year';
 
     public function getOperators()
     {
         return [
-            static::CRITERIA_EQUAL => 'ist gleich',
-            static::CRITERIA_NOT_EQUAL => 'ist ungleich',
-            static::CRITERIA_BEFORE => 'vor',
-            static::CRITERIA_AFTER => 'nach',
-            static::CRITERIA_IN_YEAR => 'im selben Jahr wie'
+            static::CRITERIA_EQUAL => 'whatwedo_table.filter.operator.equal',
+            static::CRITERIA_NOT_EQUAL => 'whatwedo_table.filter.operator.not_equal',
+            static::CRITERIA_BEFORE => 'whatwedo_table.filter.operator.before',
+            static::CRITERIA_AFTER => 'whatwedo_table.filter.operator.after',
+            static::CRITERIA_IN_YEAR => 'whatwedo_table.filter.operator.same_year',
         ];
     }
 
-    public function getValueField($value = null)
+    public function getValueField($value = null): string
     {
         $value = \DateTime::createFromFormat('d.m.Y H:i:s', $value);
-
         if (!$value) {
             $value = new \DateTime();
         }
+
         return sprintf(
             '<input type="text" name="{name}" value="%s" class="form-control" data-provide="datetimepicker" data-date-format="dd.mm.yyyy HH:ii">',
             $value instanceof \DateTime ? $value->format('d.m.Y H:i') : ''
@@ -66,45 +67,72 @@ class DatetimeFilterType extends FilterType
 
     public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
     {
-        $value = \DateTime::createFromFormat('d.m.Y H:i', $value);
-        if (!$value) {
-            $value = new \DateTime();
-        }
-        $stringFormat = 'Y-m-d H:i:s';
-        $dateAsString = $value->format($stringFormat);
+        $value = $this->prepareDateValue($value);
+
+        $dateAsString = $value->format($this->getQueryDataFormat());
 
         switch ($operator) {
             case static::CRITERIA_EQUAL:
                 $queryBuilder->setParameter($parameterName, $dateAsString);
+
                 return $queryBuilder->expr()->eq(
                     sprintf(':%s', $parameterName),
                     sprintf('%s', $this->getColumn())
                 );
             case static::CRITERIA_NOT_EQUAL:
                 $queryBuilder->setParameter($parameterName, $dateAsString);
+
                 return $queryBuilder->expr()->neq(
                     sprintf(':%s', $parameterName),
                     sprintf('%s', $this->getColumn())
                 );
             case static::CRITERIA_BEFORE:
                 $queryBuilder->setParameter($parameterName, $dateAsString);
+
                 return $queryBuilder->expr()->lt($this->getColumn(), sprintf(':%s', $parameterName));
             case static::CRITERIA_AFTER:
                 $queryBuilder->setParameter($parameterName, $dateAsString);
+
                 return $queryBuilder->expr()->gt($this->getColumn(), sprintf(':%s', $parameterName));
             case static::CRITERIA_IN_YEAR:
                 $startYear = clone $value;
                 $endYear = clone $value;
-                $startYear->modify('first day of January ' . date('Y'))->setTime(0, 0, 0);
-                $endYear->modify('last day of December ' . date('Y'))->setTime(23, 59, 59);
-                $queryBuilder->setParameter($parameterName . '_start', $startYear->format($stringFormat));
-                $queryBuilder->setParameter($parameterName. '_end', $endYear->format($stringFormat));
+                $startYear->modify('first day of January '.date('Y'))->setTime(0, 0, 0);
+                $endYear->modify('last day of December '.date('Y'))->setTime(23, 59, 59);
+                $queryBuilder->setParameter($parameterName.'_start', $startYear->format($this->getQueryDataFormat()));
+                $queryBuilder->setParameter($parameterName.'_end', $endYear->format($this->getQueryDataFormat()));
+
                 return $queryBuilder->expr()->andX(
-                    $queryBuilder->expr()->gte($this->getColumn(), sprintf(':%s', $parameterName . '_start')),
-                    $queryBuilder->expr()->lte($this->getColumn(), sprintf(':%s', $parameterName . '_end'))
+                    $queryBuilder->expr()->gte($this->getColumn(), sprintf(':%s', $parameterName.'_start')),
+                    $queryBuilder->expr()->lte($this->getColumn(), sprintf(':%s', $parameterName.'_end'))
                 );
         }
 
         return false;
+    }
+
+    protected function getDateFormat(): string
+    {
+        return 'd.m.Y H:i';
+    }
+
+    protected function getQueryDataFormat(): string
+    {
+        return 'Y-m-d H:i:s';
+    }
+
+    /**
+     * @throws \Exception
+     *
+     * @return \DateTime|false
+     */
+    protected function prepareDateValue(string $value): \DateTime
+    {
+        $value = \DateTime::createFromFormat($this->getDateFormat(), $value);
+        if (!$value) {
+            $value = new \DateTime();
+        }
+
+        return $value;
     }
 }

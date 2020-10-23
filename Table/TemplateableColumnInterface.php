@@ -25,21 +25,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 namespace whatwedo\TableBundle\Table;
-use Symfony\Component\Templating\EngineInterface;
 
+use Twig\Environment;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 interface TemplateableColumnInterface
 {
     /**
-     * set templating engine
-     *
-     * @param EngineInterface $templating
-     * @return mixed
+     * set templating engine.
      */
-    public function setTemplating(EngineInterface $templating);
+    public function setTemplating(Environment $templating);
 }

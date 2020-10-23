@@ -29,10 +29,6 @@ namespace whatwedo\TableBundle\Collection;
 
 use whatwedo\CoreBundle\Collection\ArrayCollection;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 class ColumnCollection extends ArrayCollection
 {
-
 }

@@ -27,13 +27,9 @@
 
 namespace whatwedo\TableBundle\Iterator;
 
-use Iterator;
 use whatwedo\TableBundle\Collection\ColumnCollection;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
-class RowIterator implements Iterator
+class RowIterator implements \Iterator
 {
     /**
      * @var int
@@ -85,9 +81,6 @@ class RowIterator implements Iterator
         return isset($this->data[$this->position]);
     }
 
-    /**
-     *
-     */
     public function rewind()
     {
         $this->position = 0;
@@ -95,6 +88,6 @@ class RowIterator implements Iterator
 
     public function count()
     {
-        return count($this->data);
+        return \count($this->data);
     }
 }

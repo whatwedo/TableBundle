@@ -26,13 +26,11 @@
  */
 
 namespace whatwedo\TableBundle\Table;
+
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 use whatwedo\CoreBundle\Manager\FormatterManager;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 abstract class AbstractColumn implements ColumnInterface, TemplateableColumnInterface, FormattableColumnInterface
 {
     /**
@@ -46,18 +44,15 @@ abstract class AbstractColumn implements ColumnInterface, TemplateableColumnInte
     protected $options = [];
 
     /**
-     * @var EngineInterface
+     * @var Environment
      */
     protected $templating = null;
 
     /**
-     * @var FormatterManager $formatterManager
+     * @var FormatterManager
      */
     protected $formatterManager;
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct($acronym, array $options = [])
     {
         $this->acronym = $acronym;
@@ -78,34 +73,23 @@ abstract class AbstractColumn implements ColumnInterface, TemplateableColumnInte
     /**
      * @return string
      */
-    public function getThClass() {
+    public function getThClass()
+    {
         return '';
     }
 
-    /**
-     * @param EngineInterface $templating
-     */
-    public function setTemplating(EngineInterface $templating)
+    public function setTemplating(Environment $templating)
     {
         $this->templating = $templating;
     }
 
     /**
-     * @param FormatterManager $formatterManager
      * @return $this
      */
     public function setFormatterManager(FormatterManager $formatterManager)
     {
         $this->formatterManager = $formatterManager;
         return $this;
-    }
-
-    /**
-     * @return EngineInterface
-     */
-    protected function getTemplating()
-    {
-        return $this->templating;
     }
 
     /**
@@ -124,12 +108,16 @@ abstract class AbstractColumn implements ColumnInterface, TemplateableColumnInte
         return $this instanceof SortableColumnInterface;
     }
 
-    /**
-     * @param array $newOptions
-     */
     public function overrideOptions(array $newOptions)
     {
         $this->options = array_merge_recursive($this->options, $newOptions);
     }
 
+    /**
+     * @return Environment
+     */
+    protected function getTemplating()
+    {
+        return $this->templating;
+    }
 }
