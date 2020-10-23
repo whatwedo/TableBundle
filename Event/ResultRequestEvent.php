@@ -26,31 +26,29 @@
  */
 
 namespace whatwedo\TableBundle\Event;
-use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\EventDispatcher\Event;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
-/**
- * Class ResultRequestEvent
- * @package whatwedo\TableBundle\Event
- */
+use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Contracts\EventDispatcher\Event;
+
 class ResultRequestEvent extends Event
 {
     const FILTER_SET = 'whatwedo_ajax.result_request.filter_set';
+
     const RELATION_SET = 'whatwedo_ajax.result_request.relation_set';
 
     /**
-     * @var JsonResponse $result
+     * @var JsonResponse
      */
     protected $result;
 
     /**
-     * @var string $entity
+     * @var string
      */
     protected $entity;
 
     /**
-     * @var string $term
+     * @var string
      */
     protected $term;
 
@@ -61,6 +59,7 @@ class ResultRequestEvent extends Event
 
     /**
      * ResultRequestEvent constructor.
+     *
      * @param string $entity
      * @param string $term
      */
@@ -80,11 +79,13 @@ class ResultRequestEvent extends Event
 
     /**
      * @param JsonResponse $result
+     *
      * @return $this
      */
     public function setResult($result)
     {
         $this->result = $result;
+
         return $this;
     }
 
@@ -96,9 +97,6 @@ class ResultRequestEvent extends Event
         return $this->entity;
     }
 
-    /**
-     * @param string $entity
-     */
     public function setEntity(string $entity): void
     {
         $this->entity = $entity;
@@ -112,17 +110,11 @@ class ResultRequestEvent extends Event
         return $this->term;
     }
 
-    /**
-     * @return QueryBuilder|null
-     */
     public function getQueryBuilder(): ?QueryBuilder
     {
         return $this->queryBuilder;
     }
 
-    /**
-     * @param QueryBuilder|null $queryBuilder
-     */
     public function setQueryBuilder(?QueryBuilder $queryBuilder): void
     {
         $this->queryBuilder = $queryBuilder;

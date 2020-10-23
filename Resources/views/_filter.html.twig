@@ -16,18 +16,18 @@
                     {% for f in tableFilters %}
                         <option
                             value="{{ f.acronym }}"
-                            data-operator-options="{{ f.type.operators|json_encode }}"
+                            data-operator-options="{{ f.type.operators|whatwedo_operators }}"
                             data-value-template="{{ f.type.valueField|raw|e }}"
                             class="form-control"
                             {% if filter.acronym == f.acronym %}selected="selected"{% endif %}
-                        >{{ f.name }}</option>
+                        >{{ f.name|trans }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div class="col-xs-3">
                 <select name="{{ table.actionQueryParameter('filter_operator') ~ indexSuffix }}" class="form-control">
                     {% for key, name in filter.type.operators %}
-                        <option value="{{ key }}"{% if operator == key %} selected="selected"{% endif %}>{{ name | trans }}</option>
+                        <option value="{{ key }}"{% if operator == key %} selected="selected"{% endif %}>{{ name|trans }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -38,7 +38,7 @@
             </div>
             <div class="col-xs-1 text-right">
                 <div class="btn-group btn-group-xs" role="group">
-                    <button class="btn btn-default" data-filter-action="add-and">und</button>
+                    <button class="btn btn-default" data-filter-action="add-and">{{ 'whatwedo_table.and'|trans }}</button>
                     <button class="btn btn-danger" data-filter-action="remove"><i class="fa fa-times"></i></button>
                 </div>
             </div>
@@ -73,16 +73,16 @@
                         <form method="post" action="{{ path('whatwedo_table_filter_direct_delete', {'id' : filter.id, 'token': csrf_token('token') }) }}">
                         {% endif %}
                         <div class="btn-group" role="group" style="white-space: nowrap;">
-                            {% spaceless %}
-                            <a href="{{ filter_href }}" class="btn btn-primary btn-xs" title="" data-original-title="Aktiviere Filter" style="float: none;">
+                            {% apply spaceless %}
+                            <a href="{{ filter_href }}" class="btn btn-primary btn-xs" title="" data-original-title="{{ 'whatwedo_table.restore_filter'|trans }}" style="float: none;">
                                 <i class="fa fa-arrow-right"></i>
                             </a>
                             {% if isCreator %}
-                            <button class="btn btn-danger btn-xs" title="" data-original-title="Filter Löschen" style="float: none;">
+                            <button class="btn btn-danger btn-xs" title="" data-original-title="{{ 'whatwedo_table.delete_filter'|trans }}" style="float: none;">
                                 <i class="fa fa-trash"></i>
                             </button>
                             {% endif %}
-                            {% endspaceless %}
+                            {% endapply %}
                         </div>
                         {% if isCreator %}
                         </form>
@@ -105,16 +105,14 @@
             </div>
         </div>
     {% endset %}
-
     <form action="{{ filterRoute }}" class="whatwedo_table__filters {% if filterData %}active{% endif %} well" data-ajax-url="{{ path('whatwedo_table_filter_load_relation_filter') }}">
-
         <div class="row">
             <div class="col-sm-9" style="border-right: 1px solid #e0e0e0;">
                 {% for group in filterData %}
                     <div class="whatwedo_table__filters__blocks">
                         {% if not loop.first %}
                             <p>
-                                <strong>oder</strong>
+                                <strong>{{ 'whatwedo_table.or'|trans }}</strong>
                             </p>
                         {% endif %}
                         {% for data in group %}
@@ -139,7 +137,7 @@
 
                 <div class="row">
                     <div class="col-xs-12">
-                        <button class="btn-default btn btn-xs" data-filter-action="add-or">Oder</button>
+                        <button class="btn-default btn btn-xs" data-filter-action="add-or">{{ 'whatwedo_table.or'|trans }}</button>
                     </div>
                 </div>
             </div>
@@ -148,7 +146,7 @@
                     <div class="col-xs-12">
                         <div class="btn-group btn-block" role="group">
                             <button type="button" class="btn btn-default col-xs-10 {% if savedFilters is empty %}disabled{% endif %}" data-toggle="popover" data-container="body" data-content="{{ savedFiltersPopover|raw|e }}" data-html="true" data-placement="bottom" title="Gespeicherte Filter" data-template="{{ popoverTemplate|raw|e }}">
-                                <span class="pull-left"><i class="fa fa-floppy-o"></i></span> <span>Gespeicherte Filter</span>
+                                <span class="pull-left"><i class="fa fa-floppy-o"></i></span> <span>{{ 'whatwedo_table.saved_filters'|trans }}</span>
                             </button>
                             <button type="button" class="btn btn-default dropdown-toggle col-xs-2" data-toggle="modal"
                                     data-target="#whatwedo_table__filters__save__{{ table.identifier }}"><i class="fa fa-plus"></i></button>
@@ -160,12 +158,12 @@
                         <div class="btn-group btn-group-justified" role="group">
                             <div class="btn-group">
                                 <button class="whatwedo_table__reset_filter btn btn-danger" type="submit">
-                                    <span class="pull-left"><i class="fa fa-times"></i></span> <span>Zurücksetzen</span>
+                                    <span class="pull-left"><i class="fa fa-times"></i></span> <span>{{ 'whatwedo_table.reset'|trans }}</span>
                                 </button>
                             </div>
                             <div class="btn-group">
                                 <button class="whatwedo_table__show_results btn btn-primary" type="submit">
-                                    <span>Anwenden</span> <span class="pull-right"><i class="fa fa-arrow-right"></i></span>
+                                    <span>{{ 'whatwedo_table.apply'|trans }}</span> <span class="pull-right"><i class="fa fa-arrow-right"></i></span>
                                 </button>
                             </div>
                         </div>
@@ -185,31 +183,31 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Schliessen"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Filter als Abfrage speichern</h4>
+                        <h4 class="modal-title">{{ 'whatwedo_table.save_filter'|trans }}</h4>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label>Name</label>
+                            <label>{{ 'whatwedo_table.filter_name'|trans }}</label>
                             <input type="text" name="filter_name" class="form-control" max="50">
                         </div>
                         <div class="form-group">
-                            <label>Beschreibung</label>
+                            <label>{{ 'whatwedo_table.filter_description'|trans }}</label>
                             <input type="text" name="filter_description" class="form-control" max="256">
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" name="filter_public" value="1"> Öffentlich
+                                <input type="checkbox" name="filter_public" value="1"> {{ 'whatwedo_table.filter_public'|trans }}
                             </label>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">
                             <i class="fa fa-times"></i>
-                            Schliessen
+                            {{ 'whatwedo_table.close'|trans }}
                         </button>
                         <button type="submit" class="btn btn-primary">
                             <i class="fa fa-floppy-o"></i>
-                            Speichern
+                            {{ 'whatwedo_table.save'|trans }}
                         </button>
                     </div>
                 </div>

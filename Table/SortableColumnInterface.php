@@ -27,15 +27,12 @@
 
 namespace whatwedo\TableBundle\Table;
 
-
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-/**
- * @author Nicolo Singer <nicolo@whatwedo.ch>
- */
 interface SortableColumnInterface
 {
     const ORDER_ENABLED = 'is_order_';
+
     const ORDER_ASC = 'asc_order_';
 
     /**
@@ -49,19 +46,16 @@ interface SortableColumnInterface
     public function isSortable();
 
     /**
-     * @param ParameterBag $query
      * @return string
      */
     public function getOrderQueryASC(ParameterBag $query);
 
     /**
-     * @param ParameterBag $query
      * @return string
      */
     public function getOrderQueryDESC(ParameterBag $query);
 
     /**
-     * @param ParameterBag $query
      * @return string
      */
     public function getDeleteOrder(ParameterBag $query);
@@ -82,9 +76,9 @@ interface SortableColumnInterface
     public function setTableIdentifier($identifier);
 
     /**
-     * @param boolean $sortable
+     * @param bool $sortable
+     *
      * @return $this
      */
     public function setSortable($sortable);
-
 }

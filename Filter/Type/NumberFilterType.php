@@ -29,23 +29,23 @@ namespace whatwedo\TableBundle\Filter\Type;
 
 use Doctrine\ORM\QueryBuilder;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 class NumberFilterType extends FilterType
 {
     const CRITERIA_EQUAL = 'equal';
+
     const CRITERIA_NOT_EQUAL = 'not_equal';
+
     const CRITERIA_BIGGER_THAN = 'bigger_than';
+
     const CRITERIA_SMALLER_THAN = 'smaller_than';
 
     public function getOperators()
     {
         return [
-            static::CRITERIA_EQUAL => 'ist gleich',
-            static::CRITERIA_NOT_EQUAL => 'ist ungleich',
-            static::CRITERIA_BIGGER_THAN => 'grösser als',
-            static::CRITERIA_SMALLER_THAN => 'kleiner als',
+            static::CRITERIA_EQUAL => 'whatwedo_table.filter.operator.equal',
+            static::CRITERIA_NOT_EQUAL => 'whatwedo_table.filter.operator.not_equal',
+            static::CRITERIA_BIGGER_THAN => 'whatwedo_table.filter.operator.bigger_than',
+            static::CRITERIA_SMALLER_THAN => 'whatwedo_table.filter.operator.smaller_than',
         ];
     }
 
@@ -60,27 +60,41 @@ class NumberFilterType extends FilterType
 
     public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
     {
+        $value = $this->prepareQueryValue($value);
+
+        switch ($operator) {
+            case static::CRITERIA_EQUAL:
+                $queryBuilder->setParameter($parameterName, $value);
+
+                return $queryBuilder->expr()->eq($this->getColumn(), sprintf(':%s', $parameterName));
+            case static::CRITERIA_NOT_EQUAL:
+                $queryBuilder->setParameter($parameterName, $value);
+
+                return $queryBuilder->expr()->neq($this->getColumn(), sprintf(':%s', $parameterName));
+            case static::CRITERIA_BIGGER_THAN:
+                $queryBuilder->setParameter($parameterName, $value);
+
+                return $queryBuilder->expr()->gt($this->getColumn(), sprintf(':%s', $parameterName));
+            case static::CRITERIA_SMALLER_THAN:
+                $queryBuilder->setParameter($parameterName, $value);
+
+                return $queryBuilder->expr()->lt($this->getColumn(), sprintf(':%s', $parameterName));
+        }
+
+        return false;
+    }
+
+    /**
+     * @return float|int
+     */
+    protected function prepareQueryValue($value)
+    {
         if (!is_numeric($value)) {
             $value = 0;
         }
 
         $value = (float) $value;
 
-        switch ($operator) {
-            case static::CRITERIA_EQUAL:
-                $queryBuilder->setParameter($parameterName, $value);
-                return $queryBuilder->expr()->eq($this->getColumn(), sprintf(':%s', $parameterName));
-            case static::CRITERIA_NOT_EQUAL:
-                $queryBuilder->setParameter($parameterName, $value);
-                return $queryBuilder->expr()->neq($this->getColumn(), sprintf(':%s', $parameterName));
-            case static::CRITERIA_BIGGER_THAN:
-                $queryBuilder->setParameter($parameterName, $value);
-                return $queryBuilder->expr()->gt($this->getColumn(), sprintf(':%s', $parameterName));
-            case static::CRITERIA_SMALLER_THAN:
-                $queryBuilder->setParameter($parameterName, $value);
-                return $queryBuilder->expr()->lt($this->getColumn(), sprintf(':%s', $parameterName));
-        }
-
-        return false;
+        return $value;
     }
 }

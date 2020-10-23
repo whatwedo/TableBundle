@@ -27,11 +27,9 @@
 
 namespace whatwedo\TableBundle\Factory;
 
-
-use Doctrine\ORM\EntityRepository;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 use whatwedo\CoreBundle\Manager\FormatterManager;
 use whatwedo\TableBundle\Extension\ExtensionInterface;
 use whatwedo\TableBundle\Table\DoctrineTable;
@@ -50,12 +48,12 @@ class TableFactory
     protected $requestStack;
 
     /**
-     * @var EngineInterface
+     * @var Environment
      */
     protected $templating;
 
     /**
-     * @var FormatterManager $formatterManager
+     * @var FormatterManager
      */
     protected $formatterManager;
 
@@ -66,16 +64,11 @@ class TableFactory
 
     /**
      * TableFactory constructor.
-     *
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param RequestStack $requestStack
-     * @param EngineInterface $templating
-     * @param FormatterManager $formatterManager
      */
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         RequestStack $requestStack,
-        EngineInterface $templating,
+        Environment $templating,
         FormatterManager $formatterManager
     ) {
         $this->eventDispatcher = $eventDispatcher;
@@ -85,7 +78,7 @@ class TableFactory
     }
 
     /**
-     * returns a new table object
+     * returns a new table object.
      *
      * @param string $identifier
      * @param array  $options
@@ -118,11 +111,8 @@ class TableFactory
         );
     }
 
-    /**
-     * @param ExtensionInterface $extension
-     */
     public function addExtension(ExtensionInterface $extension)
     {
-        $this->extensions[get_class($extension)] = $extension;
+        $this->extensions[\get_class($extension)] = $extension;
     }
 }

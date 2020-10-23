@@ -29,49 +29,42 @@ namespace whatwedo\TableBundle\EventListener;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use whatwedo\SearchBundle\Entity\Index;
 use whatwedo\SearchBundle\whatwedoSearchBundle;
 use whatwedo\TableBundle\Event\DataLoadEvent;
 use whatwedo\TableBundle\Extension\SearchExtension;
 use whatwedo\TableBundle\Table\DoctrineTable;
 
-/**
- * Class SearchEventListener
- * @package whatwedo\TableBundle\EventListener
- */
 class SearchEventListener
 {
-
     /**
      * @var EntityManager
      */
     protected $em;
 
     /**
-     * @var ContainerInterface
+     * @var array
      */
-    protected $container;
+    protected $kernelBundles;
 
     /**
      * TableSearchEventListener constructor.
+     *
      * @param EntityManager $em
-     * @param ContainerInterface $container
+     * @param string        $kernelBundles
      */
-    public function __construct(EntityManagerInterface $em, ContainerInterface $container)
+    public function __construct(EntityManagerInterface $em, array $kernelBundles)
     {
         $this->em = $em;
-        $this->container = $container;
+        $this->kernelBundles = $kernelBundles;
     }
 
     /**
-     * Search listener
-     *
-     * @param DataLoadEvent $event
+     * Search listener.
      */
     public function searchResultSet(DataLoadEvent $event)
     {
-        if (!in_array(whatwedoSearchBundle::class, $this->container->getParameter('kernel.bundles'))) {
+        if (!\in_array(whatwedoSearchBundle::class, $this->kernelBundles, true)) {
             return;
         }
 
@@ -84,7 +77,7 @@ class SearchEventListener
         // Exec only if query is set
         if ($table->hasExtension(SearchExtension::class)) {
             $query = $table->getSearchExtension()->getSearchQuery();
-            if (strlen(trim($query)) == 0) {
+            if (0 === \mb_strlen(trim($query))) {
                 return;
             }
         } else {

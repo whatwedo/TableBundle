@@ -28,20 +28,14 @@
 namespace whatwedo\TableBundle\EventListener;
 
 use Doctrine\ORM\Query\Expr;
-use InvalidArgumentException;
-use UnexpectedValueException;
 use whatwedo\TableBundle\Event\DataLoadEvent;
 use whatwedo\TableBundle\Extension\FilterExtension;
 use whatwedo\TableBundle\Table\DoctrineTable;
-use whatwedo\TableBundle\Table\Table;
 
-/**
- * @author Nicolo Singer <nicolo@whatwedo.ch>
- */
 class FilterEventListener
 {
     /**
-     * @var DoctrineTable $table
+     * @var DoctrineTable
      */
     protected $table;
 
@@ -97,24 +91,24 @@ class FilterEventListener
 
                 // TODO: automatically join (split field on '.')
                 foreach ($filter->getType()->getJoins() as $joinAlias => $join) {
-                    if (in_array($joinAlias, $addedJoins)) {
+                    if (\in_array($joinAlias, $addedJoins, true)) {
                         continue;
                     }
                     $addedJoins[] = $joinAlias;
                     $method = 'join';
                     $conditionType = null;
                     $condition = null;
-                    if (is_array($join)) {
-                        if (sizeof($join) == 4) {
+                    if (\is_array($join)) {
+                        if (4 === count($join)) {
                             $conditionType = $join[2];
                             $condition = $join[3];
-                        } else if (sizeof($join) != 2) {
-                            throw new InvalidArgumentException(sprintf('Invalid join options supplied for "%s".', $joinAlias));
+                        } elseif (2 !== count($join)) {
+                            throw new \InvalidArgumentException(sprintf('Invalid join options supplied for "%s".', $joinAlias));
                         }
                         $method = $join[0];
                         $join = $join[1];
                     }
-                    $this->queryBuilder()->$method($join, $joinAlias, $conditionType, $condition);
+                    $this->queryBuilder()->{$method}($join, $joinAlias, $conditionType, $condition);
                 }
 
                 $w = $filter->getType()->addToQueryBuilder(
@@ -126,21 +120,21 @@ class FilterEventListener
 
                 if ($w instanceof Expr\Base || $w instanceof Expr\Comparison) {
                     $andX->add($w);
-                } elseif (!is_bool($w)) {
-                    throw new UnexpectedValueException(sprintf("Bool or %s expected as filter-result, got %s", Expr::class, get_class($w)));
+                } elseif (!\is_bool($w)) {
+                    throw new \UnexpectedValueException(sprintf('Bool or %s expected as filter-result, got %s', Expr::class, \get_class($w)));
                 }
             }
 
-            if (count($andX->getParts()) > 1) {
+            if (\count($andX->getParts()) > 1) {
                 $orX->add($andX);
-            } elseif (count($andX->getParts()) === 1) {
+            } elseif (1 === \count($andX->getParts())) {
                 $orX->add($andX->getParts()[0]);
             }
         }
 
-        if (count($orX->getParts()) > 1) {
+        if (\count($orX->getParts()) > 1) {
             $this->queryBuilder()->andWhere($orX);
-        } elseif (count($orX->getParts()) === 1) {
+        } elseif (1 === \count($orX->getParts())) {
             $this->queryBuilder()->andWhere($orX->getParts()[0]);
         }
     }

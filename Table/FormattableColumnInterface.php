@@ -30,15 +30,9 @@ namespace whatwedo\TableBundle\Table;
 use whatwedo\CoreBundle\Manager\FormatterManager;
 
 /**
- * Interface FormattableColumnInterface
- * @package whatwedo\TableBundle\Table
+ * Interface FormattableColumnInterface.
  */
 interface FormattableColumnInterface
 {
-
-    /**
-     * @param FormatterManager $formatterManager
-     */
     public function setFormatterManager(FormatterManager $formatterManager);
-
 }

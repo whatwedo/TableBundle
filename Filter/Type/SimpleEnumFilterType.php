@@ -30,22 +30,20 @@ namespace whatwedo\TableBundle\Filter\Type;
 use Doctrine\ORM\QueryBuilder;
 use whatwedo\CoreBundle\Enum\AbstractSimpleEnum;
 
-/**
- * @author Nicolo Singer <nicolo@whatwedo.ch>
- */
 class SimpleEnumFilterType extends FilterType
 {
-
     const CRITERIA_EQUAL = 'equal';
+
     const CRITERIA_NOT_EQUAL = 'not_equal';
 
     /**
-     * FQDN of Enum Class
+     * FQDN of Enum Class.
+     *
      * @var string
      */
     private $class;
 
-    public function __construct($column, array $joins = [], $class)
+    public function __construct($column, array $joins, $class)
     {
         parent::__construct($column, $joins);
         $this->class = $class;
@@ -54,24 +52,25 @@ class SimpleEnumFilterType extends FilterType
     public function getOperators()
     {
         return [
-            self::CRITERIA_EQUAL => 'ist gleich',
-            self::CRITERIA_NOT_EQUAL => 'ist ungleich'
+            self::CRITERIA_EQUAL => 'whatwedo_table.filter.operator.equal',
+            self::CRITERIA_NOT_EQUAL => 'whatwedo_table.filter.operator.not_equal',
         ];
     }
 
     public function getValueField($value = null)
     {
         /** @var AbstractSimpleEnum $enum */
-        $keys = call_user_func($this->class . '::getValues');
+        $keys = \call_user_func($this->class.'::getValues');
         $options = '';
         foreach ($keys as $key) {
             $options .= sprintf(
                 '<option value="%s" %s>%s</option>',
                 $key,
-                $key == $value ? 'selected' : '',
-                call_user_func($this->class . '::getRepresentation', $key)
+                $key === $value ? 'selected' : '',
+                \call_user_func($this->class.'::getRepresentation', $key)
             );
         }
+
         return sprintf(
             '<select name="{name}" class="form-control">%s</select>',
             $options
@@ -94,5 +93,4 @@ class SimpleEnumFilterType extends FilterType
                 );
         }
     }
-
 }

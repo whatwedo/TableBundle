@@ -32,16 +32,8 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use whatwedo\TableBundle\Extension\ExtensionInterface;
 
-/**
- * Class TableFactoryPass
- * @package whatwedo\TableBundle\DependencyInjection\Compiler
- */
 class TableFactoryPass implements CompilerPassInterface
 {
-
-    /**
-     * @param ContainerBuilder $container
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->has('whatwedo\TableBundle\Factory\TableFactory')) {
@@ -49,30 +41,23 @@ class TableFactoryPass implements CompilerPassInterface
         }
 
         // load table extensions
-        foreach ($container->findTaggedServiceIds('table.extension') as $id => $tags) {
+        foreach (array_keys($container->findTaggedServiceIds('table.extension')) as $id) {
             $tableExtension = $container->getDefinition($id);
 
             // must implement ExtensionInterface
             if (!is_subclass_of($tableExtension->getClass(), ExtensionInterface::class)) {
-                throw new \UnexpectedValueException(sprintf(
-                    'Extensions tagged with table.extension must implement %s - %s given.',
-                    ExtensionInterface::class,
-                    $tableExtension->getClass()
-                ));
-                continue;
+                throw new \UnexpectedValueException(sprintf('Extensions tagged with table.extension must implement %s - %s given.', ExtensionInterface::class, $tableExtension->getClass()));
             }
 
             // remove when not enabled
-            if (!call_user_func([$tableExtension->getClass(), 'isEnabled'], [$container->getParameter('kernel.bundles')])) {
+            if (!\call_user_func([$tableExtension->getClass(), 'isEnabled'], [$container->getParameter('kernel.bundles')])) {
                 $container->removeDefinition($id);
             }
         }
 
         // add remaining extensions to table factory
-        foreach ($container->findTaggedServiceIds('table.extension') as $id => $tags) {
+        foreach (array_keys($container->findTaggedServiceIds('table.extension')) as $id) {
             $container->getDefinition('whatwedo\TableBundle\Factory\TableFactory')->addMethodCall('addExtension', [new Reference($id)]);
         }
-
     }
-
 }

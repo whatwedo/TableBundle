@@ -28,33 +28,21 @@
 namespace whatwedo\TableBundle\EventListener;
 
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\HttpFoundation\Request;
 use whatwedo\TableBundle\Event\DataLoadEvent;
-use whatwedo\TableBundle\Table\AbstractColumn;
-use whatwedo\TableBundle\Table\Column;
 use whatwedo\TableBundle\Table\DoctrineTable;
-use whatwedo\TableBundle\Table\SortableColumnInterface;
 
-/**
- * Class DoctrineOrderEventListener
- * @package whatwedo\TableBundle\EventListener
- */
 class DoctrineOrderEventListener
 {
-
     /**
-     * @var DoctrineTable $table
+     * @var DoctrineTable
      */
     private $table;
 
     /**
-     * @var QueryBuilder $queryBuilder
+     * @var QueryBuilder
      */
     private $queryBuilder;
 
-    /**
-     * @param DataLoadEvent $event
-     */
     public function orderResultSet(DataLoadEvent $event)
     {
         if (!$event->getTable() instanceof DoctrineTable) {
@@ -66,46 +54,44 @@ class DoctrineOrderEventListener
         $this->process();
     }
 
-    /**
-     *
-     */
     private function process()
     {
         $sortedColumns = $this->table->getSortedColumns();
-        if(!empty($sortedColumns)) $this->queryBuilder->resetDQLPart('orderBy');
+        if (!empty($sortedColumns)) {
+            $this->queryBuilder->resetDQLPart('orderBy');
+        }
 
-        foreach($sortedColumns as $column => $order) {
-            foreach(explode(',', $column) as $sortExp) {
+        foreach ($sortedColumns as $column => $order) {
+            foreach (explode(',', $column) as $sortExp) {
                 $this->addOrderBy($sortExp, $order);
             }
         }
     }
 
     /**
-     * @param string $sortExp
-     * @param string $order
      * @throws \Exception
      */
-    private function addOrderBy(string $sortExp, string $order) {
+    private function addOrderBy(string $sortExp, string $order)
+    {
         $alias = $this->queryBuilder->getRootAliases()[0];
 
-        if(strpos($sortExp, '.') === false) {
+        if (false === mb_strpos($sortExp, '.')) {
             $sortExp = sprintf('%s.%s', $alias, $sortExp);
         }
 
         $allAliases = $this->queryBuilder->getAllAliases();
 
-        $sortAliases = array_slice(explode('.', $sortExp), 0, -1);
+        $sortAliases = \array_slice(explode('.', $sortExp), 0, -1);
 
-        foreach($sortAliases as $sortAlias) {
-            if(!in_array($sortAlias, $allAliases)) {
+        foreach ($sortAliases as $sortAlias) {
+            if (!\in_array($sortAlias, $allAliases, true)) {
                 $this->queryBuilder->leftJoin(sprintf('%s.%s', $alias, $sortAlias), $sortAlias);
             }
 
             $alias = $sortAlias;
         }
 
-        $sortExp = implode('.', array_slice(explode('.', $sortExp), -2));
+        $sortExp = implode('.', \array_slice(explode('.', $sortExp), -2));
 
         $this->queryBuilder->addOrderBy(
             $sortExp,

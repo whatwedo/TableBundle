@@ -35,20 +35,13 @@ use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use whatwedo\CoreBundle\Formatter\DefaultFormatter;
 
-/**
- * @author Ueli Banholzer <ueli@whatwedo.ch>
- */
 class Column extends AbstractColumn implements SortableColumnInterface
 {
-
     /**
-     * @var string $tableIdentifier
+     * @var string
      */
     protected $tableIdentifier;
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
@@ -66,16 +59,15 @@ class Column extends AbstractColumn implements SortableColumnInterface
     }
 
     /**
-     * gets the content of the row
+     * gets the content of the row.
      *
-     * @param $row
      * @return string
      */
     public function getContents($row)
     {
-        if (is_callable($this->options['callable'])) {
-            if (is_array($this->options['callable'])) {
-                return call_user_func($this->options['callable'], [$row]);
+        if (\is_callable($this->options['callable'])) {
+            if (\is_array($this->options['callable'])) {
+                return \call_user_func($this->options['callable'], [$row]);
             }
 
             return $this->options['callable']($row);
@@ -92,39 +84,11 @@ class Column extends AbstractColumn implements SortableColumnInterface
         }
     }
 
-    protected function formatData($data, $formatter, $formatterOptions) {
-        if (is_string($formatter)) {
-            $formatterObj = $this->formatterManager->getFormatter($formatter);
-            $formatterObj->processOptions($formatterOptions);
-            return $formatterObj->getHtml($data);
-        }
-
-        if (is_callable($formatter)) {
-            return $formatter($data);
-        }
-
-        if (is_array($formatter)) {
-            foreach($formatter as $index => $aFormatter) {
-                $data = $this->formatData($data, $aFormatter, $formatterOptions[$index]);
-            }
-
-            return $data;
-        }
-
-        return $data;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function render($row)
     {
         return (string) $this->formatData($this->getContents($row), $this->options['formatter'], $this->options['formatter_options']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getLabel()
     {
         return $this->options['label'];
@@ -147,17 +111,18 @@ class Column extends AbstractColumn implements SortableColumnInterface
     }
 
     /**
-     * @param boolean $sortable
+     * @param bool $sortable
+     *
      * @return $this
      */
     public function setSortable($sortable)
     {
         $this->options['sortable'] = $sortable;
+
         return $this;
     }
 
     /**
-     * @param ParameterBag $query
      * @return string
      */
     public function getOrderQueryASC(ParameterBag $query)
@@ -166,7 +131,6 @@ class Column extends AbstractColumn implements SortableColumnInterface
     }
 
     /**
-     * @param ParameterBag $query
      * @return string
      */
     public function getOrderQueryDESC(ParameterBag $query)
@@ -175,7 +139,6 @@ class Column extends AbstractColumn implements SortableColumnInterface
     }
 
     /**
-     * @param ParameterBag $query
      * @return string
      */
     public function getDeleteOrder(ParameterBag $query)
@@ -184,48 +147,11 @@ class Column extends AbstractColumn implements SortableColumnInterface
     }
 
     /**
-     * @param ParameterBag $query
-     * @param $enabled
-     * @param $asc
-     * @return string
-     */
-    private function getOrderQuery(ParameterBag $query, $enabled, $asc)
-    {
-        $queryData = array_replace($query->all(), [
-            $this->getOrderEnabledQueryParameter() => $enabled,
-            $this->getOrderAscQueryParameter() => $asc
-        ]);
-        // remove parameter where is_order_... equals '0' aka not active
-        $removeLater = [];
-        $offset = strlen(SortableColumnInterface::ORDER_ENABLED);
-
-        foreach (array_keys($queryData) as $key) {
-            if (substr($key, 0, $offset) == SortableColumnInterface::ORDER_ENABLED) {
-                if (!$queryData[$key]) {
-                    $removeLater[] = $key;
-                    $removeLater[] = SortableColumnInterface::ORDER_ASC. substr($key, $offset);
-                }
-            }
-        }
-        foreach ($removeLater as $key) {
-            if (array_key_exists($key, $queryData)) {
-                unset($queryData[$key]);
-            }
-        }
-        return !empty($queryData) ? '?'.http_build_query($queryData) : '?';
-    }
-
-    /**
      * @param string $identifier
      */
     public function setTableIdentifier($identifier)
     {
         $this->tableIdentifier = $identifier;
-    }
-
-    private function getColumnIdentifier()
-    {
-        return str_replace('.', '_', $this->tableIdentifier.'_'.$this->getAcronym());
     }
 
     /**
@@ -244,4 +170,59 @@ class Column extends AbstractColumn implements SortableColumnInterface
         return static::ORDER_ASC.$this->getColumnIdentifier();
     }
 
+    protected function formatData($data, $formatter, $formatterOptions)
+    {
+        if (\is_string($formatter)) {
+            $formatterObj = $this->formatterManager->getFormatter($formatter);
+            $formatterObj->processOptions($formatterOptions);
+
+            return $formatterObj->getHtml($data);
+        }
+
+        if (\is_callable($formatter)) {
+            return $formatter($data);
+        }
+
+        if (\is_array($formatter)) {
+            foreach ($formatter as $index => $aFormatter) {
+                $data = $this->formatData($data, $aFormatter, $formatterOptions[$index]);
+            }
+
+            return $data;
+        }
+
+        return $data;
+    }
+
+    private function getOrderQuery(ParameterBag $query, string $enabled, string $asc): string
+    {
+        $queryData = array_replace($query->all(), [
+            $this->getOrderEnabledQueryParameter() => $enabled,
+            $this->getOrderAscQueryParameter() => $asc,
+        ]);
+        // remove parameter where is_order_... equals '0' aka not active
+        $removeLater = [];
+        $offset = \mb_strlen(SortableColumnInterface::ORDER_ENABLED);
+
+        foreach (array_keys($queryData) as $key) {
+            if (SortableColumnInterface::ORDER_ENABLED === mb_substr($key, 0, $offset)) {
+                if (!$queryData[$key]) {
+                    $removeLater[] = $key;
+                    $removeLater[] = SortableColumnInterface::ORDER_ASC.mb_substr($key, $offset);
+                }
+            }
+        }
+        foreach ($removeLater as $key) {
+            if (\array_key_exists($key, $queryData)) {
+                unset($queryData[$key]);
+            }
+        }
+
+        return !empty($queryData) ? '?'.http_build_query($queryData) : '?';
+    }
+
+    private function getColumnIdentifier()
+    {
+        return str_replace('.', '_', $this->tableIdentifier.'_'.$this->getAcronym());
+    }
 }

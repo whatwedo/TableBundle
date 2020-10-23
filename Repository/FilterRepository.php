@@ -28,23 +28,21 @@
 namespace whatwedo\TableBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use whatwedo\TableBundle\Entity\Filter;
 use whatwedo\TableBundle\Enum\FilterStateEnum;
 
-/**
- * @author Nicolo Singer <nicolo@whatwedo.ch>
- */
 class FilterRepository extends ServiceEntityRepository
 {
-    public function __construct(RegistryInterface $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Filter::class);
     }
 
     /**
-     * @param string $path Route-Path
+     * @param string $path     Route-Path
      * @param string $username Username
+     *
      * @return Filter[]
      */
     public function findSavedFilter($path, $username)
@@ -52,20 +50,20 @@ class FilterRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('f');
 
         return $qb->where(
+            $qb->expr()->andX(
+                $qb->expr()->eq('f.route', ':path'),
+                $qb->expr()->orX(
+                    $qb->expr()->orX(
+                        $qb->expr()->eq('f.state', FilterStateEnum::ALL),
+                        $qb->expr()->eq('f.state', FilterStateEnum::SYSTEM)
+                    ),
                     $qb->expr()->andX(
-                        $qb->expr()->eq('f.route', ':path'),
-                        $qb->expr()->orX(
-                            $qb->expr()->orX(
-                                $qb->expr()->eq('f.state', FilterStateEnum::ALL),
-                                $qb->expr()->eq('f.state', FilterStateEnum::SYSTEM)
-                            ),
-                            $qb->expr()->andX(
-                                $qb->expr()->eq('f.state', FilterStateEnum::SELF),
-                                $qb->expr()->eq('f.creatorUsername', ':username')
-                            )
-                        )
+                        $qb->expr()->eq('f.state', FilterStateEnum::SELF),
+                        $qb->expr()->eq('f.creatorUsername', ':username')
                     )
                 )
+            )
+        )
             ->orderBy('f.name')
             ->setParameter('path', $path)
             ->setParameter('username', $username)

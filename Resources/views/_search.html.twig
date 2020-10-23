@@ -3,13 +3,13 @@
     <form action="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : 1 }) }}">
         <div class="input-group input-group-sm">
             {% if table.searchExtension and table.isSearchable %}
-                <input type="text" class="form-control" placeholder="Suchbegriff..." value="{{ table.searchExtension.searchQuery }}" name="{{ table.actionQueryParameter('query') }}">
+                <input type="text" class="form-control" placeholder="{{ 'whatwedo_table.search.placeholder'|trans }}" value="{{ table.searchExtension.searchQuery }}" name="{{ table.actionQueryParameter('query') }}">
             {% endif %}
             {% if table.paginationExtension %}
                 {% set pagination = table.paginationExtension %}
                 <select data-disable-interactive name="{{ table.actionQueryParameter('limit') }}" class="whatwedo_table-limit form-control">
                     {% for num in table.options['limit_choices'] %}
-                        <option value="{{ num }}"{% if pagination.limit == num %} selected{% endif %}>{{ num }} Einträge</option>
+                        <option value="{{ num }}"{% if pagination.limit == num %} selected{% endif %}>{{ 'whatwedo_table.entries'|trans({'%num%': num}) }}</option>
                     {% endfor %}
                 </select>
             {% else %}
@@ -24,13 +24,13 @@
                         <a href="{{ whatwedo_table_generate_route_replace_arguments({
                             (table.actionQueryParameter('page')) : 1,
                             (table.actionQueryParameter('query')) : ''
-                        }) }}" class="btn btn-danger" type="button" title="Suche entfernen">
+                        }) }}" class="btn btn-danger" type="button" title="{{ 'whatwedo_table.search.remove_search'|trans }}">
                             <i class="fa fa-times"></i>
                         </a>
                     {% endif %}
                 {% endif %}
                 {% if table.filterExtension.filters|default([]) is not empty %}
-                    <button type="button" data-toggle="filter" class="btn btn-success {% if table.filterExtension.filterData is not empty %}active{% endif %}" title="Filter">
+                    <button type="button" data-toggle="filter" class="btn btn-success {% if table.filterExtension.filterData is not empty %}active{% endif %}" title="{{ 'whatwedo_table.search.filter'|trans }}">
                         <i class="fa fa-filter"></i>
                     </button>
                 {% endif %}
@@ -40,20 +40,20 @@
                                 <i class="fa fa-download"></i> <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-right">
-                                <li class="dropdown-header">als Excel (CSV) exportieren</li>
+                                <li class="dropdown-header">{{ 'whatwedo_table.search.export'|trans }}</li>
                                 <li>
                                     <a href="{{ path(table.exportRoute, app.request.query.all) }}">
-                                        Aktuelle Ergebnisse (Seite {{ table.paginationExtension.currentPage }})
+                                        {{ 'whatwedo_table.search.actual'|trans({'%current_page%': table.paginationExtension.currentPage}) }}Aktuelle Ergebnisse (Seite {{ table.paginationExtension.currentPage }})
                                     </a>
                                 </li>
                                 <li>
                                     <a href="{{ path(table.exportRoute, app.request.query.all|merge({(table.actionQueryParameter('page')): 1, (table.actionQueryParameter('limit')): -1})) }}">
-                                        Aktuelle Ergebnisse (Alle Seiten)
+                                        {{ 'whatwedo_table.search.all_pages'|trans }}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="{{ path(table.exportRoute, {(table.actionQueryParameter('page')): 1, (table.actionQueryParameter('limit')): -1}) }}">
-                                        Alle
+                                        {{ 'whatwedo_table.search.all'|trans }}
                                     </a>
                                 </li>
                             </ul>

@@ -30,24 +30,15 @@ namespace whatwedo\TableBundle\Extension;
 use Symfony\Component\HttpFoundation\RequestStack;
 use whatwedo\SearchBundle\whatwedoSearchBundle;
 
-/**
- * Class SearchExtension
- * @package whatwedo\TableBundle\Extension
- */
 class SearchExtension extends AbstractExtension
 {
-
     const QUERY_PARAMETER_QUERY = 'query';
 
     /**
-     * @var RequestStack $requestStack
+     * @var RequestStack
      */
     protected $requestStack;
 
-    /**
-     * SearchExtension constructor.
-     * @param RequestStack $requestStack
-     */
     public function __construct(RequestStack $requestStack)
     {
         $this->requestStack = $requestStack;
@@ -62,7 +53,7 @@ class SearchExtension extends AbstractExtension
     }
 
     /**
-     * @return null|\Symfony\Component\HttpFoundation\Request
+     * @return \Symfony\Component\HttpFoundation\Request|null
      */
     public function getRequest()
     {
@@ -70,17 +61,18 @@ class SearchExtension extends AbstractExtension
     }
 
     /**
-     * @param $enabledBundles
-     * @return boolean
+     * @param array $enabledBundles
+     *
+     * @return bool
      */
     public static function isEnabled($enabledBundles)
     {
         foreach ($enabledBundles as $bundles) {
-            if (in_array(whatwedoSearchBundle::class, $bundles)) {
+            if (\in_array(whatwedoSearchBundle::class, $bundles, true)) {
                 return true;
             }
         }
+
         return false;
     }
-
 }
