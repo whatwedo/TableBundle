@@ -79,6 +79,11 @@ class ActionColumn extends AbstractColumn
         ];
     }
 
+    public function getItems($row)
+    {
+        return \is_callable($this->options['items']) ? $this->options['items']($row) : $this->options['items'];
+    }
+
     public function render($row)
     {
         return $this->templating->render('@whatwedoTable/_actions.html.twig', [
