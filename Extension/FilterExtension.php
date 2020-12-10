@@ -366,7 +366,17 @@ class FilterExtension extends AbstractExtension
                 return null;
             }
 
-            if ($annotation instanceof OneToMany || $annotation instanceof ManyToOne || $annotation instanceof ManyToMany) {
+            if ($annotation instanceof ManyToMany) {
+                $this->addFilter($acronym, $label, new $this->relationType[\get_class($annotation)]($accessor, $annotation->targetEntity, $this->doctrine));
+                return $this->getFilter($acronym);
+            }
+
+            if ($annotation instanceof OneToMany || $annotation instanceof ManyToOne) {
+                if ($annotation instanceof ManyToMany) {
+                    $this->addFilter($acronym, $label, new $filterType($acronym, $target, $this->doctrine));
+                    return $this->getFilter($acronym);
+                }
+
                 $target = $annotation->targetEntity;
                 if (false === mb_strpos($target, '\\')) {
                     $target = $namespace.'\\'.$target;
@@ -374,7 +384,7 @@ class FilterExtension extends AbstractExtension
 
                 $filterType = $this->relationType[\get_class($annotation)];
 
-                $joins = !$isPropertySelected ? [$acronym => $annotation instanceof ManyToMany ? ['leftJoin', $accessor] : $accessor] : [];
+                $joins = !$isPropertySelected ? [$acronym => $accessor] : [];
 
                 $this->addFilter($acronym, $label, new $filterType($acronym, $target, $this->doctrine, $joins));
 
