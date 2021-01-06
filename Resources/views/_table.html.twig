@@ -14,8 +14,12 @@
     id: 'whatwedo_table_' ~ table.identifier,
     'data-identifier': table.identifier
 }) %}
-
 <div class="table-responsive">
+    {% if table.tableOnly %}
+        <div class="whatwedo_table-table_only-actions">
+            {{ macros.tableExportButton(table) }}
+        </div>
+    {% endif %}
     <table {{ macros.attributes(contentAttr) }}>
         <thead class="thead-default">
         {% include '@whatwedoTable/_head.html.twig' %}
