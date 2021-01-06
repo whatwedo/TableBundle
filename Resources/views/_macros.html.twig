@@ -10,3 +10,31 @@
         {%- endif -%}
     {%- endfor -%}
 {% endmacro attributes %}
+
+{% macro tableExportButton(table) %}
+    {% if table.exportRoute %}
+        <div class="btn-group btn-group-sm dropdown">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data- aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-download"></i> <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right">
+                <li class="dropdown-header">{{ 'whatwedo_table.search.export'|trans }}</li>
+                <li>
+                    <a href="{{ path(table.exportRoute, app.request.query.all|merge(table.exportRouteParameters)) }}">
+                        {{ 'whatwedo_table.search.actual'|trans({'%current_page%': table.paginationExtension.currentPage}) }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path(table.exportRoute, app.request.query.all|merge({(table.actionQueryParameter('page')): 1, (table.actionQueryParameter('limit')): -1})|merge(table.exportRouteParameters)) }}">
+                        {{ 'whatwedo_table.search.all_pages'|trans }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path(table.exportRoute, {(table.actionQueryParameter('page')): 1, (table.actionQueryParameter('limit')): -1}|merge(table.exportRouteParameters)) }}">
+                        {{ 'whatwedo_table.search.all'|trans }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    {% endif %}
+{% endmacro %}

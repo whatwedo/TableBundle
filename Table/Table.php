@@ -114,6 +114,11 @@ class Table
     protected $exportRoute;
 
     /**
+     * @var array
+     */
+    protected $exportRouteParameters = [];
+
+    /**
      * @var bool
      */
     protected $loaded = false;
@@ -122,6 +127,11 @@ class Table
      * @var ExtensionInterface[]
      */
     protected $extensions;
+
+    /**
+     * @var bool
+     */
+    protected $tableOnly = false;
 
     /**
      * Table constructor.
@@ -626,5 +636,54 @@ class Table
         }
 
         return $order ? 'ASC' : 'DESC';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTableOnly()
+    {
+        return $this->tableOnly;
+    }
+
+    /**
+     * @param bool $tableOnly
+     */
+    public function setTableOnly(bool $tableOnly)
+    {
+        $this->tableOnly = $tableOnly;
+    }
+
+    /**
+     * @return array
+     */
+    public function getExportRouteParameters()
+    {
+        return $this->exportRouteParameters;
+    }
+
+    /**
+     * @param array $exportRouteParameters
+     */
+    public function setExportRouteParameters(array $exportRouteParameters)
+    {
+        $this->exportRouteParameters = $exportRouteParameters;
+    }
+
+    /**
+     * @param string $key
+     * @param string $value
+     */
+    public function addExportRouteParameter(string $key, string $value)
+    {
+        $this->exportRouteParameters[$key] = $value;
+    }
+
+    /**
+     * @param string $key
+     */
+    public function removeExportRouteParameter(string $key)
+    {
+        unset($this->exportRouteParameters[$key]);
     }
 }
