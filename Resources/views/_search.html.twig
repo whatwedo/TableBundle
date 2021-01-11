@@ -1,3 +1,5 @@
+{% import "@whatwedoTable/_macros.html.twig" as macros %}
+
 {# @var table \whatwedo\TableBundle\Table\Table #}
 <div class="whatwedo_table-search">
     <form action="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : 1 }) }}">
@@ -34,31 +36,7 @@
                         <i class="fa fa-filter"></i>
                     </button>
                 {% endif %}
-                {% if table.exportRoute %}
-                        <div class="btn-group btn-group-sm dropdown">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data- aria-haspopup="true" aria-expanded="false">
-                                <i class="fa fa-download"></i> <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-right">
-                                <li class="dropdown-header">{{ 'whatwedo_table.search.export'|trans }}</li>
-                                <li>
-                                    <a href="{{ path(table.exportRoute, app.request.query.all) }}">
-                                        {{ 'whatwedo_table.search.actual'|trans({'%current_page%': table.paginationExtension.currentPage}) }}Aktuelle Ergebnisse (Seite {{ table.paginationExtension.currentPage }})
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ path(table.exportRoute, app.request.query.all|merge({(table.actionQueryParameter('page')): 1, (table.actionQueryParameter('limit')): -1})) }}">
-                                        {{ 'whatwedo_table.search.all_pages'|trans }}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ path(table.exportRoute, {(table.actionQueryParameter('page')): 1, (table.actionQueryParameter('limit')): -1}) }}">
-                                        {{ 'whatwedo_table.search.all'|trans }}
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                {% endif %}
+                {{ macros.tableExportButton(table) }}
             </span>
         </div>
     </form>

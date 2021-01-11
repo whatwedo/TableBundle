@@ -35,6 +35,10 @@
   float: right;
 }
 
+.whatwedo_table-table_only .whatwedo_table-table_only-actions {
+  float: right;
+}
+
 .whatwedo_table .whatwedo_table-overlay {
   opacity: 0;
   visibility: hidden;
