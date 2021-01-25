@@ -51,6 +51,7 @@ class Column extends AbstractColumn implements SortableColumnInterface
             'formatter' => DefaultFormatter::class,
             'formatter_options' => [],
             'sortable' => true,
+            'block_prefix' => '',
         ]);
 
         $resolver->setDefault('sort_expression', function (Options $options) {

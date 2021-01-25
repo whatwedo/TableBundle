@@ -27,6 +27,7 @@
 
 namespace whatwedo\TableBundle\Table;
 
+use Symfony\Component\Form\Util\StringUtil;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Twig\Environment;
 use whatwedo\CoreBundle\Manager\FormatterManager;
@@ -119,5 +120,10 @@ abstract class AbstractColumn implements ColumnInterface, TemplateableColumnInte
     protected function getTemplating()
     {
         return $this->templating;
+    }
+
+    public function getBlockPrefix(): string
+    {
+        return $this->options['block_prefix'];
     }
 }

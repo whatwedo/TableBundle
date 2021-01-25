@@ -44,6 +44,7 @@ class ActionColumn extends AbstractColumn
         $resolver->setDefaults([
             'items' => [],
             'showActionColumn' => [],
+            'block_prefix' => 'action',
         ]);
     }
 

@@ -57,4 +57,6 @@ interface ColumnInterface
      * @return string
      */
     public function render($row);
+
+    public function getBlockPrefix(): string;
 }

@@ -169,6 +169,7 @@ class Table
             'table_box_template' => '@whatwedoTable/table.html.twig',
             'table_template' => '@whatwedoTable/tableOnly.html.twig',
             'default_sort' => [],
+            'block_prefix' => '',
         ]);
 
         $resolver->setAllowedTypes('title', ['null', 'string']);
@@ -626,5 +627,9 @@ class Table
         }
 
         return $order ? 'ASC' : 'DESC';
+    }
+
+    public function getBlockPrefix(): string {
+        return $this->getOption('block_prefix');
     }
 }
