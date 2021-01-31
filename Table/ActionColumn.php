@@ -28,6 +28,7 @@
 namespace whatwedo\TableBundle\Table;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use whatwedo\CrudBundle\Action\IdentityableActionInterface;
 
 class ActionColumn extends AbstractColumn
 {
@@ -35,6 +36,8 @@ class ActionColumn extends AbstractColumn
      * @var string
      */
     protected $label = '';
+
+    protected $actions = [];
 
     /**
      * @return void
@@ -92,5 +95,30 @@ class ActionColumn extends AbstractColumn
             'helper' => $this,
             'items' => \is_callable($this->options['items']) ? $this->options['items']($row) : $this->options['items'],
         ]);
+    }
+
+    public function getActions($data): array
+    {
+
+        $viewActions = [];
+        foreach ($this->actions as $action) {
+            $action->setData($data);
+            if ($action instanceof IdentityableActionInterface) {
+                if ($data) {
+                    $action->setRouteParameters(array_merge($action->getRouteParameters(), ['id' => $data->getId()]));
+                }
+            }
+            $viewActions[] = $action;
+        }
+
+        return $viewActions;
+
+        return $this->actions;
+    }
+
+    public function setActions(array $actions): ColumnInterface
+    {
+        $this->actions = $actions;
+        return $this;
     }
 }

@@ -126,4 +126,14 @@ abstract class AbstractColumn implements ColumnInterface, TemplateableColumnInte
     {
         return $this->options['block_prefix'];
     }
+
+    public function getActions($data): array
+    {
+        return [];
+    }
+
+    public function setActions(array $actions): ColumnInterface
+    {
+        return $this;
+    }
 }
