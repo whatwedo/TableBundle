@@ -59,4 +59,7 @@ interface ColumnInterface
     public function render($row);
 
     public function getBlockPrefix(): string;
+
+    public function getActions($data): array;
+    public function setActions(array $actions): self;
 }
