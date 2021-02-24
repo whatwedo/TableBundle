@@ -17,6 +17,10 @@
         {
             "name": "Nicolo Singer",
             "email": "nicolo@whatwedo.ch"
+        },
+        {
+            "name": "Timo Bühlmann",
+            "email": "timo@whatwedo.ch"
         }
     ],
     "require": {
@@ -32,6 +36,11 @@
     "autoload": {
         "psr-4": {
             "whatwedo\\TableBundle\\": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-feature/query-builder-provider": "0.4.x-dev"
         }
     }
 }
