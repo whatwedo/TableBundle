@@ -24,7 +24,6 @@ var whatwedo_select2 = {
 
     ajaxSelect2: function(elem) {
         elem = $(elem);
-        var entity = elem.data('ajax-entity');
         var url = elem.closest('form').data('ajax-url');
         elem.select2({
             language: 'de',
@@ -41,7 +40,7 @@ var whatwedo_select2 = {
                 data: function (params) {
                     return {
                         q: params.term,
-                        entity: entity
+                        entity: $(this).data('ajax-entity'),
                     };
                 },
                 processResults: function (data, params) {
