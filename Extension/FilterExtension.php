@@ -78,6 +78,7 @@ class FilterExtension extends AbstractExtension
 
     private $scalarType = [
         'string' => TextFilterType::class,
+        'text' => TextFilterType::class,
         'date' => DateFilterType::class,
         'datetime' => DatetimeFilterType::class,
         'integer' => NumberFilterType::class,
