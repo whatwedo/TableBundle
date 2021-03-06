@@ -99,10 +99,7 @@ class TextFilterType extends FilterType
             case static::CRITERIA_IS_NOT_EMPTY:
                 $queryBuilder->setParameter($parameterName, '');
 
-                return $queryBuilder->expr()->orX()->addMultiple([
-                    $queryBuilder->expr()->isNotNull($this->getColumn()),
-                    $queryBuilder->expr()->eq($this->getColumn(), sprintf(':%s', $parameterName)),
-                ]);
+                return $queryBuilder->expr()->gt($this->getColumn(), sprintf(':%s', $parameterName));
         }
 
         return false;
