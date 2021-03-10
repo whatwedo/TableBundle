@@ -43,4 +43,10 @@ interface QueryBuilderProvider
      * @return string
      */
     public static function getEntity();
+    /**
+     * If subclasses (e.g definitions) support the same entity, only the parent class is recommended.
+     *
+     * @return string[]
+     */
+    public static function getAllowedSubclasses();
 }

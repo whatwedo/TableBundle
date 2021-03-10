@@ -29,4 +29,4 @@ services:
 
     whatwedo\TableBundle\Manager\QueryBuilderManager:
         arguments:
-            - !tagged_iterator 'query_builder_provider'
+            - !tagged_iterator 'table_bundle.query_builder_provider'

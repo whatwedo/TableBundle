@@ -50,8 +50,11 @@ class QueryBuilderManager
     {
         /** @var QueryBuilderProvider[] $matchingProviders */
         $matchingProviders = array_filter(iterator_to_array($this->queryBuilderProviders), function(QueryBuilderProvider $provider) use ($class) {
-            return $provider->getEntity() === $class;
+            return $provider->getEntity() === $class
+                && $provider->getAllowedSubclasses()
+                && in_array(get_class($provider), $provider->getAllowedSubclasses());
         });
+        $matchingProviders = array_values($matchingProviders);
         if ($matchingProviders && count($matchingProviders) > 1) {
             throw Exception('Multiple query-builder-providers found. It is not clear, which to use.');
         }
