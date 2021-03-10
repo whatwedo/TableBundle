@@ -39,6 +39,7 @@ use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use whatwedo\TableBundle\Entity\Filter;
 use whatwedo\TableBundle\Enum\FilterStateEnum;
 use whatwedo\TableBundle\Event\ResultRequestEvent;
+use whatwedo\TableBundle\Manager\QueryBuilderManager;
 
 class FilterController extends AbstractController
 {
