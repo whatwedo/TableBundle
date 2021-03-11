@@ -55,10 +55,10 @@ class QueryBuilderManager
                 && in_array(get_class($provider), $provider->getAllowedSubclasses());
         });
         $matchingProviders = array_values($matchingProviders);
-        if ($matchingProviders && count($matchingProviders) > 1) {
+        if (count($matchingProviders) > 1) {
             throw Exception('Multiple query-builder-providers found. It is not clear, which to use.');
         }
-        if (!$matchingProviders || count($matchingProviders) < 1) {
+        if (count($matchingProviders) === 0) {
             return null;
         }
         return $matchingProviders[0]->getQueryBuilder();
