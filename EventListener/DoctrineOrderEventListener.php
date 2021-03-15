@@ -75,7 +75,8 @@ class DoctrineOrderEventListener
     {
         $alias = $this->queryBuilder->getRootAliases()[0];
 
-        if (false === mb_strpos($sortExp, '.')) {
+        if (false === mb_strpos($sortExp, '.')
+            && mb_substr($sortExp, 0, 1) !== '_') { // do not add definition query alias on hidden columns
             $sortExp = sprintf('%s.%s', $alias, $sortExp);
         }
 
