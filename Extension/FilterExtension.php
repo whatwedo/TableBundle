@@ -345,7 +345,8 @@ class FilterExtension extends AbstractExtension
      */
     private function addFilterAutomatically(DoctrineTable $table, QueryBuilder $queryBuilder, callable $labelCallable, \ReflectionProperty $property, string $namespace)
     {
-        $acronym = $property->getName();
+        $acronymNoSuffix = $property->getName();
+        $acronym = '_' . $property->getName();
 
         $label = \call_user_func($labelCallable, $table, $property->getName());
 
@@ -354,28 +355,28 @@ class FilterExtension extends AbstractExtension
         $allAliases = $queryBuilder->getAllAliases();
         $isPropertySelected = \in_array($acronym, $allAliases, true);
 
-        $accessor = sprintf('%s.%s', $allAliases[0], $acronym);
+        $accessor = sprintf('%s.%s', $allAliases[0], $acronymNoSuffix);
 
         foreach ($annotations as $annotation) {
             if ($annotation instanceof Column) {
                 if (array_key_exists($annotation->type, $this->scalarType)) {
-                    $this->addFilter($acronym, $label, new $this->scalarType[$annotation->type]($accessor));
+                    $this->addFilter($acronymNoSuffix, $label, new $this->scalarType[$annotation->type]($accessor));
 
-                    return $this->getFilter($acronym);
+                    return $this->getFilter($acronymNoSuffix);
                 }
 
                 return null;
             }
 
             if ($annotation instanceof ManyToMany) {
-                $this->addFilter($acronym, $label, new $this->relationType[\get_class($annotation)]($accessor, $annotation->targetEntity, $this->doctrine));
-                return $this->getFilter($acronym);
+                $this->addFilter($acronymNoSuffix, $label, new $this->relationType[\get_class($annotation)]($accessor, $annotation->targetEntity, $this->doctrine));
+                return $this->getFilter($acronymNoSuffix);
             }
 
             if ($annotation instanceof OneToMany || $annotation instanceof ManyToOne) {
                 if ($annotation instanceof ManyToMany) {
-                    $this->addFilter($acronym, $label, new $filterType($acronym, $target, $this->doctrine));
-                    return $this->getFilter($acronym);
+                    $this->addFilter($acronymNoSuffix, $label, new $filterType($acronym, $target, $this->doctrine));
+                    return $this->getFilter($acronymNoSuffix);
                 }
 
                 $target = $annotation->targetEntity;
@@ -387,9 +388,9 @@ class FilterExtension extends AbstractExtension
 
                 $joins = !$isPropertySelected ? [$acronym => $accessor] : [];
 
-                $this->addFilter($acronym, $label, new $filterType($acronym, $target, $this->doctrine, $joins));
+                $this->addFilter($acronymNoSuffix, $label, new $filterType($acronym, $target, $this->doctrine, $joins));
 
-                return $this->getFilter($acronym);
+                return $this->getFilter($acronymNoSuffix);
             }
         }
     }
