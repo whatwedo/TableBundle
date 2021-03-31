@@ -39,6 +39,7 @@ use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use whatwedo\TableBundle\Entity\Filter;
 use whatwedo\TableBundle\Enum\FilterStateEnum;
 use whatwedo\TableBundle\Event\ResultRequestEvent;
+use whatwedo\TableBundle\Manager\QueryBuilderManager;
 
 class FilterController extends AbstractController
 {
@@ -57,11 +58,17 @@ class FilterController extends AbstractController
      */
     private $eventDispatcher;
 
-    public function __construct(RouterInterface $router, EntityManagerInterface $entityManager, EventDispatcherInterface $eventDispatcher)
+    /**
+     * @var QueryBuilderManager
+     */
+    private $queryBuilderManager;
+
+    public function __construct(RouterInterface $router, EntityManagerInterface $entityManager, EventDispatcherInterface $eventDispatcher, QueryBuilderManager $queryBuilderManager)
     {
         $this->router = $router;
         $this->entityManager = $entityManager;
         $this->eventDispatcher = $eventDispatcher;
+        $this->queryBuilderManager = $queryBuilderManager;
     }
 
     /**
@@ -128,8 +135,8 @@ class FilterController extends AbstractController
         $class = $request->get('entity');
         $term = $request->get('q');
         $resultRequestEvent = new ResultRequestEvent($class, $term);
+        $resultRequestEvent->setQueryBuilder($this->queryBuilderManager->getQueryBuilderForEntity($class));
         $this->eventDispatcher->dispatch($resultRequestEvent, ResultRequestEvent::FILTER_SET);
-
         return $resultRequestEvent->getResult();
     }
 }
