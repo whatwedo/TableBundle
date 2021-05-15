@@ -9,7 +9,7 @@
         {
             "name": "whatwedo GmbH",
             "email": "welove@whatwedo.ch"
-        },
+        }
     ],
     "require": {
         "php":                      ">=8.0",
@@ -24,6 +24,11 @@
     "autoload": {
         "psr-4": {
             "whatwedo\\TableBundle\\": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-feature/query-builder-provider": "0.4.x-dev"
         }
     }
 }
