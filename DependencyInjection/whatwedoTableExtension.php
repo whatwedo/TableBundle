@@ -8,11 +8,6 @@ use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use whatwedo\TableBundle\Extension\ExtensionInterface;
 
-/**
- * This is the class that loads and manages your bundle configuration.
- *
- * @see http://symfony.com/doc/current/cookbook/bundles/extension.html
- */
 class whatwedoTableExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container)
@@ -22,7 +17,5 @@ class whatwedoTableExtension extends Extension
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
-
-        $container->registerForAutoconfiguration(ExtensionInterface::class)->addTag('table.extension');
     }
 }

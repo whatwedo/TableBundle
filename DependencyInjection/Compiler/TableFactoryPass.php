@@ -31,12 +31,13 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use whatwedo\TableBundle\Extension\ExtensionInterface;
+use whatwedo\TableBundle\Factory\TableFactory;
 
 class TableFactoryPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (!$container->has('whatwedo\TableBundle\Factory\TableFactory')) {
+        if (!$container->has(TableFactory::class)) {
             return;
         }
 
@@ -57,7 +58,7 @@ class TableFactoryPass implements CompilerPassInterface
 
         // add remaining extensions to table factory
         foreach (array_keys($container->findTaggedServiceIds('table.extension')) as $id) {
-            $container->getDefinition('whatwedo\TableBundle\Factory\TableFactory')->addMethodCall('addExtension', [new Reference($id)]);
+            $container->getDefinition(TableFactory::class)->addMethodCall('addExtension', [new Reference($id)]);
         }
     }
 }

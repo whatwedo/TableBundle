@@ -27,9 +27,9 @@
 
 namespace whatwedo\TableBundle\Extension;
 
-/**
- * Interface ExtensionInterface.
- */
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+
+#[Autoconfigure(tags: ['table.extension'])]
 interface ExtensionInterface
 {
     /**

@@ -7,24 +7,16 @@
     "minimum-stability": "dev",
     "authors": [
         {
-            "name": "Ueli Banholzer",
-            "email": "ueli@whatwedo.ch"
+            "name": "whatwedo GmbH",
+            "email": "welove@whatwedo.ch"
         },
-        {
-            "name": "Felix Imobersteg",
-            "email": "felix@whatwedo.ch"
-        },
-        {
-            "name": "Nicolo Singer",
-            "email": "nicolo@whatwedo.ch"
-        }
     ],
     "require": {
-        "php":                      ">=7.2",
-        "symfony/framework-bundle": "~4.0|~5.0",
-        "symfony/http-kernel":      "~4.0|~5.0",
-        "symfony/validator":        "~4.0|~5.0",
-        "whatwedo/core-bundle":     "^0.4"
+        "php":                      ">=8.0",
+        "symfony/framework-bundle": "~5.3",
+        "symfony/http-kernel":      "~5.3",
+        "symfony/validator":        "~5.3",
+        "whatwedo/core-bundle":     "^1.0"
     },
     "suggest": {
         "whatwedo/search-bundle": "Allows searching tables"
