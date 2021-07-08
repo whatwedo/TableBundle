@@ -358,40 +358,87 @@ class FilterExtension extends AbstractExtension
         $accessor = sprintf('%s.%s', $allAliases[0], $acronymNoSuffix);
 
         foreach ($annotations as $annotation) {
-            if ($annotation instanceof Column) {
-                if (array_key_exists($annotation->type, $this->scalarType)) {
-                    $this->addFilter($acronymNoSuffix, $label, new $this->scalarType[$annotation->type]($accessor));
+            $this->addFilterAutomaticallyAnnotations($annotation, $acronym, $acronymNoSuffix, $label, $accessor, $namespace, $isPropertySelected);
+        }
+        foreach ($property->getAttributes() as $attribute) {
+            $this->addFilterAutomaticallyAttributes($attribute, $acronym, $acronymNoSuffix, $label, $accessor, $namespace, $isPropertySelected);
+        }
+    }
 
-                    return $this->getFilter($acronymNoSuffix);
-                }
+    private function addFilterAutomaticallyAnnotations($annotation, $acronym, $acronymNoSuffix, $label, $accessor, $namespace, $isPropertySelected)
+    {
+        if ($annotation instanceof Column) {
+            if (array_key_exists($annotation->type, $this->scalarType)) {
+                $this->addFilter($acronymNoSuffix, $label, new $this->scalarType[$annotation->type]($accessor));
 
-                return null;
+                return $this->getFilter($acronymNoSuffix);
+            }
+
+            return null;
+        }
+
+        if ($annotation instanceof ManyToMany) {
+            $this->addFilter($acronymNoSuffix, $label, new $this->relationType[\get_class($annotation)]($accessor, $annotation->targetEntity, $this->doctrine));
+            return $this->getFilter($acronymNoSuffix);
+        }
+
+        if ($annotation instanceof OneToMany || $annotation instanceof ManyToOne) {
+            $filterType = $this->relationType[\get_class($annotation)];
+            $target = $annotation->targetEntity;
+            if (false === mb_strpos($target, '\\')) {
+                $target = $namespace.'\\'.$target;
             }
 
             if ($annotation instanceof ManyToMany) {
-                $this->addFilter($acronymNoSuffix, $label, new $this->relationType[\get_class($annotation)]($accessor, $annotation->targetEntity, $this->doctrine));
+                $this->addFilter($acronymNoSuffix, $label, new $filterType($acronym, $target, $this->doctrine));
                 return $this->getFilter($acronymNoSuffix);
             }
 
-            if ($annotation instanceof OneToMany || $annotation instanceof ManyToOne) {
-                if ($annotation instanceof ManyToMany) {
-                    $this->addFilter($acronymNoSuffix, $label, new $filterType($acronym, $target, $this->doctrine));
-                    return $this->getFilter($acronymNoSuffix);
-                }
 
-                $target = $annotation->targetEntity;
-                if (false === mb_strpos($target, '\\')) {
-                    $target = $namespace.'\\'.$target;
-                }
 
-                $filterType = $this->relationType[\get_class($annotation)];
 
-                $joins = !$isPropertySelected ? [$acronym => $accessor] : [];
+            $joins = !$isPropertySelected ? [$acronym => $accessor] : [];
 
-                $this->addFilter($acronymNoSuffix, $label, new $filterType($acronym, $target, $this->doctrine, $joins));
+            $this->addFilter($acronymNoSuffix, $label, new $filterType($acronym, $target, $this->doctrine, $joins));
+
+            return $this->getFilter($acronymNoSuffix);
+        }
+    }
+
+    private function addFilterAutomaticallyAttributes($attribute, $acronym, $acronymNoSuffix, $label, $accessor, $namespace, $isPropertySelected)
+    {
+        if ($attribute->getName() === Column::class) {
+            if (array_key_exists($attribute->getArguments()['type'], $this->scalarType)) {
+                $this->addFilter($acronymNoSuffix, $label, new $this->scalarType[$attribute->getArguments()['type']]($accessor));
 
                 return $this->getFilter($acronymNoSuffix);
             }
+
+            return null;
+        }
+
+        if ($attribute->getName() === ManyToMany::class) {
+            $this->addFilter($acronymNoSuffix, $label, new $this->relationType[$attribute->getName()]($accessor, $attribute->getArguments()['targetEntity'], $this->doctrine));
+            return $this->getFilter($acronymNoSuffix);
+        }
+
+        if ($attribute->getName() === OneToMany::class || $attribute->getName() === ManyToOne::class) {
+            $filterType = $this->relationType[$attribute->getName()];
+            $target = $attribute->getArguments()['targetEntity'];
+            if (false === mb_strpos($target, '\\')) {
+                $target = $namespace.'\\'.$target;
+            }
+
+            if ($attribute->getName() === ManyToMany::class) {
+                $this->addFilter($acronymNoSuffix, $label, new $filterType($acronym, $target, $this->doctrine));
+                return $this->getFilter($acronymNoSuffix);
+            }
+
+            $joins = !$isPropertySelected ? [$acronym => $accessor] : [];
+
+            $this->addFilter($acronymNoSuffix, $label, new $filterType($acronym, $target, $this->doctrine, $joins));
+
+            return $this->getFilter($acronymNoSuffix);
         }
     }
 
