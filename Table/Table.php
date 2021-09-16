@@ -149,7 +149,7 @@ class Table
     ) {
         $this->identifier = $identifier;
         $this->eventDispatcher = $eventDispatcher;
-        $this->request = $requestStack->getMasterRequest();
+        $this->request = $requestStack->getMainRequest();
         $this->templating = $templating;
         $this->extensions = $extensions;
         $this->formatterManager = $formatterManager;

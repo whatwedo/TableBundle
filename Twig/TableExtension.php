@@ -77,7 +77,7 @@ class TableExtension extends AbstractExtension
              * generates the same route with replaced or new arguments
              */
             new TwigFunction('whatwedo_table_generate_route_replace_arguments', function ($arguments) {
-                $request = $this->requestStack->getMasterRequest();
+                $request = $this->requestStack->getMainRequest();
                 $attributes = array_filter($request->attributes->all(), function ($key) {
                     return 0 !== mb_strpos($key, '_');
                 }, ARRAY_FILTER_USE_KEY);
