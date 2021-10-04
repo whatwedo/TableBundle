@@ -37,10 +37,5 @@
         "psr-4": {
             "whatwedo\\TableBundle\\": ""
         }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-feature/query-builder-provider": "0.4.x-dev"
-        }
     }
 }
