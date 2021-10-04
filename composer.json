@@ -17,6 +17,10 @@
         {
             "name": "Nicolo Singer",
             "email": "nicolo@whatwedo.ch"
+        },
+        {
+            "name": "Timo Bühlmann",
+            "email": "timo@whatwedo.ch"
         }
     ],
     "require": {
