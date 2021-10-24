@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
@@ -31,13 +33,11 @@ interface TableDataInterface
 {
     /**
      * returns the current page results.
-     *
-     * @return array
      */
-    public function getResults();
+    public function getResults(): \Traversable;
 
     /**
      * @return int returns the total number of results available
      */
-    public function getTotalResults();
+    public function getTotalResults(): int;
 }

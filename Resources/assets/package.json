@@ -1,0 +1,23 @@
+{
+    "name": "@whatwedo/table-bundle",
+    "version": "1.0.0",
+    "symfony": {
+        "controllers": {
+            "table": {
+                "main": "controllers/table_controller.js",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
+            },
+            "filter": {
+                "main": "controllers/filter_controller.js",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
+            }
+        }
+    },
+    "peerDependencies": {
+        "stimulus": "^2.0.0"
+    }
+}

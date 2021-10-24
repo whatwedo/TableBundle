@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2021, whatwedo GmbH
  * All rights reserved
@@ -27,40 +29,32 @@
 
 namespace whatwedo\TableBundle\Manager;
 
-
 use Doctrine\ORM\QueryBuilder;
 use whatwedo\TableBundle\Provider\QueryBuilderProvider;
 
-/**
- * @author Timo Bühlmann
- */
 class QueryBuilderManager
 {
-    protected iterable $queryBuilderProviders;
-
-    public function __construct(iterable $queryBuilderProviders)
-    {
-        $this->queryBuilderProviders = $queryBuilderProviders;
+    public function __construct(
+        protected iterable $queryBuilderProviders
+    ) {
     }
 
-    /**
-     * @return QueryBuilder|null
-     */
-    public function getQueryBuilderForEntity(string $class)
+    public function getQueryBuilderForEntity(string $class): ?QueryBuilder
     {
         /** @var QueryBuilderProvider[] $matchingProviders */
-        $matchingProviders = array_filter(iterator_to_array($this->queryBuilderProviders), function(QueryBuilderProvider $provider) use ($class) {
+        $matchingProviders = array_filter(iterator_to_array($this->queryBuilderProviders), function (QueryBuilderProvider $provider) use ($class) {
             return $provider->getEntity() === $class
                 && $provider->getAllowedSubclasses()
-                && in_array(get_class($provider), $provider->getAllowedSubclasses());
+                && in_array(get_class($provider), $provider->getAllowedSubclasses(), true);
         });
         $matchingProviders = array_values($matchingProviders);
         if (count($matchingProviders) > 1) {
-            throw Exception('Multiple query-builder-providers found. It is not clear, which to use.');
+            throw new Exception('Multiple query-builder-providers found. It is not clear, which to use.');
         }
         if (count($matchingProviders) === 0) {
             return null;
         }
+
         return $matchingProviders[0]->getQueryBuilder();
     }
 

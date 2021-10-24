@@ -1,6 +1,8 @@
 <?php
+
+declare(strict_types=1);
 /*
- * Copyright (c) 2016, whatwedo GmbH
+ * Copyright (c) 2021, whatwedo GmbH
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,21 +27,33 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Filter\Type;
+namespace whatwedo\TableBundle\Helper;
 
-class MoneyFilterType extends NumberFilterType
+use whatwedo\TableBundle\Table\Table;
+
+class RouterHelper
 {
-    /**
-     * @return float|int
-     */
-    protected function prepareQueryValue($value)
+    public const PARAMETER_PAGINATION_PAGE = 'page';
+
+    public const PARAMETER_PAGINATION_LIMIT = 'limit';
+
+    public const PARAMETER_FILTER_PREDEFINED = 'filter_predefined';
+
+    public const PARAMETER_SEARCH_QUERY = 'query';
+
+    public const PARAMETER_SORT_ENABLED = 'sort_enabled';
+
+    public const PARAMETER_SORT_DIRECTION = 'sort_direction';
+
+    public const PARAMETER_FILTER_COLUMN = 'filter_column';
+
+    public const PARAMETER_FILTER_OPERATOR = 'filter_operator';
+
+    public const PARAMETER_FILTER_VALUE = 'filter_value';
+
+    public static function getParameterName(Table $table, string $parameter, $addition = null): string
     {
-        if (!is_numeric($value)) {
-            $value = 0;
-        }
-
-        $value = ((float) $value) * 100;
-
-        return $value;
+        return sprintf('%s_%s', str_replace('.', '_', $table->getIdentifier()), $parameter)
+            . ($addition ? '_' . $addition : '');
     }
 }

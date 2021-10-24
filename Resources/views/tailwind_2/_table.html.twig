@@ -1,0 +1,86 @@
+<div class="whatwedo_table--table">
+    <table {{ stimulus_controller('whatwedo/table-bundle/table') }}>
+        <thead>
+            <tr>
+                {% for column in table.columns %}
+                    <th>
+                        {{ column.option('label')|trans }}
+
+                        {% if table.sortExtension and column.option('sortable') %}
+                            {% set currentOrder = table.sortExtension.order(column) %}
+                            {% if currentOrder == 'asc' %}
+                                <a href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, 'desc')) }}">
+                                    {{ bootstrap_icon('sort-alpha-up') }}
+                                </a>
+                                <a href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, null)) }}">
+                                    {{ bootstrap_icon('x') }}
+                                </a>
+                            {% elseif currentOrder == 'desc' %}
+                                <a href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, 'asc')) }}">
+                                    {{ bootstrap_icon('sort-alpha-down-alt') }}
+                                </a>
+                                <a href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, null)) }}">
+                                    {{ bootstrap_icon('x') }}
+                                </a>
+                            {% else %}
+                                <a href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, 'asc')) }}">
+                                    {{ bootstrap_icon('arrow-down-up') }}
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                    </th>
+                {% endfor %}
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in table.rows %}
+                <tr>
+                    {% for column in table.columns %}
+                        <td class="{% if column.option('is_primary') %}whatwedo_table--table--row_primary{% endif %}">
+                            {% apply spaceless %}
+                                {% if column.option('is_primary') and table.option('primary_link') is not null %}
+                                    {% set columnLink = table.primaryLink(row) %}
+                                    {% if columnLink %}
+                                        <a href="{{ columnLink }}">
+                                    {% endif %}
+                                {% endif %}
+                            {% endapply %}
+                            {{ column.render(row) }}
+                            {% if column.option('is_primary') and columnLink|default(false) %}</a>{% endif %}
+                        </td>
+                    {% endfor %}
+                    <td class="whatwedo_table--table--actions">
+                        <div {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}>
+                            <button data-action="whatwedo--core-bundle--dropdown#toggle" type="button">
+                                <span class="sr-only">Optionen</span>
+                                {{ bootstrap_icon('three-dots-vertical', { class: 'h-4 w-4' }) }}
+                            </button>
+
+                            <!--
+                              Dropdown menu, show/hide based on menu state.
+
+                              Entering: "transition ease-out duration-100"
+                                From: "transform opacity-0 scale-95"
+                                To: "transform opacity-100 scale-100"
+                              Leaving: "transition ease-in duration-75"
+                                From: "transform opacity-100 scale-100"
+                                To: "transform opacity-0 scale-95"
+                            -->
+                            <div
+                                data-whatwedo--core-bundle--dropdown-target="dropdown"
+                                class="hidden mx-3 origin-top-right absolute right-7 top-0 w-48 mt-1 rounded-md shadow-lg z-10 bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-200 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="project-options-menu-0-button" tabindex="-1"
+                            >
+                                <div class="py-1" role="none">
+                                    {% for action in table.actions %}
+                                        {{ action.render(row)|raw }}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

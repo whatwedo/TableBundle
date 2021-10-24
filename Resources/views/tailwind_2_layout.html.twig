@@ -1,0 +1,35 @@
+{% import "@whatwedoTable/_macros.html.twig" as macros %}
+
+{% block table %}
+    <div class="whatwedo_table" {{ stimulus_controller('whatwedo/table-bundle/filter') }}>
+        {% block table_header %}
+            {% include "@whatwedoTable/tailwind_2/_header.html.twig" %}
+        {% endblock %}
+
+        {% block table_filter %}
+            {% include "@whatwedoTable/tailwind_2/_filter.html.twig" %}
+        {% endblock %}
+
+        {% block table_table %}
+            {% include "@whatwedoTable/tailwind_2/_table.html.twig" %}
+        {% endblock %}
+
+        {% block table_pagination %}
+            {% include "@whatwedoTable/tailwind_2/_pagination.html.twig" %}
+        {% endblock %}
+    </div>
+{% endblock %}
+
+{% block table_action %}
+    {# todo: add attributes #}
+    {# todo: move to options instead of vars #}
+    <a
+        href="{{ path(route, route_parameters) }}"
+        class="text-gray-700 group flex items-center px-4 py-2 text-sm"
+        role="menuitem"
+        tabindex="-1"
+    >
+        {{ bootstrap_icon(icon, { class: 'inline mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500' }) }}
+        {{ label }}
+    </a>
+{% endblock %}

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
@@ -27,69 +29,42 @@
 
 namespace whatwedo\TableBundle\EventListener;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use whatwedo\SearchBundle\Entity\Index;
-use whatwedo\SearchBundle\whatwedoSearchBundle;
 use whatwedo\TableBundle\Event\DataLoadEvent;
-use whatwedo\TableBundle\Extension\SearchExtension;
 use whatwedo\TableBundle\Table\DoctrineTable;
 
 class SearchEventListener
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @var array
-     */
-    protected $kernelBundles;
-
-    /**
-     * TableSearchEventListener constructor.
-     *
-     * @param EntityManager $em
-     * @param string        $kernelBundles
-     */
-    public function __construct(EntityManagerInterface $em, array $kernelBundles)
-    {
-        $this->em = $em;
-        $this->kernelBundles = $kernelBundles;
+    public function __construct(
+        protected EntityManagerInterface $entityManager,
+        protected array $kernelBundles
+    ) {
     }
 
-    /**
-     * Search listener.
-     */
-    public function searchResultSet(DataLoadEvent $event)
+    public function searchResultSet(DataLoadEvent $event): void
     {
-        if (!\in_array(whatwedoSearchBundle::class, $this->kernelBundles, true)) {
-            return;
-        }
-
-        $table = $event->getTable();
-
-        if (!$table instanceof DoctrineTable) {
+        if (!$event->getTable() instanceof DoctrineTable
+            || !$event->getTable()->getSearchExtension()
+            || !$event->getTable()->getOption('searchable')) {
             return;
         }
 
         // Exec only if query is set
-        if ($table->hasExtension(SearchExtension::class)) {
-            $query = $table->getSearchExtension()->getSearchQuery();
-            if (0 === \mb_strlen(trim($query))) {
-                return;
-            }
-        } else {
+        $query = $event->getTable()->getSearchExtension()->getQuery();
+        if (trim($query) === '') {
             return;
         }
 
-        $model = $table->getQueryBuilder()->getRootEntities()[0];
-        $ids = $this->em->getRepository(Index::class)->search($query, $model);
+        $queryBuilder = $event->getTable()->getOption('query_builder');
+        $entity = $queryBuilder->getRootEntities()[0];
+        $ids = $this->entityManager->getRepository(Index::class)->search($query, $entity);
 
-        $table->getQueryBuilder()->andWhere(sprintf(
-            '%s.id IN (:q_ids)',
-            $table->getQueryBuilder()->getRootAliases()[0]
-        ))->setParameter('q_ids', $ids);
+        $queryBuilder
+            ->andWhere(sprintf(
+                '%s.id IN (:q_ids)',
+                $queryBuilder->getRootAliases()[0]
+            ))
+            ->setParameter('q_ids', $ids);
     }
 }

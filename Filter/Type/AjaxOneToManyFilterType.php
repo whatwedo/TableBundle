@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
@@ -27,36 +29,25 @@
 
 namespace whatwedo\TableBundle\Filter\Type;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\Persistence\ManagerRegistry;
 
 class AjaxOneToManyFilterType extends FilterType
 {
-    const CRITERIA_EQUAL = 'equal';
+    public const CRITERIA_EQUAL = 'equal';
 
-    const CRITERIA_NOT_EQUAL = 'not_equal';
+    public const CRITERIA_NOT_EQUAL = 'not_equal';
 
-    /**
-     * @var ManagerRegistry
-     */
-    protected $doctrine;
-
-    /**
-     * @var string
-     */
-    protected $targetClass;
-
-    public function __construct($column, string $targetClass, ManagerRegistry $doctrine, array $joins = [])
-    {
+    public function __construct(
+        string $column,
+        protected string $targetClass,
+        protected EntityManagerInterface $entityManager,
+        array $joins = []
+    ) {
         parent::__construct($column, $joins);
-        $this->doctrine = $doctrine;
-        $this->targetClass = $targetClass;
     }
 
-    /**
-     * @return array
-     */
-    public function getOperators()
+    public function getOperators(): array
     {
         return [
             static::CRITERIA_EQUAL => 'whatwedo_table.filter.operator.contains',
@@ -64,23 +55,15 @@ class AjaxOneToManyFilterType extends FilterType
         ];
     }
 
-    /**
-     * @param int $value
-     *
-     * @return string
-     */
-    public function getValueField($value = 0)
+    public function getValueField(?string $value = '0'): string
     {
         $field = sprintf(
             '<select name="{name}" class="form-control" data-ajax-select data-ajax-entity="%s">',
             $this->targetClass
         );
-        $currentSelection = null;
-        if ($value > 0) {
-            $currentSelection = $this->doctrine->getRepository($this->targetClass)->find($value);
-        }
 
-        if (null !== $currentSelection) {
+        $currentSelection = (int) $value > 0 ? $this->entityManager->getRepository($this->targetClass)->find((int) $value) : null;
+        if ($currentSelection) {
             $field .= sprintf('<option value="%s">%s</option>', $value, $currentSelection->__toString());
         }
 
@@ -89,24 +72,21 @@ class AjaxOneToManyFilterType extends FilterType
         return $field;
     }
 
-    /**
-     * @param string $operator
-     * @param string $parameterName
-     *
-     * @return bool|\Doctrine\ORM\Query\Expr\Comparison|string
-     */
-    public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
+    public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder): ?string
     {
-        $targetParameter = 'target_'.md5(rand());
-        $targetValue = $this->doctrine->getRepository($this->targetClass)->find($value);
-        $queryBuilder->setParameter($targetParameter, $targetValue);
+        $targetParameter = 'target_' . hash('crc32', random_bytes(10));
+        $queryBuilder->setParameter(
+            $targetParameter,
+            $this->entityManager->getRepository($this->targetClass)->find($value)
+        );
+
         switch ($operator) {
             case static::CRITERIA_EQUAL:
-                return $queryBuilder->expr()->in($this->column, ':'.$targetParameter);
+                return $queryBuilder->expr()->in($this->column, ':' . $targetParameter);
             case static::CRITERIA_NOT_EQUAL:
-                return sprintf(':%s NOT IN %s', $this->column, $targetParameter);
+                return $queryBuilder->expr()->notIn($this->column, ':' . $targetParameter);
         }
 
-        return false;
+        return null;
     }
 }

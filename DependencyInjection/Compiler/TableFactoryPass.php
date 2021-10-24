@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
@@ -37,27 +39,19 @@ class TableFactoryPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (!$container->has(TableFactory::class)) {
-            return;
-        }
-
-        // load table extensions
-        foreach (array_keys($container->findTaggedServiceIds('table.extension')) as $id) {
+        foreach (array_keys($container->findTaggedServiceIds('whatwedo.table_bundle.extension')) as $id) {
             $tableExtension = $container->getDefinition($id);
 
-            // must implement ExtensionInterface
-            if (!is_subclass_of($tableExtension->getClass(), ExtensionInterface::class)) {
+            if (! is_subclass_of($tableExtension->getClass(), ExtensionInterface::class)) {
                 throw new \UnexpectedValueException(sprintf('Extensions tagged with table.extension must implement %s - %s given.', ExtensionInterface::class, $tableExtension->getClass()));
             }
 
-            // remove when not enabled
-            if (!\call_user_func([$tableExtension->getClass(), 'isEnabled'], [$container->getParameter('kernel.bundles')])) {
+            if (! call_user_func([$tableExtension->getClass(), 'isEnabled'], [$container->getParameter('kernel.bundles')])) {
                 $container->removeDefinition($id);
             }
         }
 
-        // add remaining extensions to table factory
-        foreach (array_keys($container->findTaggedServiceIds('table.extension')) as $id) {
+        foreach (array_keys($container->findTaggedServiceIds('whatwedo.table_bundle.extension')) as $id) {
             $container->getDefinition(TableFactory::class)->addMethodCall('addExtension', [new Reference($id)]);
         }
     }

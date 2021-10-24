@@ -16,7 +16,7 @@
                     {% for f in tableFilters %}
                         <option
                             value="{{ f.acronym }}"
-                            data-operator-options="{{ f.type.operators|whatwedo_operators }}"
+                            data-operator-options="{{ f.type.operators|whatwedo_table_filter_operators }}"
                             data-value-template="{{ f.type.valueField|raw|e }}"
                             class="form-control"
                             {% if filter.acronym == f.acronym %}selected="selected"{% endif %}
@@ -52,7 +52,7 @@
     {% set app_username = app.user.username|default(null) %}
 
     {% set filterData = table.filterExtension.filterData %}
-    {% set filterRoute = whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')): 1, (table.actionQueryParameter('limit')): (table.paginationExtension.limit|default(-1)) }) %}
+    {% set filterRoute = whatwedo_table_path_replace_arguments({ (table.actionQueryParameter('page')): 1, (table.actionQueryParameter('limit')): (table.paginationExtension.limit|default(-1)) }) %}
 
     {% set savedFilters = table.filterExtension.savedFilter(app_username, app.request.attributes.get('_route')) %}
 

@@ -1,113 +1,77 @@
 <?php
-/*
- * Copyright (c) 2016, whatwedo GmbH
- * All rights reserved
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
+
+declare(strict_types=1);
 
 namespace whatwedo\TableBundle\Twig;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
+use whatwedo\TableBundle\Action\Action;
 use whatwedo\TableBundle\Factory\TableFactory;
+use whatwedo\TableBundle\Helper\RouterHelper;
+use whatwedo\TableBundle\Table\Column;
 
 class TableExtension extends AbstractExtension
 {
-    /**
-     * @var RouterInterface
-     */
-    protected $router;
-
-    protected $requestStack;
-
-    protected $tableFactory;
-
-    /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
-
     public function __construct(
-        RequestStack $requestStack,
-        TableFactory $tableFactory,
-        RouterInterface $router,
-        TranslatorInterface $translator
+        protected Environment $templating,
+        protected RequestStack $requestStack,
+        protected TableFactory $tableFactory,
+        protected RouterHelper $routerHelper,
+        protected RouterInterface $router,
+        protected TranslatorInterface $translator
     ) {
-        $this->tableFactory = $tableFactory;
-        $this->requestStack = $requestStack;
-        $this->router = $router;
-        $this->translator = $translator;
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
-            new TwigFunction('whatwedo_table', function ($identifier, $options) {
-                return $this->tableFactory->createTable($identifier, $options);
-            }),
-
-            new TwigFunction('whatwedo_doctrine_table', function ($identifier, $options) {
-                return $this->tableFactory->createDoctrineTable($identifier, $options);
-            }),
+            new TwigFunction('whatwedo_table_parameter', [$this->routerHelper, 'getParameterName']),
+            new TwigFunction('whatwedo_table_column_sort_parameters', fn (Column $column, ?string $order) => $column->getTable()->getSortExtension() ? $column->getTable()->getSortExtension()->getOrderParameters($column, $order) : []),
             /*
              * generates the same route with replaced or new arguments
              */
-            new TwigFunction('whatwedo_table_generate_route_replace_arguments', function ($arguments) {
-                $request = $this->requestStack->getMasterRequest();
-                $attributes = array_filter($request->attributes->all(), function ($key) {
-                    return 0 !== mb_strpos($key, '_');
-                }, ARRAY_FILTER_USE_KEY);
+            new TwigFunction('whatwedo_table_path_replace_arguments', function ($arguments) {
+                /** @var Request $request */
+                $request = $this->requestStack->getCurrentRequest();
 
-                $parameters = array_replace(
-                    array_merge($attributes, $request->query->all()),
-                    $arguments
+                $attributes = array_filter(
+                    $request->attributes->all(),
+                    static fn ($key) => ! str_starts_with($key, '_'),
+                    ARRAY_FILTER_USE_KEY
                 );
 
                 return $this->router->generate(
                     $request->attributes->get('_route'),
-                    $parameters
+                    array_replace(array_merge($attributes, $request->query->all()), $arguments)
                 );
             }),
         ];
     }
 
-    public function getFilters()
+    /*
+     * @TODO Refacotr
+     */
+    public function getFilters(): array
     {
         return [
-            new TwigFilter('whatwedo_operators', function ($data) {
+            new TwigFilter('whatwedo_table_filter_operators', function ($data) {
                 foreach (array_keys($data) as $key) {
                     $data[$key] = $this->translator->trans($data[$key]);
                 }
-                return json_encode($data);
+
+                return json_encode($data, JSON_THROW_ON_ERROR);
             }),
         ];
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'whatwedo_table_table_extension';
     }

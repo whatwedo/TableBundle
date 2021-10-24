@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
@@ -29,7 +31,7 @@ namespace whatwedo\TableBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use whatwedo\TableBundle\Enum\FilterStateEnum;
+use whatwedo\TableBundle\Enum\FilterType;
 
 /**
  * @ORM\Table(name="whatwedo_table_filter")
@@ -38,199 +40,130 @@ use whatwedo\TableBundle\Enum\FilterStateEnum;
 class Filter
 {
     /**
-     * @var int
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    protected $id;
+    protected ?int $id = null;
 
     /**
-     * @var string
      * @ORM\Column(name="name", type="string", length=50, nullable=false)
      * @Assert\Length(max="50")
      */
-    protected $name;
+    protected string $name = '';
 
     /**
-     * @var string
      * @ORM\Column(name="path", type="string", length=256, nullable=false)
+     * @Assert\Length(max="256")
      */
-    protected $route;
+    protected string $route = '';
 
     /**
-     * @var array
      * @ORM\Column(name="arguments", type="array", nullable=false)
      */
-    protected $arguments;
+    protected array $arguments = [];
 
     /**
-     * @var string
-     * @ORM\Column(name="conditions", type="text", nullable=false)
+     * @ORM\Column(name="conditions", type="array")
      */
-    protected $conditions;
+    protected array $conditions = [];
 
     /**
-     * @var string
-     * @ORM\Column(name="creator_username", type="string", length=256, nullable=false)
+     * @ORM\Column(name="created_by_username", type="string", length=256, nullable=false)
      */
-    protected $creatorUsername;
+    protected string $createdByUsername = '';
+
+    #[ORM\Column(type: FilterType::class, nullable: false)]
+    protected FilterType $type = FilterType::PUBLIC;
 
     /**
-     * @var int
-     * @ORM\Column(name="state", type="smallint", nullable=false)
-     */
-    protected $state;
-
-    /**
-     * @var string
      * @ORM\Column(name="description", type="string", length=256, nullable=true)
      * @Assert\Length(max="256")
      */
-    protected $description;
+    protected ?string $description = null;
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
+    public function setId(?int $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
-    public function setName($name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
-    public function getRoute()
+    public function getRoute(): string
     {
         return $this->route;
     }
 
-    /**
-     * @param string $route
-     */
-    public function setRoute($route)
+    public function setRoute(string $route): void
     {
         $this->route = $route;
     }
 
-    /**
-     * @return array
-     */
-    public function getArguments()
+    public function getArguments(): array
     {
         return $this->arguments;
     }
 
-    /**
-     * @param array $arguments
-     */
-    public function setArguments($arguments)
+    public function setArguments(array $arguments): void
     {
         $this->arguments = $arguments;
     }
 
-    /**
-     * @return string
-     */
-    public function getConditions()
+    public function getConditions(): array
     {
-        return unserialize($this->conditions);
+        return $this->conditions;
     }
 
-    /**
-     * @param string $conditions
-     */
-    public function setConditions($conditions)
+    public function setConditions(array $conditions): void
     {
-        $this->conditions = serialize($conditions);
+        $this->conditions = $conditions;
     }
 
-    /**
-     * @return string
-     */
-    public function getCreatorUsername()
+    public function getCreatedByUsername(): string
     {
-        return $this->creatorUsername;
+        return $this->createdByUsername;
     }
 
-    /**
-     * @param string $creatorUsername
-     */
-    public function setCreatorUsername($creatorUsername)
+    public function setCreatedByUsername(string $createdByUsername): void
     {
-        $this->creatorUsername = $creatorUsername;
+        $this->createdByUsername = $createdByUsername;
     }
 
-    /**
-     * @return int
-     */
-    public function getState()
+    public function getType(): string
     {
-        return $this->state;
+        return $this->type;
     }
 
-    /**
-     * @param int $state
-     */
-    public function setState($state)
+    public function setType(string $type): void
     {
-        $this->state = $state;
+        $this->type = $type;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param string $description
-     */
-    public function setDescription($description)
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
     }
 
-    public function getStateAsString()
+    public function __toString(): string
     {
-        return FilterStateEnum::getRepresentation($this->state);
-    }
-
-    public function getStateIcon()
-    {
-        switch ($this->state) {
-            case FilterStateEnum::ALL:
-                return 'world';
-            case FilterStateEnum::SELF:
-                return 'lock';
-            case FilterStateEnum::SYSTEM:
-                return 'gears';
-        }
+        return $this->getName();
     }
 }

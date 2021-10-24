@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
@@ -31,7 +33,7 @@ class DataLoaderNotAvailableException extends \Exception
 {
     public function __construct($message = '', $code = 0, \Throwable $previous = null)
     {
-        if (!$message) {
+        if (! $message) {
             $message = 'Table data loader is not availabe. Please set one by calling Table::setDataLoader($dataLoader)';
         }
 

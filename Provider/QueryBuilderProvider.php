@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2021, whatwedo GmbH
  * All rights reserved
@@ -27,22 +29,22 @@
 
 namespace whatwedo\TableBundle\Provider;
 
-
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
-/**
- * @author Timo Bühlmann
- */
+#[Autoconfigure(tags: ['whatwedo_table.query_builder_provider'])]
 interface QueryBuilderProvider
 {
     /**
      * @return QueryBuilder
      */
     public function getQueryBuilder();
+
     /**
      * @return string
      */
     public static function getEntity();
+
     /**
      * If subclasses (e.g definitions) support the same entity, only the parent class is recommended.
      *

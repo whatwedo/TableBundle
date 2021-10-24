@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
@@ -27,42 +29,32 @@
 
 namespace whatwedo\TableBundle\Extension;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use whatwedo\TableBundle\Helper\RouterHelper;
 
 class PaginationExtension extends AbstractExtension
 {
-    const QUERY_PARAMETER_PAGE = 'page';
+    protected ?Request $request = null;
 
-    const QUERY_PARAMETER_LIMIT = 'limit';
+    protected int $limit = 25;
 
-    /**
-     * @var RequestStack
-     */
-    protected $requestStack;
-
-    /**
-     * @var int
-     */
-    protected $limit = 25;
-
-    /**
-     * @var int
-     */
-    protected $totalResults = 0;
+    protected int $totalResults = 0;
 
     public function __construct(RequestStack $requestStack)
     {
-        $this->requestStack = $requestStack;
+        $this->request = $requestStack->getCurrentRequest();
     }
 
     public function getCurrentPage(): int
     {
-        $page = $this->getRequest()->query->getInt($this->getActionQueryParameter(static::QUERY_PARAMETER_PAGE), 1);
-        if ($page < 1) {
-            $page = 1;
+        if (! $this->request) {
+            return 1;
         }
 
-        return $page;
+        $page = $this->request->query->getInt(RouterHelper::getParameterName($this->table, RouterHelper::PARAMETER_PAGINATION_PAGE), 1);
+
+        return $page < 1 ? 1 : $page;
     }
 
     public function getLimit(): int
@@ -72,7 +64,11 @@ class PaginationExtension extends AbstractExtension
 
     public function setLimit(int $defaultLimit): self
     {
-        $this->limit = $this->getRequest()->query->getInt($this->getActionQueryParameter(static::QUERY_PARAMETER_LIMIT), $defaultLimit);
+        $this->limit = $defaultLimit;
+
+        if ($this->request) {
+            $this->limit = $this->request->query->getInt(RouterHelper::getParameterName($this->table, RouterHelper::PARAMETER_PAGINATION_LIMIT), $defaultLimit);
+        }
 
         return $this;
     }
@@ -91,35 +87,24 @@ class PaginationExtension extends AbstractExtension
 
     public function getTotalPages(): int
     {
-        if (-1 === $this->limit) {
+        if ($this->limit === -1) {
             return 1;
         }
 
-        return ceil($this->getTotalResults() / $this->limit);
+        return (int)ceil($this->getTotalResults() / $this->limit);
     }
 
     public function getOffsetResults(): int
     {
-        if (-1 === $this->limit) {
+        if ($this->limit === -1) {
             return 0;
         }
 
         return ($this->getCurrentPage() - 1) * $this->limit;
     }
 
-    /**
-     * @param array $enabledBundles
-     */
-    public static function isEnabled($enabledBundles): bool
+    public static function isEnabled(array $enabledBundles): bool
     {
         return true;
-    }
-
-    /**
-     * @return \Symfony\Component\HttpFoundation\Request|null
-     */
-    protected function getRequest()
-    {
-        return $this->requestStack->getCurrentRequest();
     }
 }

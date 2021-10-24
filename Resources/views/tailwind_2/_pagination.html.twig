@@ -1,0 +1,122 @@
+{% if table.paginationExtension is not null %}
+    {% set pageOffset = 5 %}
+    {% set pagination = table.paginationExtension %}
+
+    {% set paginationLinks = [] %}
+
+    {# first/previous #}
+    {% if pagination.currentPage > 1 %}
+        {% set paginationLinks = paginationLinks|merge([{
+            is_current: false,
+            title: 'whatwedo_table.pagination.first_page'|trans,
+            link: whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : 1 }),
+            contents: bootstrap_icon('chevron-bar-left')
+        }]) %}
+        {% set paginationLinks = paginationLinks|merge([{
+            is_current: false,
+            title: 'whatwedo_table.pagination.previous_page'|trans,
+            link: whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : pagination.currentPage - 1 }),
+            contents: bootstrap_icon('chevron-left')
+        }]) %}
+    {% endif %}
+
+
+    {# offset before current #}
+    {% for i in pageOffset..1 %}
+        {% set page = pagination.currentPage - i %}
+        {% if page > 0 %}
+            {% set paginationLinks = paginationLinks|merge([{
+                is_current: false,
+                title: 'whatwedo_table.pagination.page_num'|trans({'{page}': page}),
+                link: whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : page }),
+                contents: page
+            }]) %}
+        {% endif %}
+    {% endfor %}
+
+    {# current #}
+    {% set paginationLinks = paginationLinks|merge([{
+        is_current: true,
+        title: 'whatwedo_table.pagination.current_page'|trans,
+        link: whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : pagination.currentPage }),
+        contents: pagination.currentPage
+    }]) %}
+
+    {# offset after current #}
+    {% for i in 1..pageOffset %}
+        {% set page = pagination.currentPage + i %}
+        {% if page < ( pagination.totalPages + 1 ) %}
+            {% set paginationLinks = paginationLinks|merge([{
+                is_current: false,
+                title: 'whatwedo_table.pagination.page_num'|trans({'{page}': page}),
+                link: whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : page }),
+                contents: page
+            }]) %}
+        {% endif %}
+    {% endfor %}
+
+    {# next/first #}
+    {% if pagination.currentPage < pagination.totalPages %}
+        {% set paginationLinks = paginationLinks|merge([{
+            is_current: false,
+            title: 'whatwedo_table.pagination.next_page'|trans,
+            link: whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : pagination.currentPage + 1 }),
+            contents: bootstrap_icon('chevron-right')
+        }]) %}
+        {% set paginationLinks = paginationLinks|merge([{
+            is_current: false,
+            title: 'whatwedo_table.pagination.last_page'|trans,
+            link: whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : pagination.totalPages }),
+            contents: bootstrap_icon('chevron-bar-right')
+        }]) %}
+    {% endif %}
+
+    <footer class="whatwedo_table--footer">
+        <div class="whatwedo_table--footer--pagination">
+            <div>
+                <p>
+                    {% set offsetResults = 0 %}
+                    {% if table.rows|length %}{% set offsetResults = pagination.offsetResults + 1 %}{% endif %}
+
+                    {{ 'whatwedo_table.foot.result'|trans({
+                        '{offsetResults}': offsetResults,
+                        '{offsetLength}': pagination.offsetResults + table.rows|length,
+                        '{totalResults}': pagination.totalResults
+                    }) }}
+                </p>
+
+                <div
+                    {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}
+                    class="whatwedo_table--footer--pagination--limit"
+                >
+                    <button data-action="whatwedo--core-bundle--dropdown#toggle" type="button">
+                        {{ 'whatwedo_table.amount_entries'|trans({'{amount}': table.paginationExtension.limit}) }}
+                        {{ bootstrap_icon('chevron-up') }}
+                    </button>
+
+                    <div class="hidden whatwedo_table--footer--pagination--limit--dropdown" data-whatwedo--core-bundle--dropdown-target="dropdown">
+                        <div>
+                            {% for limit in table.option('limit_choices')|filter(limit => limit != table.paginationExtension.limit) %}
+                                <a href="{{ whatwedo_table_path_replace_arguments({
+                                    (whatwedo_table_parameter(table, 'limit')): limit,
+                                    (whatwedo_table_parameter(table, 'page')): null
+                                }) }}">
+                                    {{- 'whatwedo_table.amount_entries'|trans({'{amount}': limit}) -}}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <nav>
+                    {% for link in paginationLinks %}
+                        <a href="{{ link.link }}" title="{{ link.title }}" {% if link.is_current %}class="current"{% endif %}>
+                            {{ link.contents|raw }}
+                        </a>
+                    {% endfor %}
+                </nav>
+            </div>
+        </div>
+    </footer>
+{% endif %}

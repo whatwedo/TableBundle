@@ -1,29 +1,6 @@
 <?php
-/*
- * Copyright (c) 2016, whatwedo GmbH
- * All rights reserved
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
+
+declare(strict_types=1);
 
 namespace whatwedo\TableBundle\Filter\Type;
 
@@ -31,21 +8,21 @@ use Doctrine\ORM\QueryBuilder;
 
 class TextFilterType extends FilterType
 {
-    const CRITERIA_EQUAL = 'equal';
+    public const CRITERIA_EQUAL = 'equal';
 
-    const CRITERIA_NOT_EQUAL = 'not_equal';
+    public const CRITERIA_NOT_EQUAL = 'not_equal';
 
-    const CRITERIA_STARTS_WITH = 'starts_with';
+    public const CRITERIA_STARTS_WITH = 'starts_with';
 
-    const CRITERIA_ENDS_WITH = 'ends_with';
+    public const CRITERIA_ENDS_WITH = 'ends_with';
 
-    const CRITERIA_CONTAINS = 'contains';
+    public const CRITERIA_CONTAINS = 'contains';
 
-    const CRITERIA_IS_EMPTY = 'is_empty';
+    public const CRITERIA_IS_EMPTY = 'is_empty';
 
-    const CRITERIA_IS_NOT_EMPTY = 'is_not_empty';
+    public const CRITERIA_IS_NOT_EMPTY = 'is_not_empty';
 
-    public function getOperators()
+    public function getOperators(): array
     {
         return [
             static::CRITERIA_EQUAL => 'whatwedo_table.filter.operator.equal',
@@ -58,7 +35,7 @@ class TextFilterType extends FilterType
         ];
     }
 
-    public function getValueField($value = '')
+    public function getValueField(?string $value = ''): string
     {
         return sprintf(
             '<input type="text" name="{name}" value="%s" class="form-control">',
@@ -66,40 +43,46 @@ class TextFilterType extends FilterType
         );
     }
 
-    public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
+    public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder): ?string
     {
         switch ($operator) {
             case static::CRITERIA_EQUAL:
                 $queryBuilder->setParameter($parameterName, $value);
 
-                return $queryBuilder->expr()->eq($this->getColumn(), sprintf(':%s', $parameterName));
+                return $queryBuilder->expr()->eq($this->getColumn(), ':' . $parameterName);
+
             case static::CRITERIA_NOT_EQUAL:
                 $queryBuilder->setParameter($parameterName, $value);
 
-                return $queryBuilder->expr()->neq($this->getColumn(), sprintf(':%s', $parameterName));
+                return $queryBuilder->expr()->neq($this->getColumn(), ':' . $parameterName);
+
             case static::CRITERIA_STARTS_WITH:
-                $queryBuilder->setParameter($parameterName, $value.'%');
+                $queryBuilder->setParameter($parameterName, $value . '%');
 
-                return $queryBuilder->expr()->like($this->getColumn(), sprintf(':%s', $parameterName));
+                return $queryBuilder->expr()->like($this->getColumn(), ':' . $parameterName);
+
             case static::CRITERIA_ENDS_WITH:
-                $queryBuilder->setParameter($parameterName, '%'.$value);
+                $queryBuilder->setParameter($parameterName, '%' . $value);
 
-                return $queryBuilder->expr()->like($this->getColumn(), sprintf(':%s', $parameterName));
+                return $queryBuilder->expr()->like($this->getColumn(), ':' . $parameterName);
+
             case static::CRITERIA_CONTAINS:
-                $queryBuilder->setParameter($parameterName, '%'.$value.'%');
+                $queryBuilder->setParameter($parameterName, '%' . $value . '%');
 
-                return $queryBuilder->expr()->like($this->getColumn(), sprintf(':%s', $parameterName));
+                return $queryBuilder->expr()->like($this->getColumn(), ':' . $parameterName);
+
             case static::CRITERIA_IS_EMPTY:
                 $queryBuilder->setParameter($parameterName, '');
 
                 return $queryBuilder->expr()->orX()->addMultiple([
                     $queryBuilder->expr()->isNull($this->getColumn()),
-                    $queryBuilder->expr()->eq($this->getColumn(), sprintf(':%s', $parameterName)),
+                    $queryBuilder->expr()->eq($this->getColumn(), ':' . $parameterName),
                 ]);
+
             case static::CRITERIA_IS_NOT_EMPTY:
                 $queryBuilder->setParameter($parameterName, '');
 
-                return $queryBuilder->expr()->gt($this->getColumn(), sprintf(':%s', $parameterName));
+                return $queryBuilder->expr()->gt($this->getColumn(), ':' . $parameterName);
         }
 
         return false;

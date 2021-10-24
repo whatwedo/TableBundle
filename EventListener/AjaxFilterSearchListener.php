@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
@@ -27,41 +29,28 @@
 
 namespace whatwedo\TableBundle\EventListener;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use whatwedo\SearchBundle\Repository\IndexRepository;
 use whatwedo\SearchBundle\whatwedoSearchBundle;
 use whatwedo\TableBundle\Event\ResultRequestEvent;
 
+/**
+ * @TODO needs refactoring
+ */
 class AjaxFilterSearchListener
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @var IndexRepository
-     */
-    protected $indexRepository;
-
-    /**
-     * @var array
-     */
-    protected $kernelBundles;
-
-    public function __construct(EntityManagerInterface $em, array $kernelBundles, IndexRepository $indexRepository)
-    {
-        $this->em = $em;
-        $this->kernelBundles = $kernelBundles;
-        $this->indexRepository = $indexRepository;
+    public function __construct(
+        protected EntityManagerInterface $entityManager,
+        protected array $kernelBundles,
+        protected IndexRepository $indexRepository
+    ) {
     }
 
     public function searchResultSet(ResultRequestEvent $requestEvent)
     {
         // check if whatwedo serach bundle is enabled
-        if (!\in_array(whatwedoSearchBundle::class, $this->kernelBundles, true)) {
+        if (! \in_array(whatwedoSearchBundle::class, $this->kernelBundles, true)) {
             $result = new \stdClass();
             $result->items = [];
             $result->error = false;
@@ -73,11 +62,11 @@ class AjaxFilterSearchListener
         $term = $requestEvent->getTerm();
         $result = new \stdClass();
         $result->error = true;
-        if (false !== $class && false !== $term) {
+        if ($class !== false && $term !== false) {
             $ids = $this->indexRepository->search($term, $class);
-            $queryBuilder = $requestEvent->getQueryBuilder() ?: $this->em->getRepository($class)
+            $queryBuilder = $requestEvent->getQueryBuilder() ?: $this->entityManager->getRepository($class)
                 ->createQueryBuilder('e');
-            $entities = $queryBuilder->andWhere($queryBuilder->getRootAliases()[0].'.id IN (:ids)')
+            $entities = $queryBuilder->andWhere($queryBuilder->getRootAliases()[0] . '.id IN (:ids)')
                 ->setParameter('ids', $ids)
                 ->getQuery()
                 ->getResult();

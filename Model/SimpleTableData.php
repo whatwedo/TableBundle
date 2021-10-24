@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
@@ -29,44 +31,26 @@ namespace whatwedo\TableBundle\Model;
 
 class SimpleTableData implements TableDataInterface
 {
-    /**
-     * @var array
-     */
-    protected $results;
+    protected \Traversable $results;
 
-    /**
-     * @var int
-     */
-    protected $totalResults;
+    protected int $totalResults;
 
-    /**
-     * @return array
-     */
-    public function getResults()
+    public function getResults(): \Traversable
     {
         return $this->results;
     }
 
-    /**
-     * @param array $results
-     */
-    public function setResults($results)
+    public function setResults(\Traversable $results): void
     {
         $this->results = $results;
     }
 
-    /**
-     * @return int
-     */
-    public function getTotalResults()
+    public function getTotalResults(): int
     {
         return $this->totalResults;
     }
 
-    /**
-     * @param int $totalResults
-     */
-    public function setTotalResults($totalResults)
+    public function setTotalResults(int $totalResults): void
     {
         $this->totalResults = $totalResults;
     }

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
@@ -27,14 +29,13 @@
 
 namespace whatwedo\TableBundle\Extension;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\RequestStack;
 use whatwedo\TableBundle\Builder\FilterBuilder;
 use whatwedo\TableBundle\Entity\Filter as FilterEntity;
@@ -49,34 +50,25 @@ use whatwedo\TableBundle\Filter\Type\FilterTypeInterface;
 use whatwedo\TableBundle\Filter\Type\NumberFilterType;
 use whatwedo\TableBundle\Filter\Type\SimpleEnumFilterType;
 use whatwedo\TableBundle\Filter\Type\TextFilterType;
+use whatwedo\TableBundle\Helper\RouterHelper;
 use whatwedo\TableBundle\Table\DoctrineTable;
 use whatwedo\TableBundle\Table\Filter;
 
 class FilterExtension extends AbstractExtension
 {
-    const QUERY_PREDEFINED_FILTER = 'predefined_filter';
-
-    /**
-     * @var Registry
-     */
-    protected $doctrine;
-
-    /**
-     * @var RequestStack
-     */
-    protected $requestStack;
+    public const QUERY_PREDEFINED_FILTER = 'predefined_filter';
 
     /**
      * @var Filter[]
      */
-    protected $filters = [];
+    protected array $filters = [];
 
     /**
      * @var Filter[]
      */
-    protected $predefinedFilters = [];
+    protected array $predefinedFilters = [];
 
-    private $scalarType = [
+    private array $scalarType = [
         'string' => TextFilterType::class,
         'text' => TextFilterType::class,
         'date' => DateFilterType::class,
@@ -87,21 +79,16 @@ class FilterExtension extends AbstractExtension
         'boolean' => BooleanFilterType::class,
     ];
 
-    private $relationType = [
+    private array $relationType = [
         OneToMany::class => AjaxOneToManyFilterType::class,
         ManyToOne::class => AjaxRelationFilterType::class,
         ManyToMany::class => AjaxManyToManyFilterType::class,
     ];
 
-    /**
-     * FilterExtension constructor.
-     *
-     * @param Registry $doctrine
-     */
-    public function __construct(ManagerRegistry $doctrine, RequestStack $requestStack)
-    {
-        $this->doctrine = $doctrine;
-        $this->requestStack = $requestStack;
+    public function __construct(
+        protected EntityManagerInterface $entityManager,
+        protected RequestStack $requestStack
+    ) {
     }
 
     /**
@@ -110,6 +97,7 @@ class FilterExtension extends AbstractExtension
     public function addFilter(string $acronym, string $name, FilterTypeInterface $type)
     {
         $this->filters[$acronym] = new Filter($acronym, $name, $type);
+
         return $this;
     }
 
@@ -142,7 +130,7 @@ class FilterExtension extends AbstractExtension
      */
     public function getFilter($acronym)
     {
-        if (!isset($this->filters[$acronym])) {
+        if (! isset($this->filters[$acronym])) {
             throw new InvalidFilterAcronymException($acronym);
         }
 
@@ -161,6 +149,7 @@ class FilterExtension extends AbstractExtension
      * @param $acronym
      * @param $label
      *M
+     *
      * @return $this
      */
     public function overrideFilterName($acronym, $label)
@@ -180,7 +169,6 @@ class FilterExtension extends AbstractExtension
     {
         $filter = $this->getFilter($acronym);
         $name = $filter->getName();
-        $name = $filter->getName();
         $column = $filter->getType()->getColumn();
         $this->filters[$acronym] = new Filter($acronym, $name, new SimpleEnumFilterType($column, [], $class));
 
@@ -195,7 +183,7 @@ class FilterExtension extends AbstractExtension
      */
     public function getSavedFilter($username, $route)
     {
-        return $this->doctrine->getRepository(FilterEntity::class)->findSavedFilter($route, $username);
+        return $this->entityManager->getRepository(FilterEntity::class)->findSaved($route, $username);
     }
 
     /**
@@ -207,7 +195,8 @@ class FilterExtension extends AbstractExtension
      */
     public function addFiltersAutomatically(DoctrineTable $table, callable $labelCallable = null, array $propertyNames = null)
     {
-        $queryBuilder = $table->getQueryBuilder();
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = $table->getOption('query_builder');
         $entityClass = $queryBuilder->getRootEntities()[0];
 
         $reflectionClass = new \ReflectionClass($entityClass);
@@ -230,7 +219,7 @@ class FilterExtension extends AbstractExtension
      */
     public function predefineFilter($id, $acronym, $operator, $value)
     {
-        return new FilterBuilder($id, $acronym, $operator, $value, $this);
+        return new FilterBuilder($this, $id, $acronym, $operator, $value);
     }
 
     /**
@@ -319,10 +308,8 @@ class FilterExtension extends AbstractExtension
 
     /**
      * @param $enabledBundles
-     *
-     * @return bool
      */
-    public static function isEnabled($enabledBundles)
+    public static function isEnabled(array $enabledBundles): bool
     {
         return true;
     }
@@ -330,7 +317,7 @@ class FilterExtension extends AbstractExtension
     private static function labelCallable(DoctrineTable $table, $property)
     {
         foreach ($table->getColumns() as $column) {
-            if ($column->getAcronym() === $property) {
+            if ($column->getIdentifier() === $property) {
                 return $column->getLabel() ?: ucfirst($property);
             }
         }
@@ -369,26 +356,30 @@ class FilterExtension extends AbstractExtension
             }
 
             if ($annotation instanceof ManyToMany) {
-                $this->addFilter($acronymNoSuffix, $label, new $this->relationType[\get_class($annotation)]($accessor, $annotation->targetEntity, $this->doctrine));
+                $this->addFilter($acronymNoSuffix, $label, new $this->relationType[\get_class($annotation)]($accessor, $annotation->targetEntity, $this->entityManager));
+
                 return $this->getFilter($acronymNoSuffix);
             }
 
             if ($annotation instanceof OneToMany || $annotation instanceof ManyToOne) {
                 if ($annotation instanceof ManyToMany) {
-                    $this->addFilter($acronymNoSuffix, $label, new $filterType($acronym, $target, $this->doctrine));
+                    $this->addFilter($acronymNoSuffix, $label, new $filterType($acronym, $target, $this->entityManager));
+
                     return $this->getFilter($acronymNoSuffix);
                 }
 
                 $target = $annotation->targetEntity;
-                if (false === mb_strpos($target, '\\')) {
-                    $target = $namespace.'\\'.$target;
+                if (mb_strpos($target, '\\') === false) {
+                    $target = $namespace . '\\' . $target;
                 }
 
                 $filterType = $this->relationType[\get_class($annotation)];
 
-                $joins = !$isPropertySelected ? [$acronym => $accessor] : [];
+                $joins = ! $isPropertySelected ? [
+                    $acronym => $accessor,
+                ] : [];
 
-                $this->addFilter($acronymNoSuffix, $label, new $filterType($acronym, $target, $this->doctrine, $joins));
+                $this->addFilter($acronymNoSuffix, $label, new $filterType($acronym, $target, $this->entityManager, $joins));
 
                 return $this->getFilter($acronymNoSuffix);
             }
@@ -397,8 +388,8 @@ class FilterExtension extends AbstractExtension
 
     private function getFromRequest(string $param)
     {
-        $value = $this->getRequest()->query->get($this->getActionQueryParameter($param), []);
-        $predefined = $this->getPredefinedFilter($this->getRequest()->query->get($this->getActionQueryParameter(static::QUERY_PREDEFINED_FILTER), ''));
+        $value = $this->getRequest()->query->get(RouterHelper::getParameterName($this->table, $param), []);
+        $predefined = $this->getPredefinedFilter($this->getRequest()->query->get(RouterHelper::getParameterName($this->table, RouterHelper::PARAMETER_FILTER_PREDEFINED), ''));
 
         return $predefined ? array_merge($value, $predefined[$param]) : $value;
     }

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
@@ -30,8 +32,14 @@ namespace whatwedo\TableBundle\Repository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use whatwedo\TableBundle\Entity\Filter;
-use whatwedo\TableBundle\Enum\FilterStateEnum;
+use whatwedo\TableBundle\Enum\FilterType;
 
+/**
+ * @method Filter|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Filter|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Filter[]    findAll()
+ * @method Filter[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
 class FilterRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -40,12 +48,9 @@ class FilterRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param string $path     Route-Path
-     * @param string $username Username
-     *
      * @return Filter[]
      */
-    public function findSavedFilter($path, $username)
+    public function findSaved(string $path, string $username): array
     {
         $qb = $this->createQueryBuilder('f');
 
@@ -54,12 +59,12 @@ class FilterRepository extends ServiceEntityRepository
                 $qb->expr()->eq('f.route', ':path'),
                 $qb->expr()->orX(
                     $qb->expr()->orX(
-                        $qb->expr()->eq('f.state', FilterStateEnum::ALL),
-                        $qb->expr()->eq('f.state', FilterStateEnum::SYSTEM)
+                        $qb->expr()->eq('f.state', FilterType::PUBLIC),
+                        $qb->expr()->eq('f.state', FilterType::SYSTEM)
                     ),
                     $qb->expr()->andX(
-                        $qb->expr()->eq('f.state', FilterStateEnum::SELF),
-                        $qb->expr()->eq('f.creatorUsername', ':username')
+                        $qb->expr()->eq('f.state', FilterType::PRIVATE),
+                        $qb->expr()->eq('f.createdByUsername', ':username')
                     )
                 )
             )

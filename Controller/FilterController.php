@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
@@ -32,43 +34,28 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use whatwedo\TableBundle\Entity\Filter;
-use whatwedo\TableBundle\Enum\FilterStateEnum;
+use whatwedo\TableBundle\Enum\FilterType;
 use whatwedo\TableBundle\Event\ResultRequestEvent;
 use whatwedo\TableBundle\Manager\QueryBuilderManager;
 
+/**
+ * @todo needs refactoring
+ */
+#[AsController]
 class FilterController extends AbstractController
 {
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-
-    /**
-     * @var QueryBuilderManager
-     */
-    private $queryBuilderManager;
-
-    public function __construct(RouterInterface $router, EntityManagerInterface $entityManager, EventDispatcherInterface $eventDispatcher, QueryBuilderManager $queryBuilderManager)
-    {
-        $this->router = $router;
-        $this->entityManager = $entityManager;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->queryBuilderManager = $queryBuilderManager;
+    public function __construct(
+        private RouterInterface $router,
+        private EntityManagerInterface $entityManager,
+        private EventDispatcherInterface $eventDispatcher,
+        private QueryBuilderManager $queryBuilderManager
+    ) {
     }
 
     /**
@@ -81,18 +68,18 @@ class FilterController extends AbstractController
         $filter = new Filter();
         $filter->setName($request->request->get('filter_name'));
         $filter->setDescription($request->request->get('filter_description'));
-        $filter->setState($request->request->getBoolean('filter_public') ? FilterStateEnum::ALL : FilterStateEnum::SELF);
+        $filter->setType($request->request->getBoolean('filter_public') ? FilterType::ALL : FilterType::SELF);
         $filter->setCreatorUsername($this->getUser()->getUsername());
 
         $filter->setRoute($request->request->get('filter_route'));
         $filter->setArguments(json_decode($request->request->get('filter_route_arguments'), true));
         $filter->setConditions(json_decode($request->get('filter_conditions'), true));
 
-        if (!\is_array($filter->getConditions()) || !\is_array($filter->getArguments())) {
+        if (! \is_array($filter->getConditions()) || ! \is_array($filter->getArguments())) {
             throw new BadRequestHttpException();
         }
 
-        if (null === $this->router->getRouteCollection()->get($filter->getRoute())) {
+        if ($this->router->getRouteCollection()->get($filter->getRoute()) === null) {
             throw new BadRequestHttpException();
         }
 
@@ -112,7 +99,7 @@ class FilterController extends AbstractController
      */
     public function deleteAction(Filter $filter, Request $request)
     {
-        if (!$this->isCsrfTokenValid('token', $request->get('token'))) {
+        if (! $this->isCsrfTokenValid('token', $request->get('token'))) {
             throw new InvalidCsrfTokenException('Invalid CSRF token');
         }
 
@@ -137,6 +124,7 @@ class FilterController extends AbstractController
         $resultRequestEvent = new ResultRequestEvent($class, $term);
         $resultRequestEvent->setQueryBuilder($this->queryBuilderManager->getQueryBuilderForEntity($class));
         $this->eventDispatcher->dispatch($resultRequestEvent, ResultRequestEvent::FILTER_SET);
+
         return $resultRequestEvent->getResult();
     }
 }

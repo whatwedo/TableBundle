@@ -2,7 +2,6 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
-        public: false
 
         bind:
             $kernelBundles: '%kernel.bundles%'
@@ -29,4 +28,4 @@ services:
 
     whatwedo\TableBundle\Manager\QueryBuilderManager:
         arguments:
-            - !tagged_iterator 'table_bundle.query_builder_provider'
+            - !tagged_iterator 'whatwedo_table.query_builder_provider'

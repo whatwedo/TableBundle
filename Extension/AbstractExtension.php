@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
@@ -27,27 +29,16 @@
 
 namespace whatwedo\TableBundle\Extension;
 
+use whatwedo\TableBundle\Table\Table;
+
 abstract class AbstractExtension implements ExtensionInterface
 {
-    protected $tableIdentifier;
+    protected Table $table;
 
-    /**
-     * @return $this
-     */
-    public function setTableIdentifier($tableIdentifier)
+    public function setTable(Table $table): static
     {
-        $this->tableIdentifier = $tableIdentifier;
+        $this->table = $table;
 
         return $this;
-    }
-
-    /**
-     * @param $action
-     *
-     * @return string
-     */
-    public function getActionQueryParameter($action)
-    {
-        return sprintf('%s_%s', str_replace('.', '_', $this->tableIdentifier), $action);
     }
 }

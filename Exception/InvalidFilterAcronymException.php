@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
@@ -31,7 +33,7 @@ class InvalidFilterAcronymException extends \InvalidArgumentException
 {
     public function __construct($acronym, $message = '', $code = 0, \Throwable $previous = null)
     {
-        if (!$message) {
+        if (! $message) {
             $message = sprintf(
                 'There is no filter configured with the acronym "%s".',
                 htmlentities($acronym)

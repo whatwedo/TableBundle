@@ -1,0 +1,34 @@
+{# Table Title #}
+<header class="whatwedo_table--header">
+    {% if table.option('title') %}
+        <div class="whatwedo_table--header--title">
+            <h1>
+                {{ table.option('title') }}
+            </h1>
+        </div>
+    {% endif %}
+    <div class="whatwedo_table--header--toolbar">
+        <button type="button">
+            {{ bootstrap_icon('download', { class: 'w-4 h-4' }) }}
+        </button>
+
+        {% if table.filterExtension and table.filterExtension.filters|length > 0 %}
+        <button type="button" data-action="whatwedo--table-bundle--filter#open">
+            {{ bootstrap_icon('funnel-fill', { class: 'w-4 h-4' }) }}
+        </button>
+        {% endif %}
+
+        {% if table.searchExtension and table.option('searchable') %}
+        <form action="{{ whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : 1 }) }}" class="whatwedo_table--header--toolbar--search">
+            <div>
+                <div>
+                    <input type="search" name="{{ whatwedo_table_parameter(table, 'query') }}" placeholder="Suchbegriff ..." value="{{ table.searchExtension.query }}">
+                </div>
+                <button type="submit">
+                    {{ bootstrap_icon('search', { class: 'h-4 w-4 text-gray-400', alt: 'Suchen' }) }}
+                </button>
+            </div>
+        </form>
+        {% endif %}
+    </div>
+</header>

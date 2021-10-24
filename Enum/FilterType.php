@@ -1,6 +1,8 @@
 <?php
+
+declare(strict_types=1);
 /*
- * Copyright (c) 2016, whatwedo GmbH
+ * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,47 +27,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Table;
+namespace whatwedo\TableBundle\Enum;
 
-class ColumnReflection
+enum FilterType
 {
-    /**
-     * @var ColumnInterface
-     */
-    protected $column;
-
-    /**
-     * @var object
-     */
-    protected $row;
-
-    public function __construct(ColumnInterface $column, $row)
-    {
-        $this->column = $column;
-        $this->row = $row;
-    }
-
-    /**
-     * @return ColumnInterface
-     */
-    public function getColumn()
-    {
-        return $this->column;
-    }
-
-    /**
-     * @return object
-     */
-    public function getRow()
-    {
-        return $this->row;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return (string) $this->column->render($this->row);
-    }
+    case PUBLIC;
+    case PRIVATE;
+    case SYSTEM;
 }

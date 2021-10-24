@@ -13,7 +13,7 @@ whatwedo_table:
     no_results: Keine Resultate gefunden
     delete_filter: Filter Löschen
     restore_filter: Aktiviere Filter
-    entries: '%num% Einträge'
+    amount_entries: '{amount} Einträge'
     unknown: unbekannt
     search:
         filter: Filter
@@ -24,13 +24,14 @@ whatwedo_table:
         all: Alle
         actual: Aktuelle Ergebnisse (Seite %current_page%)
     foot:
-        result: Resultat %offsetResults% bis %offsetLength% von %totalResults%
+        result: Resultat {offsetResults} bis {offsetLength} von {totalResults}
     pagination:
-        first_page: Erste Seite
-        previous_page: Vorherige Seite
-        current_page: (aktuelle Seite)
-        next_page: Nächste Seite
-        last_page: Letzte Seite
+        first_page: erste Seite
+        previous_page: vorherige Seite
+        current_page: aktuelle Seite
+        page_num: Seite {page}
+        next_page: nächste Seite
+        last_page: letzte Seite
     filter:
         operator:
             contains: enthält

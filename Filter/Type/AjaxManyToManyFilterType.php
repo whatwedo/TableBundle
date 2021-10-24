@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
@@ -31,24 +33,21 @@ use Doctrine\ORM\QueryBuilder;
 
 class AjaxManyToManyFilterType extends AjaxOneToManyFilterType
 {
-    /**
-     * @param string $operator
-     * @param string $parameterName
-     *
-     * @return bool|\Doctrine\ORM\Query\Expr\Comparison|string
-     */
-    public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
+    public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder): ?string
     {
-        $targetParameter = 'target_'.md5(rand());
-        $targetValue = $this->doctrine->getRepository($this->targetClass)->find($value);
-        $queryBuilder->setParameter($targetParameter, $targetValue);
+        $targetParameter = 'target_' . hash('crc32', random_bytes(10));
+        $queryBuilder->setParameter(
+            $targetParameter,
+            $this->entityManager->getRepository($this->targetClass)->find($value)
+        );
+
         switch ($operator) {
             case static::CRITERIA_EQUAL:
-                return $queryBuilder->expr()->isMemberOf(':'.$targetParameter, $this->column);
+                return $queryBuilder->expr()->isMemberOf(':' . $targetParameter, $this->column);
             case static::CRITERIA_NOT_EQUAL:
-                return sprintf(':%s NOT MEMBER OF %s', $targetParameter, $this->column);
+                return $queryBuilder->expr()->not($queryBuilder->expr()->isMemberOf($targetParameter, $this->column));
         }
 
-        return false;
+        return null;
     }
 }

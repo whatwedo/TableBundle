@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
@@ -28,21 +30,12 @@
 namespace whatwedo\TableBundle\Extension;
 
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use whatwedo\TableBundle\Table\Table;
 
-#[Autoconfigure(tags: ['table.extension'])]
+#[Autoconfigure(tags: ['whatwedo.table_bundle.extension'])]
 interface ExtensionInterface
 {
-    /**
-     * returns true if extension is enabled.
-     *
-     * @return bool
-     */
-    public static function isEnabled($enabledBundles);
+    public static function isEnabled(array $enabledBundles): bool;
 
-    /**
-     * @param string $identifier
-     *
-     * @return self
-     */
-    public function setTableIdentifier($identifier);
+    public function setTable(Table $table): static;
 }

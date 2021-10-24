@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
@@ -34,42 +36,25 @@ use whatwedo\TableBundle\Extension\FilterExtension;
  */
 class FilterBuilder
 {
-    /**
-     * @var string
-     */
-    protected $id;
-
-    protected $filterExtension;
-
-    protected $filters = [
+    protected array $filters = [
         'filter_column' => [],
         'filter_operator' => [],
         'filter_value' => [],
     ];
 
-    /**
-     * @param string $id
-     * @param string $acronym
-     * @param string $operator
-     * @param string $value
-     */
-    public function __construct($id, $acronym, $operator, $value, FilterExtension $filterExtension)
-    {
-        $this->id = $id;
-        $this->filterExtension = $filterExtension;
+    public function __construct(
+        protected FilterExtension $filterExtension,
+        protected string $id,
+        string $acronym,
+        string $operator,
+        string $value
+    ) {
         $this->or($acronym, $operator, $value);
     }
 
-    /**
-     * @param string $acronym
-     * @param string $operator
-     * @param string $value
-     *
-     * @return $this
-     */
-    public function and($acronym, $operator, $value)
+    public function and(string $acronym, string $operator, string $value): self
     {
-        $idx = \count($this->filters['filter_column']) - 1;
+        $idx = count($this->filters['filter_column']) - 1;
         $this->filters['filter_column'][$idx][] = $acronym;
         $this->filters['filter_operator'][$idx][] = $operator;
         $this->filters['filter_value'][$idx][] = $value;
@@ -77,14 +62,7 @@ class FilterBuilder
         return $this;
     }
 
-    /**
-     * @param string $acronym
-     * @param string $operator
-     * @param string $value
-     *
-     * @return $this
-     */
-    public function or($acronym, $operator, $value)
+    public function or(string $acronym, string $operator, string $value): self
     {
         $this->filters['filter_column'][] = [$acronym];
         $this->filters['filter_operator'][] = [$operator];
@@ -93,10 +71,7 @@ class FilterBuilder
         return $this;
     }
 
-    /**
-     * @return FilterExtension
-     */
-    public function end()
+    public function end(): FilterExtension
     {
         return $this->filterExtension->addPredefinedFilter($this->id, $this->filters);
     }

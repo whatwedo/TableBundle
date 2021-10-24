@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
@@ -27,40 +29,13 @@
 
 namespace whatwedo\TableBundle\Table;
 
-use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Twig\Environment;
-use whatwedo\CoreBundle\Manager\FormatterManager;
-use whatwedo\TableBundle\Extension\ExtensionInterface;
 use whatwedo\TableBundle\Model\SimpleTableData;
 
 class DoctrineTable extends Table
 {
-    /**
-     * Table constructor.
-     *
-     * @param string               $identifier
-     * @param array                $options
-     * @param ExtensionInterface[] $extensions
-     *
-     * @internal param FilterRepository $filterRepository
-     */
-    public function __construct(
-        $identifier,
-        $options,
-        EventDispatcherInterface $eventDispatcher,
-        RequestStack $requestStack,
-        Environment $templating,
-        FormatterManager $formatterManager,
-        array $extensions
-    ) {
-        parent::__construct($identifier, $options, $eventDispatcher, $requestStack, $templating, $formatterManager, $extensions);
-    }
-
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 
@@ -70,33 +45,19 @@ class DoctrineTable extends Table
         $resolver->setRequired('query_builder');
     }
 
-    /**
-     * @return QueryBuilder
-     */
-    public function getQueryBuilder()
-    {
-        return $this->options['query_builder'];
-    }
-
-    /**
-     * Doctrine table data loader.
-     *
-     * @param int $page
-     * @param int $limit
-     *
-     * @return SimpleTableData
-     */
     public function dataLoader($page, $limit)
     {
         if ($limit > 0) {
-            $this->getQueryBuilder()->setMaxResults($limit);
-            $this->getQueryBuilder()->setFirstResult(($page - 1) * $limit);
+            /* @noinspection NullPointerExceptionInspection */
+            $this->getOption('query_builder')->setMaxResults($limit);
+            /* @noinspection NullPointerExceptionInspection */
+            $this->getOption('query_builder')->setFirstResult(($page - 1) * $limit);
         }
 
-        $paginator = new Paginator($this->getQueryBuilder());
+        $paginator = new Paginator($this->getOption('query_builder'));
         $tableData = new SimpleTableData();
         $tableData->setTotalResults(\count($paginator));
-        $tableData->setResults(iterator_to_array($paginator->getIterator()));
+        $tableData->setResults($paginator->getIterator());
 
         return $tableData;
     }

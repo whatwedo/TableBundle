@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
@@ -37,82 +39,44 @@ use whatwedo\TableBundle\Table\Table;
 
 class TableFactory
 {
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
+    protected array $extensions = [];
 
-    /**
-     * @var RequestStack
-     */
-    protected $requestStack;
-
-    /**
-     * @var Environment
-     */
-    protected $templating;
-
-    /**
-     * @var FormatterManager
-     */
-    protected $formatterManager;
-
-    /**
-     * @var ExtensionInterface[]
-     */
-    protected $extensions = [];
-
-    /**
-     * TableFactory constructor.
-     */
     public function __construct(
-        EventDispatcherInterface $eventDispatcher,
-        RequestStack $requestStack,
-        Environment $templating,
-        FormatterManager $formatterManager
+        protected EventDispatcherInterface $eventDispatcher,
+        protected RequestStack $requestStack,
+        protected Environment $templating,
+        protected FormatterManager $formatterManager
     ) {
-        $this->eventDispatcher = $eventDispatcher;
-        $this->requestStack = $requestStack;
-        $this->templating = $templating;
-        $this->formatterManager = $formatterManager;
     }
 
-    /**
-     * returns a new table object.
-     *
-     * @param string $identifier
-     * @param array  $options
-     *
-     * @return Table
-     */
-    public function createTable($identifier, $options = [])
+    public function createTable($identifier, $options = []): Table
     {
         return new Table(
             $identifier,
             $options,
             $this->eventDispatcher,
-            $this->requestStack,
             $this->templating,
             $this->formatterManager,
-            $this->extensions
+            $this->extensions,
+            $this->requestStack
         );
     }
 
-    public function createDoctrineTable($identifier, $options = [])
+    public function createDoctrineTable($identifier, $options = []): DoctrineTable
     {
         return new DoctrineTable(
             $identifier,
             $options,
             $this->eventDispatcher,
-            $this->requestStack,
             $this->templating,
             $this->formatterManager,
-            $this->extensions
+            $this->extensions,
+            $this->requestStack
         );
     }
 
-    public function addExtension(ExtensionInterface $extension)
+    public function addExtension(ExtensionInterface $extension): void
     {
-        $this->extensions[\get_class($extension)] = $extension;
+        $this->extensions[$extension::class] = $extension;
     }
 }

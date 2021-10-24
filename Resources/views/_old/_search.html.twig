@@ -2,7 +2,7 @@
 
 {# @var table \whatwedo\TableBundle\Table\Table #}
 <div class="whatwedo_table-search">
-    <form action="{{ whatwedo_table_generate_route_replace_arguments({ (table.actionQueryParameter('page')) : 1 }) }}">
+    <form action="{{ whatwedo_table_path_replace_arguments({ (table.actionQueryParameter('page')) : 1 }) }}">
         <div class="input-group input-group-sm">
             {% if table.searchExtension and table.isSearchable %}
                 <input type="text" class="form-control" placeholder="{{ 'whatwedo_table.search.placeholder'|trans }}" value="{{ table.searchExtension.searchQuery }}" name="{{ table.actionQueryParameter('query') }}">
@@ -23,7 +23,7 @@
                         <i class="fa fa-search"></i>
                     </button>
                     {% if table.searchExtension.searchQuery is not empty %}
-                        <a href="{{ whatwedo_table_generate_route_replace_arguments({
+                        <a href="{{ whatwedo_table_path_replace_arguments({
                             (table.actionQueryParameter('page')) : 1,
                             (table.actionQueryParameter('query')) : ''
                         }) }}" class="btn btn-danger" type="button" title="{{ 'whatwedo_table.search.remove_search'|trans }}">

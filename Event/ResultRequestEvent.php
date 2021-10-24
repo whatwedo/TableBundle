@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
@@ -33,81 +35,34 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class ResultRequestEvent extends Event
 {
-    const FILTER_SET = 'whatwedo_ajax.result_request.filter_set';
+    public const FILTER_SET = 'whatwedo_ajax.result_request.filter_set';
+    public const RELATION_SET = 'whatwedo_ajax.result_request.relation_set';
 
-    const RELATION_SET = 'whatwedo_ajax.result_request.relation_set';
+    protected ?JsonResponse $result = null;
+    protected ?QueryBuilder $queryBuilder = null;
 
-    /**
-     * @var JsonResponse
-     */
-    protected $result;
+    public function __construct(protected string $entity, protected string $term) { }
 
-    /**
-     * @var string
-     */
-    protected $entity;
-
-    /**
-     * @var string
-     */
-    protected $term;
-
-    /**
-     * @var QueryBuilder|null
-     */
-    protected $queryBuilder;
-
-    /**
-     * ResultRequestEvent constructor.
-     *
-     * @param string $entity
-     * @param string $term
-     */
-    public function __construct($entity, $term)
-    {
-        $this->entity = $entity;
-        $this->term = $term;
-    }
-
-    /**
-     * @return JsonResponse
-     */
-    public function getResult()
-    {
-        return $this->result;
-    }
-
-    /**
-     * @param JsonResponse $result
-     *
-     * @return $this
-     */
-    public function setResult($result)
-    {
-        $this->result = $result;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEntity()
+    public function getEntity(): string
     {
         return $this->entity;
     }
 
-    public function setEntity(string $entity): void
-    {
-        $this->entity = $entity;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTerm()
+    public function getTerm(): string
     {
         return $this->term;
+    }
+
+    public function getResult(): ?JsonResponse
+    {
+        return $this->result;
+    }
+
+    public function setResult(JsonResponse $result): static
+    {
+        $this->result = $result;
+
+        return $this;
     }
 
     public function getQueryBuilder(): ?QueryBuilder

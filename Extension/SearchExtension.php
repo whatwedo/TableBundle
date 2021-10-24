@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
@@ -27,48 +29,31 @@
 
 namespace whatwedo\TableBundle\Extension;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use whatwedo\SearchBundle\whatwedoSearchBundle;
+use whatwedo\TableBundle\Helper\RouterHelper;
 
 class SearchExtension extends AbstractExtension
 {
-    const QUERY_PARAMETER_QUERY = 'query';
+    public const QUERY_PARAMETER_QUERY = 'query';
 
-    /**
-     * @var RequestStack
-     */
-    protected $requestStack;
+    protected ?Request $request = null;
 
     public function __construct(RequestStack $requestStack)
     {
-        $this->requestStack = $requestStack;
+        $this->request = $requestStack->getCurrentRequest();
     }
 
-    /**
-     * @return string
-     */
-    public function getSearchQuery()
+    public function getQuery(): string
     {
-        return $this->getRequest()->query->get($this->getActionQueryParameter(static::QUERY_PARAMETER_QUERY), '');
+        return $this->request->query->get(RouterHelper::getParameterName($this->table, RouterHelper::PARAMETER_SEARCH_QUERY), '');
     }
 
-    /**
-     * @return \Symfony\Component\HttpFoundation\Request|null
-     */
-    public function getRequest()
-    {
-        return $this->requestStack->getCurrentRequest();
-    }
-
-    /**
-     * @param array $enabledBundles
-     *
-     * @return bool
-     */
-    public static function isEnabled($enabledBundles)
+    public static function isEnabled(array $enabledBundles): bool
     {
         foreach ($enabledBundles as $bundles) {
-            if (\in_array(whatwedoSearchBundle::class, $bundles, true)) {
+            if (in_array(whatwedoSearchBundle::class, $bundles, true)) {
                 return true;
             }
         }

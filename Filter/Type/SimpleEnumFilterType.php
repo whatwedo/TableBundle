@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2017, whatwedo GmbH
  * All rights reserved
@@ -32,24 +34,23 @@ use whatwedo\CoreBundle\Enum\AbstractSimpleEnum;
 
 class SimpleEnumFilterType extends FilterType
 {
-    const CRITERIA_EQUAL = 'equal';
+    public const CRITERIA_EQUAL = 'equal';
 
-    const CRITERIA_NOT_EQUAL = 'not_equal';
+    public const CRITERIA_NOT_EQUAL = 'not_equal';
 
-    /**
-     * FQDN of Enum Class.
-     *
-     * @var string
-     */
-    private $class;
+    public function __construct(
+        $column,
+        array $joins,
+        protected string $enumClass
+    ) {
+        if (! is_subclass_of($this->enumClass, AbstractSimpleEnum::class)) {
+            throw new \InvalidArgumentException('"%s" is not an instance of %s', $this->enumClass, AbstractSimpleEnum::class);
+        }
 
-    public function __construct($column, array $joins, $class)
-    {
         parent::__construct($column, $joins);
-        $this->class = $class;
     }
 
-    public function getOperators()
+    public function getOperators(): array
     {
         return [
             self::CRITERIA_EQUAL => 'whatwedo_table.filter.operator.equal',
@@ -57,17 +58,17 @@ class SimpleEnumFilterType extends FilterType
         ];
     }
 
-    public function getValueField($value = null)
+    public function getValueField(?string $value = null): string
     {
-        /** @var AbstractSimpleEnum $enum */
-        $keys = \call_user_func($this->class.'::getValues');
+        $keys = call_user_func([$this->enumClass, 'getValues']);
+
         $options = '';
         foreach ($keys as $key) {
             $options .= sprintf(
                 '<option value="%s" %s>%s</option>',
                 $key,
                 $key === $value ? 'selected' : '',
-                \call_user_func($this->class.'::getRepresentation', $key)
+                call_user_func([$this->enumClass, 'getRepresentation'], $key)
             );
         }
 
@@ -77,20 +78,17 @@ class SimpleEnumFilterType extends FilterType
         );
     }
 
-    public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
+    public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder): ?string
     {
         $queryBuilder->setParameter($parameterName, $value);
+
         switch ($operator) {
             case self::CRITERIA_EQUAL:
-                return $queryBuilder->expr()->eq(
-                    sprintf(':%s', $parameterName),
-                    sprintf('%s', $this->getColumn())
-                );
+                return $queryBuilder->expr()->eq(':' . $parameterName, $this->getColumn());
             case self::CRITERIA_NOT_EQUAL:
-                return $queryBuilder->expr()->neq(
-                    sprintf(':%s', $parameterName),
-                    sprintf('%s', $this->getColumn())
-                );
+                return $queryBuilder->expr()->neq(':' . $parameterName, $this->getColumn());
         }
+
+        return null;
     }
 }
