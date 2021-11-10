@@ -106,7 +106,7 @@
 
                                 <div class="ml-3 h-7 flex items-center">
                                     <button
-                                        class="rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                        class="rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                                         {{ stimulus_action('whatwedo/table-bundle/filter', 'close') }}
                                         type="button"
                                     >
@@ -128,7 +128,7 @@
                             <div class="mt-4 px-4 pb-4 sm:px-6 flex">
                                 <div class="flex-auto">
                                     <button
-                                        class="px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                        class="px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                                         {{ stimulus_action('whatwedo/table-bundle/filter', 'appendOr') }}
                                         type="button"
                                     >
@@ -139,7 +139,7 @@
                                     <div class="relative inline-block text-left" {{ stimulus_controller('whatwedo/crud-bundle/dropdown') }}>
                                         <div>
                                             <button
-                                                class="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-2.5 py-1.5 bg-white text-xs font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
+                                                class="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-2.5 py-1.5 bg-white text-xs font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-primary"
                                                 {{ stimulus_action('whatwedo/table-bundle/filter', 'toggle') }}
                                                 type="button"
                                             >
@@ -172,10 +172,10 @@
                                 </div>
 
                                 <div class="flex-auto text-right">
-                                    <button type="reset" class="px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    <button type="reset" class="px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-white bg-danger-500 hover:bg-danger-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
                                         Zurücksetzen
                                     </button>
-                                    <button type="submit" class="px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    <button type="submit" class="px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
                                         Filter anwenden
                                     </button>
                                 </div>

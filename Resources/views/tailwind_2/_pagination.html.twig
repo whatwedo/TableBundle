@@ -118,7 +118,7 @@
                 <nav class="whatwedo_table:footer__pagination relative z-0 inline-flex rounded-md shadow-sm -space-x-px text-sm font-medium text-gray-500 bg-white">
                     {% for link in paginationLinks %}
                         <a
-                            class="relative inline-flex items-center w-8 justify-center py-2 border border-gray-300 hover:bg-gray-50 first:rounded-l-md last:rounded-r-md{% if link.is_current %} bg-indigo-50 font-medium text-indigo-600{% endif %}"
+                            class="relative inline-flex items-center w-8 justify-center py-2 border border-gray-300 transition-colors hover:bg-gray-100 first:rounded-l-md last:rounded-r-md{% if link.is_current %} bg-gray-200 font-medium{% endif %}"
                             href="{{ link.link }}"
                             title="{{ link.title }}"
                         >
