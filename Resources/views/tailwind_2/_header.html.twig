@@ -1,19 +1,26 @@
-{# Table Title #}
-<header class="border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between">
+{# Table Header #}
+<header class="whatwedo_table:header border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between">
     {% if table.option('title') %}
-        <div class="flex-1 min-w-0 text-lg font-medium leading-6 text-gray-900 sm:truncate">
+        <div class="whatwedo_table:header__title flex-1 min-w-0 text-lg font-medium leading-6 text-gray-900 sm:truncate">
             <h1>
                 {{ table.option('title') }}
             </h1>
         </div>
     {% endif %}
     <div class="mt-4 flex sm:mt-0 sm:ml-4">
-        <button class="whatwedo_table-button" type="button">
+        <button
+            class="whatwedo_table:header__button whatwedo_table:header__button--download whatwedo_table-button"
+            type="button"
+        >
             {{ bootstrap_icon('download', { class: 'w-4 h-4' }) }}
         </button>
 
         {% if table.filterExtension and table.filterExtension.filters|length > 0 %}
-        <button class="whatwedo_table-button" type="button" data-action="whatwedo--table-bundle--filter#open">
+        <button
+            class="whatwedo_table:header__button whatwedo_table:header__button--filter whatwedo_table-button"
+            type="button"
+            {{ stimulus_action('whatwedo/table-bundle/filter', 'open') }}
+        >
             {{ bootstrap_icon('funnel-fill', { class: 'w-4 h-4' }) }}
         </button>
         {% endif %}
@@ -21,7 +28,7 @@
         {% if table.searchExtension and table.option('searchable') %}
         <form
             action="{{ whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : 1 }) }}"
-            class="inline-flex items-center px-3 ml-2"
+            class="whatwedo_table:header__search inline-flex items-center px-3 ml-2"
         >
             <div class="flex rounded-md shadow-sm">
                 <div class="relative flex items-stretch flex-grow focus-within:z-10">

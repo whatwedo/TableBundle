@@ -49,7 +49,6 @@
     </div>
 {% endmacro %}
 
-
 {% macro filter_group(table, groupIndex) %}
     <div data-whatwedo--table-bundle--filter-target="filterGroup">
         <span
@@ -80,14 +79,14 @@
 {% if table.filterExtension and table.filterExtension.filters|length > 0 %}
     <div
         data-whatwedo--table-bundle--filter-target="filters"
-        class="hidden fixed inset-0 overflow-hidden z-10"
+        class="whatwedo_table:filter__wrapper hidden fixed inset-0 overflow-hidden z-10"
         aria-labelledby="slide-over-title"
         role="dialog"
         aria-modal="true">
         <div class="absolute inset-0 overflow-hidden" data-whatwedo--table-bundle--filter-target="filtersOverlay">
             <div data-action="whatwedo--table-bundle--filter#close" class="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
 
-            <div class="fixed inset-y-0 right-0 pl-10 max-w-full flex" data-whatwedo--table-bundle--filter-target="filtersPanel">
+            <div class="whatwedo_table:filter__inner fixed inset-y-0 right-0 pl-10 max-w-full flex" data-whatwedo--table-bundle--filter-target="filtersPanel">
                 <form action="{{ whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : 1 }) }}" class="w-screen max-w-3xl">
                     <div class="h-full flex flex-col py-6 bg-gray-100 shadow-xl overflow-y-scroll">
                         <div class="px-4 sm:px-6">
