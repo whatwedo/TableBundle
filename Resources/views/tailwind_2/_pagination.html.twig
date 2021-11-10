@@ -70,10 +70,10 @@
         }]) %}
     {% endif %}
 
-    <footer class="whatwedo_table:footer bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+    <footer class="whatwedo_table:footer bg-white px-4 py-3 flex items-center justify-between border-t border-neutral-200 sm:px-6">
         <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
             <div>
-                <p class="text-sm text-gray-700 inline-block">
+                <p class="text-sm text-neutral-700 inline-block">
                     {% set offsetResults = 0 %}
                     {% if table.rows|length %}{% set offsetResults = pagination.offsetResults + 1 %}{% endif %}
 
@@ -101,9 +101,9 @@
                         class="hidden origin-top-right absolute left-0 bottom-10 -mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
                         {{ stimulus_target('whatwedo/core-bundle/dropdown', 'dropdown') }}
                     >
-                        <div class="py-1 text-gray-700 text-sm">
+                        <div class="py-1 text-neutral-700 text-sm">
                             {% for limit in table.option('limit_choices')|filter(limit => limit != table.paginationExtension.limit) %}
-                                <a class="block px-4 py-2 hover:bg-gray-50" href="{{ whatwedo_table_path_replace_arguments({
+                                <a class="block px-4 py-2 hover:bg-neutral-50" href="{{ whatwedo_table_path_replace_arguments({
                                     (whatwedo_table_parameter(table, 'limit')): limit,
                                     (whatwedo_table_parameter(table, 'page')): null
                                 }) }}">
@@ -115,10 +115,10 @@
                 </div>
             </div>
             <div>
-                <nav class="whatwedo_table:footer__pagination relative z-0 inline-flex rounded-md shadow-sm -space-x-px text-sm font-medium text-gray-500 bg-white">
+                <nav class="whatwedo_table:footer__pagination relative z-0 inline-flex rounded-md shadow-sm -space-x-px text-sm font-medium text-neutral-500 bg-white">
                     {% for link in paginationLinks %}
                         <a
-                            class="relative inline-flex items-center w-8 justify-center py-2 border border-gray-300 transition-colors hover:bg-gray-100 first:rounded-l-md last:rounded-r-md{% if link.is_current %} bg-gray-200 font-medium{% endif %}"
+                            class="relative inline-flex items-center w-8 justify-center py-2 border border-neutral-300 transition-colors hover:bg-neutral-100 first:rounded-l-md last:rounded-r-md{% if link.is_current %} bg-neutral-200 font-medium{% endif %}"
                             href="{{ link.link }}"
                             title="{{ link.title }}"
                         >

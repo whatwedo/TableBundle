@@ -1,7 +1,7 @@
 {# Table Header #}
-<header class="whatwedo_table:header border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between">
+<header class="whatwedo_table:header border-b border-neutral-200 px-4 py-4 sm:flex sm:items-center sm:justify-between">
     {% if table.option('title') %}
-        <div class="whatwedo_table:header__title flex-1 min-w-0 text-lg font-medium leading-6 text-gray-900 sm:truncate">
+        <div class="whatwedo_table:header__title flex-1 min-w-0 text-lg font-medium leading-6 text-neutral-900 sm:truncate">
             <h1>
                 {{ table.option('title') }}
             </h1>
@@ -33,14 +33,14 @@
             <div class="flex rounded-md shadow-sm">
                 <div class="relative flex items-stretch flex-grow focus-within:z-10">
                     <input
-                        class="focus:ring-primary focus:border-primary block w-full rounded-none rounded-l-md sm:text-sm border-gray-300"
+                        class="whatwedo_core-search--rounded-left"
                         type="search"
                         name="{{ whatwedo_table_parameter(table, 'query') }}" placeholder="Suchbegriff ..."
                         value="{{ table.searchExtension.query }}"
                     >
                 </div>
                 <button class="whatwedo_table-button--search" type="submit">
-                    {{ bootstrap_icon('search', { class: 'h-4 w-4 text-gray-400', alt: 'Suchen' }) }}
+                    {{ bootstrap_icon('search', { class: 'h-4 w-4 text-neutral-400', alt: 'Suchen' }) }}
                 </button>
             </div>
         </form>

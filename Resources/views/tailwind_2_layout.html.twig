@@ -1,7 +1,7 @@
 {% import "@whatwedoTable/_macros.html.twig" as macros %}
 
 {% block table %}
-    <div class="whatwedo_table:wrapper" {{ stimulus_controller('whatwedo/table-bundle/filter') }}>
+    <div class="whatwedo_table:wrapper bg-white" {{ stimulus_controller('whatwedo/table-bundle/filter') }}>
         {% block table_header %}
             {% include "@whatwedoTable/tailwind_2/_header.html.twig" %}
         {% endblock %}
@@ -25,10 +25,10 @@
     {# todo: move to options instead of vars #}
     <a
         href="{{ path(route, route_parameters) }}"
-        class="text-gray-700 group flex items-center px-4 py-2 text-sm"
+        class="text-neutral-700 group flex items-center px-4 py-2 text-sm"
         tabindex="-1"
     >
-        {{ bootstrap_icon(icon, { class: 'inline mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500' }) }}
+        {{ bootstrap_icon(icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
         {{ label }}
     </a>
 {% endblock %}

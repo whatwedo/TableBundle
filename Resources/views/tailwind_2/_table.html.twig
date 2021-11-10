@@ -1,7 +1,7 @@
-<div class="whatwedo_table:table__wrapper align-middle inline-block min-w-full border-b border-gray-200">
+<div class="whatwedo_table:table__wrapper align-middle inline-block min-w-full border-b border-neutral-200">
     <table class="min-w-full" {{ stimulus_controller('whatwedo/table-bundle/table') }}>
         <thead class="whatwedo_table:table__head">
-            <tr class="border-b border-gray-200 bg-gray-50 text-xs font-medium text-gray-500 text-left uppercase tracking-wider">
+            <tr class="border-b border-neutral-200 bg-neutral-50 text-xs font-medium text-neutral-500 text-left uppercase tracking-wider">
                 {% for column in table.columns %}
                     <th class="px-6 py-3">
                         {{ column.option('label')|trans }}
@@ -33,11 +33,11 @@
                 <th></th>
             </tr>
         </thead>
-        <tbody class="whatwedo_table:table__body bg-white text-sm text-gray-500 font-medium divide-y divide-gray-100">
+        <tbody class="whatwedo_table:table__body bg-white text-sm text-neutral-500 font-medium divide-y divide-neutral-100">
             {% for row in table.rows %}
-                <tr class="whatwedo_table:table__row hover:bg-gray-50">
+                <tr class="whatwedo_table:table__row hover:bg-neutral-50">
                     {% for column in table.columns %}
-                        <td class="px-6 py-2 {% if column.option('is_primary') %}whitespace-nowrap text-gray-900{% endif %}">
+                        <td class="px-6 py-2 {% if column.option('is_primary') %}whitespace-nowrap text-neutral-900{% endif %}">
                             {% apply spaceless %}
                                 {% if column.option('is_primary') and table.option('primary_link') is not null %}
                                     {% set columnLink = table.primaryLink(row) %}
@@ -68,7 +68,7 @@
                                 To: "transform opacity-0 scale-95"
                             #}
                             <div
-                                class="hidden mx-3 origin-top-right absolute right-7 top-0 w-48 mt-1 rounded-md shadow-lg z-10 bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-200 focus:outline-none"
+                                class="hidden mx-3 origin-top-right absolute right-7 top-0 w-48 mt-1 rounded-md shadow-lg z-10 bg-white ring-1 ring-black ring-opacity-5 divide-y divide-neutral-200 focus:outline-none"
                                 {{ stimulus_target('whatwedo/core-bundle/dropdown', 'dropdown') }}
                                 tabindex="-1"
                             >
