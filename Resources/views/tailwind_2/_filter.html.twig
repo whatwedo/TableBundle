@@ -2,7 +2,7 @@
     {% set filters = table.filterExtension.filters %}
     {% set filter = filters|filter(f => f.acronym == filterAcronym)|first %}
     {% set indexSuffix = '[' ~ groupIndex ~ '][' ~ conditionIndex ~ ']' %}
-    <div class="flex" data-whatwedo--table-bundle--filter-target="singleFilter">
+    <div class="flex" {{ stimulus_target('whatwedo/table-bundle/filter', 'singleFilter') }}>
         <div class="flex-auto w-1/5">
             <select name="{{ whatwedo_table_parameter(table, 'filter_column')~indexSuffix }}" class="w-full border-0 text-sm">
                 {% for f in filters %}
@@ -29,18 +29,18 @@
         <div class="flex-auto text-right pt-1 items-center w-1/5">
             <div class="flex justify-end">
                 <button
-                    type="button"
-                    data-action="whatwedo--table-bundle--filter#appendAnd"
-                    data-whatwedo--table-bundle--filter-target="singleFilterAnd"
                     class="whatwedo_table-button hidden flex-none"
+                    {{ stimulus_action('whatwedo/table-bundle/filter', 'appendAnd') }}
+                    {{ stimulus_target('whatwedo/table-bundle/filter', 'singleFilterAnd') }}
+                    type="button"
                 >
                     und
                 </button>
                 <button
-                    type="button"
-                    data-action="whatwedo--table-bundle--filter#removeAnd"
-                    data-whatwedo--table-bundle--filter-target="singleFilterRemove"
                     class="flex-none px-2.5 py-2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                    {{ stimulus_action('whatwedo/table-bundle/filter', 'removeAnd') }}
+                    {{ stimulus_target('whatwedo/table-bundle/filter', 'singleFilterRemove') }}
+                    type="button"
                 >
                     {{ bootstrap_icon('trash') }}
                 </button>
@@ -50,22 +50,22 @@
 {% endmacro %}
 
 {% macro filter_group(table, groupIndex) %}
-    <div data-whatwedo--table-bundle--filter-target="filterGroup">
+    <div {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroup') }}>
         <span
-            data-whatwedo--table-bundle--filter-target="filterGroupFilterHeaderFirst"
             class="text-gray-500 uppercase text-sm font-medium mt-4 block hidden"
+            {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupFilterHeaderFirst') }}
         >
             Zeige Elemente wenn
         </span>
         <span
-            data-whatwedo--table-bundle--filter-target="filterGroupFilterHeaderOthers"
             class="text-gray-500 uppercase text-sm font-medium mt-4 block hidden"
+            {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupFilterHeaderOthers') }}
         >
             oder
         </span>
         <div
-            data-whatwedo--table-bundle--filter-target="filterGroupFilterList"
             class="mt-1 p-4 bg-white relative rounded-md shadow-sm">
+            {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupFilterList') }}
             {% for filterIndex in [] %}
                 {{ _self.filter(table, groupIndex, filterIndex) }}
             {% else %}
@@ -78,28 +78,36 @@
 
 {% if table.filterExtension and table.filterExtension.filters|length > 0 %}
     <div
-        data-whatwedo--table-bundle--filter-target="filters"
         class="whatwedo_table:filter__wrapper hidden fixed inset-0 overflow-hidden z-10"
-        aria-labelledby="slide-over-title"
-        role="dialog"
-        aria-modal="true">
-        <div class="absolute inset-0 overflow-hidden" data-whatwedo--table-bundle--filter-target="filtersOverlay">
-            <div data-action="whatwedo--table-bundle--filter#close" class="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+        {{ stimulus_target('whatwedo/table-bundle/filter', 'filters') }}
+    >
+        <div
+            class="absolute inset-0 overflow-hidden"
+            {{ stimulus_target('whatwedo/table-bundle/filter', 'filtersOverlay') }}
+        >
+            <div
+                class="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+                {{ stimulus_action('whatwedo/table-bundle/filter', 'close') }}
+                hidden
+            ></div>
+            <div
+                class="whatwedo_table:filter__inner fixed inset-y-0 right-0 pl-10 max-w-full flex"
+                {{ stimulus_target('whatwedo/table-bundle/filter', 'filterspanel') }}
+            >
 
-            <div class="whatwedo_table:filter__inner fixed inset-y-0 right-0 pl-10 max-w-full flex" data-whatwedo--table-bundle--filter-target="filtersPanel">
                 <form action="{{ whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : 1 }) }}" class="w-screen max-w-3xl">
                     <div class="h-full flex flex-col py-6 bg-gray-100 shadow-xl overflow-y-scroll">
                         <div class="px-4 sm:px-6">
                             <div class="flex items-start justify-between">
-                                <h2 class="text-lg font-medium text-gray-900" id="slide-over-title">
+                                <h2 class="text-lg font-medium text-gray-900">
                                     Filter
                                 </h2>
 
                                 <div class="ml-3 h-7 flex items-center">
                                     <button
-                                        type="button"
                                         class="rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                        data-action="whatwedo--table-bundle--filter#close"
+                                        {{ stimulus_action('whatwedo/table-bundle/filter', 'close') }}
+                                        type="button"
                                     >
                                         <span class="sr-only">Close panel</span>
                                         {{ bootstrap_icon('x', { class: 'h-6 w-6' }) }}
@@ -108,7 +116,7 @@
                             </div>
                         </div>
                         <div class="mt-6 relative flex-1">
-                            <div class="px-4 sm:px-6" data-whatwedo--table-bundle--filter-target="filterGroupList">
+                            <div class="px-4 sm:px-6" {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupList') }}>
                                 {% for group in [] %}
                                 {% else %}
                                     {{ _self.filter_group(table, 1) }}
@@ -119,9 +127,9 @@
                             <div class="mt-4 px-4 pb-4 sm:px-6 flex">
                                 <div class="flex-auto">
                                     <button
-                                        type="button"
-                                        data-action="whatwedo--table-bundle--filter#appendOr"
                                         class="px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                        {{ stimulus_action('whatwedo/table-bundle/filter', 'appendOr') }}
+                                        type="button"
                                     >
                                         oder
                                     </button>
@@ -130,10 +138,9 @@
                                     <div class="relative inline-block text-left" {{ stimulus_controller('whatwedo/crud-bundle/dropdown') }}>
                                         <div>
                                             <button
+                                                class="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-2.5 py-1.5 bg-white text-xs font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
+                                                {{ stimulus_action('whatwedo/table-bundle/filter', 'toggle') }}
                                                 type="button"
-                                                data-action="whatwedo--crud-bundle--dropdown#toggle"
-                                                type="button"
-                                                class="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-2.5 py-1.5 bg-white text-xs font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500" id="menu-button" aria-expanded="true" aria-haspopup="true"
                                             >
                                                 Gespeicherte Filter
                                                 {{ bootstrap_icon('chevron-down', { class: '-mr-1 ml-2 h-4 w-4' }) }}
@@ -141,8 +148,9 @@
                                         </div>
 
                                         <div
-                                            data-whatwedo--crud-bundle--dropdown-target="dropdown"
-                                            class="hidden z-20 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1"
+                                            class="hidden z-20 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+                                            {{ stimulus_target('whatwedo/table-bundle/filter', 'dropdown') }}
+                                            tabindex="-1"
                                         >
                                             <div class="py-1" role="none">
                                                 <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->

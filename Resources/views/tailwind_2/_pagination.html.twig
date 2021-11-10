@@ -90,7 +90,7 @@
                 >
                     <button
                         class="whatwedo_table-button--pagination"
-                        data-action="whatwedo--core-bundle--dropdown#toggle"
+                        {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') }}
                         type="button"
                     >
                         {{ 'whatwedo_table.amount_entries'|trans({'{amount}': table.paginationExtension.limit}) }}
@@ -99,7 +99,7 @@
 
                     <div
                         class="hidden origin-top-right absolute left-0 bottom-10 -mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
-                        data-whatwedo--core-bundle--dropdown-target="dropdown"
+                        {{ stimulus_target('whatwedo/core-bundle/dropdown', 'dropdown') }}
                     >
                         <div class="py-1 text-gray-700 text-sm">
                             {% for limit in table.option('limit_choices')|filter(limit => limit != table.paginationExtension.limit) %}
