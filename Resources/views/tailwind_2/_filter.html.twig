@@ -64,8 +64,9 @@
             oder
         </span>
         <div
-            class="mt-1 p-4 bg-white relative rounded-md shadow-sm">
+            class="mt-1 p-4 bg-white relative rounded-md shadow-sm"
             {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupFilterList') }}
+        >
             {% for filterIndex in [] %}
                 {{ _self.filter(table, groupIndex, filterIndex) }}
             {% else %}
