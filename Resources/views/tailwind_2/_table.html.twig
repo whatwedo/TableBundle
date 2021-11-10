@@ -1,30 +1,30 @@
-<div class="whatwedo_table--table">
-    <table {{ stimulus_controller('whatwedo/table-bundle/table') }}>
+<div class="align-middle inline-block min-w-full border-b border-gray-200">
+    <table class="min-w-full" {{ stimulus_controller('whatwedo/table-bundle/table') }}>
         <thead>
-            <tr>
+            <tr class="border-b border-gray-200 bg-gray-50 text-xs font-medium text-gray-500 text-left uppercase tracking-wider">
                 {% for column in table.columns %}
-                    <th>
+                    <th class="px-6 py-3">
                         {{ column.option('label')|trans }}
 
                         {% if table.sortExtension and column.option('sortable') %}
                             {% set currentOrder = table.sortExtension.order(column) %}
                             {% if currentOrder == 'asc' %}
-                                <a href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, 'desc')) }}">
-                                    {{ bootstrap_icon('sort-alpha-up') }}
+                                <a class="first:ml-1" href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, 'desc')) }}">
+                                    {{ bootstrap_icon('sort-alpha-up', { class: 'inline w-4 h-4' }) }}
                                 </a>
-                                <a href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, null)) }}">
-                                    {{ bootstrap_icon('x') }}
+                                <a class="first:ml-1" href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, null)) }}">
+                                    {{ bootstrap_icon('x', { class: 'inline w-4 h-4' }) }}
                                 </a>
                             {% elseif currentOrder == 'desc' %}
-                                <a href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, 'asc')) }}">
-                                    {{ bootstrap_icon('sort-alpha-down-alt') }}
+                                <a class="first:ml-1" href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, 'asc')) }}">
+                                    {{ bootstrap_icon('sort-alpha-down-alt', { class: 'inline w-4 h-4' }) }}
                                 </a>
-                                <a href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, null)) }}">
-                                    {{ bootstrap_icon('x') }}
+                                <a class="first:ml-1" href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, null)) }}">
+                                    {{ bootstrap_icon('x', { class: 'inline w-4 h-4' }) }}
                                 </a>
                             {% else %}
-                                <a href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, 'asc')) }}">
-                                    {{ bootstrap_icon('arrow-down-up') }}
+                                <a class="first:ml-1" href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, 'asc')) }}">
+                                    {{ bootstrap_icon('arrow-down-up', { class: 'inline w-4 h-4' }) }}
                                 </a>
                             {% endif %}
                         {% endif %}
@@ -33,11 +33,11 @@
                 <th></th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="bg-white text-sm text-gray-500 font-medium divide-y divide-gray-100">
             {% for row in table.rows %}
-                <tr>
+                <tr class="hover:bg-gray-50">
                     {% for column in table.columns %}
-                        <td class="{% if column.option('is_primary') %}whatwedo_table--table--row_primary{% endif %}">
+                        <td class="px-6 py-2 {% if column.option('is_primary') %}whitespace-nowrap text-gray-900{% endif %}">
                             {% apply spaceless %}
                                 {% if column.option('is_primary') and table.option('primary_link') is not null %}
                                     {% set columnLink = table.primaryLink(row) %}
@@ -50,14 +50,14 @@
                             {% if column.option('is_primary') and columnLink|default(false) %}</a>{% endif %}
                         </td>
                     {% endfor %}
-                    <td class="whatwedo_table--table--actions">
-                        <div {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}>
-                            <button data-action="whatwedo--core-bundle--dropdown#toggle" type="button">
+                    <td class="pr-6">
+                        <div class="relative flex justify-end items-center" {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}>
+                            <button class="whatwedo_table-actions" data-action="whatwedo--core-bundle--dropdown#toggle" type="button">
                                 <span class="sr-only">Optionen</span>
                                 {{ bootstrap_icon('three-dots-vertical', { class: 'h-4 w-4' }) }}
                             </button>
 
-                            <!--
+                            {#
                               Dropdown menu, show/hide based on menu state.
 
                               Entering: "transition ease-out duration-100"
@@ -66,7 +66,7 @@
                               Leaving: "transition ease-in duration-75"
                                 From: "transform opacity-100 scale-100"
                                 To: "transform opacity-0 scale-95"
-                            -->
+                            #}
                             <div
                                 data-whatwedo--core-bundle--dropdown-target="dropdown"
                                 class="hidden mx-3 origin-top-right absolute right-7 top-0 w-48 mt-1 rounded-md shadow-lg z-10 bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-200 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="project-options-menu-0-button" tabindex="-1"

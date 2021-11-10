@@ -1,151 +1,19 @@
-.whatwedo_table {
-    &--header {
-        @apply border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between;
+.whatwedo_table-button {
+    @apply inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3;
+}
 
-        &--title {
-            @apply flex-1 min-w-0;
+.whatwedo_table-button--search {
+    @apply -ml-px relative inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md text-gray-700 bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500;
+}
 
-            * {
-                @apply text-lg font-medium leading-6 text-gray-900 sm:truncate;
-            }
-        }
+.whatwedo_table-button--pagination {
+    @apply inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500;
+}
 
-        &--toolbar {
-            @apply mt-4 flex sm:mt-0 sm:ml-4;
+.whatwedo_table-actions {
+    @apply w-8 h-8 bg-white inline-flex items-center justify-center text-gray-400 rounded-full hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500;
+}
 
-            > button {
-                @apply inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3;
-            }
-
-            a {
-                @apply inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:ml-3;
-            }
-
-            &--search {
-                @apply inline-flex items-center px-3 ml-2;
-                > div {
-                    @apply flex rounded-md shadow-sm;
-                    div {
-                        @apply relative flex items-stretch flex-grow focus-within:z-10;
-                    }
-
-                    input {
-                        @apply focus:ring-indigo-500 focus:border-indigo-500 block w-full rounded-none rounded-l-md sm:text-sm border-gray-300;
-                    }
-
-                    button {
-                        @apply -ml-px relative inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md text-gray-700 bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500;
-                    }
-                }
-            }
-        }
-    }
-
-    &--table {
-        @apply align-middle inline-block min-w-full border-b border-gray-200;
-
-        table {
-            @apply min-w-full;
-
-            th {
-                @apply px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
-
-                &:last-child {
-                    @apply text-right;
-                }
-
-                a {
-                    svg {
-                        @apply inline w-4 h-4;
-                    }
-                    &:first-child {
-                        @apply ml-1;
-                    }
-                }
-            }
-
-            tbody {
-                @apply bg-white divide-y divide-gray-100;
-
-                tr {
-                    @apply hover:bg-gray-50
-                }
-            }
-
-            td {
-                @apply px-6 py-2 text-sm text-gray-500 font-medium;
-
-                &.whatwedo_table--table--row_primary {
-                    @apply whitespace-nowrap text-gray-900;
-                }
-
-                &.whatwedo_table--table--actions {
-                    @apply pr-6;
-                    > div {
-                        @apply relative flex justify-end items-center;
-                    }
-
-                    button {
-                        @apply w-8 h-8 bg-white inline-flex items-center justify-center text-gray-400 rounded-full hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500;
-                    }
-                }
-            }
-        }
-    }
-
-    &--footer {
-        @apply bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6;
-
-        &--pagination {
-            @apply hidden sm:flex-1 sm:flex sm:items-center sm:justify-between;
-
-            p {
-                @apply text-sm text-gray-700 inline-block;
-                strong {
-                    @apply font-medium;
-                }
-            }
-
-            nav {
-                @apply relative z-0 inline-flex rounded-md shadow-sm -space-x-px;
-                a {
-                    @apply relative inline-flex items-center w-8 justify-center py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50;
-                    &:first-child {
-                        @apply rounded-l-md;
-                    }
-                    &:last-child {
-                        @apply rounded-r-md;
-                    }
-                    &.current {
-                        @apply bg-indigo-50 font-medium text-indigo-600;
-                    }
-                }
-            }
-
-            &--limit {
-                @apply relative inline-block text-left pl-4;
-
-                button {
-                    @apply inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500;
-                    svg {
-                        @apply inline w-5 h-5 pl-2;
-                    }
-                }
-
-                &--dropdown {
-                    @apply origin-top-right absolute left-0 bottom-10 -mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none;
-                    div {
-                        @apply py-1;
-                        a {
-                            @apply text-gray-700 block px-4 py-2 text-sm hover:bg-gray-50;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    &--filters {
-        @apply fixed inset-0 overflow-hidden z-10;
-    }
+.whatwedo_table-link {
+    @apply inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:ml-3;
 }

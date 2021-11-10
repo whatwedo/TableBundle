@@ -32,7 +32,7 @@
                     type="button"
                     data-action="whatwedo--table-bundle--filter#appendAnd"
                     data-whatwedo--table-bundle--filter-target="singleFilterAnd"
-                    class="hidden flex-none px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    class="whatwedo_table-button hidden flex-none"
                 >
                     und
                 </button>
@@ -80,7 +80,7 @@
 {% if table.filterExtension and table.filterExtension.filters|length > 0 %}
     <div
         data-whatwedo--table-bundle--filter-target="filters"
-        class="whatwedo_table--filters hidden"
+        class="hidden fixed inset-0 overflow-hidden z-10"
         aria-labelledby="slide-over-title"
         role="dialog"
         aria-modal="true">

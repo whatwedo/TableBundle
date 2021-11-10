@@ -71,10 +71,10 @@
         }]) %}
     {% endif %}
 
-    <footer class="whatwedo_table--footer">
-        <div class="whatwedo_table--footer--pagination">
+    <footer class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
             <div>
-                <p>
+                <p class="text-sm text-gray-700 inline-block">
                     {% set offsetResults = 0 %}
                     {% if table.rows|length %}{% set offsetResults = pagination.offsetResults + 1 %}{% endif %}
 
@@ -87,17 +87,24 @@
 
                 <div
                     {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}
-                    class="whatwedo_table--footer--pagination--limit"
+                    class="relative inline-block text-left pl-4"
                 >
-                    <button data-action="whatwedo--core-bundle--dropdown#toggle" type="button">
+                    <button
+                        class="whatwedo_table-button--pagination"
+                        data-action="whatwedo--core-bundle--dropdown#toggle"
+                        type="button"
+                    >
                         {{ 'whatwedo_table.amount_entries'|trans({'{amount}': table.paginationExtension.limit}) }}
-                        {{ bootstrap_icon('chevron-up') }}
+                        {{ bootstrap_icon('chevron-up', { class: 'inline w-5 h-5 pl-2' }) }}
                     </button>
 
-                    <div class="hidden whatwedo_table--footer--pagination--limit--dropdown" data-whatwedo--core-bundle--dropdown-target="dropdown">
-                        <div>
+                    <div
+                        class="hidden origin-top-right absolute left-0 bottom-10 -mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                        data-whatwedo--core-bundle--dropdown-target="dropdown"
+                    >
+                        <div class="py-1 text-gray-700 text-sm">
                             {% for limit in table.option('limit_choices')|filter(limit => limit != table.paginationExtension.limit) %}
-                                <a href="{{ whatwedo_table_path_replace_arguments({
+                                <a class="block px-4 py-2 hover:bg-gray-50" href="{{ whatwedo_table_path_replace_arguments({
                                     (whatwedo_table_parameter(table, 'limit')): limit,
                                     (whatwedo_table_parameter(table, 'page')): null
                                 }) }}">
@@ -109,9 +116,13 @@
                 </div>
             </div>
             <div>
-                <nav>
+                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px text-sm font-medium text-gray-500 bg-white">
                     {% for link in paginationLinks %}
-                        <a href="{{ link.link }}" title="{{ link.title }}" {% if link.is_current %}class="current"{% endif %}>
+                        <a
+                            class="relative inline-flex items-center w-8 justify-center py-2 border border-gray-300 hover:bg-gray-50 first:rounded-l-md last:rounded-r-md{% if link.is_current %} bg-indigo-50 font-medium text-indigo-600{% endif %}"
+                            href="{{ link.link }}"
+                            title="{{ link.title }}"
+                        >
                             {{ link.contents|raw }}
                         </a>
                     {% endfor %}

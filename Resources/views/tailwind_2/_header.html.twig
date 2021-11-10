@@ -1,30 +1,38 @@
 {# Table Title #}
-<header class="whatwedo_table--header">
+<header class="border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between">
     {% if table.option('title') %}
-        <div class="whatwedo_table--header--title">
+        <div class="flex-1 min-w-0 text-lg font-medium leading-6 text-gray-900 sm:truncate">
             <h1>
                 {{ table.option('title') }}
             </h1>
         </div>
     {% endif %}
-    <div class="whatwedo_table--header--toolbar">
-        <button type="button">
+    <div class="mt-4 flex sm:mt-0 sm:ml-4">
+        <button class="whatwedo_table-button" type="button">
             {{ bootstrap_icon('download', { class: 'w-4 h-4' }) }}
         </button>
 
         {% if table.filterExtension and table.filterExtension.filters|length > 0 %}
-        <button type="button" data-action="whatwedo--table-bundle--filter#open">
+        <button class="whatwedo_table-button" type="button" data-action="whatwedo--table-bundle--filter#open">
             {{ bootstrap_icon('funnel-fill', { class: 'w-4 h-4' }) }}
         </button>
         {% endif %}
 
         {% if table.searchExtension and table.option('searchable') %}
-        <form action="{{ whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : 1 }) }}" class="whatwedo_table--header--toolbar--search">
-            <div>
-                <div>
-                    <input type="search" name="{{ whatwedo_table_parameter(table, 'query') }}" placeholder="Suchbegriff ..." value="{{ table.searchExtension.query }}">
+        <form
+            action="{{ whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : 1 }) }}"
+            class="inline-flex items-center px-3 ml-2"
+        >
+            <div class="flex rounded-md shadow-sm">
+                <div class="relative flex items-stretch flex-grow focus-within:z-10">
+                    <input
+                        class="focus:ring-indigo-500 focus:border-indigo-500 block w-full rounded-none rounded-l-md sm:text-sm border-gray-300"
+                        type="search"
+                        name="{{ whatwedo_table_parameter(table, 'query') }}" placeholder="Suchbegriff ..."
+                        value="{{ table.searchExtension.query }}"
+                    >
                 </div>
-                <button type="submit">
+                <button class="whatwedo_table-button--search" type="submit">
                     {{ bootstrap_icon('search', { class: 'h-4 w-4 text-gray-400', alt: 'Suchen' }) }}
                 </button>
             </div>
