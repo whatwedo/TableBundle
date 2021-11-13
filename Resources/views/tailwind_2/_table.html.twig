@@ -46,7 +46,7 @@
                                     {% endif %}
                                 {% endif %}
                             {% endapply %}
-                            {{ column.render(row) }}
+                            {{ column.render(row)|raw }}
                             {% if column.option('is_primary') and columnLink|default(false) %}</a>{% endif %}
                         </td>
                     {% endfor %}
