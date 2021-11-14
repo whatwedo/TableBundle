@@ -31,7 +31,7 @@ class DatetimeFilterType extends FilterType
 
     public function getValueField(?string $value = null): string
     {
-        $date = \DateTime::createFromFormat(static::getQueryDataFormat(), $value) ?: new \DateTime();
+        $date = \DateTime::createFromFormat(static::getQueryDataFormat(), (string)$value) ?: new \DateTime();
 
         return sprintf(
             '<input type="text" name="{name}" value="%s" class="form-control" data-provide="datetimepicker" data-date-format="dd.mm.yyyy HH:ii">',
