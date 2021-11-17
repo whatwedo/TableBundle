@@ -35,7 +35,7 @@
         </thead>
         <tbody class="whatwedo_table:table__body bg-white text-sm text-neutral-500 font-medium divide-y divide-neutral-100">
             {% for row in table.rows %}
-                <tr class="whatwedo_table:table__row hover:bg-neutral-50">
+                <tr class="whatwedo_table:table__row hover:bg-neutral-50 transition duration-500 color">
                     {% for column in table.columns %}
                         <td class="px-6 py-2 {% if column.option('is_primary') %}whitespace-nowrap text-neutral-900{% endif %}">
                             {% apply spaceless %}
@@ -51,30 +51,30 @@
                         </td>
                     {% endfor %}
                     <td class="whatwedo_table:table__actions pr-6">
-                        <div class="relative flex justify-end items-center" {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}>
-                            <button class="whatwedo_table-actions" {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') }} type="button">
+                        <div class="relative flex justify-end items-center" {{ stimulus_controller('dropdown') }}>
+                            <button
+                                class="whatwedo_table-actions"
+                                {{ stimulus_action({'dropdown': ['toggle', {'click@window': 'hide'}]}) }}
+                                type="button"
+                            >
                                 <span class="sr-only">Optionen</span>
                                 {{ bootstrap_icon('three-dots-vertical', { class: 'h-4 w-4' }) }}
                             </button>
 
-                            {#
-                              Dropdown menu, show/hide based on menu state.
-
-                              Entering: "transition ease-out duration-100"
-                                From: "transform opacity-0 scale-95"
-                                To: "transform opacity-100 scale-100"
-                              Leaving: "transition ease-in duration-75"
-                                From: "transform opacity-100 scale-100"
-                                To: "transform opacity-0 scale-95"
-                            #}
                             <div
-                                class="hidden mx-3 origin-top-right absolute right-7 top-0 w-48 mt-1 rounded-md shadow-lg z-10 bg-white ring-1 ring-black ring-opacity-5 divide-y divide-neutral-200 focus:outline-none"
-                                {{ stimulus_target('whatwedo/core-bundle/dropdown', 'dropdown') }}
+                                {{ stimulus_target('dropdown', 'menu') }}
+                                class="hidden transition duration-300 transform origin-top-right mx-3 origin-top-right absolute right-7 top-0 w-48 -mt-1 rounded-md shadow-lg z-10 bg-white ring-1 ring-black ring-opacity-5 divide-y divide-neutral-200 focus:outline-none"
+                                data-transition-enter-from="opacity-0 scale-95"
+                                data-transition-enter-to="opacity-100 scale-100"
+                                data-transition-leave-from="opacity-100 scale-100"
+                                data-transition-leave-to="opacity-0 scale-95"
                                 tabindex="-1"
                             >
                                 <div class="py-1" role="none">
                                     {% for action in table.actions %}
-                                        {{ action.render(row)|raw }}
+                                        <span class="block hover:bg-neutral-50">
+                                            {{ action.render(row)|raw }}
+                                        </span>
                                     {% endfor %}
                                 </div>
                             </div>
