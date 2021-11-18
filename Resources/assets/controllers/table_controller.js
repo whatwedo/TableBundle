@@ -5,9 +5,11 @@ export default class extends Controller {
     static targets = ['table']
 
     connect() {
-        StickyThead.apply([this.tableTarget], {
-            scrollableArea: this.element
-        });
+        if(this.hasTableTarget) {
+            StickyThead.apply([this.tableTarget], {
+                scrollableArea: this.element
+            });
+        }
     }
 }
 
