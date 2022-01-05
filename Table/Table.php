@@ -52,6 +52,7 @@ class Table
             'default_limit' => 25,
             'limit_choices' => [25, 50, 100, 200, 500],
             'theme' => '@whatwedoTable/tailwind_2_layout.html.twig',
+            'definition' => null,
         ]);
 
         $resolver->setAllowedTypes('title', ['null', 'string']);
@@ -62,6 +63,7 @@ class Table
         $resolver->setAllowedTypes('theme', ['string']);
         $resolver->setAllowedTypes('limit_choices', ['array']);
         $resolver->setAllowedTypes('default_sort', ['array']);
+        $resolver->setAllowedTypes('definition', ['null', 'object']);
 
         /*
          * Data Loader
@@ -111,6 +113,12 @@ class Table
     {
         if ($type === null) {
             $type = Column::class;
+        }
+
+        if ($this->options['definition']) {
+            if (!isset($options['label'])) {
+                $options['label'] = sprintf('%s.%s', $this->options['definition']->getPrefix(), $acronym);
+            }
         }
 
         $column = new $type($this, $acronym, $options);

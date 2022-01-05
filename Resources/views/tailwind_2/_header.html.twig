@@ -3,7 +3,7 @@
     {% if table.option('title') %}
         <div class="whatwedo_table:header__title flex-1 min-w-0 text-lg font-medium leading-6 text-neutral-900 sm:truncate">
             <h1>
-                {{ table.option('title') }}
+                {{ table.option('title')|trans }}
             </h1>
         </div>
     {% endif %}
