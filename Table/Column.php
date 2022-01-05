@@ -50,7 +50,7 @@ class Column extends AbstractColumn implements FormattableColumnInterface
         }
 
         try {
-            return (string) (PropertyAccess::createPropertyAccessor())->getValue($row, $this->options['accessor_path']);
+            return (PropertyAccess::createPropertyAccessor())->getValue($row, $this->options['accessor_path']);
         } catch (NoSuchPropertyException $e) {
             return $e->getMessage();
         }
