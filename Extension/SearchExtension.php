@@ -29,7 +29,6 @@ declare(strict_types=1);
 
 namespace whatwedo\TableBundle\Extension;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use whatwedo\SearchBundle\whatwedoSearchBundle;
 use whatwedo\TableBundle\Helper\RouterHelper;
@@ -38,16 +37,15 @@ class SearchExtension extends AbstractExtension
 {
     public const QUERY_PARAMETER_QUERY = 'query';
 
-    protected ?Request $request = null;
-
-    public function __construct(RequestStack $requestStack)
+    public function __construct(
+        protected  RequestStack $requestStack
+    )
     {
-        $this->request = $requestStack->getCurrentRequest();
     }
 
     public function getQuery(): string
     {
-        return $this->request->query->get(RouterHelper::getParameterName($this->table, RouterHelper::PARAMETER_SEARCH_QUERY), '');
+        return $this->requestStack->getCurrentRequest()->query->get(RouterHelper::getParameterName($this->table, RouterHelper::PARAMETER_SEARCH_QUERY), '');
     }
 
     public static function isEnabled(array $enabledBundles): bool

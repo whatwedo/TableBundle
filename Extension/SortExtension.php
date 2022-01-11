@@ -29,18 +29,16 @@ declare(strict_types=1);
 
 namespace whatwedo\TableBundle\Extension;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use whatwedo\TableBundle\Helper\RouterHelper;
 use whatwedo\TableBundle\Table\ColumnInterface;
 
 class SortExtension extends AbstractExtension
 {
-    protected ?Request $request = null;
-
-    public function __construct(RequestStack $requestStack)
+   public function __construct(
+        protected  RequestStack $requestStack
+    )
     {
-        $this->request = $requestStack->getCurrentRequest();
     }
 
     public function getOrder(ColumnInterface $column): ?string
@@ -100,7 +98,7 @@ class SortExtension extends AbstractExtension
 
     protected function getOrderFromQuery(ColumnInterface $column): ?string
     {
-        $order = strtolower((string)$this->request->query->get(
+        $order = strtolower((string)$this->requestStack->getCurrentRequest()->query->get(
             RouterHelper::getParameterName(
                 $this->table,
                 RouterHelper::PARAMETER_SORT_DIRECTION,

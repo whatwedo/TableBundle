@@ -151,7 +151,10 @@ class Table
      */
     public function getActions(): array
     {
-        uasort($this->actions, static fn(Action $a, Action $b) => $a->getOption('priority') < $b->getOption('priority'));
+        uasort(
+            $this->actions,
+            static fn(Action $a, Action $b) => $a->getOption('priority') <=> $b->getOption('priority')
+        );
         return $this->actions;
     }
 

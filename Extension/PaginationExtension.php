@@ -29,30 +29,28 @@ declare(strict_types=1);
 
 namespace whatwedo\TableBundle\Extension;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use whatwedo\TableBundle\Helper\RouterHelper;
 
 class PaginationExtension extends AbstractExtension
 {
-    protected ?Request $request = null;
-
     protected int $limit = 25;
 
     protected int $totalResults = 0;
 
-    public function __construct(RequestStack $requestStack)
+    public function __construct(
+        protected  RequestStack $requestStack
+    )
     {
-        $this->request = $requestStack->getCurrentRequest();
     }
 
     public function getCurrentPage(): int
     {
-        if (! $this->request) {
+        if (! $this->requestStack->getCurrentRequest()) {
             return 1;
         }
 
-        $page = $this->request->query->getInt(RouterHelper::getParameterName($this->table, RouterHelper::PARAMETER_PAGINATION_PAGE), 1);
+        $page = $this->requestStack->getCurrentRequest()->query->getInt(RouterHelper::getParameterName($this->table, RouterHelper::PARAMETER_PAGINATION_PAGE), 1);
 
         return $page < 1 ? 1 : $page;
     }
@@ -66,8 +64,8 @@ class PaginationExtension extends AbstractExtension
     {
         $this->limit = $defaultLimit;
 
-        if ($this->request) {
-            $this->limit = $this->request->query->getInt(RouterHelper::getParameterName($this->table, RouterHelper::PARAMETER_PAGINATION_LIMIT), $defaultLimit);
+        if ($this->requestStack->getCurrentRequest()) {
+            $this->limit = $this->requestStack->getCurrentRequest()->query->getInt(RouterHelper::getParameterName($this->table, RouterHelper::PARAMETER_PAGINATION_LIMIT), $defaultLimit);
         }
 
         return $this;
