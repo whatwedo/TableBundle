@@ -94,9 +94,9 @@ class FilterExtension extends AbstractExtension
     /**
      * @return $this
      */
-    public function addFilter(string $acronym, string $name, FilterTypeInterface $type)
+    public function addFilter(string $acronym, string $label, FilterTypeInterface $type)
     {
-        $this->filters[$acronym] = new Filter($acronym, $name, $type);
+        $this->filters[$acronym] = new Filter($acronym, $label, $type);
 
         return $this;
     }
