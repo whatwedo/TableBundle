@@ -116,18 +116,23 @@ class Table
         }
 
         if ($this->options['definition']) {
-            if (!isset($options['label'])) {
-                $options['label'] = sprintf('%s.%s', $this->options['definition']->getPrefix(), $acronym);
+            if (!isset($options[Column::OPTION_LABEL])) {
+                $options[Column::OPTION_LABEL] = sprintf('%s.%s', $this->options['definition']->getPrefix(), $acronym);
             }
+        }
+
+        // set is_primary on first column if not set
+        if (!isset($options[Column::OPTION_IS_PRIMARY]) && count($this->columns) === 0) {
+            $options[Column::OPTION_IS_PRIMARY] = true;
         }
 
         $column = new $type($this, $acronym, $options);
 
         // only DoctrineTable can sort nested properties. Therefore disable them for other tables.
         if (! $this instanceof DoctrineTable
-            && $column->getOption('sortable')
-            && str_contains($column->getOption('sort_expression'), '.')) {
-            $column->setOption('sortable', false);
+            && $column->getOption(Column::OPTION_SORTABLE)
+            && str_contains($column->getOption(Column::OPTION_SORT_EXPRESSION), '.')) {
+            $column->setOption(Column::OPTION_SORTABLE, false);
         }
 
         if ($column instanceof FormattableColumnInterface) {

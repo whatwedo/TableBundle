@@ -12,45 +12,56 @@ use whatwedo\CoreBundle\Manager\FormatterManager;
 
 class Column extends AbstractColumn implements FormattableColumnInterface
 {
+    const OPTION_LABEL = 'label';
+    const OPTION_ACCESSOR_PATH = 'accessor_path';
+    const OPTION_CALLABLE = 'callable';
+    const OPTION_IS_PRIMARY = 'is_primary';
+    const OPTION_FORMATTER = 'formatter';
+    const OPTION_FORMATTER_OPTIONS = 'formatter_options';
+    const OPTION_ATTRIBUTES = 'attributes';
+    const OPTION_SORTABLE = 'sortable';
+    const OPTION_SORT_EXPRESSION = 'sort_expression';
+    const OPTION_PRIORITY = 'priority';
+
     protected string $tableIdentifier;
     protected FormatterManager $formatterManager;
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'label' => $this->identifier,
-            'accessor_path' => $this->identifier,
-            'callable' => null,
-            'is_primary' => false,
-            'formatter' => DefaultFormatter::class,
-            'formatter_options' => [],
-            'attributes' => [],
-            'sortable' => true,
-            'sort_expression' => $this->identifier,
-            'priority' => 100,
+            self::OPTION_LABEL => $this->identifier,
+            self::OPTION_ACCESSOR_PATH => $this->identifier,
+            self::OPTION_CALLABLE => null,
+            self::OPTION_IS_PRIMARY => false,
+            self::OPTION_FORMATTER => DefaultFormatter::class,
+            self::OPTION_FORMATTER_OPTIONS => [],
+            self::OPTION_ATTRIBUTES => [],
+            self::OPTION_SORTABLE => true,
+            self::OPTION_SORT_EXPRESSION => $this->identifier,
+            self::OPTION_PRIORITY => 100,
         ]);
     }
 
     public function render($row): string
     {
-        $formatter = $this->formatterManager->getFormatter($this->options['formatter']);
-        $formatter->processOptions($this->options['formatter_options']);
+        $formatter = $this->formatterManager->getFormatter($this->options[self::OPTION_FORMATTER]);
+        $formatter->processOptions($this->options[self::OPTION_FORMATTER_OPTIONS]);
 
         return $formatter->getHtml($this->getContent($row));
     }
 
     protected function getContent($row)
     {
-        if (is_callable($this->options['callable'])) {
-            if (is_array($this->options['callable'])) {
-                return call_user_func($this->options['callable'], [$row]);
+        if (is_callable($this->options[self::OPTION_CALLABLE])) {
+            if (is_array($this->options[self::OPTION_CALLABLE])) {
+                return call_user_func($this->options[self::OPTION_CALLABLE], [$row]);
             }
 
-            return $this->options['callable']($row);
+            return $this->options[self::OPTION_CALLABLE]($row);
         }
 
         try {
-            return (PropertyAccess::createPropertyAccessor())->getValue($row, $this->options['accessor_path']);
+            return (PropertyAccess::createPropertyAccessor())->getValue($row, $this->options[self::OPTION_ACCESSOR_PATH]);
         } catch (NoSuchPropertyException $e) {
             return $e->getMessage();
         }
