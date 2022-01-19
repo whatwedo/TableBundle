@@ -35,7 +35,7 @@ class NumberFilterType extends FilterType
         return sprintf('<input type="number" step="any" name="{name}" value="%s" class="form-control">', $value);
     }
 
-    public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder): ?string
+    public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder)
     {
         $queryBuilder->setParameter($parameterName, static::prepareQueryValue($value));
 

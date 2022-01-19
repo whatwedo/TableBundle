@@ -78,7 +78,7 @@ class SimpleEnumFilterType extends FilterType
         );
     }
 
-    public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder): ?string
+    public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder)
     {
         $queryBuilder->setParameter($parameterName, $value);
 

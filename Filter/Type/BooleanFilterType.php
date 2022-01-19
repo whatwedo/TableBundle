@@ -29,7 +29,7 @@ class BooleanFilterType extends FilterType
         );
     }
 
-    public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder): ?string
+    public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder)
     {
         $value = $value === '1' ? 'true' : 'false';
 

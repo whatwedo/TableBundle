@@ -33,7 +33,7 @@ use Doctrine\ORM\QueryBuilder;
 
 class AjaxManyToManyFilterType extends AjaxOneToManyFilterType
 {
-    public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder): ?string
+    public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder)
     {
         $targetParameter = 'target_' . hash('crc32', random_bytes(10));
         $queryBuilder->setParameter(

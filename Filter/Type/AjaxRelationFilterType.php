@@ -52,7 +52,7 @@ class AjaxRelationFilterType extends FilterType
         return $field;
     }
 
-    public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder): ?string
+    public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder)
     {
         switch ($operator) {
             case static::CRITERIA_EQUAL:

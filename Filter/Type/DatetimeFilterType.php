@@ -39,7 +39,7 @@ class DatetimeFilterType extends FilterType
         );
     }
 
-    public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder): ?string
+    public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder)
     {
         $date = $this->prepareDateValue($value);
         $dateAsString = $date->format(static::getQueryDataFormat());

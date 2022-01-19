@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace whatwedo\TableBundle\Filter\Type;
 
+use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 
 interface FilterTypeInterface
@@ -16,5 +17,5 @@ interface FilterTypeInterface
 
     public function getValueField(?string $value): string;
 
-    public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder): ?string;
+    public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder);
 }
