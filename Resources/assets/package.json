@@ -22,5 +22,8 @@
     },
     "devDependencies": {
         "@hotwired/stimulus": "^3.0.0"
+    },
+    "dependencies": {
+        "stickythead": "^1.0.4"
     }
 }
