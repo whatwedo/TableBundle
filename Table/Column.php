@@ -61,7 +61,11 @@ class Column extends AbstractColumn implements FormattableColumnInterface
         }
 
         try {
-            return (PropertyAccess::createPropertyAccessor())->getValue($row, $this->options[self::OPTION_ACCESSOR_PATH]);
+            return PropertyAccess::createPropertyAccessorBuilder()
+                ->enableMagicCall()
+                ->getPropertyAccessor()
+                ->getValue($row, $this->options[self::OPTION_ACCESSOR_PATH])
+            ;
         } catch (NoSuchPropertyException $e) {
             return $e->getMessage();
         }
