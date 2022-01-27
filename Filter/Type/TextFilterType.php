@@ -60,9 +60,10 @@ class TextFilterType extends FilterType
 
     public function getValueField($value = '')
     {
+        $escapedValue = htmlspecialchars($value);
         return sprintf(
             '<input type="text" name="{name}" value="%s" class="form-control">',
-            addcslashes($value, '"')
+            addcslashes($escapedValue, '"')
         );
     }
 
