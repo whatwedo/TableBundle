@@ -42,15 +42,15 @@ class Column extends AbstractColumn implements FormattableColumnInterface
         ]);
     }
 
+    /**
+     * @deprecated
+     */
     public function render($row): string
     {
-        $formatter = $this->formatterManager->getFormatter($this->options[self::OPTION_FORMATTER]);
-        $formatter->processOptions($this->options[self::OPTION_FORMATTER_OPTIONS]);
-
-        return $formatter->getHtml($this->getContent($row));
+        throw new \Exception('\whatwedo\TableBundle\Table\Column::render is deprecated, use twig function whatwedo_table_column_render()');
     }
 
-    protected function getContent($row)
+    public function getContent($row)
     {
         if (is_callable($this->options[self::OPTION_CALLABLE])) {
             if (is_array($this->options[self::OPTION_CALLABLE])) {
@@ -71,6 +71,9 @@ class Column extends AbstractColumn implements FormattableColumnInterface
         }
     }
 
+    /**
+     * can be removed
+     */
     public function setFormatterManager(FormatterManager $formatterManager)
     {
         $this->formatterManager = $formatterManager;

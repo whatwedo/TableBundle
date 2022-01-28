@@ -57,7 +57,9 @@
                                     {% endif %}
                                 {% endif %}
                             {% endapply %}
-                            {{ column.render(row)|raw }}
+
+                            {{ whatwedo_table_column_render(column, row) }}
+
                             {% if column.option('is_primary') and columnLink|default(false) %}</a>{% endif %}
                         </td>
                     {% endfor %}
@@ -87,7 +89,7 @@
                                 <div class="py-1" role="none">
                                     {% for action in tableActions %}
                                         <span class="block hover:bg-neutral-50">
-                                            {{ action.render(row)|raw }}
+                                            {{ whatwedo_table_action_render(action, row) }}
                                         </span>
                                     {% endfor %}
                                 </div>

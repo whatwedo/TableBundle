@@ -8,12 +8,14 @@
         {% endif %}
     </div>
     <div class="mt-4 flex sm:mt-0 sm:ml-4">
+        {% if view.definition.hasCapability(constant('whatwedo\\CrudBundle\\Enum\\Page::EXPORT')) %}
         <button
             class="whatwedo_table:header__button whatwedo_table:header__button--download whatwedo_table-button"
             type="button"
         >
             {{ bootstrap_icon('download', { class: 'w-4 h-4' }) }}
         </button>
+        {% endif %}
 
         {% if table.filterExtension and table.filterExtension.filters|length > 0 %}
         <button

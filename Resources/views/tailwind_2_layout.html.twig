@@ -24,11 +24,11 @@
     {# todo: add attributes #}
     {# todo: move to options instead of vars #}
     <a
-        href="{{ path(route, route_parameters) }}"
+        href="{{ path(action.route, action.routeParameters(entity)) }}"
         class="text-neutral-700 group flex items-center px-4 py-2 text-sm"
         tabindex="-1"
     >
-        {{ bootstrap_icon(icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
-        {{ label|trans }}
+        {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
+        {{ action.label|trans }}
     </a>
 {% endblock %}

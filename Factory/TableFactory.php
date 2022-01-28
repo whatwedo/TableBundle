@@ -31,8 +31,6 @@ namespace whatwedo\TableBundle\Factory;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Twig\Environment;
-use whatwedo\CoreBundle\Manager\FormatterManager;
 use whatwedo\TableBundle\Extension\ExtensionInterface;
 use whatwedo\TableBundle\Table\DoctrineTable;
 use whatwedo\TableBundle\Table\Table;
@@ -44,8 +42,6 @@ class TableFactory
     public function __construct(
         protected EventDispatcherInterface $eventDispatcher,
         protected RequestStack $requestStack,
-        protected Environment $templating,
-        protected FormatterManager $formatterManager
     ) {
     }
 
@@ -55,8 +51,6 @@ class TableFactory
             $identifier,
             $options,
             $this->eventDispatcher,
-            $this->templating,
-            $this->formatterManager,
             $this->extensions,
             $this->requestStack
         );
@@ -68,8 +62,6 @@ class TableFactory
             $identifier,
             $options,
             $this->eventDispatcher,
-            $this->templating,
-            $this->formatterManager,
             $this->extensions,
             $this->requestStack
         );

@@ -7,8 +7,6 @@ namespace whatwedo\TableBundle\Table;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Twig\Environment;
-use whatwedo\CoreBundle\Manager\FormatterManager;
 use whatwedo\TableBundle\Action\Action;
 use whatwedo\TableBundle\Event\DataLoadEvent;
 use whatwedo\TableBundle\Exception\DataLoaderNotAvailableException;
@@ -30,8 +28,6 @@ class Table
         protected string $identifier,
         protected array $options,
         protected EventDispatcherInterface $eventDispatcher,
-        protected Environment $templating,
-        protected FormatterManager $formatterManager,
         protected array $extensions,
         protected RequestStack $requestStack
     ) {
@@ -188,7 +184,7 @@ class Table
 
     public function addAction(string $acronym, array $options = []): static
     {
-        $this->actions[$acronym] = new Action($this->templating, $this, $acronym, $options);
+        $this->actions[$acronym] = new Action($this, $acronym, $options);
 
         return $this;
     }
@@ -249,15 +245,12 @@ class Table
         $this->eventDispatcher->dispatch(new DataLoadEvent($this), DataLoadEvent::POST_LOAD);
     }
 
+    /**
+     * @deprecated  use twig function whatwedo_table_render()
+     */
     public function render(): string
     {
-        $this->loadData();
-
-        return $this->templating
-            ->load($this->getOption('theme'))
-            ->renderBlock('table', [
-                'table' => $this,
-            ]);
+        throw new \Exception('\whatwedo\TableBundle\Table\Table::render is deprecated, use twig function whatwedo_table_render()');
     }
 
     public function getExtension(string $extension): ExtensionInterface
