@@ -31,7 +31,9 @@
                             {% endif %}
                         </th>
                     {% endfor %}
+                    {% if table.actions|length %}
                     <th></th>
+                    {% endif %}
                 </tr>
             </thead>
         {% endif %}
@@ -59,6 +61,7 @@
                             {% if column.option('is_primary') and columnLink|default(false) %}</a>{% endif %}
                         </td>
                     {% endfor %}
+                    {% if table.actions|length %}
                     <td class="whatwedo_table:table__actions pr-6">
                         <div class="relative flex justify-end items-center" {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}>
                             <button
@@ -89,6 +92,7 @@
                             </div>
                         </div>
                     </td>
+                    {% endif %}
                 </tr>
             {% endfor %}
         </tbody>
