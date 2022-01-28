@@ -117,7 +117,7 @@ class Table
 
         if ($this->options['definition']) {
             if (!isset($options[Column::OPTION_LABEL])) {
-                $options[Column::OPTION_LABEL] = sprintf('wwd.%s.property.%s', $this->options['definition']->getPrefix(), $acronym);
+                $options[Column::OPTION_LABEL] = sprintf('wwd.%s.property.%s', $this->options['definition']->getEntityAlias(), $acronym);
             }
         }
 
