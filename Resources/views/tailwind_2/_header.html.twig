@@ -1,12 +1,12 @@
 {# Table Header #}
 <header class="whatwedo_table:header border-b border-neutral-200 px-4 py-4 sm:flex sm:items-center sm:justify-between">
-    {% if table.option('title') %}
-        <div class="whatwedo_table:header__title flex-1 min-w-0 text-lg font-medium leading-6 text-neutral-900 sm:truncate">
+    <div class="whatwedo_table:header__title flex-1 min-w-0 text-lg font-medium leading-6 text-neutral-900 sm:truncate">
+        {% if table.option('title') %}
             <h1>
                 {{ table.option('title')|trans }}
             </h1>
-        </div>
-    {% endif %}
+        {% endif %}
+    </div>
     <div class="mt-4 flex sm:mt-0 sm:ml-4">
         <button
             class="whatwedo_table:header__button whatwedo_table:header__button--download whatwedo_table-button"
