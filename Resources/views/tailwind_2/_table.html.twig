@@ -61,8 +61,10 @@
                             {% if column.option('is_primary') and columnLink|default(false) %}</a>{% endif %}
                         </td>
                     {% endfor %}
-                    {% if table.actions|length %}
+                    {% set tableActions = table.actions | filter(action => is_granted(action.getOption('voter_attribute'), row)) %}
+                    {% if tableActions|length %}
                     <td class="whatwedo_table:table__actions pr-6">
+
                         <div class="relative flex justify-end items-center" {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}>
                             <button
                                 class="whatwedo_table-actions"
@@ -83,7 +85,7 @@
                                 tabindex="-1"
                             >
                                 <div class="py-1" role="none">
-                                    {% for action in table.actions %}
+                                    {% for action in tableActions %}
                                         <span class="block hover:bg-neutral-50">
                                             {{ action.render(row)|raw }}
                                         </span>
