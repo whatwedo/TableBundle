@@ -109,7 +109,7 @@ class Table
         return $this->columns;
     }
 
-    public function addColumn(string $acronym, $type = null, array $options = []): static
+    public function addColumn(string $acronym, $type = null, array $options = [], ?int $position = null): static
     {
         if ($type === null) {
             $type = Column::class;
@@ -139,9 +139,32 @@ class Table
             $column->setFormatterManager($this->formatterManager);
         }
 
-        $this->columns[$acronym] = $column;
+        if ($position === null) {
+            $this->columns[$acronym] = $column;
+        } else {
+            $this->insertColumnAtPosition($acronym, $column, $position);
+        }
 
         return $this;
+    }
+
+    private function insertColumnAtPosition($key, $value, $position)
+    {
+        $newArray = [];
+        $added = false;
+        $i = 0;
+        foreach ($this->columns as $elementsAcronym => $elementsElement) {
+            if ($position === $i) {
+                $newArray[$key] = $value;
+                $added = true;
+            }
+            $newArray[$elementsAcronym] = $elementsElement;
+            $i++;
+        }
+        if (!$added) {
+            $newArray[$key] = $value;
+        }
+        $this->columns = $newArray;
     }
 
     public function removeColumn($acronym): static
