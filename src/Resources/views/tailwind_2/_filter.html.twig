@@ -159,10 +159,12 @@
                                             tabindex="-1"
                                         >
                                             <div class="py-1" role="none">
-                                                <!-- Active: "bg-neutral-100 text-neutral-900", Not Active: "text-neutral-700" -->
-                                                <a href="#" class="text-neutral-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">Lorem ipsum dolor</a>
-                                                <a href="#" class="text-neutral-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-1">Lorem ipsum dolor</a>
-                                                <a href="#" class="text-neutral-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">Lorem ipsum dolor</a>
+                                                {% set app_username = app.user ~ '' %}
+                                                {% for filter in table.filterExtension.savedFilter(app_username, app.request.attributes.get('_route')) %}
+                                                    {% set filter_href = path(filter.route, filter.arguments | merge(filter.conditions)) %}
+                                                    {% set isCreator = app_username == filter.creatorUsername %}
+                                                    <a href="{{ filter_href }}" class="text-neutral-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">{{ filter.name }}</a>
+                                                {% endfor %}
                                             </div>
                                             <div class="py-1" role="none">
                                                 <form method="POST" action="#" role="none">

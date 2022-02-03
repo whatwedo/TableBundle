@@ -57,21 +57,10 @@ class FilterRepository extends ServiceEntityRepository
         return $qb->where(
             $qb->expr()->andX(
                 $qb->expr()->eq('f.route', ':path'),
-                $qb->expr()->orX(
-                    $qb->expr()->orX(
-                        $qb->expr()->eq('f.state', FilterType::PUBLIC),
-                        $qb->expr()->eq('f.state', FilterType::SYSTEM)
-                    ),
-                    $qb->expr()->andX(
-                        $qb->expr()->eq('f.state', FilterType::PRIVATE),
-                        $qb->expr()->eq('f.createdByUsername', ':username')
-                    )
-                )
             )
         )
             ->orderBy('f.name')
             ->setParameter('path', $path)
-            ->setParameter('username', $username)
             ->getQuery()
             ->getResult();
     }
