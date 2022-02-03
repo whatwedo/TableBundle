@@ -4,7 +4,7 @@
     {% set indexSuffix = '[' ~ groupIndex ~ '][' ~ conditionIndex ~ ']' %}
     <div class="flex" {{ stimulus_target('whatwedo/table-bundle/filter', 'singleFilter') }}>
         <div class="flex-auto w-1/5">
-            <select name="{{ whatwedo_table_parameter(table, 'filter_column')~indexSuffix }}" class="w-full border-0 text-sm">
+            <select {{ stimulus_action('whatwedo/table-bundle/filter', 'filterTargetChanged') }} name="{{ whatwedo_table_parameter(table, 'filter_column')~indexSuffix }}" class="w-full border-0 text-sm">
                 {% for f in filters %}
                     <option
                         value="{{ f.acronym }}"
@@ -24,7 +24,7 @@
             </select>
         </div>
         <div class="flex-auto w-3/5">
-            {{ filter.type.valueField|replace({ '{name}': whatwedo_table_parameter(table, 'filter_value')~indexSuffix })|raw }}
+            {{ filter.type.valueField(filterValue)|replace({ '{name}': whatwedo_table_parameter(table, 'filter_value')~indexSuffix })|raw }}
         </div>
         <div class="flex-auto text-right pt-1 items-center w-1/5">
             <div class="flex justify-end">
@@ -49,7 +49,7 @@
     </div>
 {% endmacro %}
 
-{% macro filter_group(table, groupIndex) %}
+{% macro filter_group(table, groupIndex, group) %}
     <div {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroup') }}>
         <span
             class="text-neutral-500 uppercase text-sm font-medium mt-4 block hidden"
@@ -57,21 +57,25 @@
         >
             Zeige Elemente wenn
         </span>
+        {% if groupIndex > 0 %}
         <span
             class="text-neutral-500 uppercase text-sm font-medium mt-4 block hidden"
             {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupFilterHeaderOthers') }}
         >
             oder
         </span>
+        {% endif %}
         <div
             class="mt-1 p-4 bg-white relative rounded-md shadow-sm"
             {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupFilterList') }}
         >
-            {% for filterIndex in [] %}
-                {{ _self.filter(table, groupIndex, filterIndex) }}
+            {% for data in group %}
+                {% if table.filterExtension.filters[data.column] is defined %}
+                    {{ _self.filter(table, groupIndex, loop.index0, data.column, data.operator, data.value ?: '') }}
+                {% endif %}
             {% else %}
                 {% set f = table.filterExtension.filters|first %}
-                {{ _self.filter(table, groupIndex, 1, f.acronym, f.type.operators|first) }}
+                {{ _self.filter(table, groupIndex, 0, f.acronym, f.type.operators|first) }}
             {% endfor %}
         </div>
     </div>
@@ -118,9 +122,10 @@
                         </div>
                         <div class="mt-6 relative flex-1">
                             <div class="px-4 sm:px-6" {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupList') }}>
-                                {% for group in [] %}
+                                {% for groupIndex, group in table.filterExtension.filterData %}
+                                    {{ _self.filter_group(table, groupIndex, group) }}
                                 {% else %}
-                                    {{ _self.filter_group(table, 1) }}
+                                    {{ _self.filter_group(table, 0, []) }}
                                 {% endfor %}
                             </div>
 
@@ -141,6 +146,7 @@
                                             <button
                                                 class="inline-flex justify-center rounded-md border border-neutral-300 shadow-sm px-2.5 py-1.5 bg-white text-xs font-medium text-neutral-700 hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-neutral-100 focus:ring-primary"
                                                 type="button"
+                                                {{ stimulus_action('whatwedo/table-bundle/filter', 'toggleDropdown') }}
                                             >
                                                 Gespeicherte Filter
                                                 {{ bootstrap_icon('chevron-down', { class: '-mr-1 ml-2 h-4 w-4' }) }}
@@ -171,7 +177,7 @@
                                 </div>
 
                                 <div class="flex-auto text-right">
-                                    <button type="reset" class="px-2.5 py-1.5 border border-neutral-300 shadow-sm text-xs font-medium rounded text-white bg-error-500 hover:bg-danger-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                    <button {{ stimulus_action('whatwedo/table-bundle/filter', 'reset') }} type="reset" class="px-2.5 py-1.5 border border-neutral-300 shadow-sm text-xs font-medium rounded text-white bg-error-500 hover:bg-danger-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
                                         Zurücksetzen
                                     </button>
                                     <button type="submit" class="px-2.5 py-1.5 border border-neutral-300 shadow-sm text-xs font-medium rounded text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">

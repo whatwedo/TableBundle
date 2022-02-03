@@ -338,16 +338,38 @@ class FilterExtension extends AbstractExtension
         $label = \call_user_func($labelCallable, $table, $property->getName());
 
         $annotations = (new AnnotationReader())->getPropertyAnnotations($property);
+        $attributes = $property->getAttributes();
+        $annotationsAndAttributes = [...$annotations, ...$attributes];
 
         $allAliases = $queryBuilder->getAllAliases();
         $isPropertySelected = \in_array($acronym, $allAliases, true);
 
         $accessor = sprintf('%s.%s', $allAliases[0], $acronymNoSuffix);
 
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Column) {
-                if (array_key_exists($annotation->type, $this->scalarType)) {
-                    $this->addFilter($acronymNoSuffix, $label, new $this->scalarType[$annotation->type]($accessor));
+        $isAttribute = fn ($x) => $x instanceof \ReflectionAttribute;
+        $getClass = function ($x) use ($isAttribute) {
+            if ($isAttribute($x)) {
+                return $x->getName();
+            }
+            return get_class($x);
+        };
+        $getType = function ($x) use ($isAttribute) {
+            if ($isAttribute($x)) {
+                return $x->getArguments()['type'];
+            }
+            return $x->type;
+        };
+        $getTargetEntity = function ($x) use ($isAttribute) {
+            if ($isAttribute($x)) {
+                return $x->getArguments()['targetEntity'];
+            }
+            return $x->targetEntity;
+        };
+
+        foreach ($annotationsAndAttributes as $abstractHolder) {
+            if ($getClass($abstractHolder) === Column::class) {
+                if (array_key_exists($getType($abstractHolder), $this->scalarType)) {
+                    $this->addFilter($acronymNoSuffix, $label, new $this->scalarType[$getType($abstractHolder)]($accessor));
 
                     return $this->getFilter($acronymNoSuffix);
                 }
@@ -355,25 +377,21 @@ class FilterExtension extends AbstractExtension
                 return null;
             }
 
-            if ($annotation instanceof ManyToMany) {
-                $this->addFilter($acronymNoSuffix, $label, new $this->relationType[\get_class($annotation)]($accessor, $annotation->targetEntity, $this->entityManager));
+            if ($getClass($abstractHolder) === ManyToMany::class) {
+                $this->addFilter($acronymNoSuffix, $label, new $this->relationType[$getClass($abstractHolder)]($accessor, $getTargetEntity($abstractHolder), $this->entityManager));
 
                 return $this->getFilter($acronymNoSuffix);
             }
 
-            if ($annotation instanceof OneToMany || $annotation instanceof ManyToOne) {
-                if ($annotation instanceof ManyToMany) {
-                    $this->addFilter($acronymNoSuffix, $label, new $filterType($acronym, $target, $this->entityManager));
+            if ($getClass($abstractHolder) === OneToMany::class || $getClass($abstractHolder) === ManyToOne::class) {
 
-                    return $this->getFilter($acronymNoSuffix);
-                }
 
-                $target = $annotation->targetEntity;
+                $target = $getTargetEntity($abstractHolder);
                 if (mb_strpos($target, '\\') === false) {
                     $target = $namespace . '\\' . $target;
                 }
 
-                $filterType = $this->relationType[\get_class($annotation)];
+                $filterType = $this->relationType[$getClass($abstractHolder)];
 
                 $joins = ! $isPropertySelected ? [
                     $acronym => $accessor,

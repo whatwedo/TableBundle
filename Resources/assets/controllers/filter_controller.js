@@ -2,7 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 import { useTransition } from 'stimulus-use';
 
 export default class extends Controller {
-    static targets = ['filters', 'filterGroupList', 'singleFilterRemove', 'filterGroupFilterHeaderFirst', 'filterGroupFilterHeaderOthers']
+    static targets = ['filters', 'filterGroupList', 'singleFilterRemove', 'filterGroupFilterHeaderFirst', 'filterGroupFilterHeaderOthers', 'dropdown']
 
     connect() {
         /*
@@ -33,6 +33,27 @@ export default class extends Controller {
         this.updateGui();
     }
 
+    filterTargetChanged (event) {
+        const target = event.target;
+        const parentBlock = target.parentElement.parentElement;
+        const choosenOption = target.options[target.selectedIndex];
+        const operatorSelect = parentBlock.querySelector('select[name^="index_filter_operator"]');
+        const valueField = parentBlock.querySelector('[name^="index_filter_value"]');
+
+        operatorSelect.options.length = 0;
+        Object
+            .entries(JSON.parse(choosenOption.getAttribute('data-operator-options')))
+            .forEach(([key, value]) => {
+                operatorSelect.add(new Option(value, key));
+            })
+        ;
+
+        const parser = new DOMParser();
+        const template = choosenOption.getAttribute('data-value-template')
+        const doc = parser.parseFromString(template.replace(/{name}/g, valueField.getAttribute('name')), 'text/html');
+        valueField.parentNode.replaceChild(doc.body, valueField);
+    }
+
     /*
      * open filter panel
      */
@@ -54,6 +75,27 @@ export default class extends Controller {
         // clone and reset all values
         let node = event.target.closest('[data-whatwedo--table-bundle--filter-target="singleFilter"]').cloneNode(true);
         this.resetInputs(node);
+
+        const block = event.target.parentNode.parentNode.parentNode.parentNode;
+        const lastSelectInBlock = block.querySelector('[data-whatwedo--table-bundle--filter-target="singleFilter"]:last-child select:first-child');
+
+        const optionNameMatcher = /filter_([\w\d]+)\[(\d)\]\[(\d)\]/i;
+        let blockNumber = 0;
+        let iNumber = 0;
+        if (optionNameMatcher.test(lastSelectInBlock.getAttribute('name'))) {
+            const result = optionNameMatcher.exec(lastSelectInBlock.getAttribute('name'));
+            const _blockNumber = parseInt(result[2]);
+            if (!isNaN(_blockNumber)) {
+                blockNumber = _blockNumber;
+            }
+            const _iNumber = parseInt(result[3]);
+            if (!isNaN(_iNumber)) {
+                iNumber = _iNumber + 1;
+            }
+        }
+        node.querySelector('[name^="index_filter_column"]').name = 'index_filter_column['+blockNumber+']['+iNumber+']';
+        node.querySelector('[name^="index_filter_operator"]').name = 'index_filter_operator['+blockNumber+']['+iNumber+']';
+        node.querySelector('[name^="index_filter_value"]').name = 'index_filter_value['+blockNumber+']['+iNumber+']';
 
         event.target.closest('[data-whatwedo--table-bundle--filter-target="filterGroupFilterList"]').appendChild(node);
 
@@ -86,9 +128,34 @@ export default class extends Controller {
         node.querySelectorAll('[data-whatwedo--table-bundle--filter-target="singleFilter"]:not(:first-child)').forEach(element => element.remove());
         this.resetInputs(node);
 
+        const allOfIt = event.target.parentNode.parentNode.parentNode;
+        const lastBlockSelect = allOfIt.querySelector('[data-whatwedo--table-bundle--filter-target="filterGroup"]:last-child select:first-child');
+
+        const optionNameMatcher = /filter_([\w\d]+)\[(\d)\]\[(\d)\]/i;
+        let blockNumber = 0;
+        if (optionNameMatcher.test(lastBlockSelect.getAttribute('name'))) {
+            const result = optionNameMatcher.exec(lastBlockSelect.getAttribute('name'));
+            const _blockNumber = parseInt(result[2]);
+            if (!isNaN(_blockNumber)) {
+                blockNumber = _blockNumber + 1;
+            }
+        }
+
+        node.querySelector('[name^="index_filter_column"]').name = 'index_filter_column['+blockNumber+'][0]';
+        node.querySelector('[name^="index_filter_operator"]').name = 'index_filter_operator['+blockNumber+'][0]';
+        node.querySelector('[name^="index_filter_value"]').name = 'index_filter_value['+blockNumber+'][0]';
+
         this.filterGroupListTarget.appendChild(node);
 
         this.updateGui();
+    }
+
+    toggleDropdown() {
+        if (this.dropdownTarget.classList.contains('hidden')) {
+            this.dropdownTarget.classList.remove('hidden');
+        } else {
+            this.dropdownTarget.classList.add('hidden');
+        }
     }
 
     /*
@@ -129,5 +196,12 @@ export default class extends Controller {
         if (this.filterGroupFilterHeaderOthersTargets.length > 0) {
             this.filterGroupFilterHeaderOthersTarget.classList.add('hidden');
         }
+    }
+
+    reset(event) {
+        document.querySelectorAll('[data-whatwedo--table-bundle--filter-target="filterGroup"]').forEach((element) => {
+            element.remove();
+        });
+        event.target.closest('form').submit();
     }
 }
