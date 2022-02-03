@@ -7,6 +7,7 @@ namespace whatwedo\TableBundle\Table;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use whatwedo\CoreBundle\Manager\FormatterManager;
 use whatwedo\TableBundle\Action\Action;
 use whatwedo\TableBundle\Event\DataLoadEvent;
 use whatwedo\TableBundle\Exception\DataLoaderNotAvailableException;
@@ -29,7 +30,8 @@ class Table
         protected array $options,
         protected EventDispatcherInterface $eventDispatcher,
         protected array $extensions,
-        protected RequestStack $requestStack
+        protected RequestStack $requestStack,
+        protected FormatterManager $formatterManager
     ) {
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);
