@@ -7,7 +7,6 @@ namespace whatwedo\TableBundle\Action;
 use InvalidArgumentException;
 use Symfony\Component\Form\Util\StringUtil;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Twig\Environment;
 use whatwedo\TableBundle\Table\Table;
 
 class Action
@@ -17,7 +16,6 @@ class Action
      * TODO: create docs
      */
     public function __construct(
-        protected Environment $templating,
         protected Table $table,
         protected $acronym,
         protected array $options
@@ -37,16 +35,12 @@ class Action
         $this->options = $resolver->resolve($this->options);
     }
 
-    public function render(object|array $row): string
+    /**
+     * @deprecated
+     */
+    public function render(object|array $entity): string
     {
-        return $this->templating
-            ->load($this->table->getOption('theme'))
-            ->renderBlock('table_action', array_map(
-                static fn($value) => is_callable($value) ? $value($row) : $value,
-                array_merge($this->options, [
-                    'row' => $row,
-                ])
-            ));
+        throw new \Exception('\whatwedo\TableBundle\Action\Action::render is deprecated, use twig function whatwedo_table_render()');
     }
 
     public function getOption($name)
@@ -56,6 +50,25 @@ class Action
         }
 
         throw new InvalidArgumentException(sprintf('Option "%s" for table action does not exist.', $name));
+    }
+
+
+    public function getRoute() {
+        return $this->getOption('route');
+    }
+    public function getLabel() {
+        return $this->getOption('label');
+    }
+
+    public function getRouteParameters($entity) {
+        if (is_callable($this->getOption('route_parameters'))) {
+            return $this->getOption('route_parameters')($entity);
+        }
+        return $this->getOption('route_parameters');
+    }
+
+    public function getIcon() {
+        return $this->getOption('icon');
     }
 
     public function getTable(): Table
