@@ -29,9 +29,10 @@ declare(strict_types=1);
 
 namespace whatwedo\TableBundle\Enum;
 
-enum FilterType
+enum FilterType: string
 {
-    case PUBLIC;
-    case PRIVATE;
-    case SYSTEM;
+    case PUBLIC = 'public';
+    case PRIVATE = 'private';
+    case SYSTEM = 'system';
+
 }
