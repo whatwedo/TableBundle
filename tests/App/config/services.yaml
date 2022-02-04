@@ -6,15 +6,4 @@ services:
         autowire: true
         autoconfigure: true
 
-    whatwedo\TableBundle\Tests\App\Repository\:
-        resource: '../Repository/*'
-
-    whatwedo\TableBundle\Tests\App\Factory\:
-        resource: '../Factory/*'
-
-    whatwedo\TableBundle\Manager\SearchManager:
-        public: true
-
-    whatwedo\TableBundle\Manager\FilterManager:
-        public: true
 
