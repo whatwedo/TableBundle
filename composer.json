@@ -4,7 +4,6 @@
     "description": "Table generator for symfony",
     "license": "MIT",
     "homepage": "https://doc.whatwedo.ch/whatwedo/tablebundle",
-    "minimum-stability": "dev",
     "keywords": [
         "symfony-ux"
     ],
@@ -38,8 +37,7 @@
         "symfony/orm-pack": "^1.0",
         "symfony/translation": "^6.0",
         "symfony/twig-bundle": "^6.0",
-        "whatwedo/core-bundle":     "dev-1.0-dev as 1.0",
-        "whatwedo/crud-bundle":     "dev-1.0-dev"
+        "whatwedo/core-bundle":     "dev-1.0-dev as 1.0"
     },
     "suggest": {
         "whatwedo/search-bundle": "Allows searching tables"

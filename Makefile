@@ -23,7 +23,7 @@ help:
 
 ## initialize project
 install:
-	COMPOSER_ROOT_VERSION=dev-1.0-dev composer install
+	composer update
 
 ## fix php code style
 ecs:
