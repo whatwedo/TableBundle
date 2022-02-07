@@ -30,9 +30,10 @@ declare(strict_types=1);
 namespace whatwedo\TableBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use whatwedo\TableBundle\Entity\Filter;
-use whatwedo\TableBundle\Enum\FilterType;
+use whatwedo\TableBundle\Entity\UserInterface;
 
 /**
  * @method Filter|null find($id, $lockMode = null, $lockVersion = null)
@@ -47,20 +48,46 @@ class FilterRepository extends ServiceEntityRepository
         parent::__construct($registry, Filter::class);
     }
 
+    public function getMineQB(string $alias, ?UserInterface $user = null): QueryBuilder
+    {
+        $qb = $this
+            ->createQueryBuilder($alias)
+            ->where($alias.'.createdBy is null')
+        ;
+        if ($user) {
+            $qb
+                ->orWhere($alias.'.createdBy = :user')
+                ->setParameter('user', $user)
+            ;
+        }
+        return $qb;
+    }
+
     /**
      * @return Filter[]
      */
-    public function findSaved(string $path, string $username): array
+    public function findSaved(string $path, ?UserInterface $user): array
     {
         $qb = $this->createQueryBuilder('f');
 
-        return $qb->where(
-            $qb->expr()->andX(
-                $qb->expr()->eq('f.route', ':path'),
-            )
-        )
+        $qb = $qb->where($qb->expr()->eq('f.route', ':path'))
             ->orderBy('f.name')
-            ->setParameter('path', $path)
+            ->setParameter('path', $path);
+
+        if ($user) {
+            $qb
+                ->leftJoin('f.createdBy', 'wwd_user')
+                ->andWhere(
+                    $qb->expr()->orX(
+                        $qb->expr()->isNull('f.createdBy'),
+                        $qb->expr()->eq('wwd_user.id', ':user_id')
+                )
+            )->setParameter('user_id', $user->getId());
+        } else {
+            $qb->andWhere($qb->expr()->isNull('f.createdBy'));
+        }
+
+        return $qb
             ->getQuery()
             ->getResult();
     }

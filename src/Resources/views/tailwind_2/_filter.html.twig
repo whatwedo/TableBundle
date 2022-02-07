@@ -159,20 +159,33 @@
                                             tabindex="-1"
                                         >
                                             <div class="py-1" role="none">
-                                                {% set app_username = app.user ~ '' %}
-                                                {% for filter in table.filterExtension.savedFilter(app_username, app.request.attributes.get('_route')) %}
+                                                {% for filter in table.filterExtension.savedFilter(app.user, app.request.attributes.get('_route')) %}
                                                     {% set filter_href = path(filter.route, filter.arguments | merge(filter.conditions)) %}
-                                                    {% set isCreator = app_username == filter.creatorUsername %}
+                                                    {% set isCreator = filter.isCreatedBy(app.user) %}
                                                     <a href="{{ filter_href }}" class="text-neutral-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">{{ filter.name }}</a>
                                                 {% endfor %}
                                             </div>
-                                            <div class="py-1" role="none">
-                                                <form method="POST" action="#" role="none">
-                                                    <button type="submit" class="text-neutral-700 block w-full text-left px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-3">
+                                            {% if app.request.query.has('index_filter_column') and app.request.query.has('index_filter_operator') and app.request.query.has('index_filter_value') %}
+                                                <div class="py-1" role="none">
+                                                    <a
+                                                        href="{{ path('whatwedo_crud_filter_create', {'filter_path' : app.request.attributes.get('_route')} | merge(app.request.query.all)) }}"
+                                                        class="text-neutral-700 block w-full text-left px-4 py-2 text-sm"
+                                                        role="menuitem" tabindex="-1" id="menu-item-3"
+                                                    >
                                                         {{ bootstrap_icon('plus', { class: 'inline-block w-5 h-5' }) }}
                                                         Neu erstellen
-                                                    </button>
-                                                </form>
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                            <div class="py-1" role="none">
+                                                <a
+                                                    href="{{ path('whatwedo_crud_filter_index') }}"
+                                                    class="text-neutral-700 block w-full text-left px-4 py-2 text-sm"
+                                                    role="menuitem" tabindex="-1" id="menu-item-3"
+                                                >
+                                                    {{ bootstrap_icon('list', { class: 'inline-block w-5 h-5' }) }}
+                                                    Filter Übersicht
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
