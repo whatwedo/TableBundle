@@ -42,6 +42,7 @@ class AjaxOneToManyFilterType extends FilterType
         string $column,
         protected string $targetClass,
         protected EntityManagerInterface $entityManager,
+        protected string $jsonSearchUrl,
         array $joins = []
     ) {
         parent::__construct($column, $joins);

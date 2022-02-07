@@ -20,6 +20,7 @@ class AjaxRelationFilterType extends FilterType
         string $column,
         protected string $targetClass,
         protected EntityManagerInterface $entityManager,
+        protected string $jsonSearchUrl,
         array $joins = []
     ) {
         parent::__construct($column, $joins);
@@ -36,15 +37,13 @@ class AjaxRelationFilterType extends FilterType
     public function getValueField(?string $value = '0'): string
     {
         $field = sprintf(
-            '<select name="{name}" class="form-control" data-ajax-select data-ajax-entity="%s">',
-            $this->targetClass
+            '<select name="{name}" class="form-control" data-whatwedo--core-bundle--select-url-value="%s" data-controller="whatwedo--core-bundle--select" data-whatwedo--core-bundle--select-required-value="0">',
+            $this->jsonSearchUrl
         );
 
         $currentSelection = (int) $value > 0 ? $this->entityManager->getRepository($this->targetClass)->find((int) $value) : null;
         if ($currentSelection) {
             $field .= sprintf('<option value="%s">%s</option>', $value, $currentSelection->__toString());
-        } else {
-            $field .= "<option selected value='0'>- leer -</option>";
         }
 
         $field .= '</select>';

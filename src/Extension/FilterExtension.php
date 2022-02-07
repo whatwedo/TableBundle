@@ -194,7 +194,7 @@ class FilterExtension extends AbstractExtension
      * @throws \Doctrine\Common\Annotations\AnnotationException
      * @throws \ReflectionException
      */
-    public function addFiltersAutomatically(DoctrineTable $table, callable $labelCallable = null, array $propertyNames = null)
+    public function addFiltersAutomatically(DoctrineTable $table, ?callable $labelCallable = null, ?callable $jsonSearchCallable = null, ?array $propertyNames = null)
     {
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $table->getOption('query_builder');
@@ -202,11 +202,12 @@ class FilterExtension extends AbstractExtension
 
         $reflectionClass = new \ReflectionClass($entityClass);
         $labelCallable = \is_callable($labelCallable) ? $labelCallable : [$this, 'labelCallable'];
+        $jsonSearchCallable = \is_callable($jsonSearchCallable) ? $jsonSearchCallable : [$this, 'jsonSearchCallable'];
 
         $properties = $propertyNames ? array_map([$reflectionClass, 'getProperty'], $propertyNames) : $reflectionClass->getProperties();
 
         foreach ($properties as $property) {
-            $this->addFilterAutomatically($table, $queryBuilder, $labelCallable, $property, $reflectionClass->getNamespaceName());
+            $this->addFilterAutomatically($table, $queryBuilder, $labelCallable, $jsonSearchCallable, $property, $reflectionClass->getNamespaceName());
         }
     }
 
@@ -326,12 +327,17 @@ class FilterExtension extends AbstractExtension
         return ucfirst($property);
     }
 
+    private static function jsonSearchCallable(string $entityClass)
+    {
+        throw new \Exception('you need to define a json search callable for class "' . $entityClass . '".');
+    }
+
     /**
      * @throws \Doctrine\Common\Annotations\AnnotationException
      *
      * @return Filter|null
      */
-    private function addFilterAutomatically(DoctrineTable $table, QueryBuilder $queryBuilder, callable $labelCallable, \ReflectionProperty $property, string $namespace)
+    private function addFilterAutomatically(DoctrineTable $table, QueryBuilder $queryBuilder, callable $labelCallable, callable $jsonSearchCallable, \ReflectionProperty $property, string $namespace)
     {
         $acronymNoSuffix = $property->getName();
         $acronym = '_' . $property->getName();
@@ -398,7 +404,13 @@ class FilterExtension extends AbstractExtension
                     $acronym => $accessor,
                 ] : [];
 
-                $this->addFilter($acronymNoSuffix, $label, new $filterType($acronym, $target, $this->entityManager, $joins));
+                $this->addFilter($acronymNoSuffix, $label, new $filterType(
+                    $acronym,
+                    $target,
+                    $this->entityManager,
+                    $jsonSearchCallable($target),
+                    $joins
+                ));
 
                 return $this->getFilter($acronymNoSuffix);
             }

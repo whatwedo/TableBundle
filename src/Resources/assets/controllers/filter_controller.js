@@ -48,10 +48,14 @@ export default class extends Controller {
             })
         ;
 
+        if (valueField.nextElementSibling != null && valueField.nextElementSibling.classList.contains('ts-wrapper')) {
+            valueField.nextElementSibling.parentElement.removeChild(valueField.nextElementSibling);
+        }
         const parser = new DOMParser();
         const template = choosenOption.getAttribute('data-value-template')
         const doc = parser.parseFromString(template.replace(/{name}/g, valueField.getAttribute('name')), 'text/html');
         valueField.parentNode.replaceChild(doc.body, valueField);
+
     }
 
     /*
@@ -98,6 +102,10 @@ export default class extends Controller {
         node.querySelector('[name^="index_filter_value"]').name = 'index_filter_value['+blockNumber+']['+iNumber+']';
 
         event.target.closest('[data-whatwedo--table-bundle--filter-target="filterGroupFilterList"]').appendChild(node);
+
+        this.filterTargetChanged({
+            target: node.querySelector('[name^="index_filter_column"]'),
+        });
 
         this.updateGui();
     }
@@ -146,6 +154,10 @@ export default class extends Controller {
         node.querySelector('[name^="index_filter_value"]').name = 'index_filter_value['+blockNumber+'][0]';
 
         this.filterGroupListTarget.appendChild(node);
+
+        this.filterTargetChanged({
+            target: node.querySelector('[name^="index_filter_column"]'),
+        });
 
         this.updateGui();
     }
