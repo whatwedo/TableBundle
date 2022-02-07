@@ -69,18 +69,23 @@ class Filter
     protected array $conditions = [];
 
     /**
-     * @ORM\Column(name="created_by_username", type="string", length=256, nullable=false)
+     * @ORM\ManyToOne(targetEntity="whatwedo\TableBundle\Entity\UserInterface")
      */
-    protected string $createdByUsername = '';
-
-    #[ORM\Column(type: FilterType::class, nullable: false)]
-    protected FilterType $type = FilterType::PUBLIC;
+    protected ?UserInterface $createdBy;
 
     /**
      * @ORM\Column(name="description", type="string", length=256, nullable=true)
      * @Assert\Length(max="256")
      */
     protected ?string $description = null;
+
+    public function isCreatedBy(?UserInterface $user): bool
+    {
+        if ($user === null || $this->createdBy === null) {
+            return false;
+        }
+        return $this->createdBy->getId() === $user->getId();
+    }
 
     public function getId(): ?int
     {
@@ -132,24 +137,14 @@ class Filter
         $this->conditions = $conditions;
     }
 
-    public function getCreatedByUsername(): string
+    public function getCreatedBy(): ?UserInterface
     {
-        return $this->createdByUsername;
+        return $this->createdBy;
     }
 
-    public function setCreatedByUsername(string $createdByUsername): void
+    public function setCreatedBy(?UserInterface $createdBy): void
     {
-        $this->createdByUsername = $createdByUsername;
-    }
-
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): void
-    {
-        $this->type = $type;
+        $this->createdBy = $createdBy;
     }
 
     public function getDescription(): ?string

@@ -39,6 +39,7 @@ use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\RequestStack;
 use whatwedo\TableBundle\Builder\FilterBuilder;
 use whatwedo\TableBundle\Entity\Filter as FilterEntity;
+use whatwedo\TableBundle\Entity\UserInterface;
 use whatwedo\TableBundle\Exception\InvalidFilterAcronymException;
 use whatwedo\TableBundle\Filter\Type\AjaxManyToManyFilterType;
 use whatwedo\TableBundle\Filter\Type\AjaxOneToManyFilterType;
@@ -181,9 +182,9 @@ class FilterExtension extends AbstractExtension
      *
      * @return \whatwedo\TableBundle\Entity\Filter[]
      */
-    public function getSavedFilter($username, $route)
+    public function getSavedFilter(?UserInterface $user, $route)
     {
-        return $this->entityManager->getRepository(FilterEntity::class)->findSaved($route, $username);
+        return $this->entityManager->getRepository(FilterEntity::class)->findSaved($route, $user);
     }
 
     /**

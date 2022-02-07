@@ -1,8 +1,6 @@
 <?php
-
-declare(strict_types=1);
 /*
- * Copyright (c) 2017, whatwedo GmbH
+ * Copyright (c) 2022, whatwedo GmbH
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,12 +25,11 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Enum;
+namespace whatwedo\TableBundle\Entity;
 
-enum FilterType: string
+interface UserInterface
 {
-    case PUBLIC = 'public';
-    case PRIVATE = 'private';
-    case SYSTEM = 'system';
+
+    public function getId(): ?int;
 
 }
