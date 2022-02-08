@@ -384,25 +384,31 @@ class FilterExtension extends AbstractExtension
                 return null;
             }
 
+            $joins = ! $isPropertySelected ? [
+                $acronym => $accessor,
+            ] : [];
+
             if ($getClass($abstractHolder) === ManyToMany::class) {
-                $this->addFilter($acronymNoSuffix, $label, new $this->relationType[$getClass($abstractHolder)]($accessor, $getTargetEntity($abstractHolder), $this->entityManager));
+                $target = $getTargetEntity($abstractHolder);
+
+                $this->addFilter($acronymNoSuffix, $label, new $this->relationType[$getClass($abstractHolder)](
+                    $acronym,
+                    $target,
+                    $this->entityManager,
+                    $jsonSearchCallable($target),
+                    $joins
+                ));
 
                 return $this->getFilter($acronymNoSuffix);
             }
 
             if ($getClass($abstractHolder) === OneToMany::class || $getClass($abstractHolder) === ManyToOne::class) {
-
-
                 $target = $getTargetEntity($abstractHolder);
                 if (mb_strpos($target, '\\') === false) {
                     $target = $namespace . '\\' . $target;
                 }
 
                 $filterType = $this->relationType[$getClass($abstractHolder)];
-
-                $joins = ! $isPropertySelected ? [
-                    $acronym => $accessor,
-                ] : [];
 
                 $this->addFilter($acronymNoSuffix, $label, new $filterType(
                     $acronym,
