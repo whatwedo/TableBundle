@@ -38,7 +38,8 @@
         "symfony/translation": "^6.0",
         "symfony/twig-bundle": "^6.0",
         "whatwedo/core-bundle":     "dev-1.0-dev as 1.0",
-        "whatwedo/search-bundle":     "dev-3.0-dev as 3.0"
+        "whatwedo/search-bundle":     "dev-3.0-dev as 3.0",
+        "gedmo/doctrine-extensions": "^3.5"
     },
     "suggest": {
         "whatwedo/search-bundle": "Allows searching tables"
