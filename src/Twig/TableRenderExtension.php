@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace whatwedo\TableBundle\Twig;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 use Twig\TwigFunction;
 use whatwedo\CoreBundle\Manager\FormatterManager;
 use whatwedo\TableBundle\Action\Action;
@@ -16,7 +18,8 @@ class TableRenderExtension extends AbstractExtension
 {
     public function __construct(
         protected Environment $templating,
-        protected FormatterManager $formatterManager
+        protected FormatterManager $formatterManager,
+        protected EntityManagerInterface $entityManager
     ) {
     }
 
@@ -33,6 +36,13 @@ class TableRenderExtension extends AbstractExtension
             new TwigFunction('whatwedo_table_render', fn ($context, Table $table) => $this->renderTable($context, $table), $options),
             new TwigFunction('whatwedo_table_action_render', fn ($context, Action $action, $entity) => $this->renderTableAction($context, $action, $entity), $options),
             new TwigFunction('whatwedo_table_column_render', fn ($context, Column $column, $entity) => $this->renderTableColumn($context, $column, $entity), $options),
+        ];
+    }
+
+    public function getFilters()
+    {
+        return [
+            new TwigFilter('is_tree', fn ($entity) => $this->isTree($entity)),
         ];
     }
 
@@ -64,6 +74,13 @@ class TableRenderExtension extends AbstractExtension
         $formatter->processOptions($column->getOption(Column::OPTION_FORMATTER_OPTIONS));
 
         return $formatter->getHtml($column->getContent($entity));
+    }
+
+    private function isTree($entity)
+    {
+
+        return $entity instanceof \whatwedo\CrudBundle\Entity\TreeInterface;
+
     }
 
     private function getTemplate(string $layoutFile): \Twig\TemplateWrapper
