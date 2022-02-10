@@ -6,7 +6,6 @@ namespace whatwedo\TableBundle\DataLoader;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 use Gedmo\Tree\Hydrator\ORM\TreeObjectHydrator;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use whatwedo\TableBundle\Entity\TreeInterface;
