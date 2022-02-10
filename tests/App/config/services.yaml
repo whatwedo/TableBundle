@@ -7,6 +7,10 @@ services:
         autoconfigure: true
 
 
+
+    whatwedo\TableBundle\Tests\App\Repository\:
+        resource: '../Repository'
+
     gedmo.listener.tree:
         class: Gedmo\Tree\TreeListener
         tags:
@@ -14,3 +18,7 @@ services:
         calls:
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
 
+
+
+    Symfony\Component\HttpFoundation\RequestStack:
+        public: true

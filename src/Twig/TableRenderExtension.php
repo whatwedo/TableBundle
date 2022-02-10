@@ -49,7 +49,6 @@ class TableRenderExtension extends AbstractExtension
     private function renderTable($context, Table $table)
     {
         $this->template = $this->getTemplate($this->getTheme());
-        $table->loadData();
         $context['table'] = $table;
         $blockName = 'table';
         $context['blockName'] = $blockName;
@@ -78,9 +77,7 @@ class TableRenderExtension extends AbstractExtension
 
     private function isTree($entity)
     {
-
         return $entity instanceof \whatwedo\CrudBundle\Entity\TreeInterface;
-
     }
 
     private function getTemplate(string $layoutFile): \Twig\TemplateWrapper

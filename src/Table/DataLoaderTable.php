@@ -9,15 +9,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use whatwedo\CoreBundle\Manager\FormatterManager;
 use whatwedo\TableBundle\Action\Action;
 use whatwedo\TableBundle\Event\DataLoadEvent;
-use whatwedo\TableBundle\Exception\DataLoaderNotAvailableException;
 use whatwedo\TableBundle\Extension\ExtensionInterface;
 use whatwedo\TableBundle\Extension\FilterExtension;
 use whatwedo\TableBundle\Extension\PaginationExtension;
 use whatwedo\TableBundle\Extension\SearchExtension;
 use whatwedo\TableBundle\Extension\SortExtension;
-use whatwedo\TableBundle\Model\TableDataInterface;
 
-class Table
+class DataLoaderTable extends Table
 {
     protected array $columns = [];
 
@@ -37,6 +35,9 @@ class Table
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);
         $this->options = $resolver->resolve($this->options);
+        foreach ($this->extensions as $extension) {
+            $extension->setTable($this);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -75,7 +76,7 @@ class Table
          * you can pass an array to call_user_func
          */
         $resolver->setRequired('data_loader');
-        $resolver->setAllowedTypes('data_loader', ['array', 'callable']);
+        $resolver->setAllowedTypes('data_loader', ['whatwedo\TableBundle\DataLoader\DataLoaderInterface']);
     }
 
     public function getIdentifier(): string
@@ -246,48 +247,9 @@ class Table
             return;
         }
 
-        if (! is_callable($this->options['data_loader'])
-            && ! is_array($this->options['data_loader'])) {
-            throw new DataLoaderNotAvailableException();
-        }
-
-        $currentPage = 1;
-        $limit = -1;
-
-        $paginationExtension = null;
-
-        if ($this->hasExtension(PaginationExtension::class)) {
-            /** @var PaginationExtension $paginationExtension */
-            $paginationExtension = $this->getExtension(PaginationExtension::class);
-            $paginationExtension->setLimit($this->options['default_limit']);
-            $currentPage = $paginationExtension->getCurrentPage();
-            $limit = $paginationExtension->getLimit();
-        }
-
         $this->eventDispatcher->dispatch(new DataLoadEvent($this), DataLoadEvent::PRE_LOAD);
-
-        // loads the data from the data loader callable
-        $tableData = null;
-
-        if (is_callable($this->options['data_loader'])) {
-            $tableData = ($this->options['data_loader'])($currentPage, $limit);
-        }
-        if (is_array($this->options['data_loader'])) {
-            $tableData = call_user_func($this->options['data_loader'], $currentPage, $limit);
-        }
-
-        if (! $tableData instanceof TableDataInterface) {
-            throw new \UnexpectedValueException('Table::dataLoader must return a TableDataInterface');
-        }
-
-        $this->rows = $tableData->getResults();
-
-        if ($this->hasExtension(PaginationExtension::class)) {
-            $paginationExtension->setTotalResults($tableData->getTotalResults());
-        }
-
+        $this->rows = $this->options['data_loader']->getResults();
         $this->loaded = true;
-
         $this->eventDispatcher->dispatch(new DataLoadEvent($this), DataLoadEvent::POST_LOAD);
     }
 

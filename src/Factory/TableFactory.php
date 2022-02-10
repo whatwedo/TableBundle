@@ -32,7 +32,9 @@ namespace whatwedo\TableBundle\Factory;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use whatwedo\CoreBundle\Manager\FormatterManager;
+use whatwedo\TableBundle\DataLoader\DataLoaderInterface;
 use whatwedo\TableBundle\Extension\ExtensionInterface;
+use whatwedo\TableBundle\Table\DataLoaderTable;
 use whatwedo\TableBundle\Table\DoctrineTable;
 use whatwedo\TableBundle\Table\Table;
 
@@ -54,7 +56,6 @@ class TableFactory
             $options,
             $this->eventDispatcher,
             $this->extensions,
-            $this->requestStack,
             $this->formatterManager
         );
     }
@@ -66,7 +67,19 @@ class TableFactory
             $options,
             $this->eventDispatcher,
             $this->extensions,
-            $this->requestStack,
+            $this->formatterManager
+        );
+    }
+
+    public function createDataLoaderTable($identifier, DataLoaderInterface $dataLoader, $options = [])
+    {
+        $options['data_loader'] = $dataLoader;
+
+        return new DataLoaderTable(
+            $identifier,
+            $options,
+            $this->eventDispatcher,
+            $this->extensions,
             $this->formatterManager
         );
     }

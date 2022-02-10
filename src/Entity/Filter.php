@@ -31,7 +31,6 @@ namespace whatwedo\TableBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use whatwedo\TableBundle\Enum\FilterType;
 
 /**
  * @ORM\Table(name="whatwedo_table_filter")
@@ -84,6 +83,7 @@ class Filter
         if ($user === null || $this->createdBy === null) {
             return false;
         }
+
         return $this->createdBy->getId() === $user->getId();
     }
 

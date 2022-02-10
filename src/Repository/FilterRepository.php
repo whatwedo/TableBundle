@@ -52,14 +52,15 @@ class FilterRepository extends ServiceEntityRepository
     {
         $qb = $this
             ->createQueryBuilder($alias)
-            ->where($alias.'.createdBy is null')
+            ->where($alias . '.createdBy is null')
         ;
         if ($user) {
             $qb
-                ->orWhere($alias.'.createdBy = :user')
+                ->orWhere($alias . '.createdBy = :user')
                 ->setParameter('user', $user)
             ;
         }
+
         return $qb;
     }
 
@@ -81,8 +82,8 @@ class FilterRepository extends ServiceEntityRepository
                     $qb->expr()->orX(
                         $qb->expr()->isNull('f.createdBy'),
                         $qb->expr()->eq('wwd_user.id', ':user_id')
-                )
-            )->setParameter('user_id', $user->getId());
+                    )
+                )->setParameter('user_id', $user->getId());
         } else {
             $qb->andWhere($qb->expr()->isNull('f.createdBy'));
         }

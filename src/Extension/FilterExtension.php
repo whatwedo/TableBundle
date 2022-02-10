@@ -177,7 +177,6 @@ class FilterExtension extends AbstractExtension
     }
 
     /**
-     * @param $username
      * @param $route
      *
      * @return \whatwedo\TableBundle\Entity\Filter[]
@@ -358,18 +357,21 @@ class FilterExtension extends AbstractExtension
             if ($isAttribute($x)) {
                 return $x->getName();
             }
+
             return get_class($x);
         };
         $getType = function ($x) use ($isAttribute) {
             if ($isAttribute($x)) {
                 return $x->getArguments()['type'];
             }
+
             return $x->type;
         };
         $getTargetEntity = function ($x) use ($isAttribute) {
             if ($isAttribute($x)) {
                 return $x->getArguments()['targetEntity'];
             }
+
             return $x->targetEntity;
         };
 
