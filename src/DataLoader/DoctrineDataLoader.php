@@ -4,17 +4,22 @@ declare(strict_types=1);
 
 namespace whatwedo\TableBundle\DataLoader;
 
-class DoctrineDataLoader implements DataLoaderInterface
-{
-    private \Doctrine\ORM\QueryBuilder $queryBuilder;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-    public function setQueryBuilder(\Doctrine\ORM\QueryBuilder $queryBuilder)
+class DoctrineDataLoader extends AbstractDataLoader
+{
+    public const OPTION_QUERY_BUILDER = 'query_builder';
+
+    public function getResults(): iterable
     {
-        $this->queryBuilder = $queryBuilder;
+        return $this->options[self::OPTION_QUERY_BUILDER]->getQuery()->toIterable();
     }
 
-    public function getResults()
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        return $this->queryBuilder->getQuery()->toIterable();
+        parent::configureOptions($resolver);
+        $resolver->setDefault('default_limit', 5);
+        $resolver->setRequired(self::OPTION_QUERY_BUILDER);
+        $resolver->setAllowedTypes(self::OPTION_QUERY_BUILDER, 'Doctrine\ORM\QueryBuilder');
     }
 }

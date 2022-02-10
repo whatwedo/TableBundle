@@ -4,17 +4,20 @@ declare(strict_types=1);
 
 namespace whatwedo\TableBundle\DataLoader;
 
-class ArrayDataLoader implements DataLoaderInterface
-{
-    private \Doctrine\Common\Collections\ArrayCollection $data;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-    public function setData(\Doctrine\Common\Collections\ArrayCollection $data)
+class ArrayDataLoader extends AbstractDataLoader
+{
+    public const OPTION_DATA = 'data';
+
+    public function getResults(): iterable
     {
-        $this->data = $data;
+        return $this->options[self::OPTION_DATA];
     }
 
-    public function getResults()
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        return $this->data;
+        $resolver->setRequired(self::OPTION_DATA);
+        $resolver->setAllowedTypes(self::OPTION_DATA, ['iterable']);
     }
 }

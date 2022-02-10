@@ -291,7 +291,7 @@ class Table
         $this->eventDispatcher->dispatch(new DataLoadEvent($this), DataLoadEvent::POST_LOAD);
     }
 
-    private function insertColumnAtPosition($key, $value, $position)
+    protected function insertColumnAtPosition($key, $value, $position)
     {
         $newArray = [];
         $added = false;

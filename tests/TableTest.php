@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use whatwedo\TableBundle\DataLoader\ArrayDataLoader;
 use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
 use whatwedo\TableBundle\DataLoader\PaginatorDoctrineDataLoader;
-use whatwedo\TableBundle\Extension\PaginationExtension;
 use whatwedo\TableBundle\Factory\TableFactory;
 use whatwedo\TableBundle\Helper\RouterHelper;
 use whatwedo\TableBundle\Model\SimpleTableData;
@@ -180,8 +179,7 @@ class TableTest extends KernelTestCase
     {
         $tableFactory = self::getContainer()->get(TableFactory::class);
 
-        $arrayDataLoader = new ArrayDataLoader();
-        $arrayDataLoader->setData(
+        $dataLoaderOptions[ArrayDataLoader::OPTION_DATA] =
             new ArrayCollection([
                 [
                     'id' => 1,
@@ -195,10 +193,11 @@ class TableTest extends KernelTestCase
                     'id' => 3,
                     'name' => 'name3',
                 ],
-            ])
-        );
+            ]);
 
-        $table = $tableFactory->createDataLoaderTable('test', $arrayDataLoader);
+        $table = $tableFactory->createDataLoaderTable('test', ArrayDataLoader::class, [
+            'dataloader_options' => $dataLoaderOptions,
+        ]);
 
         $this->assertSame([
             [
@@ -224,10 +223,11 @@ class TableTest extends KernelTestCase
 
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
 
-        $doctrineDataLoader = new DoctrineDataLoader();
-        $doctrineDataLoader->setQueryBuilder($entityManager->getRepository(Company::class)->createQueryBuilder('c'));
+        $dataLoaderOptions[DoctrineDataLoader::OPTION_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
 
-        $table = $tableFactory->createDataLoaderTable('test', $doctrineDataLoader, );
+        $table = $tableFactory->createDataLoaderTable('test', DoctrineDataLoader::class, [
+            'dataloader_options' => $dataLoaderOptions,
+        ]);
 
         $this->assertSame(
             [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
@@ -254,12 +254,11 @@ class TableTest extends KernelTestCase
 
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
 
-        $paginationExtension = self::getContainer()->get(PaginationExtension::class);
-        $doctrineDataLoader = new PaginatorDoctrineDataLoader($paginationExtension);
-        $doctrineDataLoader->setQueryBuilder($entityManager->getRepository(Company::class)->createQueryBuilder('c'));
-        $doctrineDataLoader->setDefaultLimit(5);
+        $dataLoaderOptions[DoctrineDataLoader::OPTION_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
 
-        $table = $tableFactory->createDataLoaderTable('test', $doctrineDataLoader, );
+        $table = $tableFactory->createDataLoaderTable('test', PaginatorDoctrineDataLoader::class, [
+            'dataloader_options' => $dataLoaderOptions,
+        ]);
 
         $this->assertSame(
             [1, 2, 3, 4, 5],
@@ -294,13 +293,11 @@ class TableTest extends KernelTestCase
 
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
 
-        $paginationExtension = self::getContainer()->get(PaginationExtension::class);
+        $dataLoaderOptions[DoctrineDataLoader::OPTION_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
 
-        $doctrineDataLoader = new PaginatorDoctrineDataLoader($paginationExtension);
-        $doctrineDataLoader->setQueryBuilder($entityManager->getRepository(Company::class)->createQueryBuilder('c'));
-        $doctrineDataLoader->setDefaultLimit(5);
-
-        $table = $tableFactory->createDataLoaderTable('test', $doctrineDataLoader, );
+        $table = $tableFactory->createDataLoaderTable('test', PaginatorDoctrineDataLoader::class, [
+            'dataloader_options' => $dataLoaderOptions,
+        ]);
 
         $this->assertSame(
             [6, 7, 8, 9, 10],

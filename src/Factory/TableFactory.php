@@ -29,23 +29,29 @@ declare(strict_types=1);
 
 namespace whatwedo\TableBundle\Factory;
 
+use Psr\Container\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Contracts\Service\ServiceSubscriberInterface;
 use whatwedo\CoreBundle\Manager\FormatterManager;
+use whatwedo\TableBundle\DataLoader\ArrayDataLoader;
 use whatwedo\TableBundle\DataLoader\DataLoaderInterface;
+use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
+use whatwedo\TableBundle\DataLoader\PaginatorDoctrineDataLoader;
 use whatwedo\TableBundle\Extension\ExtensionInterface;
 use whatwedo\TableBundle\Table\DataLoaderTable;
 use whatwedo\TableBundle\Table\DoctrineTable;
 use whatwedo\TableBundle\Table\Table;
 
-class TableFactory
+class TableFactory implements ServiceSubscriberInterface
 {
     protected array $extensions = [];
 
     public function __construct(
         protected EventDispatcherInterface $eventDispatcher,
         protected RequestStack $requestStack,
-        protected FormatterManager $formatterManager
+        protected FormatterManager $formatterManager,
+        protected ContainerInterface $locator
     ) {
     }
 
@@ -71,9 +77,13 @@ class TableFactory
         );
     }
 
-    public function createDataLoaderTable($identifier, DataLoaderInterface $dataLoader, $options = [])
+    public function createDataLoaderTable($identifier, string $dataLoader, $options = [])
     {
-        $options['data_loader'] = $dataLoader;
+        /** @var DataLoaderInterface $dataLoaderInstance */
+        $dataLoaderInstance = $this->locator->get($dataLoader);
+        $dataLoaderInstance->setOptions($options['dataloader_options']);
+
+        $options['data_loader'] = $dataLoaderInstance;
 
         return new DataLoaderTable(
             $identifier,
@@ -87,5 +97,14 @@ class TableFactory
     public function addExtension(ExtensionInterface $extension): void
     {
         $this->extensions[$extension::class] = $extension;
+    }
+
+    public static function getSubscribedServices(): array
+    {
+        return [
+            ArrayDataLoader::class,
+            DoctrineDataLoader::class,
+            PaginatorDoctrineDataLoader::class,
+        ];
     }
 }
