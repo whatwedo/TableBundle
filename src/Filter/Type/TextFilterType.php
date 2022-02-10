@@ -37,6 +37,9 @@ class TextFilterType extends FilterType
 
     public function getValueField(?string $value = ''): string
     {
+        if (!$value) {
+            $value = '';
+        }
         return sprintf(
             '<input type="text" name="{name}" value="%s" class="form-control">',
             addcslashes($value, '"')
