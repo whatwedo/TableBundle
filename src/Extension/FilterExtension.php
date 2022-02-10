@@ -429,14 +429,14 @@ class FilterExtension extends AbstractExtension
     {
         $value = [];
 
-        if ($this->getRequest()->query->has(RouterHelper::getParameterName($this->table, $param))) {
-            $value = $this->getRequest()->query->all()[RouterHelper::getParameterName($this->table, $param)];
+        if ($this->getRequest()->query->has(RouterHelper::getParameterName($this->table->getIdentifier(), $param))) {
+            $value = $this->getRequest()->query->all()[RouterHelper::getParameterName($this->table->getIdentifier(), $param)];
             if (! is_array($value)) {
                 $value = [];
             }
         }
 
-        $predefined = $this->getPredefinedFilter($this->getRequest()->query->get(RouterHelper::getParameterName($this->table, RouterHelper::PARAMETER_FILTER_PREDEFINED), ''));
+        $predefined = $this->getPredefinedFilter($this->getRequest()->query->get(RouterHelper::getParameterName($this->table->getIdentifier(), RouterHelper::PARAMETER_FILTER_PREDEFINED), ''));
 
         return $predefined ? array_merge($value, $predefined[$param]) : $value;
     }

@@ -44,7 +44,7 @@ class SearchExtension extends AbstractExtension
 
     public function getQuery(): string
     {
-        return $this->requestStack->getCurrentRequest()->query->get(RouterHelper::getParameterName($this->table, RouterHelper::PARAMETER_SEARCH_QUERY), '');
+        return $this->requestStack->getCurrentRequest()->query->get(RouterHelper::getParameterName($this->table->getIdentifier(), RouterHelper::PARAMETER_SEARCH_QUERY), '');
     }
 
     public static function isEnabled(array $enabledBundles): bool

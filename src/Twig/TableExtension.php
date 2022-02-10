@@ -15,6 +15,7 @@ use Twig\TwigFunction;
 use whatwedo\TableBundle\Factory\TableFactory;
 use whatwedo\TableBundle\Helper\RouterHelper;
 use whatwedo\TableBundle\Table\Column;
+use whatwedo\TableBundle\Table\Table;
 
 class TableExtension extends AbstractExtension
 {
@@ -31,7 +32,7 @@ class TableExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('whatwedo_table_parameter', [$this->routerHelper, 'getParameterName']),
+            new TwigFunction('whatwedo_table_parameter', fn (Table $table, string $parameter, $addition = null) => $this->routerHelper->getParameterName($table->getIdentifier(), $parameter, $addition)),
             new TwigFunction('whatwedo_table_column_sort_parameters', fn (Column $column, ?string $order) => $column->getTable()->getSortExtension() ? $column->getTable()->getSortExtension()->getOrderParameters($column, $order) : []),
             /*
              * generates the same route with replaced or new arguments

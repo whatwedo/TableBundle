@@ -39,7 +39,10 @@
         "symfony/twig-bundle": "^6.0",
         "whatwedo/core-bundle":     "dev-1.0-dev as 1.0",
         "whatwedo/search-bundle":     "dev-3.0-dev as 3.0",
-        "gedmo/doctrine-extensions": "^3.5"
+        "gedmo/doctrine-extensions": "^3.5",
+        "symfony/webpack-encore-bundle": "^1.13",
+        "symfony/security-core": "^6.0",
+        "symfony/security-bundle": "^6.0"
     },
     "suggest": {
         "whatwedo/search-bundle": "Allows searching tables"

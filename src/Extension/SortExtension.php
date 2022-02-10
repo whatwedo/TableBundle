@@ -53,17 +53,17 @@ class SortExtension extends AbstractExtension
     {
         return [
             RouterHelper::getParameterName(
-                $this->table,
+                $this->table->getIdentifier(),
                 RouterHelper::PARAMETER_SORT_DIRECTION,
                 $column->getIdentifier()
             ) => $column->getOption('sortable') ? $order : null,
             RouterHelper::getParameterName(
-                $this->table,
+                $this->table->getIdentifier(),
                 RouterHelper::PARAMETER_SORT_ENABLED,
                 $column->getIdentifier()
             ) => $order && $column->getOption('sortable') ? '1' : null,
             RouterHelper::getParameterName(
-                $this->table,
+                $this->table->getIdentifier(),
                 RouterHelper::PARAMETER_PAGINATION_PAGE
             ) => null,
         ];
@@ -99,7 +99,7 @@ class SortExtension extends AbstractExtension
     {
         $order = strtolower((string) $this->requestStack->getCurrentRequest()->query->get(
             RouterHelper::getParameterName(
-                $this->table,
+                $this->table->getIdentifier(),
                 RouterHelper::PARAMETER_SORT_DIRECTION,
                 $column->getIdentifier()
             )

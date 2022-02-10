@@ -49,7 +49,7 @@ class PaginationExtension extends AbstractExtension
             return 1;
         }
 
-        $page = $this->requestStack->getCurrentRequest()->query->getInt(RouterHelper::getParameterName($this->table, RouterHelper::PARAMETER_PAGINATION_PAGE), 1);
+        $page = $this->requestStack->getCurrentRequest()->query->getInt(RouterHelper::getParameterName($this->table->getIdentifier(), RouterHelper::PARAMETER_PAGINATION_PAGE), 1);
 
         return $page < 1 ? 1 : $page;
     }
@@ -64,7 +64,7 @@ class PaginationExtension extends AbstractExtension
         $this->limit = $defaultLimit;
 
         if ($this->requestStack->getCurrentRequest()) {
-            $this->limit = $this->requestStack->getCurrentRequest()->query->getInt(RouterHelper::getParameterName($this->table, RouterHelper::PARAMETER_PAGINATION_LIMIT), $defaultLimit);
+            $this->limit = $this->requestStack->getCurrentRequest()->query->getInt(RouterHelper::getParameterName($this->table->getIdentifier(), RouterHelper::PARAMETER_PAGINATION_LIMIT), $defaultLimit);
         }
 
         return $this;

@@ -29,8 +29,6 @@ declare(strict_types=1);
 
 namespace whatwedo\TableBundle\Helper;
 
-use whatwedo\TableBundle\Table\Table;
-
 class RouterHelper
 {
     public const PARAMETER_PAGINATION_PAGE = 'page';
@@ -51,9 +49,9 @@ class RouterHelper
 
     public const PARAMETER_FILTER_VALUE = 'filter_value';
 
-    public static function getParameterName(Table $table, string $parameter, $addition = null): string
+    public static function getParameterName(string $identifier, string $parameter, $addition = null): string
     {
-        return sprintf('%s_%s', str_replace('.', '_', $table->getIdentifier()), $parameter)
+        return sprintf('%s_%s', str_replace('.', '_', $identifier), $parameter)
             . ($addition ? '_' . $addition : '');
     }
 }
