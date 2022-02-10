@@ -69,6 +69,11 @@ class TableTest extends KernelTestCase
     {
         CompanyFactory::createMany(40);
 
+        $fakeRequest = Request::create('/', 'GET');
+        $fakeRequest->setSession(new Session(new MockArraySessionStorage()));
+        $requestStack = self::getContainer()->get(RequestStack::class);
+        $requestStack->push($fakeRequest);
+
         $tableFactory = self::getContainer()->get(TableFactory::class);
 
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
@@ -92,6 +97,11 @@ class TableTest extends KernelTestCase
     public function testDoctrineDataLoderTableNoLimit()
     {
         CompanyFactory::createMany(40);
+
+        $fakeRequest = Request::create('/', 'GET');
+        $fakeRequest->setSession(new Session(new MockArraySessionStorage()));
+        $requestStack = self::getContainer()->get(RequestStack::class);
+        $requestStack->push($fakeRequest);
 
         $tableFactory = self::getContainer()->get(TableFactory::class);
 
@@ -122,15 +132,12 @@ class TableTest extends KernelTestCase
     {
         CompanyFactory::createMany(10);
 
-        $tableFactory = self::getContainer()->get(TableFactory::class);
-
         $fakeRequest = Request::create('/', 'GET');
-
         $fakeRequest->setSession(new Session(new MockArraySessionStorage()));
-        /** @var RequestStack $requestStack */
         $requestStack = self::getContainer()->get(RequestStack::class);
-
         $requestStack->push($fakeRequest);
+
+        $tableFactory = self::getContainer()->get(TableFactory::class);
 
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
 
@@ -185,6 +192,82 @@ class TableTest extends KernelTestCase
             [6, 7, 8, 9, 10],
             array_map(
                 fn ($data) => $data->getId(),
+                iterator_to_array($table->getRows())
+            )
+        );
+    }
+
+    public function testDoctrineDataLoderPaginateTableSorting()
+    {
+        CompanyFactory::createOne([
+            'name' => 'aaa',
+        ]);
+        CompanyFactory::createOne([
+            'name' => 'zzz',
+        ]);
+        CompanyFactory::createOne([
+            'name' => 'ccc',
+        ]);
+        CompanyFactory::createOne([
+            'name' => 'yyy',
+        ]);
+        CompanyFactory::createOne([
+            'name' => 'ddd',
+        ]);
+        CompanyFactory::createOne([
+            'name' => 'xxx',
+        ]);
+        CompanyFactory::createOne([
+            'name' => 'eee',
+        ]);
+        CompanyFactory::createOne([
+            'name' => 'uuu',
+        ]);
+        CompanyFactory::createOne([
+            'name' => 'fff',
+        ]);
+        CompanyFactory::createOne([
+            'name' => 'vvv',
+        ]);
+
+        $tableFactory = self::getContainer()->get(TableFactory::class);
+
+        $fakeRequest = Request::create('/', 'GET', [
+            'test_sort_direction_name' => 'asc',
+            'test_sort_enabled_name' => 1,
+        ]);
+
+        $fakeRequest->setSession(new Session(new MockArraySessionStorage()));
+        /** @var RequestStack $requestStack */
+        $requestStack = self::getContainer()->get(RequestStack::class);
+
+        $requestStack->push($fakeRequest);
+
+        $entityManager = self::getContainer()->get(EntityManagerInterface::class);
+
+        $dataLoaderOptions[DoctrineDataLoader::OPTION_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
+
+        $table = $tableFactory->createDataLoaderTable('test', DoctrineDataLoader::class, [
+            'dataloader_options' => $dataLoaderOptions,
+        ]);
+
+        $table->addColumn('name');
+
+        $this->assertSame(
+            [
+                'aaa',
+                'ccc',
+                'ddd',
+                'eee',
+                'fff',
+                'uuu',
+                'vvv',
+                'xxx',
+                'yyy',
+                'zzz',
+            ],
+            array_map(
+                fn ($data) => $data->getName(),
                 iterator_to_array($table->getRows())
             )
         );

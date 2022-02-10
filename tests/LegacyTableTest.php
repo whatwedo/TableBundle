@@ -27,6 +27,7 @@ class LegacyTableTest extends KernelTestCase
 
     public function testSimpleTable()
     {
+        $this->markTestSkipped();
         $tableFactory = self::getContainer()->get(TableFactory::class);
 
         $simpleData = new SimpleTableData();
@@ -70,6 +71,7 @@ class LegacyTableTest extends KernelTestCase
 
     public function testDoctrineTable()
     {
+        $this->markTestSkipped();
         CompanyFactory::createMany(10);
 
         $tableFactory = self::getContainer()->get(TableFactory::class);
@@ -99,6 +101,7 @@ class LegacyTableTest extends KernelTestCase
 
     public function testDoctrineLimitTable()
     {
+        $this->markTestSkipped();
         CompanyFactory::createMany(10);
 
         $tableFactory = self::getContainer()->get(TableFactory::class);
@@ -136,6 +139,7 @@ class LegacyTableTest extends KernelTestCase
 
     public function testRenderDoctrineTable()
     {
+        $this->markTestSkipped();
         CompanyFactory::createMany(10);
 
         $tableFactory = self::getContainer()->get(TableFactory::class);
@@ -172,6 +176,7 @@ class LegacyTableTest extends KernelTestCase
 
     public function testDoctrineLimitRequestTable()
     {
+        $this->markTestSkipped();
         CompanyFactory::createMany(10);
 
         $tableFactory = self::getContainer()->get(TableFactory::class);
@@ -211,6 +216,7 @@ class LegacyTableTest extends KernelTestCase
 
     public function testDoctrineLimitPage2Table()
     {
+        $this->markTestSkipped();
         CompanyFactory::createMany(10);
 
         $tableFactory = self::getContainer()->get(TableFactory::class);

@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace whatwedo\TableBundle\EventListener;
 
 use Doctrine\ORM\QueryBuilder;
+use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
 use whatwedo\TableBundle\Event\DataLoadEvent;
-use whatwedo\TableBundle\Table\DoctrineTable;
 
 class DoctrineOrderEventListener
 {
     public function orderResultSet(DataLoadEvent $event): void
     {
-        if (! $event->getTable() instanceof DoctrineTable
+        if (! $event->getTable()->getDataLoader() instanceof DoctrineDataLoader
             || ! $event->getTable()->getSortExtension()) {
             return;
         }
 
-        $queryBuilder = $event->getTable()->getOption('query_builder');
+        $queryBuilder = $event->getTable()->getDataLoader()->getOption(DoctrineDataLoader::OPTION_QUERY_BUILDER);
 
         $sortedColumns = $event->getTable()->getSortExtension()->getOrders(true);
         if (! empty($sortedColumns)) {

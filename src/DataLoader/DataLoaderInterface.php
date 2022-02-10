@@ -14,4 +14,6 @@ interface DataLoaderInterface
     public function setOptions(array $options): void;
 
     public function getResults(): iterable;
+
+    public function getOption(string $option);
 }

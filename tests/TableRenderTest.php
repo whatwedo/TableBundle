@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Twig\Environment;
+use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
 use whatwedo\TableBundle\Factory\TableFactory;
 use whatwedo\TableBundle\Tests\App\Entity\Company;
 use whatwedo\TableBundle\Tests\App\Factory\CompanyFactory;
@@ -39,12 +40,15 @@ class TableRenderTest extends KernelTestCase
 
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
 
-        $table = $tableFactory->createDoctrineTable('test', [
-            'query_builder' => $entityManager->getRepository(Company::class)->createQueryBuilder('c'),
+        $dataLoaderOptions[DoctrineDataLoader::OPTION_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
+        $dataLoaderOptions[DoctrineDataLoader::OPTION_DEFAULT_LIMIT] = 5;
+
+        $table = $tableFactory->createDataLoaderTable('test', DoctrineDataLoader::class, [
+            'dataloader_options' => $dataLoaderOptions,
         ]);
 
         $this->assertSame(
-            [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            [1, 2, 3, 4, 5],
             array_map(
                 fn ($data) => $data->getId(),
                 iterator_to_array($table->getRows())

@@ -6,9 +6,10 @@ namespace whatwedo\TableBundle\EventListener;
 
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
+use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
 use whatwedo\TableBundle\Event\DataLoadEvent;
 use whatwedo\TableBundle\Extension\FilterExtension;
-use whatwedo\TableBundle\Table\DoctrineTable;
+use whatwedo\TableBundle\Table\Table;
 
 /**
  * @TODO needs refactoring
@@ -16,7 +17,7 @@ use whatwedo\TableBundle\Table\DoctrineTable;
 class FilterEventListener
 {
     /**
-     * @var DoctrineTable
+     * @var Table
      */
     protected $table;
 
@@ -24,7 +25,7 @@ class FilterEventListener
     {
         $this->table = $event->getTable();
 
-        if (! $this->table instanceof DoctrineTable) {
+        if (! $this->table->getDataLoader() instanceof DoctrineDataLoader) {
             // we're only able to filter DoctrineTable
             return;
         }
@@ -41,7 +42,7 @@ class FilterEventListener
      */
     private function queryBuilder()
     {
-        return $this->table->getOption('query_builder');
+        return $this->table->getDataLoader()->getOption(DoctrineDataLoader::OPTION_QUERY_BUILDER);
     }
 
     private function addQueryBuilderFilter()

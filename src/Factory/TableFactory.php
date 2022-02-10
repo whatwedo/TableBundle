@@ -38,8 +38,6 @@ use whatwedo\TableBundle\DataLoader\ArrayDataLoader;
 use whatwedo\TableBundle\DataLoader\DataLoaderInterface;
 use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
 use whatwedo\TableBundle\Extension\ExtensionInterface;
-use whatwedo\TableBundle\Table\DataLoaderTable;
-use whatwedo\TableBundle\Table\DoctrineTable;
 use whatwedo\TableBundle\Table\Table;
 
 class TableFactory implements ServiceSubscriberInterface
@@ -54,29 +52,7 @@ class TableFactory implements ServiceSubscriberInterface
     ) {
     }
 
-    public function createTable($identifier, $options = []): Table
-    {
-        return new Table(
-            $identifier,
-            $options,
-            $this->eventDispatcher,
-            $this->extensions,
-            $this->formatterManager
-        );
-    }
-
-    public function createDoctrineTable($identifier, $options = []): DoctrineTable
-    {
-        return new DoctrineTable(
-            $identifier,
-            $options,
-            $this->eventDispatcher,
-            $this->extensions,
-            $this->formatterManager
-        );
-    }
-
-    public function createDataLoaderTable($identifier, string $dataLoader, $options = [])
+    public function createDataLoaderTable($identifier, string $dataLoader, $options = []): Table
     {
         $dataLoaderOptions = $options['dataloader_options'];
         if (! isset($options['dataloader_options']['default_limit'])
@@ -89,7 +65,7 @@ class TableFactory implements ServiceSubscriberInterface
 
         $options['data_loader'] = $dataLoaderInstance;
 
-        return new DataLoaderTable(
+        return new Table(
             $identifier,
             $options,
             $this->eventDispatcher,

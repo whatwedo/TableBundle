@@ -38,6 +38,7 @@ use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\RequestStack;
 use whatwedo\TableBundle\Builder\FilterBuilder;
+use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
 use whatwedo\TableBundle\Entity\Filter as FilterEntity;
 use whatwedo\TableBundle\Entity\UserInterface;
 use whatwedo\TableBundle\Exception\InvalidFilterAcronymException;
@@ -52,8 +53,8 @@ use whatwedo\TableBundle\Filter\Type\NumberFilterType;
 use whatwedo\TableBundle\Filter\Type\SimpleEnumFilterType;
 use whatwedo\TableBundle\Filter\Type\TextFilterType;
 use whatwedo\TableBundle\Helper\RouterHelper;
-use whatwedo\TableBundle\Table\DoctrineTable;
 use whatwedo\TableBundle\Table\Filter;
+use whatwedo\TableBundle\Table\Table;
 
 class FilterExtension extends AbstractExtension
 {
@@ -193,20 +194,22 @@ class FilterExtension extends AbstractExtension
      * @throws \Doctrine\Common\Annotations\AnnotationException
      * @throws \ReflectionException
      */
-    public function addFiltersAutomatically(DoctrineTable $table, ?callable $labelCallable = null, ?callable $jsonSearchCallable = null, ?array $propertyNames = null)
+    public function addFiltersAutomatically(Table $table, ?callable $labelCallable = null, ?callable $jsonSearchCallable = null, ?array $propertyNames = null)
     {
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $table->getOption('query_builder');
-        $entityClass = $queryBuilder->getRootEntities()[0];
+        if ($table->getDataLoader() instanceof DoctrineDataLoader) {
+            /** @var QueryBuilder $queryBuilder */
+            $queryBuilder = $table->getDataLoader()->getOption(DoctrineDataLoader::OPTION_QUERY_BUILDER);
+            $entityClass = $queryBuilder->getRootEntities()[0];
 
-        $reflectionClass = new \ReflectionClass($entityClass);
-        $labelCallable = \is_callable($labelCallable) ? $labelCallable : [$this, 'labelCallable'];
-        $jsonSearchCallable = \is_callable($jsonSearchCallable) ? $jsonSearchCallable : [$this, 'jsonSearchCallable'];
+            $reflectionClass = new \ReflectionClass($entityClass);
+            $labelCallable = \is_callable($labelCallable) ? $labelCallable : [$this, 'labelCallable'];
+            $jsonSearchCallable = \is_callable($jsonSearchCallable) ? $jsonSearchCallable : [$this, 'jsonSearchCallable'];
 
-        $properties = $propertyNames ? array_map([$reflectionClass, 'getProperty'], $propertyNames) : $reflectionClass->getProperties();
+            $properties = $propertyNames ? array_map([$reflectionClass, 'getProperty'], $propertyNames) : $reflectionClass->getProperties();
 
-        foreach ($properties as $property) {
-            $this->addFilterAutomatically($table, $queryBuilder, $labelCallable, $jsonSearchCallable, $property, $reflectionClass->getNamespaceName());
+            foreach ($properties as $property) {
+                $this->addFilterAutomatically($table, $queryBuilder, $labelCallable, $jsonSearchCallable, $property, $reflectionClass->getNamespaceName());
+            }
         }
     }
 
@@ -315,7 +318,7 @@ class FilterExtension extends AbstractExtension
         return true;
     }
 
-    private static function labelCallable(DoctrineTable $table, $property)
+    private static function labelCallable(Table $table, $property)
     {
         foreach ($table->getColumns() as $column) {
             if ($column->getIdentifier() === $property) {
@@ -336,7 +339,7 @@ class FilterExtension extends AbstractExtension
      *
      * @return Filter|null
      */
-    private function addFilterAutomatically(DoctrineTable $table, QueryBuilder $queryBuilder, callable $labelCallable, callable $jsonSearchCallable, \ReflectionProperty $property, string $namespace)
+    private function addFilterAutomatically(Table $table, QueryBuilder $queryBuilder, callable $labelCallable, callable $jsonSearchCallable, \ReflectionProperty $property, string $namespace)
     {
         $acronymNoSuffix = $property->getName();
         $acronym = '_' . $property->getName();

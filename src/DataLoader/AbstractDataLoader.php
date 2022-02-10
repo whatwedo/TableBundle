@@ -20,4 +20,9 @@ abstract class AbstractDataLoader implements DataLoaderInterface
     public function configureOptions(OptionsResolver $resolver): void
     {
     }
+
+    public function getOption(string $option)
+    {
+        return $this->options[$option];
+    }
 }

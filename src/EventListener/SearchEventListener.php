@@ -31,8 +31,8 @@ namespace whatwedo\TableBundle\EventListener;
 
 use Doctrine\ORM\EntityManagerInterface;
 use whatwedo\SearchBundle\Entity\Index;
+use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
 use whatwedo\TableBundle\Event\DataLoadEvent;
-use whatwedo\TableBundle\Table\DoctrineTable;
 
 class SearchEventListener
 {
@@ -44,7 +44,7 @@ class SearchEventListener
 
     public function searchResultSet(DataLoadEvent $event): void
     {
-        if (! $event->getTable() instanceof DoctrineTable
+        if (! $event->getTable()->getDataLoader() instanceof DoctrineDataLoader
             || ! $event->getTable()->getSearchExtension()
             || ! $event->getTable()->getOption('searchable')) {
             return;
@@ -56,7 +56,7 @@ class SearchEventListener
             return;
         }
 
-        $queryBuilder = $event->getTable()->getOption('query_builder');
+        $queryBuilder = $event->getTable()->getDataLoader()->getOption(DoctrineDataLoader::OPTION_QUERY_BUILDER);
         $entity = $queryBuilder->getRootEntities()[0];
         $ids = $this->entityManager->getRepository(Index::class)->search($query, $entity);
 
