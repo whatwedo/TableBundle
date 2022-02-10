@@ -77,7 +77,7 @@ class TableRenderExtension extends AbstractExtension
 
     private function isTree($entity)
     {
-        return $entity instanceof \whatwedo\CrudBundle\Entity\TreeInterface;
+        return $entity instanceof \whatwedo\TableBundle\Entity\TreeInterface;
     }
 
     private function getTemplate(string $layoutFile): \Twig\TemplateWrapper
