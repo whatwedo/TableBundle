@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
+use whatwedo\TableBundle\Entity\TreeInterface;
 
 /**
  * @Gedmo\Tree(type="nested")
@@ -16,7 +17,7 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
  */
 #[Gedmo\Tree(type: 'nested')]
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
-class Category
+class Category implements TreeInterface
 {
     /**
      * @ORM\Column(type="integer")
