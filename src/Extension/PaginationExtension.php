@@ -31,6 +31,7 @@ namespace whatwedo\TableBundle\Extension;
 
 use Symfony\Component\HttpFoundation\RequestStack;
 use whatwedo\TableBundle\Helper\RouterHelper;
+use whatwedo\TableBundle\Table\Table;
 
 class PaginationExtension extends AbstractExtension
 {
@@ -41,6 +42,14 @@ class PaginationExtension extends AbstractExtension
     public function __construct(
         protected  RequestStack $requestStack
     ) {
+    }
+
+    public function setTable(Table $table): self
+    {
+        parent::setTable($table);
+        $this->limit = $table->getOption('default_limit');
+
+        return $this;
     }
 
     public function getCurrentPage(): int

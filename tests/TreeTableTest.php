@@ -23,7 +23,7 @@ class TreeTableTest extends KernelTestCase
     use ResetDatabase;
     use Factories;
 
-    public function testTreeyDataLoaderTable()
+    public function testTreeDataLoaderTable()
     {
         $this->initRequest();
         $this->createTestData();
@@ -33,7 +33,7 @@ class TreeTableTest extends KernelTestCase
 
         $dataLoaderOptions[DoctrineDataLoader::OPTION_QUERY_BUILDER] = $entityManager->getRepository(Category::class)->createQueryBuilder('c');
 
-        $table = $tableFactory->createTable('test', DoctrineTreeDataLoader::class, [
+        $table = $tableFactory->create('test', DoctrineTreeDataLoader::class, [
             'dataloader_options' => $dataLoaderOptions,
             'default_limit' => 5,
         ]);
@@ -53,7 +53,7 @@ class TreeTableTest extends KernelTestCase
         );
     }
 
-    public function testTreeyDataLoaderTablePage2()
+    public function testTreeDataLoaderTablePage2()
     {
         $request = $this->initRequest();
         $this->createTestData();
@@ -65,7 +65,7 @@ class TreeTableTest extends KernelTestCase
 
         $dataLoaderOptions[DoctrineDataLoader::OPTION_QUERY_BUILDER] = $entityManager->getRepository(Category::class)->createQueryBuilder('c');
 
-        $table = $tableFactory->createTable('test', DoctrineTreeDataLoader::class, [
+        $table = $tableFactory->create('test', DoctrineTreeDataLoader::class, [
             'dataloader_options' => $dataLoaderOptions,
             'default_limit' => 5,
         ]);

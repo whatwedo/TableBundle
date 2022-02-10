@@ -15,8 +15,6 @@ class DoctrineTreeDataLoader extends AbstractDataLoader
 {
     public const OPTION_QUERY_BUILDER = 'query_builder';
 
-    public const OPTION_DEFAULT_LIMIT = 'default_limit';
-
     public function __construct(
         protected PaginationExtension $paginationExtension,
         protected EntityManagerInterface $entityManager
@@ -26,7 +24,6 @@ class DoctrineTreeDataLoader extends AbstractDataLoader
     public function getResults(): iterable
     {
         $this->entityManager->getConfiguration()->addCustomHydrationMode('tree', TreeObjectHydrator::class);
-        $this->paginationExtension->setLimit($this->options[self::OPTION_DEFAULT_LIMIT]);
 
         $results = [];
 
@@ -51,7 +48,6 @@ class DoctrineTreeDataLoader extends AbstractDataLoader
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
-        $resolver->setDefault(self::OPTION_DEFAULT_LIMIT, 25);
         $resolver->setRequired(self::OPTION_QUERY_BUILDER);
         $resolver->setAllowedTypes(self::OPTION_QUERY_BUILDER, 'Doctrine\ORM\QueryBuilder');
     }

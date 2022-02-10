@@ -35,7 +35,7 @@ abstract class AbstractExtension implements ExtensionInterface
 {
     protected Table $table;
 
-    public function setTable(Table $table): static
+    public function setTable(Table $table): self
     {
         $this->table = $table;
 

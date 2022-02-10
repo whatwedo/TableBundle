@@ -16,7 +16,6 @@ use whatwedo\TableBundle\Extension\FilterExtension;
 use whatwedo\TableBundle\Extension\PaginationExtension;
 use whatwedo\TableBundle\Extension\SearchExtension;
 use whatwedo\TableBundle\Extension\SortExtension;
-use whatwedo\TableBundle\Model\TableDataInterface;
 
 class Table
 {
@@ -64,7 +63,6 @@ class Table
         $resolver->setAllowedTypes('attributes', ['array']);
         $resolver->setAllowedTypes('searchable', ['boolean']);
 
-        // TODO: deprecate default Limit.... move to Dataloader options
         $resolver->setAllowedTypes('default_limit', ['integer']);
 
         $resolver->setAllowedTypes('theme', ['string']);
@@ -72,18 +70,8 @@ class Table
         $resolver->setAllowedTypes('default_sort', ['array']);
         $resolver->setAllowedTypes('definition', ['null', 'object']);
 
-        /*
-         * Data Loader
-         * ---
-         * Callable Arguments:
-         *  - Current Page
-         *  - Limit of results (-1 means all results)
-         *
-         * The callable must return a TableDataInterface.
-         * you can pass an array to call_user_func
-         */
         $resolver->setRequired('data_loader');
-        $resolver->setAllowedTypes('data_loader', ['whatwedo\TableBundle\DataLoader\DataLoaderInterface']);
+        $resolver->setAllowedTypes('data_loader', allowedTypes: DataLoaderInterface::class);
     }
 
     public function getIdentifier(): string

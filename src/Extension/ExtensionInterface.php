@@ -37,5 +37,5 @@ interface ExtensionInterface
 {
     public static function isEnabled(array $enabledBundles): bool;
 
-    public function setTable(Table $table): static;
+    public function setTable(Table $table): self;
 }

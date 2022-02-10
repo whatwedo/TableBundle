@@ -41,10 +41,10 @@ class TableRenderTest extends KernelTestCase
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
 
         $dataLoaderOptions[DoctrineDataLoader::OPTION_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
-        $dataLoaderOptions[DoctrineDataLoader::OPTION_DEFAULT_LIMIT] = 5;
 
-        $table = $tableFactory->createTable('test', DoctrineDataLoader::class, [
+        $table = $tableFactory->create('test', DoctrineDataLoader::class, [
             'dataloader_options' => $dataLoaderOptions,
+            'default_limit' => 5,
         ]);
 
         $this->assertSame(
