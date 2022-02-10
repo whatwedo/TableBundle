@@ -45,7 +45,7 @@ class TableTest extends KernelTestCase
                 ],
             ]);
 
-        $table = $tableFactory->createDataLoaderTable('test', ArrayDataLoader::class, [
+        $table = $tableFactory->createTable('test', ArrayDataLoader::class, [
             'dataloader_options' => $dataLoaderOptions,
         ]);
 
@@ -80,7 +80,7 @@ class TableTest extends KernelTestCase
 
         $dataLoaderOptions[DoctrineDataLoader::OPTION_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
 
-        $table = $tableFactory->createDataLoaderTable('test', DoctrineDataLoader::class, [
+        $table = $tableFactory->createTable('test', DoctrineDataLoader::class, [
             'dataloader_options' => $dataLoaderOptions,
             'default_limit' => 10,
         ]);
@@ -109,7 +109,7 @@ class TableTest extends KernelTestCase
 
         $dataLoaderOptions[DoctrineDataLoader::OPTION_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
 
-        $table = $tableFactory->createDataLoaderTable('test', DoctrineDataLoader::class, [
+        $table = $tableFactory->createTable('test', DoctrineDataLoader::class, [
             'dataloader_options' => $dataLoaderOptions,
             'default_limit' => 0,
         ]);
@@ -144,7 +144,7 @@ class TableTest extends KernelTestCase
         $dataLoaderOptions[DoctrineDataLoader::OPTION_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
         $dataLoaderOptions[DoctrineDataLoader::OPTION_DEFAULT_LIMIT] = 5;
 
-        $table = $tableFactory->createDataLoaderTable('test', DoctrineDataLoader::class, [
+        $table = $tableFactory->createTable('test', DoctrineDataLoader::class, [
             'dataloader_options' => $dataLoaderOptions,
         ]);
 
@@ -184,7 +184,7 @@ class TableTest extends KernelTestCase
         $dataLoaderOptions[DoctrineDataLoader::OPTION_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
         $dataLoaderOptions[DoctrineDataLoader::OPTION_DEFAULT_LIMIT] = 5;
 
-        $table = $tableFactory->createDataLoaderTable('test', DoctrineDataLoader::class, [
+        $table = $tableFactory->createTable('test', DoctrineDataLoader::class, [
             'dataloader_options' => $dataLoaderOptions,
         ]);
 
@@ -247,7 +247,7 @@ class TableTest extends KernelTestCase
 
         $dataLoaderOptions[DoctrineDataLoader::OPTION_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
 
-        $table = $tableFactory->createDataLoaderTable('test', DoctrineDataLoader::class, [
+        $table = $tableFactory->createTable('test', DoctrineDataLoader::class, [
             'dataloader_options' => $dataLoaderOptions,
         ]);
 
