@@ -56,16 +56,16 @@ class PaginationExtension extends AbstractExtension
 
     public function getLimit(): int
     {
+        if ($this->requestStack->getCurrentRequest()) {
+            $this->limit = $this->requestStack->getCurrentRequest()->query->getInt(RouterHelper::getParameterName($this->table->getIdentifier(), RouterHelper::PARAMETER_PAGINATION_LIMIT), $this->limit);
+        }
+
         return $this->limit;
     }
 
     public function setLimit(int $defaultLimit): self
     {
         $this->limit = $defaultLimit;
-
-        if ($this->requestStack->getCurrentRequest()) {
-            $this->limit = $this->requestStack->getCurrentRequest()->query->getInt(RouterHelper::getParameterName($this->table->getIdentifier(), RouterHelper::PARAMETER_PAGINATION_LIMIT), $defaultLimit);
-        }
 
         return $this;
     }

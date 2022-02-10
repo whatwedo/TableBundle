@@ -37,7 +37,6 @@ use whatwedo\CoreBundle\Manager\FormatterManager;
 use whatwedo\TableBundle\DataLoader\ArrayDataLoader;
 use whatwedo\TableBundle\DataLoader\DataLoaderInterface;
 use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
-use whatwedo\TableBundle\DataLoader\PaginatorDoctrineDataLoader;
 use whatwedo\TableBundle\Extension\ExtensionInterface;
 use whatwedo\TableBundle\Table\DataLoaderTable;
 use whatwedo\TableBundle\Table\DoctrineTable;
@@ -79,6 +78,11 @@ class TableFactory implements ServiceSubscriberInterface
 
     public function createDataLoaderTable($identifier, string $dataLoader, $options = [])
     {
+        $dataLoaderOptions = $options['dataloader_options'];
+        if (! isset($options['dataloader_options']['default_limit'])
+          && isset($options['default_limit'])) {
+            $options['dataloader_options']['default_limit'] = $options['default_limit'];
+        }
         /** @var DataLoaderInterface $dataLoaderInstance */
         $dataLoaderInstance = $this->locator->get($dataLoader);
         $dataLoaderInstance->setOptions($options['dataloader_options']);
@@ -104,7 +108,6 @@ class TableFactory implements ServiceSubscriberInterface
         return [
             ArrayDataLoader::class,
             DoctrineDataLoader::class,
-            PaginatorDoctrineDataLoader::class,
         ];
     }
 }
