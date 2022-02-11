@@ -93,11 +93,11 @@ class PaginationExtension extends AbstractExtension
 
     public function getTotalPages(): int
     {
-        if ($this->limit === -1) {
+        if ($this->getLimit() === -1) {
             return 1;
         }
 
-        return (int) ceil($this->getTotalResults() / $this->limit);
+        return (int) ceil($this->getTotalResults() / $this->getLimit());
     }
 
     public function getOffsetResults(): int
@@ -106,7 +106,7 @@ class PaginationExtension extends AbstractExtension
             return 0;
         }
 
-        return ($this->getCurrentPage() - 1) * $this->limit;
+        return ($this->getCurrentPage() - 1) * $this->getLimit();
     }
 
     public static function isEnabled(array $enabledBundles): bool
