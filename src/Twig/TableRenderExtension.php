@@ -42,7 +42,7 @@ class TableRenderExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('is_tree', fn ($entity) => $this->isTree($entity)),
+            new TwigFilter('whatwedo_entity_is_tree', fn ($entity) => $this->isTree($entity)),
         ];
     }
 
