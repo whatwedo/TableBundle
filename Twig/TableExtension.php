@@ -77,7 +77,11 @@ class TableExtension extends AbstractExtension
              * generates the same route with replaced or new arguments
              */
             new TwigFunction('whatwedo_table_generate_route_replace_arguments', function ($arguments) {
-                $request = $this->requestStack->getMasterRequest();
+                if (\is_callable([$this->requestStack, 'getMainRequest'])) {
+                    $request = $this->requestStack->getMainRequest();   // symfony 5.3+
+                } else {
+                    $request = $this->requestStack->getMasterRequest();
+                }
                 $attributes = array_filter($request->attributes->all(), function ($key) {
                     return 0 !== mb_strpos($key, '_');
                 }, ARRAY_FILTER_USE_KEY);
