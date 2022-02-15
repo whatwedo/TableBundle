@@ -1,77 +1,142 @@
 <div class="whatwedo_table:table__wrapper align-middle inline-block min-w-full border-b border-neutral-200">
-    <table class="min-w-full" {{ stimulus_target('whatwedo/table-bundle/table', 'table') }}>
+    <table
+        class="min-w-full" {{ stimulus_target('whatwedo/table-bundle/table', 'table') }} {{ stimulus_target('table_select', 'table') }}>
         {% if table.columns %}
             <thead class="whatwedo_table:table__head">
-                <tr class="border-b border-neutral-200 bg-neutral-50 text-xs font-medium text-neutral-500 text-left uppercase tracking-wider">
-                    {% for column in table.columns %}
-                        <th class="px-6 py-3">
-                            {{ column.option('label')|trans }}
+            <tr class="border-b border-neutral-200 bg-neutral-50 text-xs font-medium text-neutral-500 text-left uppercase tracking-wider">
 
-                            {% if table.sortExtension and column.option('sortable') %}
-                                {% set currentOrder = table.sortExtension.order(column) %}
-                                {% if currentOrder == 'asc' %}
-                                    <a class="first:ml-1" href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, 'desc')) }}">
-                                        {{ bootstrap_icon('sort-alpha-up', { class: 'inline w-4 h-4' }) }}
-                                    </a>
-                                    <a class="first:ml-1" href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, null)) }}">
-                                        {{ bootstrap_icon('x', { class: 'inline w-4 h-4' }) }}
-                                    </a>
-                                {% elseif currentOrder == 'desc' %}
-                                    <a class="first:ml-1" href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, 'asc')) }}">
-                                        {{ bootstrap_icon('sort-alpha-down-alt', { class: 'inline w-4 h-4' }) }}
-                                    </a>
-                                    <a class="first:ml-1" href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, null)) }}">
-                                        {{ bootstrap_icon('x', { class: 'inline w-4 h-4' }) }}
-                                    </a>
-                                {% else %}
-                                    <a class="first:ml-1" href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, 'asc')) }}">
-                                        {{ bootstrap_icon('arrow-down-up', { class: 'inline w-4 h-4' }) }}
-                                    </a>
-                                {% endif %}
+                {% if table.rows is not empty and table.getOption('definition').hasCapability(constant('whatwedo\\CrudBundle\\Enum\\Page::BATCH')) %}
+
+                    <th class="px-3 py-3 w-14">
+                        <button {{ stimulus_action('table_select', 'checkAll') }} {{ stimulus_target('table_select', 'checkAll') }}>{{ bootstrap_icon('check-square') }}</button>
+                        <button {{ stimulus_action('table_select', 'unCheckAll') }} {{ stimulus_target('table_select', 'unCheckAll') }}
+                            class="hidden">{{ bootstrap_icon('dash-square') }}</button>
+
+                        <span class="relative items-center" {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}>
+                            <button
+                                class="items-center justify-center hover:text-neutral-700"
+                                {{ stimulus_action({'whatwedo/core-bundle/dropdown': ['toggle', {'click@window': 'hide'}]}) }}
+                                type="button"
+                            >
+                                <span class="sr-only">Optionen</span>
+                                {{ bootstrap_icon('journals', { class: 'h-4 w-4', alt: 'Mass Actions'}) }}
+                            </button>
+
+                            <div
+                                {{ stimulus_target('whatwedo/core-bundle/dropdown', 'menu') }}
+                                class="hidden transition duration-300 transform origin-top-right mx-3 origin-top-right absolute left-4 top-0 w-48 -mt-1 rounded-md shadow-lg z-10 bg-white ring-1 ring-black ring-opacity-5 divide-y divide-neutral-200 focus:outline-none"
+                                data-transition-enter-from="opacity-0 scale-95"
+                                data-transition-enter-to="opacity-100 scale-100"
+                                data-transition-leave-from="opacity-100 scale-100"
+                                data-transition-leave-to="opacity-0 scale-95"
+                                tabindex="-1"
+                            >
+                                <div class="py-1" role="none">
+
+                            <span class="block hover:bg-neutral-50">
+                                {% for batchAction in table.getOption('definition').batchActions | filter(action => is_granted(action.getOption('voter_attribute'), action)) %}
+                                    <a
+                                        href="{{ path(batchAction.route, batchAction.routeParameters) }}"
+                                        class="text-neutral-700 group flex items-center px-4 py-2 text-sm"
+                                        tabindex="-1"
+                                                 {{ stimulus_action('table_select', 'doAction') }}
+                                             >
+        {{ bootstrap_icon(batchAction.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
+                                        {{ batchAction.label|trans }}
+    </a>
+                                {% endfor %}
+                                        </span>
+
+                                </div>
+                            </div>
+                        </span>
+
+                    </th>
+                {% endif %}
+                {% for column in table.columns %}
+                    <th class="px-3 py-3 align-top">
+                        {{ column.option('label')|trans }}
+
+                        {% if table.sortExtension and column.option('sortable') %}
+                            {% set currentOrder = table.sortExtension.order(column) %}
+                            {% if currentOrder == 'asc' %}
+                                <a class="first:ml-1"
+                                   href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, 'desc')) }}">
+                                    {{ bootstrap_icon('sort-alpha-up', { class: 'inline w-4 h-4' }) }}
+                                </a>
+                                <a class="first:ml-1"
+                                   href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, null)) }}">
+                                    {{ bootstrap_icon('x', { class: 'inline w-4 h-4' }) }}
+                                </a>
+                            {% elseif currentOrder == 'desc' %}
+                                <a class="first:ml-1"
+                                   href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, 'asc')) }}">
+                                    {{ bootstrap_icon('sort-alpha-down-alt', { class: 'inline w-4 h-4' }) }}
+                                </a>
+                                <a class="first:ml-1"
+                                   href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, null)) }}">
+                                    {{ bootstrap_icon('x', { class: 'inline w-4 h-4' }) }}
+                                </a>
+                            {% else %}
+                                <a class="first:ml-1"
+                                   href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, 'asc')) }}">
+                                    {{ bootstrap_icon('arrow-down-up', { class: 'inline w-4 h-4' }) }}
+                                </a>
                             {% endif %}
-                        </th>
-                    {% endfor %}
-                    {% if table.actions|length %}
+                        {% endif %}
+                    </th>
+                {% endfor %}
+                {% if table.actions|length %}
                     <th></th>
-                    {% endif %}
-                </tr>
+                {% endif %}
+
+            </tr>
             </thead>
         {% endif %}
-        <tbody class="whatwedo_table:table__body bg-white text-sm text-neutral-500 font-medium divide-y divide-neutral-100">
-            {% if table.rows is empty %}
-                <tr class="whatwedo_table:table__row hover:bg-neutral-50 transition duration-500 color">
-                    <td class="px-6 py-2 font-normal">
-                        {{ 'Keine Elemente verfügbar' }}
+        <tbody
+            class="whatwedo_table:table__body bg-white text-sm text-neutral-500 font-medium divide-y divide-neutral-100">
+        {% if table.rows is empty %}
+            <tr class="whatwedo_table:table__row hover:bg-neutral-50 transition duration-500 color">
+                <td class="px-3 py-2 font-normal">
+                    {{ 'Keine Elemente verfügbar' }}
+                </td>
+            </tr>
+        {% endif %}
+        {% for row in table.rows %}
+            <tr class="whatwedo_table:table__row hover:bg-neutral-50 transition duration-500 color align-top">
+                {% if table.getOption('definition').hasCapability(constant('whatwedo\\CrudBundle\\Enum\\Page::BATCH')) %}
+                    <td class="px-6 py-2">
+                        <input
+                            type="checkbox" {{ stimulus_target('table_select', 'selector') }} {{ stimulus_action('table_select', 'selectId') }}
+                            data-table-select-id-param="{{ row.id }}">
                     </td>
-                </tr>
-            {% endif %}
-            {% for row in table.rows %}
-                <tr class="whatwedo_table:table__row hover:bg-neutral-50 transition duration-500 color">
-                    {% for column in table.columns %}
-                        <td class="px-6 py-2 {% if column.option('is_primary') %}whitespace-nowrap text-neutral-900{% endif %}"
+                {% endif %}
+                {% for column in table.columns %}
+                    <td class="px-3 py-2 {% if column.option('is_primary') %}whitespace-nowrap text-neutral-900{% endif %}"
                         {% if row|whatwedo_entity_is_tree and row.level != 0 %}
                             style="padding-left: {{ row.level*50 }}px"
                         {% endif %}
-                        >
-                            {% apply spaceless %}
-                                {% if column.option('is_primary') and table.option('primary_link') is not null %}
-                                    {% set columnLink = table.primaryLink(row) %}
-                                    {% if columnLink %}
-                                        <a href="{{ columnLink }}">
-                                    {% endif %}
-                                {% endif %}
+                    >
+                        {% apply spaceless %}
+                        {% if column.option('is_primary') and table.option('primary_link') is not null %}
+                        {% set columnLink = table.primaryLink(row) %}
+                        {% if columnLink %}
+                        <a href="{{ columnLink }}">
+                            {% endif %}
+                            {% endif %}
                             {% endapply %}
 
                             {{ whatwedo_table_column_render(column, row) }}
 
                             {% if column.option('is_primary') and columnLink|default(false) %}</a>{% endif %}
-                        </td>
-                    {% endfor %}
-                    {% set tableActions = table.actions | filter(action => is_granted(action.getOption('voter_attribute'), row)) %}
-                    {% if tableActions|length %}
-                    <td class="whatwedo_table:table__actions pr-6">
+                    </td>
+                {% endfor %}
+                {% set tableActions = table.actions | filter(action => is_granted(action.getOption('voter_attribute'), row)) %}
+                {% if tableActions|length %}
+                    <td class="whatwedo_table:table__actions pr-6 align-top">
 
-                        <div class="relative flex justify-end items-center" {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}>
+                        <div
+                            class="relative flex justify-end items-center" {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}>
                             <button
                                 class="whatwedo_table-actions"
                                 {{ stimulus_action({'whatwedo/core-bundle/dropdown': ['toggle', {'click@window': 'hide'}]}) }}
@@ -100,9 +165,10 @@
                             </div>
                         </div>
                     </td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
+                {% endif %}
+
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
 </div>
