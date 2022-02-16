@@ -6,8 +6,8 @@
             {% include "@whatwedoTable/tailwind_2/_filter.html.twig" %}
         {% endblock %}
 
-        <div {{ stimulus_controller('table_select') }}>
-            <turbo-frame id="whatwedo_table_{{ table.identifier }}" data-turbo="true" target="_top" {{ stimulus_action('table_select', 'tableTargetChanged', 'turbo:frame-load') }}>
+        <div {{ stimulus_controller('@whatwedo/table-bundle/table_select') }}>
+            <turbo-frame id="whatwedo_table_{{ table.identifier }}" data-turbo="true" target="_top" {{ stimulus_action('@whatwedo/table-bundle/table_select', 'tableTargetChanged', 'turbo:frame-load') }}>
                 {% block table_table %}
                     {% include "@whatwedoTable/tailwind_2/_table.html.twig" %}
                 {% endblock %}
@@ -17,7 +17,7 @@
                 {% endblock %}
             </turbo-frame>
             {%  if table.getOption('definition').hasCapability(constant('whatwedo\\CrudBundle\\Enum\\Page::BATCH')) %}
-            <input name="ids" type="hidden" {{ stimulus_target('table_select', 'ids') }} value="[]">
+            <input name="ids" type="text" {{ stimulus_target('@whatwedo/table-bundle/table_select', 'ids') }} value="[]">
             {% endif %}
         </div>
     </div>
