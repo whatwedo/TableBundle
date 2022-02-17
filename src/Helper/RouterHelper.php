@@ -52,6 +52,6 @@ class RouterHelper
     public static function getParameterName(string $identifier, string $parameter, $addition = null): string
     {
         return sprintf('%s_%s', str_replace('.', '_', $identifier), $parameter)
-            . ($addition ? '_' . $addition : '');
+            . ($addition ? '_' . str_replace('.', '_', $addition) : '');
     }
 }
