@@ -2,22 +2,26 @@
 
 {% block table %}
     <div class="whatwedo_table:wrapper bg-white" {{ stimulus_controller('whatwedo/table-bundle/filter') }}>
-        {% block table_header %}
-            {% include "@whatwedoTable/tailwind_2/_header.html.twig" %}
-        {% endblock %}
-
-        {% block table_filter %}
+         {% block table_filter %}
             {% include "@whatwedoTable/tailwind_2/_filter.html.twig" %}
         {% endblock %}
 
-        {% block table_table %}
-            {% include "@whatwedoTable/tailwind_2/_table.html.twig" %}
-        {% endblock %}
+        <div {{ stimulus_controller('@whatwedo/table-bundle/table_select') }}>
+            <turbo-frame id="whatwedo_table_{{ table.identifier }}" data-turbo="true" target="_top" {{ stimulus_action('@whatwedo/table-bundle/table_select', 'tableTargetChanged', 'turbo:frame-load') }}>
+                {% block table_table %}
+                    {% include "@whatwedoTable/tailwind_2/_table.html.twig" %}
+                {% endblock %}
 
-        {% block table_pagination %}
-            {% include "@whatwedoTable/tailwind_2/_pagination.html.twig" %}
-        {% endblock %}
+                {% block table_pagination %}
+                    {% include "@whatwedoTable/tailwind_2/_pagination.html.twig" %}
+                {% endblock %}
+            </turbo-frame>
+            {%  if table.getOption('definition') and table.getOption('definition').hasCapability(constant('whatwedo\\CrudBundle\\Enum\\Page::BATCH')) %}
+            <input name="ids" type="text" {{ stimulus_target('@whatwedo/table-bundle/table_select', 'ids') }} value="[]">
+            {% endif %}
+        </div>
     </div>
+
 {% endblock %}
 
 {% block table_action %}

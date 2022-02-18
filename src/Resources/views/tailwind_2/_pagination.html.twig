@@ -107,7 +107,9 @@
                     >
                         <div class="py-1 text-neutral-700 text-sm">
                             {% for limit in table.option('limit_choices')|filter(limit => limit != table.paginationExtension.limit) %}
-                                <a class="block px-4 py-2 hover:bg-neutral-50" href="{{ whatwedo_table_path_replace_arguments({
+                                <a class="block px-4 py-2 hover:bg-neutral-50"
+                                   data-turbo-frame="whatwedo_table_{{ table.identifier }}"
+                                   href="{{ whatwedo_table_path_replace_arguments({
                                     (whatwedo_table_parameter(table, 'limit')): limit,
                                     (whatwedo_table_parameter(table, 'page')): null
                                 }) }}">
@@ -122,6 +124,7 @@
                 <nav class="whatwedo_table:footer__pagination relative z-0 inline-flex rounded-md shadow-sm -space-x-px text-sm font-medium text-neutral-500 bg-white">
                     {% for link in paginationLinks %}
                         <a
+                            data-turbo-frame="whatwedo_table_{{ table.identifier }}"
                             class="relative inline-flex items-center w-8 justify-center py-2 border border-neutral-300 transition-colors hover:bg-neutral-100 first:rounded-l-md last:rounded-r-md{% if link.is_current %} bg-neutral-200 font-medium{% endif %}"
                             href="{{ link.link }}"
                             title="{{ link.title }}"
