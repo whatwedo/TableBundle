@@ -16,7 +16,7 @@
                     {% include "@whatwedoTable/tailwind_2/_pagination.html.twig" %}
                 {% endblock %}
             </turbo-frame>
-            {%  if table.getOption('definition').hasCapability(constant('whatwedo\\CrudBundle\\Enum\\Page::BATCH')) %}
+            {%  if table.getOption('definition') and table.getOption('definition').hasCapability(constant('whatwedo\\CrudBundle\\Enum\\Page::BATCH')) %}
             <input name="ids" type="text" {{ stimulus_target('@whatwedo/table-bundle/table_select', 'ids') }} value="[]">
             {% endif %}
         </div>

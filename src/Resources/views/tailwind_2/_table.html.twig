@@ -5,7 +5,7 @@
             <thead class="whatwedo_table:table__head">
             <tr class="border-b border-neutral-200 bg-neutral-50 text-xs font-medium text-neutral-500 text-left uppercase tracking-wider">
 
-                {% if table.rows is not empty and table.getOption('definition').hasCapability(constant('whatwedo\\CrudBundle\\Enum\\Page::BATCH')) %}
+                {% if table.rows is not empty and table.getOption('definition') and table.getOption('definition').hasCapability(constant('whatwedo\\CrudBundle\\Enum\\Page::BATCH')) %}
 
                     <th class="px-3 py-3 w-14">
                         <button {{ stimulus_action('@whatwedo/table-bundle/table_select', 'checkAll') }} {{ stimulus_target('@whatwedo/table-bundle/table_select', 'checkAll') }}>{{ bootstrap_icon('check-square') }}</button>
@@ -104,7 +104,7 @@
         {% endif %}
         {% for row in table.rows %}
             <tr class="whatwedo_table:table__row hover:bg-neutral-50 transition duration-500 color align-top">
-                {% if table.getOption('definition').hasCapability(constant('whatwedo\\CrudBundle\\Enum\\Page::BATCH')) %}
+                {% if table.getOption('definition') and table.getOption('definition').hasCapability(constant('whatwedo\\CrudBundle\\Enum\\Page::BATCH')) %}
                     <td class="px-6 py-2">
                         <input
                             type="checkbox" {{ stimulus_target('@whatwedo/table-bundle/table_select', 'selector') }} {{ stimulus_action('@whatwedo/table-bundle/table_select', 'selectId') }}
