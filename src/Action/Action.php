@@ -29,6 +29,7 @@ class Action
             'voter_attribute' => null,
             'block_prefix' => StringUtil::fqcnToBlockPrefix(static::class),
             'priority' => 0,
+            'type' => 'get',
         ]);
 
         $this->options = $resolver->resolve($this->options);
