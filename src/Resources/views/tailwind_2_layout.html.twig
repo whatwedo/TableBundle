@@ -17,7 +17,7 @@
                 {% endblock %}
             </turbo-frame>
             {%  if table.getOption('definition') and table.getOption('definition').hasCapability(constant('whatwedo\\CrudBundle\\Enum\\Page::BATCH')) %}
-            <input name="ids" type="text" {{ stimulus_target('@whatwedo/table-bundle/table_select', 'ids') }} value="[]">
+            <input name="ids" type="hidden" {{ stimulus_target('@whatwedo/table-bundle/table_select', 'ids') }} value="[]">
             {% endif %}
         </div>
     </div>
