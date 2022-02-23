@@ -2,6 +2,10 @@
 
 {% block table %}
     <div class="whatwedo_table:wrapper bg-white" {{ stimulus_controller('whatwedo/table-bundle/filter') }}>
+        {% block table_header %}
+            {% include "@whatwedoTable/tailwind_2/_header.html.twig" %}
+        {% endblock %}
+        
          {% block table_filter %}
             {% include "@whatwedoTable/tailwind_2/_filter.html.twig" %}
         {% endblock %}
