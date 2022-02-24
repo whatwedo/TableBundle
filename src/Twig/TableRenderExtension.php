@@ -9,8 +9,8 @@ use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
+use whatwedo\CoreBundle\Action\Action;
 use whatwedo\CoreBundle\Manager\FormatterManager;
-use whatwedo\TableBundle\Action\Action;
 use whatwedo\TableBundle\Table\Column;
 use whatwedo\TableBundle\Table\Table;
 
@@ -61,7 +61,7 @@ class TableRenderExtension extends AbstractExtension
         $this->template = $this->getTemplate($this->getTheme());
         $context['action'] = $action;
         $context['entity'] = $entity;
-        $blockName = 'table_action';
+        $blockName = $action->getOption('block_prefix');
         $context['blockName'] = $blockName;
 
         return $this->template->renderBlock($blockName, $context);
