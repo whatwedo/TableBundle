@@ -5,7 +5,7 @@
         {% block table_header %}
             {% include "@whatwedoTable/tailwind_2/_header.html.twig" %}
         {% endblock %}
-        
+
          {% block table_filter %}
             {% include "@whatwedoTable/tailwind_2/_filter.html.twig" %}
         {% endblock %}
@@ -28,25 +28,178 @@
 
 {% endblock %}
 
-{% block table_action %}
-    {# todo: add attributes #}
-    {# todo: move to options instead of vars #}
-    {# todo: add actions to CORE Bundle and use the same everywhere #}
-    {% if action.getOption('type') == 'post' %}
-        <form method="post" action="{{ path(action.route, action.routeParameters(entity)) }}">
-            <button type="submit" class="text-neutral-700 group flex items-center px-4 py-2 text-sm" tabindex="-1">
-                {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
+{% use '@whatwedoCore/includes/_action.html.twig' %}
+
+{% block action %}
+    {% if action.hasConfirmation() %}
+        <div
+            {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}
+            class="relative inline-block"
+        >
+            <button
+                {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
+                {{ stimulus_action({'whatwedo/core-bundle/dropdown': ['toggle', {'click@window': 'hide'}]}) }}
+                class="text-neutral-700 font-bold group flex items-center px-4 py-2 text-sm" tabindex="-1"
+            >
+                {% if action.option('icon') %}
+                    {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
+                {% endif %}
                 {{ action.label|trans }}
             </button>
-        </form>
+            <div
+                {{ stimulus_target('whatwedo/core-bundle/dropdown', 'menu') }}
+                class="z-50 hidden transition duration-300 transform w-72 origin-top-right absolute right-0 -bottom-3 transform translate-y-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5"
+                data-transition-enter-from="opacity-0 scale-95"
+                data-transition-enter-to="opacity-100 scale-100"
+                data-transition-leave-from="opacity-100 scale-100"
+                data-transition-leave-to="opacity-0 scale-95"
+                tabindex="-1"
+            >
+                <form
+                    class="flex items-center justify-between px-4 py-3"
+                    method="get" action="{{ path(action.route, action.routeParameters(entity)) }}">
+                    <p class="text-sm text-gray-500 mr-4">
+                        {{ action.confirmation('label') | trans }}
+                    </p>
+
+                    <div>
+                        <button {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}>
+                            {{ action.confirmation('yes') | trans }}
+                        </button>
+                        <button
+                            {{ stimulus_action('whatwedo/core-bundle/dropdown', 'close') }}
+                            class="ml-3 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                            type="button"
+                        >
+                            {{ action.confirmation('no') | trans }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     {% else %}
         <a
             href="{{ path(action.route, action.routeParameters(entity)) }}"
             class="text-neutral-700 group flex items-center px-4 py-2 text-sm"
             tabindex="-1"
+            {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
         >
-            {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
+            {% if action.option('icon') %}
+                {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
+            {% endif %}
             {{ action.label|trans }}
         </a>
     {% endif %}
+{% endblock %}
+
+{% block post_action %}
+    {% if action.hasConfirmation() %}
+        <div
+            {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}
+            class="relative inline-block"
+        >
+            <button
+                {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
+                {{ stimulus_action({'whatwedo/core-bundle/dropdown': ['toggle', {'click@window': 'hide'}]}) }}
+                class="text-neutral-700 font-bold group flex items-center px-4 py-2 text-sm" tabindex="-1"
+            >
+                {% if action.option('icon') %}
+                    {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
+                {% endif %}
+                {{ action.label|trans }}
+            </button>
+            <div
+                {{ stimulus_target('whatwedo/core-bundle/dropdown', 'menu') }}
+                class="z-50 hidden transition duration-300 transform w-72 origin-top-right absolute right-0 -bottom-3 transform translate-y-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5"
+                data-transition-enter-from="opacity-0 scale-95"
+                data-transition-enter-to="opacity-100 scale-100"
+                data-transition-leave-from="opacity-100 scale-100"
+                data-transition-leave-to="opacity-0 scale-95"
+                tabindex="-1"
+            >
+                <form
+                    class="flex items-center justify-between px-4 py-3"
+                    method="post" action="{{ path(action.route, action.routeParameters(entity)) }}">
+                    <p class="text-sm text-gray-500 mr-4">
+                        {{ action.confirmation('label') | trans }}
+                    </p>
+
+                    <div>
+                        <button {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}>
+                            {{ action.confirmation('yes') | trans }}
+                        </button>
+                        <button
+                            {{ stimulus_action('whatwedo/core-bundle/dropdown', 'close') }}
+                            class="ml-3 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                            type="button"
+                        >
+                            {{ action.confirmation('no') | trans }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% else %}
+        <div class="relative inline-block">
+            <form
+                class="flex items-center justify-between"
+                method="post" action="{{ path(action.route, action.routeParameters(entity)) }}">
+                <div>
+                    <button
+                        {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
+                        class="text-neutral-700 font-bold group flex items-center px-4 py-2 text-sm" tabindex="-1"
+                    >
+                        {% if action.option('icon') %}
+                            {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
+                        {% endif %}
+                        {{ action.label|trans }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block modal_action %}
+    {# @var action \whatwedo\CrudBundle\Action\Action #}
+    <span {{ stimulus_controller('whatwedo/core-bundle/modal-form', { formUrl: path(action.option('route'), action.option('route_parameters')) }) }} class="float-end mb-3">
+        <button type="button"
+                {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
+                class="text-neutral-700 font-bold group flex items-center px-4 py-2 text-sm" tabindex="-1" {{ stimulus_action('whatwedo/core-bundle/modal-form', 'openModal') }}>
+            {% if action.option('icon') %}
+                {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
+            {% endif %}
+            {{ action.option('label')|trans }}
+        </button>
+
+        <div
+                {{ stimulus_target('whatwedo/core-bundle/modal-form', 'menu') }}
+                class="hidden fixed z-10 duration-300 ease-in-out transform inset-0 overflow-y-auto"
+                data-transition-enter-from="opacity-0"
+                data-transition-enter-to="opacity-100"
+                data-transition-leave-from="opacity-100"
+                data-transition-leave-to="opacity-0"
+                role="dialog"
+                aria-modal="true"
+        >
+            <div class="flex min-h-screen text-center md:block md:px-2 lg:px-4" style="font-size: 0;">
+                <div class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity md:block"></div>
+
+                {# This element is to trick the browser into centering the modal contents. #}
+                <span class="hidden md:inline-block md:align-middle md:h-screen" aria-hidden="true">&#8203;</span>
+
+                <div class="flex text-base text-left transform transition w-full md:inline-block md:px-4 md:my-8 md:align-middle bg-white shadow-2xl">
+                    <div class="w-full relative flex items-center px-4 pt-14 pb-8 overflow-hidden sm:px-6 sm:pt-8 md:p-6 lg:p-8">
+                        <button type="button"
+                                class="absolute top-4 right-4 text-gray-400 hover:text-gray-500 sm:top-8 sm:right-6 md:top-6 md:right-6 lg:top-8 lg:right-8 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary rounded transition-colors" {{ stimulus_action('whatwedo/core-bundle/modal-form', 'close') }}>
+                            <span class="sr-only">Close</span>
+                            {{ bootstrap_icon('x', { class: 'inline w-8 h-8' }) }}
+                        </button>
+                    </div>
+                    <div class="w-full" {{ stimulus_target('whatwedo/core-bundle/modal-form', 'modalBody') }}>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </span>
 {% endblock %}

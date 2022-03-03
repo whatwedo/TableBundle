@@ -7,7 +7,7 @@ namespace whatwedo\TableBundle\Table;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use whatwedo\CoreBundle\Manager\FormatterManager;
-use whatwedo\TableBundle\Action\Action;
+use whatwedo\CoreBundle\Action\Action;
 use whatwedo\TableBundle\DataLoader\DataLoaderInterface;
 use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
 use whatwedo\TableBundle\Event\DataLoadEvent;
@@ -164,9 +164,9 @@ class Table
         return $this->actions;
     }
 
-    public function addAction(string $acronym, array $options = []): static
+    public function addAction(string $acronym, array $options = [], $type = Action::class): static
     {
-        $this->actions[$acronym] = new Action($this, $acronym, $options);
+        $this->actions[$acronym] = new $type($acronym, $options);
 
         return $this;
     }
