@@ -6,8 +6,8 @@ namespace whatwedo\TableBundle\Table;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use whatwedo\CoreBundle\Manager\FormatterManager;
 use whatwedo\CoreBundle\Action\Action;
+use whatwedo\CoreBundle\Manager\FormatterManager;
 use whatwedo\TableBundle\DataLoader\DataLoaderInterface;
 use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
 use whatwedo\TableBundle\Event\DataLoadEvent;
