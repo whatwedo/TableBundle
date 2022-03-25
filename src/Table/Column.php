@@ -10,6 +10,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 use whatwedo\CoreBundle\Formatter\DefaultFormatter;
 use whatwedo\CoreBundle\Manager\FormatterManager;
 
+
 class Column extends AbstractColumn implements FormattableColumnInterface
 {
     public const OPTION_LABEL = 'label';
@@ -31,7 +32,8 @@ class Column extends AbstractColumn implements FormattableColumnInterface
     public const OPTION_SORT_EXPRESSION = 'sort_expression';
 
     public const OPTION_PRIORITY = 'priority';
-
+    public const OPTION_EXPORT = 'export';
+    public const OPTION_EXPORT_EXPORTABLE = 'exportable';
     protected string $tableIdentifier;
 
     protected FormatterManager $formatterManager;
@@ -50,6 +52,22 @@ class Column extends AbstractColumn implements FormattableColumnInterface
             self::OPTION_SORT_EXPRESSION => $this->identifier,
             self::OPTION_PRIORITY => 100,
         ]);
+
+        $resolver->setAllowedTypes(self::OPTION_PRIORITY, 'int');
+        $resolver->setAllowedTypes(self::OPTION_ACCESSOR_PATH, 'string');
+        $resolver->setAllowedTypes(self::OPTION_SORT_EXPRESSION, 'string');
+        $resolver->setAllowedTypes(self::OPTION_IS_PRIMARY, 'boolean');
+        $resolver->setAllowedTypes(self::OPTION_SORTABLE, 'boolean');
+
+
+        $resolver->setDefault(self::OPTION_EXPORT, function (OptionsResolver $exportResolver) {
+            $exportResolver->setDefaults([
+                self::OPTION_EXPORT_EXPORTABLE => true,
+            ]);
+
+            $exportResolver->setAllowedTypes(self::OPTION_EXPORT_EXPORTABLE, 'boolean');
+        });
+
     }
 
     /**

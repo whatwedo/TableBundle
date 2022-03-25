@@ -113,6 +113,7 @@ class Table
      */
     public function getColumns(): array
     {
+        usort($this->columns, fn (Column $a, Column $b) => $b->getOption(Column::OPTION_PRIORITY) <=> $a->getOption(Column::OPTION_PRIORITY));
         return $this->columns;
     }
 
