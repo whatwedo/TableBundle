@@ -18,86 +18,23 @@ class ExportManager
     private array $reports = [];
 
     public function __construct(
-        protected FormatterManager $formatterManager,
+        protected FormatterManager    $formatterManager,
         protected TranslatorInterface $translator
-
-    ) {
-    }
-
-    public function prepareData(Table $table): array
+    )
     {
-        $result = [];
-
-        $result[] = $this->getHeader($table);
-
-        $propertyAccessor = PropertyAccess::createPropertyAccessor();
-
-        $columns = $table->getColumns();
-
-        foreach ($table->getRows() as $item) {
-            $dataItem = [];
-
-
-            foreach ($columns as $column) {
-                if ($column->getOption(Column::OPTION_EXPORT)[Column::OPTION_EXPORT_EXPORTABLE] === false) {
-                    continue;
-                }
-
-                $data = $propertyAccessor->getValue($item, $column->getOption(Column::OPTION_ACCESSOR_PATH));
-
-                if ($column->getOption(Column::OPTION_FORMATTER)) {
-
-                    if (is_callable($column->getOption(Column::OPTION_FORMATTER))) {
-                        $formatter = $column->getOption(Column::OPTION_FORMATTER);
-                        $data = $formatter($data);
-
-                    } else {
-                        $formatter = $this->formatterManager->getFormatter($column->getOption(Column::OPTION_FORMATTER));
-                        $formatter->processOptions($column->getOption(Column::OPTION_FORMATTER_OPTIONS));
-                        $data = $formatter->getString($data);
-
-                    }
-                }
-
-                $dataItem[] = $data;
-            }
-
-            $result[] = $dataItem;
-        }
-
-        return $result;
     }
 
-    public function createSpreadsheet(Table $table, array $data): Spreadsheet
+    public function createSpreadsheet(Table $table): Spreadsheet
     {
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        // header
-        foreach ($data as $rowIndex => $row) {
-            if ($rowIndex === 0) {
-                foreach ($row as $colIndex => $value) {
-                    $columnIndex = $sheet->getColumnDimensionByColumn($colIndex + 1)->getColumnIndex();
-                    $cell = $sheet->getCell($columnIndex . ($rowIndex + 1));
-                    $cell->setValueExplicit($value, DataType::TYPE_STRING2);
-                    $cell->getStyle()->getFont()->setBold(true);
-                }
-            } else {
-                foreach ($row as $colIndex => $value) {
-                    $columnIndex = $sheet->getColumnDimensionByColumn($colIndex + 1)->getColumnIndex();
-                    $cell = $sheet->getCell($columnIndex . ($rowIndex + 1));
+        $tableColumns = $table->getColumns();
+        $this->createHeader($sheet, $tableColumns);
 
-                    if ($value instanceof \DateTimeInterface) {
-                        $value = Date::PHPToExcel($value);
-                        $cell->setValue($value);
-                    } else {
-                        $cell->setValueExplicit($value, DataType::TYPE_STRING2);
-                    }
-                }
-            }
-        }
+        $this->createTable($sheet, $table, $tableColumns);
 
-        for ($index = 1, $indexMax = count($table->getColumns()); $index < $indexMax; ++$index) {
+        for ($index = 1, $indexMax = count($tableColumns); $index < $indexMax; ++$index) {
             $sheet->getColumnDimensionByColumn($index)->setAutoSize(true);
             $sheet->getColumnDimensionByColumn($index)->setAutoSize(true);
         }
@@ -106,27 +43,59 @@ class ExportManager
     }
 
     /**
-     * @return ReportInterface[]
+     * @param Column[] $tableColumns
      */
-    public function getReports(): array
+    protected function createHeader(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet, array $tableColumns): void
     {
-        return $this->reports;
-    }
+        foreach ($tableColumns as $colIndex => $column) {
+            if ($column->getOption(Column::OPTION_EXPORT)[Column::OPTION_EXPORT_EXPORTABLE] === false) {
+                continue;
+            }
 
-    protected function getHeader(Table $table): array
-    {
-        $headerItem = [];
-
-        foreach ($table->getColumns() as $column) {
+            $value = '';
             if ($column->getOption(Column::OPTION_LABEL)) {
-                $headerItem[] = $this->translator->trans(
+                $value = $this->translator->trans(
                     $column->getOption(Column::OPTION_LABEL)
                 );
-            } else {
-                $headerItem[] = '';
+            }
+
+            $columnIndex = $sheet->getColumnDimensionByColumn($colIndex + 1)->getColumnIndex();
+            $cell = $sheet->getCell($columnIndex . '1');
+            $cell->setValueExplicit($value, DataType::TYPE_STRING2);
+            $cell->getStyle()->getFont()->setBold(true);
+        }
+    }
+
+    /**
+     * @param Column[] $tableColumns
+     */
+    protected function createTable(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet, Table $table, array $tableColumns): void
+    {
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+        foreach ($table->getRows() as $rowIndex => $row) {
+            $colIndex = 1;
+            foreach ($tableColumns as $column) {
+                if ($column->getOption(Column::OPTION_EXPORT)[Column::OPTION_EXPORT_EXPORTABLE] === false) {
+                    continue;
+                }
+                $data = $propertyAccessor->getValue($row, $column->getOption(Column::OPTION_ACCESSOR_PATH));
+                if ($column->getOption(Column::OPTION_FORMATTER)) {
+
+                    if (is_callable($column->getOption(Column::OPTION_FORMATTER))) {
+                        $formatter = $column->getOption(Column::OPTION_FORMATTER);
+                        $data = $formatter($data);
+                    } else {
+                        $formatter = $this->formatterManager->getFormatter($column->getOption(Column::OPTION_FORMATTER));
+                        $formatter->processOptions($column->getOption(Column::OPTION_FORMATTER_OPTIONS));
+                        $data = $formatter->getString($data);
+                    }
+                }
+                $columnIndex = $sheet->getColumnDimensionByColumn($colIndex)->getColumnIndex();
+                $cell = $sheet->getCell($columnIndex . ($rowIndex + 2));
+
+                $cell->setValueExplicit($data, DataType::TYPE_STRING2);
+                $colIndex++;
             }
         }
-
-        return $headerItem;
     }
 }
