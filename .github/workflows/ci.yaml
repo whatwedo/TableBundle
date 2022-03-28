@@ -26,3 +26,5 @@ jobs:
               run: vendor/bin/simple-phpunit
             - name: Check Code Styles
               run: vendor/bin/ecs
+            - name: Check PHP Stan
+              run: vendor/bin/phpstan analyse src tests

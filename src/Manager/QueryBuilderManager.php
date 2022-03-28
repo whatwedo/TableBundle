@@ -49,7 +49,7 @@ class QueryBuilderManager
         });
         $matchingProviders = array_values($matchingProviders);
         if (count($matchingProviders) > 1) {
-            throw new Exception('Multiple query-builder-providers found. It is not clear, which to use.');
+            throw new \Exception('Multiple query-builder-providers found. It is not clear, which to use.');
         }
         if (count($matchingProviders) === 0) {
             return null;

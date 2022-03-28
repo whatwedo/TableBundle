@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace whatwedo\TableBundle\DataLoader;
 
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 #[Autoconfigure(tags: ['whatwedo.table_bundle.data_loader'])]

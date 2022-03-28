@@ -43,7 +43,8 @@
         "gedmo/doctrine-extensions": "^3.5",
         "symfony/webpack-encore-bundle": "^1.13",
         "symfony/security-core": "^6.0",
-        "symfony/security-bundle": "^6.0"
+        "symfony/security-bundle": "^6.0",
+        "phpstan/phpstan": "^1.5"
     },
     "suggest": {
         "whatwedo/search-bundle": "Allows searching tables"

@@ -1,3 +1,0 @@
-whatwedo_table_filter_controller:
-    resource: '@whatwedoTableBundle/Controller/FilterController.php'
-    type:     annotation

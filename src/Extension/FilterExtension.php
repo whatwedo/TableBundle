@@ -36,6 +36,7 @@ use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\QueryBuilder;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use whatwedo\TableBundle\Builder\FilterBuilder;
 use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
@@ -50,7 +51,6 @@ use whatwedo\TableBundle\Filter\Type\DateFilterType;
 use whatwedo\TableBundle\Filter\Type\DatetimeFilterType;
 use whatwedo\TableBundle\Filter\Type\FilterTypeInterface;
 use whatwedo\TableBundle\Filter\Type\NumberFilterType;
-use whatwedo\TableBundle\Filter\Type\SimpleEnumFilterType;
 use whatwedo\TableBundle\Filter\Type\TextFilterType;
 use whatwedo\TableBundle\Helper\RouterHelper;
 use whatwedo\TableBundle\Table\Filter;
@@ -89,7 +89,8 @@ class FilterExtension extends AbstractExtension
 
     public function __construct(
         protected EntityManagerInterface $entityManager,
-        protected RequestStack $requestStack
+        protected RequestStack $requestStack,
+        protected LoggerInterface $logger
     ) {
     }
 
@@ -157,22 +158,6 @@ class FilterExtension extends AbstractExtension
     public function overrideFilterName($acronym, $label)
     {
         $this->getFilter($acronym)->setName($label);
-
-        return $this;
-    }
-
-    /**
-     * @param $acronym
-     * @param $class
-     *
-     * @return $this
-     */
-    public function configureSimpleEnumFilter($acronym, $class)
-    {
-        $filter = $this->getFilter($acronym);
-        $name = $filter->getName();
-        $column = $filter->getType()->getColumn();
-        $this->filters[$acronym] = new Filter($acronym, $name, new SimpleEnumFilterType($column, [], $class));
 
         return $this;
     }
@@ -396,13 +381,19 @@ class FilterExtension extends AbstractExtension
             if ($getClass($abstractHolder) === ManyToMany::class) {
                 $target = $getTargetEntity($abstractHolder);
 
-                $this->addFilter($acronymNoSuffix, $label, new $this->relationType[$getClass($abstractHolder)](
-                    $acronym,
-                    $target,
-                    $this->entityManager,
-                    $jsonSearchCallable($target),
-                    $joins
-                ));
+                try {
+                    $this->addFilter($acronymNoSuffix, $label, new $this->relationType[$getClass($abstractHolder)](
+                        $acronym,
+                        $target,
+                        $this->entityManager,
+                        $jsonSearchCallable($target),
+                        $joins
+                    ));
+                } catch (\InvalidArgumentException $exception) {
+                    $this->logger->warning('could not automatically add filter for "' . $label . '"');
+
+                    return null;
+                }
 
                 return $this->getFilter($acronymNoSuffix);
             }
@@ -415,13 +406,19 @@ class FilterExtension extends AbstractExtension
 
                 $filterType = $this->relationType[$getClass($abstractHolder)];
 
-                $this->addFilter($acronymNoSuffix, $label, new $filterType(
-                    $acronym,
-                    $target,
-                    $this->entityManager,
-                    $jsonSearchCallable($target),
-                    $joins
-                ));
+                try {
+                    $this->addFilter($acronymNoSuffix, $label, new $filterType(
+                        $acronym,
+                        $target,
+                        $this->entityManager,
+                        $jsonSearchCallable($target),
+                        $joins
+                    ));
+                } catch (\InvalidArgumentException $exception) {
+                    $this->logger->warning('could not automatically add filter for "' . $label . '"');
+
+                    return null;
+                }
 
                 return $this->getFilter($acronymNoSuffix);
             }
