@@ -9,12 +9,13 @@
     </div>
     <div class="mt-4 flex sm:mt-0 sm:ml-4">
         {% if view is defined and view.definition.hasCapability(constant('whatwedo\\CrudBundle\\Enum\\Page::EXPORT')) %}
-        <button
+        <a
+            href="{{ path(view.definition.getRoute(constant('whatwedo\\CrudBundle\\Enum\\Page::EXPORT') )) }}"
             class="whatwedo_table:header__button whatwedo_table:header__button--download whatwedo_table-button"
-            type="button"
+
         >
             {{ bootstrap_icon('download', { class: 'w-4 h-4' }) }}
-        </button>
+        </a>
         {% endif %}
 
         {% if table.filterExtension and table.filterExtension.filters|length > 0 %}
