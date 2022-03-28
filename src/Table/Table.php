@@ -19,18 +19,30 @@ use whatwedo\TableBundle\Extension\SortExtension;
 
 class Table
 {
-    const OPTION_TITLE = 'title';
-    const OPTION_PRIMARY_LINK = 'primary_link';
-    const OPTION_ATTRIBUTES = 'attributes';
-    const OPTION_SEARCHABLE = 'searchable';
-    const OPTION_SORTABLE = 'sortable';
-    const OPTION_DEFAULT_SORT = 'default_sort';
-    const OPTION_DEFAULT_LIMIT = 'default_limit';
-    const OPTION_LIMIT_CHOICES = 'limit_choices';
-    const OPTION_THEME = 'theme';
-    const OPTION_DEFINITION = 'definition';
-    const OPTION_DATALOADER_OPTIONS = 'dataloader_options';
-    const OPTION_DATA_LOADER = 'data_loader';
+    public const OPTION_TITLE = 'title';
+
+    public const OPTION_PRIMARY_LINK = 'primary_link';
+
+    public const OPTION_ATTRIBUTES = 'attributes';
+
+    public const OPTION_SEARCHABLE = 'searchable';
+
+    public const OPTION_SORTABLE = 'sortable';
+
+    public const OPTION_DEFAULT_SORT = 'default_sort';
+
+    public const OPTION_DEFAULT_LIMIT = 'default_limit';
+
+    public const OPTION_LIMIT_CHOICES = 'limit_choices';
+
+    public const OPTION_THEME = 'theme';
+
+    public const OPTION_DEFINITION = 'definition';
+
+    public const OPTION_DATALOADER_OPTIONS = 'dataloader_options';
+
+    public const OPTION_DATA_LOADER = 'data_loader';
+
     protected array $columns = [];
 
     protected array $actions = [];
@@ -114,6 +126,7 @@ class Table
     public function getColumns(): array
     {
         usort($this->columns, fn (Column $a, Column $b) => $b->getOption(Column::OPTION_PRIORITY) <=> $a->getOption(Column::OPTION_PRIORITY));
+
         return $this->columns;
     }
 
@@ -138,7 +151,7 @@ class Table
 
         // only DoctrineTable can sort nested properties. Therefore disable them for other tables.
         // TODO: refactor
-        if (!$this->options[self::OPTION_DATA_LOADER] instanceof DoctrineDataLoader
+        if (! $this->options[self::OPTION_DATA_LOADER] instanceof DoctrineDataLoader
             && $column->getOption(Column::OPTION_SORTABLE)
             && str_contains($column->getOption(Column::OPTION_SORT_EXPRESSION), '.')) {
             $column->setOption(Column::OPTION_SORTABLE, false);

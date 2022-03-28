@@ -10,7 +10,6 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 use whatwedo\CoreBundle\Formatter\DefaultFormatter;
 use whatwedo\CoreBundle\Manager\FormatterManager;
 
-
 class Column extends AbstractColumn implements FormattableColumnInterface
 {
     public const OPTION_LABEL = 'label';
@@ -32,8 +31,11 @@ class Column extends AbstractColumn implements FormattableColumnInterface
     public const OPTION_SORT_EXPRESSION = 'sort_expression';
 
     public const OPTION_PRIORITY = 'priority';
+
     public const OPTION_EXPORT = 'export';
+
     public const OPTION_EXPORT_EXPORTABLE = 'exportable';
+
     protected string $tableIdentifier;
 
     protected FormatterManager $formatterManager;
@@ -59,7 +61,6 @@ class Column extends AbstractColumn implements FormattableColumnInterface
         $resolver->setAllowedTypes(self::OPTION_IS_PRIMARY, 'boolean');
         $resolver->setAllowedTypes(self::OPTION_SORTABLE, 'boolean');
 
-
         $resolver->setDefault(self::OPTION_EXPORT, function (OptionsResolver $exportResolver) {
             $exportResolver->setDefaults([
                 self::OPTION_EXPORT_EXPORTABLE => true,
@@ -67,7 +68,6 @@ class Column extends AbstractColumn implements FormattableColumnInterface
 
             $exportResolver->setAllowedTypes(self::OPTION_EXPORT_EXPORTABLE, 'boolean');
         });
-
     }
 
     /**

@@ -5,24 +5,22 @@ declare(strict_types=1);
 namespace whatwedo\TableBundle\Manager;
 
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
-use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use whatwedo\CoreBundle\Manager\FormatterManager;
 use whatwedo\TableBundle\Table\Column;
 use whatwedo\TableBundle\Table\Table;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class ExportManager
 {
     private array $reports = [];
 
     public function __construct(
-        protected FormatterManager    $formatterManager,
+        protected FormatterManager $formatterManager,
         protected TranslatorInterface $translator
-    )
-    {
+    ) {
     }
 
     public function createSpreadsheet(Table $table): Spreadsheet
@@ -81,7 +79,6 @@ class ExportManager
                 }
                 $data = $propertyAccessor->getValue($row, $column->getOption(Column::OPTION_ACCESSOR_PATH));
                 if ($column->getOption(Column::OPTION_FORMATTER)) {
-
                     if (is_callable($column->getOption(Column::OPTION_FORMATTER))) {
                         $formatter = $column->getOption(Column::OPTION_FORMATTER);
                         $data = $formatter($data);
@@ -95,7 +92,7 @@ class ExportManager
                 $cell = $sheet->getCell($columnIndex . ($rowIndex + 2));
 
                 $cell->setValueExplicit($data, DataType::TYPE_STRING2);
-                $colIndex++;
+                ++$colIndex;
             }
         }
     }
