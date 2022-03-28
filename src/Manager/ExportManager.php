@@ -12,6 +12,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use whatwedo\CoreBundle\Manager\FormatterManager;
 use whatwedo\TableBundle\Table\Column;
 use whatwedo\TableBundle\Table\Table;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class ExportManager
 {
@@ -45,7 +46,7 @@ class ExportManager
     /**
      * @param Column[] $tableColumns
      */
-    protected function createHeader(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet, array $tableColumns): void
+    protected function createHeader(Worksheet $sheet, array $tableColumns): void
     {
         foreach ($tableColumns as $colIndex => $column) {
             if ($column->getOption(Column::OPTION_EXPORT)[Column::OPTION_EXPORT_EXPORTABLE] === false) {
@@ -69,7 +70,7 @@ class ExportManager
     /**
      * @param Column[] $tableColumns
      */
-    protected function createTable(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet, Table $table, array $tableColumns): void
+    protected function createTable(Worksheet $sheet, Table $table, array $tableColumns): void
     {
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
         foreach ($table->getRows() as $rowIndex => $row) {
