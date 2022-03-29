@@ -4,18 +4,14 @@ declare(strict_types=1);
 
 namespace whatwedo\TableBundle\Tests;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
-use whatwedo\TableBundle\DataLoader\ArrayDataLoader;
 use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
 use whatwedo\TableBundle\Factory\TableFactory;
-use whatwedo\TableBundle\Helper\RouterHelper;
-use whatwedo\TableBundle\Manager\ExportManager;
 use whatwedo\TableBundle\Table\Column;
 use whatwedo\TableBundle\Tests\App\Entity\Company;
 use whatwedo\TableBundle\Tests\App\Factory\CompanyFactory;
@@ -43,7 +39,6 @@ class ColumnTest extends KernelTestCase
         $this->assertSame('city', $columns[1]->getIdentifier());
         $this->assertSame('country', $columns[2]->getIdentifier());
         $this->assertSame('taxIdentificationNumber', $columns[3]->getIdentifier());
-
     }
 
     public function testColumnPriorityReorder()
@@ -51,16 +46,16 @@ class ColumnTest extends KernelTestCase
         $table = $this->prepareTable();
 
         $table->addColumn('name', null, [
-            Column::OPTION_PRIORITY => 1
+            Column::OPTION_PRIORITY => 1,
         ])
             ->addColumn('city', null, [
-                Column::OPTION_PRIORITY => 2
+                Column::OPTION_PRIORITY => 2,
             ])
             ->addColumn('country', null, [
-                Column::OPTION_PRIORITY => 3
+                Column::OPTION_PRIORITY => 3,
             ])
             ->addColumn('taxIdentificationNumber', null, [
-                Column::OPTION_PRIORITY => 4
+                Column::OPTION_PRIORITY => 4,
             ])
 ;
 
@@ -70,7 +65,6 @@ class ColumnTest extends KernelTestCase
         $this->assertSame('country', $columns[1]->getIdentifier());
         $this->assertSame('city', $columns[2]->getIdentifier());
         $this->assertSame('name', $columns[3]->getIdentifier());
-
     }
 
     public function testColumnPrioritySameOrder()
@@ -78,16 +72,16 @@ class ColumnTest extends KernelTestCase
         $table = $this->prepareTable();
 
         $table->addColumn('name', null, [
-            Column::OPTION_PRIORITY => 1
+            Column::OPTION_PRIORITY => 1,
         ])
             ->addColumn('city', null, [
-                Column::OPTION_PRIORITY => 2
+                Column::OPTION_PRIORITY => 2,
             ])
             ->addColumn('country', null, [
-                Column::OPTION_PRIORITY => 2
+                Column::OPTION_PRIORITY => 2,
             ])
             ->addColumn('taxIdentificationNumber', null, [
-                Column::OPTION_PRIORITY => 4
+                Column::OPTION_PRIORITY => 4,
             ])
 ;
 
@@ -97,12 +91,8 @@ class ColumnTest extends KernelTestCase
         $this->assertSame('city', $columns[1]->getIdentifier());
         $this->assertSame('country', $columns[2]->getIdentifier());
         $this->assertSame('name', $columns[3]->getIdentifier());
-
     }
 
-    /**
-     * @return \whatwedo\TableBundle\Table\Table
-     */
     protected function prepareTable(): \whatwedo\TableBundle\Table\Table
     {
         CompanyFactory::createMany(40);
@@ -122,6 +112,7 @@ class ColumnTest extends KernelTestCase
             'dataloader_options' => $dataLoaderOptions,
             'default_limit' => 10,
         ]);
+
         return $table;
     }
 }
