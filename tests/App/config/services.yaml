@@ -22,3 +22,7 @@ services:
 
     Symfony\Component\HttpFoundation\RequestStack:
         public: true
+
+
+    whatwedo\TableBundle\Manager\ExportManager:
+        public: true
