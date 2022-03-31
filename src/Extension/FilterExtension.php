@@ -63,6 +63,10 @@ class FilterExtension extends AbstractExtension
 
     public const OPTION_ADD_ALL = 'add_all';
 
+    public const OPTION_INCLUDE_FIELDS = 'include_fields';
+
+    public const OPTION_EXCLUDE_FIELDS = 'exclude_fields';
+
     public const OPTION_ENABLE = 'enable';
 
     /**
@@ -107,10 +111,14 @@ class FilterExtension extends AbstractExtension
         $resolver->setDefaults([
             self::OPTION_ADD_ALL => true,
             self::OPTION_ENABLE => true,
+            self::OPTION_INCLUDE_FIELDS => [],
+            self::OPTION_EXCLUDE_FIELDS => [],
         ]);
 
         $resolver->setAllowedTypes(self::OPTION_ADD_ALL, 'boolean');
         $resolver->setAllowedTypes(self::OPTION_ENABLE, 'boolean');
+        $resolver->setAllowedTypes(self::OPTION_INCLUDE_FIELDS, 'string[]');
+        $resolver->setAllowedTypes(self::OPTION_EXCLUDE_FIELDS, 'string[]');
     }
 
     /**
@@ -200,7 +208,7 @@ class FilterExtension extends AbstractExtension
      */
     public function addFiltersAutomatically(Table $table, ?callable $labelCallable = null, ?callable $jsonSearchCallable = null, ?array $propertyNames = null)
     {
-        if (!$this->getOption(self::OPTION_ENABLE) || !$this->getOption(self::OPTION_ADD_ALL))  {
+        if (! $this->getOption(self::OPTION_ENABLE)) {
             return;
         }
 
@@ -216,6 +224,12 @@ class FilterExtension extends AbstractExtension
             $properties = $propertyNames ? array_map([$reflectionClass, 'getProperty'], $propertyNames) : $reflectionClass->getProperties();
 
             foreach ($properties as $property) {
+                if ($this->getOption(self::OPTION_ADD_ALL) && in_array($property->getName(), $this->getOption(self::OPTION_EXCLUDE_FIELDS), true)) {
+                    continue;
+                }
+                if (! $this->getOption(self::OPTION_ADD_ALL) && ! in_array($property->getName(), $this->getOption(self::OPTION_INCLUDE_FIELDS), true)) {
+                    continue;
+                }
                 $this->addFilterAutomatically($table, $queryBuilder, $labelCallable, $jsonSearchCallable, $property, $reflectionClass->getNamespaceName());
             }
         }
@@ -343,9 +357,9 @@ class FilterExtension extends AbstractExtension
     }
 
     /**
-     * @throws \Doctrine\Common\Annotations\AnnotationException
-     *
      * @return Filter|null
+     *
+     * @throws \Doctrine\Common\Annotations\AnnotationException
      */
     private function addFilterAutomatically(Table $table, QueryBuilder $queryBuilder, callable $labelCallable, callable $jsonSearchCallable, \ReflectionProperty $property, string $namespace)
     {
