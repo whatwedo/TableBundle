@@ -33,6 +33,12 @@ ecs:
 phpstan:
 	vendor/bin/phpstan
 
+## check code with phpstan
+styles:
+	make ecs
+	make phpstan
+
+
 ## PHP Unit
 phpunit:
 	vendor/bin/simple-phpunit
