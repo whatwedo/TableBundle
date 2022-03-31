@@ -38,7 +38,9 @@ use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\QueryBuilder;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use whatwedo\TableBundle\Builder\FilterBuilder;
+use whatwedo\TableBundle\DataLoader\DataLoaderInterface;
 use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
 use whatwedo\TableBundle\Entity\Filter as FilterEntity;
 use whatwedo\TableBundle\Entity\UserInterface;
@@ -59,6 +61,10 @@ use whatwedo\TableBundle\Table\Table;
 class FilterExtension extends AbstractExtension
 {
     public const QUERY_PREDEFINED_FILTER = 'predefined_filter';
+
+    public const OPTION_ADD_ALL = 'add_all';
+
+    public const OPTION_ENABLE = 'enable';
 
     /**
      * @var Filter[]
@@ -86,12 +92,45 @@ class FilterExtension extends AbstractExtension
         ManyToOne::class => AjaxRelationFilterType::class,
         ManyToMany::class => AjaxManyToManyFilterType::class,
     ];
+    private array $options = [];
 
     public function __construct(
         protected EntityManagerInterface $entityManager,
         protected RequestStack $requestStack,
         protected LoggerInterface $logger
     ) {
+        $resolver = new OptionsResolver();
+        $this->configureOptions($resolver);
+        $this->options = $resolver->resolve($this->options);
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            self::OPTION_ADD_ALL => true,
+            self::OPTION_ENABLE => true,
+
+        ]);
+
+        $resolver->setAllowedTypes(self::OPTION_ADD_ALL, 'boolean');
+        $resolver->setAllowedTypes(self::OPTION_ENABLE, 'boolean');
+    }
+
+
+    public function setOption(string $key, $value): static
+    {
+        $resolver = new OptionsResolver();
+        $this->configureOptions($resolver);
+
+        $this->options[$key] = $value;
+        $this->options = $resolver->resolve($this->options);
+
+        return $this;
+    }
+
+    public function getOption(string $key, ...$args)
+    {
+        return $this->options[$key];
     }
 
     /**

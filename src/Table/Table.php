@@ -43,12 +43,6 @@ class Table
 
     public const OPTION_DATA_LOADER = 'data_loader';
 
-    public const OPTION_FILTER = 'filter';
-
-    public const OPTION_FILTER_ADD_ALL = 'filter_add_all';
-
-    public const OPTION_FILTER_ENABLE = 'filter_enable';
-
     protected array $columns = [];
 
     protected array $actions = [];
@@ -103,15 +97,6 @@ class Table
         $resolver->setRequired(self::OPTION_DATA_LOADER);
         $resolver->setAllowedTypes(self::OPTION_DATA_LOADER, allowedTypes: DataLoaderInterface::class);
 
-        $resolver->setDefault(self::OPTION_FILTER, function (OptionsResolver $exportResolver) {
-            $exportResolver->setDefaults([
-                self::OPTION_FILTER_ADD_ALL => true,
-                self::OPTION_FILTER_ENABLE => true,
-            ]);
-
-            $exportResolver->setAllowedTypes(self::OPTION_FILTER_ADD_ALL, 'boolean');
-            $exportResolver->setAllowedTypes(self::OPTION_FILTER_ENABLE, 'boolean');
-        });
     }
 
     public function getIdentifier(): string
