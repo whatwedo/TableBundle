@@ -29,16 +29,37 @@ declare(strict_types=1);
 
 namespace whatwedo\TableBundle\Extension;
 
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use whatwedo\TableBundle\Table\Table;
 
 abstract class AbstractExtension implements ExtensionInterface
 {
     protected Table $table;
 
+    protected array $options = [];
+
     public function setTable(Table $table): self
     {
         $this->table = $table;
 
         return $this;
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+    }
+
+    public function setOption(string $key, $value): void
+    {
+        $resolver = new OptionsResolver();
+        $this->configureOptions($resolver);
+
+        $this->options[$key] = $value;
+        $this->options = $resolver->resolve($this->options);
+    }
+
+    public function getOption(string $key): mixed
+    {
+        return $this->options[$key];
     }
 }

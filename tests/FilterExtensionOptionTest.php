@@ -33,18 +33,14 @@ class FilterExtensionOptionTest extends KernelTestCase
         $table->getFilterExtension()->setOption(FilterExtension::OPTION_ENABLE, true);
         $table->getFilterExtension()->setOption(FilterExtension::OPTION_ADD_ALL, true);
 
-
         $this->assertSame(true, $table->getFilterExtension()->getOption(FilterExtension::OPTION_ENABLE));
         $this->assertSame(true, $table->getFilterExtension()->getOption(FilterExtension::OPTION_ADD_ALL));
-
 
         $table->getFilterExtension()->setOption(FilterExtension::OPTION_ENABLE, false);
         $table->getFilterExtension()->setOption(FilterExtension::OPTION_ADD_ALL, false);
 
-
         $this->assertSame(false, $table->getFilterExtension()->getOption(FilterExtension::OPTION_ENABLE));
         $this->assertSame(false, $table->getFilterExtension()->getOption(FilterExtension::OPTION_ADD_ALL));
-
 
         $this->expectException(InvalidOptionsException::class);
         $table->getFilterExtension()->setOption(FilterExtension::OPTION_ENABLE, 'false');

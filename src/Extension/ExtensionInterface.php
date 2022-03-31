@@ -30,6 +30,7 @@ declare(strict_types=1);
 namespace whatwedo\TableBundle\Extension;
 
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use whatwedo\TableBundle\Table\Table;
 
 #[Autoconfigure(tags: ['whatwedo.table_bundle.extension'])]
@@ -38,4 +39,10 @@ interface ExtensionInterface
     public static function isEnabled(array $enabledBundles): bool;
 
     public function setTable(Table $table): self;
+
+    public function configureOptions(OptionsResolver $resolver): void;
+
+    public function setOption(string $key, $value): void;
+
+    public function getOption(string $key): mixed;
 }

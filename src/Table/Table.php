@@ -96,7 +96,6 @@ class Table
 
         $resolver->setRequired(self::OPTION_DATA_LOADER);
         $resolver->setAllowedTypes(self::OPTION_DATA_LOADER, allowedTypes: DataLoaderInterface::class);
-
     }
 
     public function getIdentifier(): string
