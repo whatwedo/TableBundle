@@ -200,6 +200,10 @@ class FilterExtension extends AbstractExtension
      */
     public function addFiltersAutomatically(Table $table, ?callable $labelCallable = null, ?callable $jsonSearchCallable = null, ?array $propertyNames = null)
     {
+        if (!$this->getOption(self::OPTION_ENABLE) || !$this->getOption(self::OPTION_ADD_ALL))  {
+            return;
+        }
+
         if ($table->getDataLoader() instanceof DoctrineDataLoader) {
             /** @var QueryBuilder $queryBuilder */
             $queryBuilder = $table->getDataLoader()->getOption(DoctrineDataLoader::OPTION_QUERY_BUILDER);
