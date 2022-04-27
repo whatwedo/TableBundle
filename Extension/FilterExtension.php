@@ -154,6 +154,7 @@ class FilterExtension extends AbstractExtension
      */
     public function getFilters()
     {
+        usort($this->filters, fn($a, $b) => strcmp($a->getName(), $b->getName()));
         return $this->filters;
     }
 

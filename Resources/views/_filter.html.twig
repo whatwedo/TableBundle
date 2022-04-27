@@ -64,7 +64,7 @@
                 {% set isCreator = app_username == filter.creatorUsername %}
                 <tr data-href="{{ filter_href }}">
                     <td>
-                        <i class="fa fa-{{ filter.stateIcon }}" data-toggle="toolip" title="{{ filter.stateAsString }}"></i> {{ filter.name }}
+                        <i class="fa fa-{{ filter.stateIcon }}" data-toggle="toolip" title="Filter ist {{ filter.stateAsString|lower }}"></i> {{ filter.name }}
                         <br/>
                         <small>{{ filter.description }}</small>
                     </td>
