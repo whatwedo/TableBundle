@@ -154,6 +154,7 @@ class FilterExtension extends AbstractExtension
      */
     public function getFilters()
     {
+        usort($this->filters, fn($a, $b) => strcmp($a->getName(), $b->getName()));
         return $this->filters;
     }
 
@@ -397,7 +398,7 @@ class FilterExtension extends AbstractExtension
 
     private function getFromRequest(string $param)
     {
-        $value = $this->getRequest()->query->get($this->getActionQueryParameter($param), []);
+        $value = $this->getRequest()->query->get($this->getActionQueryParameter($param)) ?: [];
         $predefined = $this->getPredefinedFilter($this->getRequest()->query->get($this->getActionQueryParameter(static::QUERY_PREDEFINED_FILTER), ''));
 
         return $predefined ? array_merge($value, $predefined[$param]) : $value;

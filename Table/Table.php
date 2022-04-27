@@ -149,7 +149,11 @@ class Table
     ) {
         $this->identifier = $identifier;
         $this->eventDispatcher = $eventDispatcher;
-        $this->request = $requestStack->getMasterRequest();
+        if (\is_callable([$requestStack, 'getMainRequest'])) {
+            $this->request = $requestStack->getMainRequest();   // symfony 5.3+
+        } else {
+            $this->request = $requestStack->getMasterRequest();
+        }
         $this->templating = $templating;
         $this->extensions = $extensions;
         $this->formatterManager = $formatterManager;
