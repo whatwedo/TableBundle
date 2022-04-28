@@ -12,6 +12,7 @@ whatwedo_table:
     save: Speichern
     no_results: Keine Resultate gefunden
     delete_filter: Filter Löschen
+    overwrite_filter: Filter überschreiben
     restore_filter: Aktiviere Filter
     entries: '%num% Einträge'
     unknown: unbekannt

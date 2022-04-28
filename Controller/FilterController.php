@@ -108,6 +108,35 @@ class FilterController extends AbstractController
     /**
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
+     * @Route("/whatwedo/table/filter/save/{id}", name="whatwedo_table_filter_direct_save", methods="POST")
+     */
+    public function directSaveAction(Filter $filter, Request $request)
+    {
+        if (!$this->isCsrfTokenValid('token', $request->get('token'))) {
+            throw new InvalidCsrfTokenException('Invalid CSRF token');
+        }
+
+        if ($filter->getCreatorUsername() !== $this->getUser()->getUsername()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $filter->setArguments(json_decode($request->request->get('filter_route_arguments'), true));
+        $filter->setConditions(json_decode($request->get('filter_conditions'), true));
+
+        /*
+        $this->entityManager->persist($filter);
+        $this->entityManager->flush();
+        */
+
+        return $this->redirect($this->router->generate(
+            $filter->getRoute(),
+            array_merge($filter->getArguments(), $filter->getConditions())
+        ));
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     *
      * @Route("/whatwedo/table/filter/delete/{id}", name="whatwedo_table_filter_direct_delete")
      */
     public function deleteAction(Filter $filter, Request $request)

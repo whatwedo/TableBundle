@@ -69,24 +69,28 @@
                         <small>{{ filter.description }}</small>
                     </td>
                     <td>
-                        {% if isCreator %}
-                        <form method="post" action="{{ path('whatwedo_table_filter_direct_delete', {'id' : filter.id, 'token': csrf_token('token') }) }}">
-                        {% endif %}
-                        <div class="btn-group" role="group" style="white-space: nowrap;">
-                            {% apply spaceless %}
+                        {% apply spaceless %}
+                            <div class="btn-group" role="group" style="white-space: nowrap;">
                             <a href="{{ filter_href }}" class="btn btn-primary btn-xs" title="" data-original-title="{{ 'whatwedo_table.restore_filter'|trans }}" style="float: none;">
                                 <i class="fa fa-arrow-right"></i>
                             </a>
+                            </div>
                             {% if isCreator %}
-                            <button class="btn btn-danger btn-xs" title="" data-original-title="{{ 'whatwedo_table.delete_filter'|trans }}" style="float: none;">
-                                <i class="fa fa-trash"></i>
-                            </button>
+                                <form class="whatwedo_table__overwrite btn-group inline" method="post" action="{{ path('whatwedo_table_filter_direct_save', {'id' : filter.id, 'token': csrf_token('token') }) }}">
+                                    <input type="hidden" name="filter_route" value="{{ app.request.attributes.get('_route') }}" />
+                                    <input type="hidden" name="filter_route_arguments" value="{{ app.request.attributes.get('_route_params') | json_encode }}" />
+                                    <input type="hidden" name="filter_conditions" value="" />
+                                    <button class="btn btn-success btn-xs" title="" data-original-title="{{ 'whatwedo_table.overwrite_filter'|trans }}" style="float: none;">
+                                        <i class="fa fa-floppy-o"></i>
+                                    </button>
+                                </form>
+                                <form class="whatwedo_table__delete btn-group inline" method="post" action="{{ path('whatwedo_table_filter_direct_delete', {'id' : filter.id, 'token': csrf_token('token') }) }}">
+                                    <button class="btn btn-danger btn-xs" title="" data-original-title="{{ 'whatwedo_table.delete_filter'|trans }}" style="float: none;">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </form>
                             {% endif %}
-                            {% endapply %}
-                        </div>
-                        {% if isCreator %}
-                        </form>
-                        {% endif %}
+                        {% endapply %}
                     </td>
                 </tr>
             {% endfor %}

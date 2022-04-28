@@ -305,6 +305,18 @@ var whatwedoTable = {
             return whatwedoTable.updateFormFilterValues($table);
         });
 
+        $(document).on('submit', '.whatwedo_table__overwrite', function() {
+          if (confirm("Wollen Sie den Filter wirklich überschreiben?")) {
+            $('input[name$=filter_name]').val('filter');
+            return whatwedoTable.updateFormFilterValues($table);
+          }
+          return false;
+        });
+
+        $(document).on('submit', '.whatwedo_table__delete', function() {
+          return confirm("Wollen Sie den Filter wirklich löschen?");
+        });
+
         $('.whatwedo_table__filters_filter').keypress(function(e){
             if (e.which === 13) { // enter key pressed
                 e.preventDefault();
