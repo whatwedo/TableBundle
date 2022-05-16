@@ -147,9 +147,3 @@ and in your template
 ```
 
 That's it!
-
-### More resources
-
-- [Table Configuration](table-configuration.md)
-- [Formatter](formatter.md)
-- [Events](events.md)
