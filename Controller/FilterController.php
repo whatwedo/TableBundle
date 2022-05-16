@@ -123,10 +123,8 @@ class FilterController extends AbstractController
         $filter->setArguments(json_decode($request->request->get('filter_route_arguments'), true));
         $filter->setConditions(json_decode($request->get('filter_conditions'), true));
 
-        /*
         $this->entityManager->persist($filter);
         $this->entityManager->flush();
-        */
 
         return $this->redirect($this->router->generate(
             $filter->getRoute(),

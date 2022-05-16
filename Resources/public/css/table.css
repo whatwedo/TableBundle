@@ -185,3 +185,11 @@
   text-align: right;
 }
 
+.whatwedo_table__overwrite .btn {
+  border-radius: 0;
+}
+
+.whatwedo_table__delete .btn {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
