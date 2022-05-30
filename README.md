@@ -1,5 +1,5 @@
 [![Latest Stable Version](https://poser.pugx.org/whatwedo/table-bundle/v/stable)](https://packagist.org/packages/whatwedo/table-bundle)
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/8d9abdb9-0543-4610-bf06-7ff8a08532f4/mini.png)](https://insight.sensiolabs.com/projects/8d9abdb9-0543-4610-bf06-7ff8a08532f4)
+[![SymfonyInsight](https://insight.symfony.com/projects/b01158ba-345f-4448-aef1-6220e7adbda1/mini.svg)](https://insight.symfony.com/projects/b01158ba-345f-4448-aef1-6220e7adbda1)
 
 # whatwedoTableBundle
 
