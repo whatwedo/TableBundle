@@ -34,7 +34,7 @@
                                 <div class="py-1" role="none">
 
                             <span class="block hover:bg-neutral-50">
-                                {% for batchAction in table.getOption('definition').batchActions | filter(action => is_granted(action.getOption('voter_attribute'), action)) %}
+                                {% for batchAction in table.getOption('definition').batchActions | filter(action => not action.getOption('voter_attribute') or is_granted(action.getOption('voter_attribute'), action)) %}
                                     <a
                                         href="{{ path(batchAction.route, batchAction.routeParameters) }}"
                                         class="text-neutral-700 group flex items-center px-4 py-2 text-sm"
@@ -131,7 +131,7 @@
                             {% if column.option('is_primary') and columnLink|default(false) %}</a>{% endif %}
                     </td>
                 {% endfor %}
-                {% set tableActions = table.actions | filter(action => is_granted(action.getOption('voter_attribute'), row)) %}
+                {% set tableActions = table.actions | filter(action => not action.getOption('voter_attribute') or is_granted(action.getOption('voter_attribute'), row)) %}
                 {% if tableActions|length %}
                     <td class="whatwedo_table:table__actions pr-6 align-top">
 
