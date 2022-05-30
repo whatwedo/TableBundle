@@ -1,149 +1,219 @@
 # Getting Started
 
-This documentation provides a basic view of the possibilities of the whatwedoCrudBundle. 
-The documentation will be extended while developing the bundle.
+This documentation provides a basic view of the possibilities of the whatwedoTableBundle. 
 
 ## Requirements
 
-This bundle has been tested on PHP >= 7.0 and Symfony >= 3.0. 
-We don't guarantee that it works on lower versions.
+This bundle has been tested on PHP >= 8.0 and Symfony >= 6.0.
+We don't guarantee that it works on lower versions.  
+It presumes a fresh symfony 6.x installation following the [symfony docs](https://symfony.com/doc/current/setup.html).
 
 ## Templates
 
-The views of this template are based on [AdminLTE](https://almsaeedstudio.com/) boxes. You can overwrite them at any time. 
+The views of this template are based on [Tailwind CSS](https://tailwindcss.com/) layout.
+You can overwrite them at any time.  
+More info about that can be found in the [Templating](templating.md) section of this documentation.
 
 ## Installation
-
-First, add the bundle to your dependencies and install it.
-
+### Composer
+The bundle depends on bootstrap icons. To get them running smoothly in your project
+add this repository to you composer.json: ([Sadly composer cannot load repositories recursively](https://getcomposer.org/doc/faqs/why-cant-composer-load-repositories-recursively.md))
+```json
+"repositories": [
+    {
+        "type": "package",
+        "package": {
+            "name": "twbs/icons",
+            "version": "1.8.1",
+            "source": {
+                "url": "https://github.com/twbs/icons",
+                "type": "git",
+                "reference": "tags/v1.8.1"
+            }
+        }
+    }
+]
+```
+Then the bundle to your dependencies and install it.
 ```
 composer require whatwedo/table-bundle
 ```
+**TODO: remove after release**
 
-Secondly, enable this bundle and the whatwedoTableBundle in your ```config/bundles.php```. Normaly not needed for Symfony 4.                                                                  
-
+The v1 version is still in developing,
+so you need to add these lines manually to the `composer.json` `require` to get the version constraint right:
+```json
+    ...
+    "whatwedo/core-bundle": "dev-1.0-dev as v1.0.0",
+    "whatwedo/table-bundle": "dev-1.0-dev as v1.0.0",
+    "whatwedo/search-bundle": "dev-3.0-dev as v3.0.0",
+    ...
 ```
-<?php
-return [
-// ...
-    whatwedo\TableBundle\whatwedoTableBundle::class => ['all' => true],
-// ...
-];
+Run `composer update`  
+After successfully installing the bundle, you should see changes in these files:
+- `composer.json`
+- `composer.lock`
+- `package.json`
+- `symfony.lock`
+- `assets/controllers.json`
+- `assets/bundles.php`
+
+### ORM
+The table bundle allows you to save filters on the go.
+These filters save the creator, therefore you need to configure your user class.
+You do this in your `packges/doctrine.yaml` file:
+```yaml
+doctrine:
+    orm:
+        resolve_target_entities:
+            # The class which will be returned with "Symfony\Component\Security\Core\Security::getUser"
+            whatwedo\TableBundle\Entity\UserInterface: App\Entity\User
 ```
-
-thirdly, add our routing file to your ```config/routes.yaml```
-
+### Tailwind and Webpack
+To give you full access over the build and look-and-feel of the application you install these dependencies in your project locally.  
+To get it up and running like whatwedo, install following:
+```shell
+yarn add tailwindcss postcss-loader sass-loader sass autoprefixer --dev
 ```
-whatwedo_table_bundle:
-    resource: "@whatwedoTableBundle/Resources/config/routing.yml"
-    prefix:   /
-```
+#### Tailwind
+Be sure to extends tailwinds default config. You need a `primary` color and a `error` color.
+Furthermore, you need to add our files to the `content` section. 
+The config is located at `tailwind.config.js`.
 
-fourthly, enable the templating component in your config.
-``` 
-framework:
-    templating:
-        engines: ['twig']
-```
-## Use the bundle
+If you don't already have this file, generate it with `npx tailwind init`. Here is what a config could look like:
+````js
+const colors = require('tailwindcss/colors')
 
-In your controller, you have to configure the table:
-
-```
-// src/Agency/UserBundle/Controller/UserController.php
-
-// ...
-    public function listAction()
-    {
-        /** @var TableFactory $tableFactory */
-        $tableFactory = $this->get('whatwedo_table.factory.table');
-    
-        // static table with custom data
-        $tableStatic = $tableFactory->createTable('static', [
-            'data_loader' => function($page, $limit) {
-                $tableData = new SimpleTableData();
-    
-                $tableData->setResults([
-                    (object)[
-                        'zip' => 3011,
-                        'city' => 'Bern',
-                    ],
-                    (object)[
-                        'zip' => 3097,
-                        'city' => 'Liebefeld',
-                    ],
-                    (object)[
-                        'zip' => 3775,
-                        'city' => 'Lenk im Simmental',
-                    ],
-                    (object)[
-                        'zip' => 3753,
-                        'city' => 'Oey-Diemtigen',
-                    ],
-                ]);
-                $tableData->setTotalResults(4);
-    
-                return $tableData;
+module.exports = {
+    content: [
+        './assets/**/*.js',
+        './templates/**/*.{html,html.twig}',
+        './vendor/whatwedo/**/*.{html,html.twig,js}',
+        './var/cache/twig/**/*.php',
+        './src/Definition/*.php',
+    ],
+    theme: {
+        extend: {
+            colors: {
+                primary: {
+                    lightest: '#6EDBFF',
+                    light: '#48C0E8',
+                    DEFAULT: '#007EA8',
+                    dark: '#336C80',
+                    darkest: '#0F4152',
+                },
+                error: colors.red,
             }
+        },
+    },
+    plugins: [],
+}
+
+````
+#### Webpack
+Create a `postcss.config.js` file in your root directory with this content:
+```js
+let tailwindcss = require('tailwindcss');
+
+module.exports = {
+    plugins: [
+        tailwindcss('./tailwind.config.js'),
+        require('autoprefixer'),
+    ]
+}
+```
+Enable sass and postcss support in the `webpack.config.js`, like following:
+```js
+Encore
+    .enableSassLoader()
+    .enablePostCssLoader()
+;
+```
+Your main style, for instance `assets/styles/app.scss`, should be a `sass` file.
+If your file is named `app.css` rename it to `app.scss`. Also change the import in main entrypoint file, for instance `assets/app.js`.
+```js
+import './styles/app.scss';
+```
+
+Import following styles into the `app.scss`:
+```scss
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "~@whatwedo/core-bundle/styles/_tailwind.scss";
+@import "~@whatwedo/table-bundle/styles/_tailwind.scss";
+```
+It is **important** that you include the @whatwedo styles after the tailwind styles.
+
+Run `yarn dev`, it should end with the message `webpack compiled successfully`.
+
+Done! The whatwedoTableBundle is fully installed. Now start using it!
+
+
+
+
+## Use the bundle
+The Bundle uses translations files, currently only german is provided doe. Feel free to open a PR with new translations!
+To use it in german set your applications `default_locale` to `de` like following:
+```yaml
+framework:
+    default_locale: de
+```
+
+### Create a Basic Table loaded from Doctrine
+
+```php
+namespace App\Controller;
+
+use App\Entity\Post;
+use App\Repository\PostRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
+use whatwedo\TableBundle\Factory\TableFactory;
+
+class DefaultController extends AbstractController
+{
+
+    #[Route('/', name: 'index')]
+    public function indexAction(TableFactory $tableFactory, PostRepository $postRepository): Response
+    {
+        $mainTable = $tableFactory->create('main', null, [
+            'dataloader_options' => [
+                DoctrineDataLoader::OPTION_QUERY_BUILDER => $postRepository->createQueryBuilder('post'),
+            ],
         ]);
-    
-        $tableStatic->addColumn('zip', null, [
-            'label' => 'ZIP',
-        ]);
-    
-        $tableStatic->addColumn('city', null, [
-            'label' => 'City',
-        ]);
-    
-        // dynamic table with query builder
-        $tableDynamic = $tableFactory->createDoctrineTable('dynamic', [
-            'query_builder' => $this->getDoctrine()->getRepository('AgencyUserBundle:User')->createQueryBuilder('server'),
-            'title' => 'Dynamische Tabelle',
-            'attr' => [
-                'class' => 'box-primary'
-            ]
-        ]);
-    
-        $tableDynamic->addColumn('name', null, [
-            'label' => 'Name',
-        ]);
-    
-        // Render view
-        return $this->render('whatwedoServerManagerBundle:Dashboard:dashboard.html.twig', [
-            'tableStatic' => $tableStatic,
-            'tableDynamic' => $tableDynamic,
+        $mainTable
+            ->addColumn('title')
+            ->addColumn('description')
+            ->addAction('detail', [
+                'label' => 'Detail',
+                'route' => 'detail',
+                'route_parameters' => fn (Post $post) => ['id' => $post->getId()],
+            ]);
+        return $this->render('index.html.twig', [
+            'mainTable' => $mainTable,
         ]);
     }
-// ...
-```
 
-add JS to your Tempalate, popover is needed for the filter
-
-```html
-
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
-
-<script>
-$(function () {
-    $('[data-toggle="popover"]').popover({
-        // importatant!!
-        sanitize: false,
-    });
-</script>
-
+    #[Route('/{id}', name: 'detail')]
+    public function detailAction(Post $post): Response
+    {
+        return new Response(sprintf('<h1>%s</h1><p>%s</p>', $post->getTitle(), $post->getDescription()));
+    }
+}
 ```
 
 and in your template
 
-```
-{* list.html.twig *}
+```twig
+{% extends 'base.html.twig' %}
 
-{* render the whole table functionality *}
-{{ table.renderTableBox|raw }}
-
-{* only render the table *} 
-
-{{ table.renderTable|raw }}
+{% block body %}
+    {{ whatwedo_table_render(mainTable) }}
+{% endblock %}
 ```
 
 That's it!
