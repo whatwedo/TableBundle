@@ -154,7 +154,6 @@ class Table
         $column = new $type($this, $acronym, $options);
 
         // only DoctrineTable can sort nested properties. Therefore disable them for other tables.
-        // TODO: refactor
         if (! $this->options[self::OPTION_DATA_LOADER] instanceof DoctrineDataLoader
             && $column->getOption(Column::OPTION_SORTABLE)
             && str_contains($column->getOption(Column::OPTION_SORT_EXPRESSION), '.')) {

@@ -87,7 +87,6 @@ class TableRenderExtension extends AbstractExtension
 
     private function getTheme(): string
     {
-        //TODO get this from some where central..
         return '@whatwedoTable/tailwind_2_layout.html.twig';
     }
 }

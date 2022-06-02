@@ -35,9 +35,6 @@ use whatwedo\SearchBundle\Repository\IndexRepository;
 use whatwedo\SearchBundle\whatwedoSearchBundle;
 use whatwedo\TableBundle\Event\ResultRequestEvent;
 
-/**
- * @TODO needs refactoring
- */
 class AjaxFilterSearchListener
 {
     public function __construct(

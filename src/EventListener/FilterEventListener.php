@@ -11,9 +11,6 @@ use whatwedo\TableBundle\Event\DataLoadEvent;
 use whatwedo\TableBundle\Extension\FilterExtension;
 use whatwedo\TableBundle\Table\Table;
 
-/**
- * @TODO needs refactoring
- */
 class FilterEventListener
 {
     /**
@@ -71,7 +68,7 @@ class FilterEventListener
 
                 $filter = $filterExtension->getFilters()[$column];
 
-                // TODO: automatically join (split field on '.')
+                // we could extend here to automatically join (split field on '.')
                 foreach ($filter->getType()->getJoins() as $joinAlias => $join) {
                     if (\in_array($joinAlias, $addedJoins, true)) {
                         continue;

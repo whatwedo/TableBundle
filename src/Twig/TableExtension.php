@@ -55,9 +55,6 @@ class TableExtension extends AbstractExtension
         ];
     }
 
-    /*
-     * @TODO Refacotr
-     */
     public function getFilters(): array
     {
         return [
