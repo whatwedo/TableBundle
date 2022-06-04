@@ -48,7 +48,7 @@ class TableRenderExtension extends AbstractExtension
 
     private function renderTable($context, Table $table)
     {
-        $template = $this->getTemplate($this->getTheme());
+        $template = $this->getTemplate($this->getTheme($context));
         $context['table'] = $table;
         $blockName = 'table';
         $context['blockName'] = $blockName;
@@ -58,7 +58,7 @@ class TableRenderExtension extends AbstractExtension
 
     private function renderTableAction($context, Action $action, $entity)
     {
-        $template = $this->getTemplate($this->getTheme());
+        $template = $this->getTemplate($this->getTheme($context));
         $context['action'] = $action;
         $context['entity'] = $entity;
         $blockName = $action->getOption('block_prefix');
@@ -85,8 +85,12 @@ class TableRenderExtension extends AbstractExtension
         return $this->templating->load($layoutFile);
     }
 
-    private function getTheme(): string
+    private function getTheme(array $context): string
     {
+        if (isset($context['table']) && $context['table'] instanceof Table) {
+            return $context['table']->getOption(Table::OPTION_THEME);
+        }
+
         return '@whatwedoTable/tailwind_2_layout.html.twig';
     }
 }
