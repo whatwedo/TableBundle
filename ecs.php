@@ -6,12 +6,10 @@ use PHP_CodeSniffer\Standards\Squiz\Sniffs\Classes\ValidClassNameSniff;
 use PHP_CodeSniffer\Standards\Squiz\Sniffs\Commenting\ClassCommentSniff;
 use PHP_CodeSniffer\Standards\Squiz\Sniffs\Commenting\FileCommentSniff;
 use PHP_CodeSniffer\Standards\Squiz\Sniffs\Commenting\FunctionCommentThrowTagSniff;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symplify\EasyCodingStandard\ValueObject\Option;
+use Symplify\EasyCodingStandard\Config\ECSConfig;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
-    $parameters = $containerConfigurator->parameters();
-    $parameters->set(Option::PATHS, [
+return static function (ECSConfig $containerConfigurator): void {
+    $containerConfigurator->paths([
         __DIR__ . '/src',
         __DIR__ . '/tests',
     ]);
@@ -19,7 +17,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     // run and fix, one by one
     $containerConfigurator->import('vendor/whatwedo/php-coding-standard/config/whatwedo-symfony.php');
 
-    $containerConfigurator->parameters()->set(Option::SKIP, [
+    $containerConfigurator->skip([
         FileCommentSniff::class,
         ClassCommentSniff::class,
         FunctionCommentThrowTagSniff::class,
@@ -29,5 +27,5 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ],
     ]);
 
-    $parameters->set(Option::PARALLEL, true);
+    $containerConfigurator->parallel();
 };
