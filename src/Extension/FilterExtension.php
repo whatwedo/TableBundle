@@ -132,8 +132,6 @@ class FilterExtension extends AbstractExtension
     }
 
     /**
-     * @param $acronym
-     *
      * @return $this
      */
     public function removeFilter($acronym)
@@ -154,8 +152,6 @@ class FilterExtension extends AbstractExtension
     }
 
     /**
-     * @param $acronym
-     *
      * @return Filter
      */
     public function getFilter($acronym)
@@ -176,10 +172,6 @@ class FilterExtension extends AbstractExtension
     }
 
     /**
-     * @param $acronym
-     * @param $label
-     *M
-     *
      * @return $this
      */
     public function overrideFilterName($acronym, $label)
@@ -190,8 +182,6 @@ class FilterExtension extends AbstractExtension
     }
 
     /**
-     * @param $route
-     *
      * @return \whatwedo\TableBundle\Entity\Filter[]
      */
     public function getSavedFilter(?UserInterface $user, $route)
@@ -200,9 +190,6 @@ class FilterExtension extends AbstractExtension
     }
 
     /**
-     * @param callable $labelCallable
-     * @param string[] $propertyNames
-     *
      * @throws \Doctrine\Common\Annotations\AnnotationException
      * @throws \ReflectionException
      */
@@ -236,11 +223,6 @@ class FilterExtension extends AbstractExtension
     }
 
     /**
-     * @param $id
-     * @param $acronym
-     * @param $operator
-     * @param $value
-     *
      * @return FilterBuilder
      */
     public function predefineFilter($id, $acronym, $operator, $value)
@@ -249,9 +231,6 @@ class FilterExtension extends AbstractExtension
     }
 
     /**
-     * @param $id
-     * @param $filter
-     *
      * @return $this
      *
      * @internal
@@ -264,8 +243,6 @@ class FilterExtension extends AbstractExtension
     }
 
     /**
-     * @param $id
-     *
      * @return array|null
      */
     public function getPredefinedFilter($id)
@@ -332,9 +309,6 @@ class FilterExtension extends AbstractExtension
         return $this->requestStack->getCurrentRequest();
     }
 
-    /**
-     * @param $enabledBundles
-     */
     public static function isEnabled(array $enabledBundles): bool
     {
         return true;
