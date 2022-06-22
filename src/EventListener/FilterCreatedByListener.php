@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Copyright (c) 2022, whatwedo GmbH
  * All rights reserved
@@ -33,7 +35,6 @@ use whatwedo\TableBundle\Entity\Filter;
 
 class FilterCreatedByListener
 {
-
     private bool $saveCreatedBy;
 
     public function __construct(ContainerInterface $parameterBag)
@@ -51,5 +52,4 @@ class FilterCreatedByListener
             unset($eventArgs->getClassMetadata()->associationMappings['createdBy']);
         }
     }
-
 }

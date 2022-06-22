@@ -12,6 +12,8 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class whatwedoTableExtension extends Extension implements PrependExtensionInterface
 {
+    private bool $saveCreatedBy = false;
+
     public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
@@ -19,8 +21,8 @@ class whatwedoTableExtension extends Extension implements PrependExtensionInterf
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
-
-        $container->setParameter('whatwedo_table.filter.save_created_by', $config['filter']['save_created_by']);
+        $this->saveCreatedBy = $config['filter']['save_created_by'];
+        $container->setParameter('whatwedo_table.filter.save_created_by', $this->saveCreatedBy);
     }
 
     public function prepend(ContainerBuilder $container): void
@@ -31,9 +33,16 @@ class whatwedoTableExtension extends Extension implements PrependExtensionInterf
 
         $doctrineConfig = $container->getExtensionConfig('doctrine_migrations');
         $container->prependExtensionConfig('doctrine_migrations', [
-            'migrations_paths' => array_merge(array_pop($doctrineConfig)['migrations_paths'] ?? [], [
-                'whatwedo\TableBundle\Migrations' => '@whatwedoTableBundle/Migrations',
-            ]),
+            'migrations_paths' => array_merge(
+                array_pop($doctrineConfig)['migrations_paths'] ?? [],
+                $this->saveCreatedBy
+                 ? [
+                     'whatwedo\TableBundle\Migrations\WithCreatedBy' => '@whatwedoTableBundle/Migrations/WithCreatedBy',
+                 ]
+                 : [
+                     'whatwedo\TableBundle\Migrations\WithoutCreatedBy' => '@whatwedoTableBundle/Migrations/WithoutCreatedBy',
+                 ]
+            ),
         ]);
     }
 }

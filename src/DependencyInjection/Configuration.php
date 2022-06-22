@@ -16,12 +16,12 @@ class Configuration implements ConfigurationInterface
         $treeBuilder->getRootNode()
             ->addDefaultsIfNotSet()
             ->children()
-                ->arrayNode('filter')
-                    ->addDefaultsIfNotSet()
-                    ->children()
-                        ->booleanNode('save_created_by')->defaultFalse()->end()
-                    ->end()
-                ->end()
+            ->arrayNode('filter')
+            ->addDefaultsIfNotSet()
+            ->children()
+            ->booleanNode('save_created_by')->defaultFalse()->end()
+            ->end()
+            ->end()
             ->end()
         ;
 
