@@ -10,9 +10,8 @@ use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-class whatwedoTableExtension extends Extension implements PrependExtensionInterface
+class whatwedoTableExtension extends Extension
 {
-    private bool $saveCreatedBy = false;
 
     public function load(array $configs, ContainerBuilder $container): void
     {
@@ -21,12 +20,9 @@ class whatwedoTableExtension extends Extension implements PrependExtensionInterf
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
-        $this->saveCreatedBy = $config['filter']['save_created_by'];
-        $container->setParameter('whatwedo_table.filter.save_created_by', $this->saveCreatedBy);
-    }
+        $saveCreatedBy = $config['filter']['save_created_by'];
+        $container->setParameter('whatwedo_table.filter.save_created_by', $saveCreatedBy);
 
-    public function prepend(ContainerBuilder $container): void
-    {
         if (! $container->hasExtension('doctrine_migrations')) {
             return;
         }
@@ -35,13 +31,13 @@ class whatwedoTableExtension extends Extension implements PrependExtensionInterf
         $container->prependExtensionConfig('doctrine_migrations', [
             'migrations_paths' => array_merge(
                 array_pop($doctrineConfig)['migrations_paths'] ?? [],
-                $this->saveCreatedBy
-                 ? [
-                     'whatwedo\TableBundle\Migrations\WithCreatedBy' => '@whatwedoTableBundle/Migrations/WithCreatedBy',
-                 ]
-                 : [
-                     'whatwedo\TableBundle\Migrations\WithoutCreatedBy' => '@whatwedoTableBundle/Migrations/WithoutCreatedBy',
-                 ]
+                $saveCreatedBy
+                    ? [
+                    'whatwedo\TableBundle\Migrations\WithCreatedBy' => '@whatwedoTableBundle/Migrations/WithCreatedBy',
+                ]
+                    : [
+                    'whatwedo\TableBundle\Migrations\WithoutCreatedBy' => '@whatwedoTableBundle/Migrations/WithoutCreatedBy',
+                ]
             ),
         ]);
     }
