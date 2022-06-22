@@ -30,7 +30,7 @@ declare(strict_types=1);
 namespace whatwedo\TableBundle\Manager;
 
 use Doctrine\ORM\QueryBuilder;
-use whatwedo\TableBundle\Provider\QueryBuilderProvider;
+use whatwedo\TableBundle\Provider\QueryBuilderProviderInterface;
 
 class QueryBuilderManager
 {
@@ -41,8 +41,8 @@ class QueryBuilderManager
 
     public function getQueryBuilderForEntity(string $class): ?QueryBuilder
     {
-        /** @var QueryBuilderProvider[] $matchingProviders */
-        $matchingProviders = array_filter(iterator_to_array($this->queryBuilderProviders), function (QueryBuilderProvider $provider) use ($class) {
+        /** @var QueryBuilderProviderInterface[] $matchingProviders */
+        $matchingProviders = array_filter(iterator_to_array($this->queryBuilderProviders), function (QueryBuilderProviderInterface $provider) use ($class) {
             return $provider->getEntity() === $class
                 && $provider->getAllowedSubclasses()
                 && in_array(get_class($provider), $provider->getAllowedSubclasses(), true);

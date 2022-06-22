@@ -352,21 +352,21 @@ class FilterExtension extends AbstractExtension
         $accessor = sprintf('%s.%s', $allAliases[0], $acronymNoSuffix);
 
         $isAttribute = fn ($x) => $x instanceof \ReflectionAttribute;
-        $getClass = function ($x) use ($isAttribute) {
+        $getClass = function (mixed $x) use ($isAttribute) {
             if ($isAttribute($x)) {
                 return $x->getName();
             }
 
             return get_class($x);
         };
-        $getType = function ($x) use ($isAttribute) {
+        $getType = function (mixed $x) use ($isAttribute) {
             if ($isAttribute($x)) {
                 return $x->getArguments()['type'];
             }
 
             return $x->type;
         };
-        $getTargetEntity = function ($x) use ($isAttribute) {
+        $getTargetEntity = function (mixed $x) use ($isAttribute) {
             if ($isAttribute($x)) {
                 return $x->getArguments()['targetEntity'];
             }

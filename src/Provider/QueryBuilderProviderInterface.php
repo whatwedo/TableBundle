@@ -33,7 +33,7 @@ use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
 #[Autoconfigure(tags: ['whatwedo_table.query_builder_provider'])]
-interface QueryBuilderProvider
+interface QueryBuilderProviderInterface
 {
     /**
      * @return QueryBuilder

@@ -67,7 +67,7 @@ class AjaxFilterSearchListener
                 ->setParameter('ids', $ids)
                 ->getQuery()
                 ->getResult();
-            $items = array_map(function ($entity) {
+            $items = array_map(static function (mixed $entity) {
                 $std = new \stdClass();
                 $std->id = $entity->getId();
                 $std->text = $entity->__toString();
