@@ -12,7 +12,6 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class whatwedoTableExtension extends Extension implements PrependExtensionInterface
 {
-
     public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
@@ -29,20 +28,13 @@ class whatwedoTableExtension extends Extension implements PrependExtensionInterf
             return;
         }
 
-        $configuration = new Configuration();
-        $config = $this->processConfiguration($configuration, [[]]);
-
         $doctrineConfig = $container->getExtensionConfig('doctrine_migrations');
         $container->prependExtensionConfig('doctrine_migrations', [
             'migrations_paths' => array_merge(
                 array_pop($doctrineConfig)['migrations_paths'] ?? [],
-                $config['filter']['save_created_by']
-                 ? [
-                     'whatwedo\TableBundle\Migrations\WithCreatedBy' => '@whatwedoTableBundle/Migrations/WithCreatedBy',
-                 ]
-                 : [
-                     'whatwedo\TableBundle\Migrations\WithoutCreatedBy' => '@whatwedoTableBundle/Migrations/WithoutCreatedBy',
-                 ]
+                [
+                    'whatwedo\TableBundle\Migrations' => '@whatwedoTableBundle/Migrations',
+                ]
             ),
         ]);
     }
