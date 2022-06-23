@@ -52,11 +52,6 @@ class FilterRepository extends ServiceEntityRepository
         $this->parameterBag = $parameterBag;
     }
 
-    private function isCreatedByEnabled(): bool
-    {
-        return $this->parameterBag->get('whatwedo_table.filter.save_created_by');
-    }
-
     public function getMineQB(string $alias, ?UserInterface $user = null): QueryBuilder
     {
         $qb = $this->createQueryBuilder($alias);
@@ -100,5 +95,10 @@ class FilterRepository extends ServiceEntityRepository
         return $qb
             ->getQuery()
             ->getResult();
+    }
+
+    private function isCreatedByEnabled(): bool
+    {
+        return $this->parameterBag->get('whatwedo_table.filter.save_created_by');
     }
 }
