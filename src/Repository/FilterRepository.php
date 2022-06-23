@@ -32,6 +32,7 @@ namespace whatwedo\TableBundle\Repository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use whatwedo\TableBundle\Entity\Filter;
 use whatwedo\TableBundle\Entity\UserInterface;
 
@@ -43,22 +44,25 @@ use whatwedo\TableBundle\Entity\UserInterface;
  */
 class FilterRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    protected ParameterBagInterface $parameterBag;
+
+    public function __construct(ManagerRegistry $registry, ParameterBagInterface $parameterBag)
     {
         parent::__construct($registry, Filter::class);
+        $this->parameterBag = $parameterBag;
     }
 
     public function getMineQB(string $alias, ?UserInterface $user = null): QueryBuilder
     {
-        $qb = $this
-            ->createQueryBuilder($alias)
-            ->where($alias . '.createdBy is null')
-        ;
-        if ($user) {
-            $qb
-                ->orWhere($alias . '.createdBy = :user')
-                ->setParameter('user', $user)
-            ;
+        $qb = $this->createQueryBuilder($alias);
+        if ($this->parameterBag->get('whatwedo_table.filter.save_created_by')) {
+            $qb->where($alias . '.createdBy is null');
+            if ($user) {
+                $qb
+                    ->orWhere($alias . '.createdBy = :user')
+                    ->setParameter('user', $user)
+                ;
+            }
         }
 
         return $qb;

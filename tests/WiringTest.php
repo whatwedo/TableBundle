@@ -6,6 +6,7 @@ namespace whatwedo\TableBundle\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use whatwedo\TableBundle\Factory\TableFactory;
+use whatwedo\TableBundle\Repository\FilterRepository;
 
 class WiringTest extends KernelTestCase
 {
@@ -13,6 +14,7 @@ class WiringTest extends KernelTestCase
     {
         foreach ([
             TableFactory::class,
+            FilterRepository::class,
         ] as $serviceClass) {
             $this->assertInstanceOf(
                 $serviceClass,
