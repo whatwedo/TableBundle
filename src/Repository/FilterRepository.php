@@ -52,10 +52,15 @@ class FilterRepository extends ServiceEntityRepository
         $this->parameterBag = $parameterBag;
     }
 
+    private function isCreatedByEnabled(): bool
+    {
+        return $this->parameterBag->get('whatwedo_table.filter.save_created_by');
+    }
+
     public function getMineQB(string $alias, ?UserInterface $user = null): QueryBuilder
     {
         $qb = $this->createQueryBuilder($alias);
-        if ($this->parameterBag->get('whatwedo_table.filter.save_created_by')) {
+        if ($this->isCreatedByEnabled()) {
             $qb->where($alias . '.createdBy is null');
             if ($user) {
                 $qb
@@ -79,7 +84,7 @@ class FilterRepository extends ServiceEntityRepository
             ->orderBy('f.name')
             ->setParameter('path', $path);
 
-        if ($user) {
+        if ($user && $this->isCreatedByEnabled()) {
             $qb
                 ->leftJoin('f.createdBy', 'wwd_user')
                 ->andWhere(
@@ -88,7 +93,7 @@ class FilterRepository extends ServiceEntityRepository
                         $qb->expr()->eq('wwd_user.id', ':user_id')
                     )
                 )->setParameter('user_id', $user->getId());
-        } else {
+        } elseif ($this->isCreatedByEnabled()) {
             $qb->andWhere($qb->expr()->isNull('f.createdBy'));
         }
 
