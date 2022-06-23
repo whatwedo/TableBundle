@@ -11,6 +11,20 @@ class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        return new TreeBuilder('whatwedo_table');
+        $treeBuilder = new TreeBuilder('whatwedo_table');
+
+        $treeBuilder->getRootNode()
+            ->addDefaultsIfNotSet()
+            ->children()
+            ->arrayNode('filter')
+            ->addDefaultsIfNotSet()
+            ->children()
+            ->booleanNode('save_created_by')->defaultFalse()->end()
+            ->end()
+            ->end()
+            ->end()
+        ;
+
+        return $treeBuilder;
     }
 }

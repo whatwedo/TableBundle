@@ -15,10 +15,11 @@ class whatwedoTableExtension extends Extension implements PrependExtensionInterf
     public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
-        $this->processConfiguration($configuration, $configs);
+        $config = $this->processConfiguration($configuration, $configs);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
+        $container->setParameter('whatwedo_table.filter.save_created_by', $config['filter']['save_created_by']);
     }
 
     public function prepend(ContainerBuilder $container): void
@@ -29,9 +30,12 @@ class whatwedoTableExtension extends Extension implements PrependExtensionInterf
 
         $doctrineConfig = $container->getExtensionConfig('doctrine_migrations');
         $container->prependExtensionConfig('doctrine_migrations', [
-            'migrations_paths' => array_merge(array_pop($doctrineConfig)['migrations_paths'] ?? [], [
-                'whatwedo\TableBundle\Migrations' => '@whatwedoTableBundle/Migrations',
-            ]),
+            'migrations_paths' => array_merge(
+                array_pop($doctrineConfig)['migrations_paths'] ?? [],
+                [
+                    'whatwedo\TableBundle\Migrations' => '@whatwedoTableBundle/Migrations',
+                ]
+            ),
         ]);
     }
 }
