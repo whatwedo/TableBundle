@@ -1,4 +1,6 @@
 whatwedo_table:
+    all: Alle
+    page: Seite
     or: Oder
     and: und
     saved_filters: Gespeicherte Filter

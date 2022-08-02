@@ -9,13 +9,35 @@
     </div>
     <div class="mt-4 flex sm:mt-0 sm:ml-4">
         {% if view is defined and view.definition.hasCapability(constant('whatwedo\\CrudBundle\\Enum\\Page::EXPORT')) %}
-        <a
-            href="{{ path(view.definition.getRoute(constant('whatwedo\\CrudBundle\\Enum\\Page::EXPORT') )) }}"
-            class="whatwedo_table:header__button whatwedo_table:header__button--download whatwedo_table-button"
+            <div
+                {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}
+                class="relative inline-block">
+                <button
+                    {{ stimulus_action({'whatwedo/core-bundle/dropdown':['toggle', {'click@window': 'hide'}]}) }}
+                    class="whatwedo_table:header__button whatwedo_table:header__button--download whatwedo_table-button" tabindex="-1"
+                >
+                    {{ bootstrap_icon('download', { class: 'w-4 h-4' }) }}
+                </button>
+                <div
+                    {{ stimulus_target('whatwedo/core-bundle/dropdown', 'menu') }}
+                    class="p-2 z-50 hidden transition duration-300 transform w-72 origin-top-right absolute right-0 -bottom-3 transform translate-y-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5"
+                    data-transition-enter-from="opacity-0 scale-95"
+                    data-transition-enter-to="opacity-100 scale-100"
+                    data-transition-leave-from="opacity-100 scale-100"
+                    data-transition-leave-to="opacity-0 scale-95"
+                    tabindex="-1"
+                    >
+                    {% for label,queryParameters in {'whatwedo_table.page' : app.request.query.all, 'whatwedo_table.all' : {'all':1}|merge(app.request.query.all)} %}
+                        <a
+                            href="{{ path(view.definition.getRoute(constant('whatwedo\\CrudBundle\\Enum\\Page::EXPORT')), queryParameters) }}"
+                            class="whatwedo_table:header__button whatwedo_table:header__button--download whatwedo_table-button"
 
-        >
-            {{ bootstrap_icon('download', { class: 'w-4 h-4' }) }}
-        </a>
+                        >
+                            {{ label | trans }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
         {% endif %}
 
         {% if table.filterExtension and table.filterExtension.filters|length > 0 %}
