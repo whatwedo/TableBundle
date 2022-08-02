@@ -174,17 +174,17 @@ class FilterGuesser
         return get_class($x);
     }
 
-    private function getType(mixed $x, \ReflectionProperty $property): ?string
+    private function getType(mixed $x, \ReflectionProperty $property): null|string|int
     {
         return $this->getXYZ($x, $property, 'type');
     }
 
-    private function getTargetEntity(mixed $x, \ReflectionProperty $property): ?string
+    private function getTargetEntity(mixed $x, \ReflectionProperty $property): null|string|int
     {
         return $this->getXYZ($x, $property, 'targetEntity');
     }
 
-    private function getXYZ(mixed $x, \ReflectionProperty $property, string $what): ?string
+    private function getXYZ(mixed $x, \ReflectionProperty $property, string $what): null|string|int
     {
         if ($this->isAttribute($x)) {
             $arguments = $x->getArguments();
@@ -200,7 +200,6 @@ class FilterGuesser
         }
 
         $fieldMappings = $this->getFieldMapping($property);
-        dump($fieldMappings);
         if (isset($fieldMappings[$what])) {
             return $fieldMappings[$what];
         }
