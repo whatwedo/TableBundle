@@ -90,7 +90,14 @@ export default class extends Controller {
             body: formData
         }) .then(async response => {
             if (response.status == 200) {
-               window.location.href = response.url;
+                let data = await response.json();
+                if (data.reload) {
+                    window.location.reload();
+                }
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                }
+                console.warn('Batch Action Controller should return json data with reload or redirect information');
             }
         })
     }
