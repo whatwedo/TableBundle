@@ -97,7 +97,9 @@ export default class extends Controller {
                 if (data.redirect) {
                     window.location.href = data.redirect;
                 }
-                console.warn('Batch Action Controller should return json data with reload or redirect information');
+                if (!data.reload && !data.redirect) {
+                    console.warn('Batch Action Controller should return json data with reload or redirect information');
+                }
             }
         })
     }
