@@ -1,4 +1,6 @@
+.idea
+composer.lock
 vendor/
+node_modules/
 var/
-/composer.lock
 /.phpunit.result.cache
