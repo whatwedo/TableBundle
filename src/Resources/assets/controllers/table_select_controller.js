@@ -1,4 +1,5 @@
 import {Controller} from '@hotwired/stimulus';
+import 'regenerator-runtime/runtime'
 
 export default class extends Controller {
 
