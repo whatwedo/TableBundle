@@ -90,9 +90,13 @@ export default class extends Controller {
             body: formData
         }) .then(async response => {
             if (response.status == 200) {
-               window.location.href = response.url;
+                response.json().then(data => {
+                    window.location.href = data.url;
+                });
+            } else {
+                alert('error. please try again');
             }
-        })
+        });
     }
 
     getIds() {
