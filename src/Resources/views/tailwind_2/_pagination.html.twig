@@ -82,6 +82,9 @@
                         '{offsetLength}': pagination.offsetResults + table.rows|length,
                         '{totalResults}': pagination.totalResults
                     }) }}
+                    <span class="text-neutral-500 hidden" {{ stimulus_target('@whatwedo/table-bundle/table_select', 'selectedCount') }}>
+
+                    </span>
                 </p>
 
                 <div

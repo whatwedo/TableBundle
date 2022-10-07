@@ -1,3 +1,49 @@
+{% macro confirmationLink(action, attr, formAction = null) %}
+    <div
+        {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}
+    >
+        <a
+            class="text-neutral-700 group flex items-center px-4 py-2 text-sm"
+            tabindex="-1"
+            {{ stimulus_action({'whatwedo/core-bundle/dropdown': ['toggle', {'click@window': 'hide'}]}) }}
+        >
+            {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
+            {{ action.label|trans }}
+        </a>
+        <div
+            {{ stimulus_target('whatwedo/core-bundle/dropdown', 'menu') }}
+            class="z-50 hidden transition duration-300 transform w-72 origin-top-right absolute right-0 -bottom-3 transform translate-y-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5"
+            data-transition-enter-from="opacity-0 scale-95"
+            data-transition-enter-to="opacity-100 scale-100"
+            data-transition-leave-from="opacity-100 scale-100"
+            data-transition-leave-to="opacity-0 scale-95"
+            tabindex="-1"
+        >
+            <form
+                class="flex items-center justify-between px-4 py-3"
+                method="get"
+                {% if formAction %}{{ formAction | raw }}{% else %}action="{{ path(action.route, action.routeParameters) }}"{% endif %}
+            >
+                <p class="text-sm text-gray-500 mr-4">
+                    {{ action.confirmation('label') | trans }}
+                </p>
+
+                <div>
+                    <button class="ml-3 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white-700 bg-success hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                        {{ action.confirmation('yes') | trans }}
+                    </button>
+                    <button
+                        {{ stimulus_action('whatwedo/core-bundle/dropdown', 'close') }}
+                        class="ml-3 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                        type="button"
+                    >
+                        {{ action.confirmation('no') | trans }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endmacro %}
 <div class="whatwedo_table:table__wrapper align-middle inline-block min-w-full border-b border-neutral-200">
     <table
         class="min-w-full" {{ stimulus_target('whatwedo/table-bundle/table', 'table') }} {{ stimulus_target('@whatwedo/table-bundle/table_select', 'table') }}>
@@ -33,17 +79,21 @@
                             >
                                 <div class="py-1" role="none">
 
-                            <span class="block hover:bg-neutral-50">
+                                <span class="block hover:bg-neutral-50">
                                 {% for batchAction in table.getOption('definition').batchActions | filter(action => not action.getOption('voter_attribute') or is_granted(action.getOption('voter_attribute'), action)) %}
-                                    <a
-                                        href="{{ path(batchAction.route, batchAction.routeParameters) }}"
-                                        class="text-neutral-700 group flex items-center px-4 py-2 text-sm"
-                                        tabindex="-1"
-                                                 {{ stimulus_action('@whatwedo/table-bundle/table_select', 'doAction') }}
-                                             >
-        {{ bootstrap_icon(batchAction.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
-                                        {{ batchAction.label|trans }}
-    </a>
+                                    {% if batchAction.hasConfirmation() %}
+                                        {{ _self.confirmationLink(batchAction, {}, stimulus_action('@whatwedo/table-bundle/table_select', 'doAction') ~ ' href="' ~ path(batchAction.route, batchAction.routeParameters) ~ '"') }}
+                                    {% else %}
+                                        <a
+                                            href="{{ path(batchAction.route, batchAction.routeParameters) }}"
+                                            class="text-neutral-700 group flex items-center px-4 py-2 text-sm"
+                                            tabindex="-1"
+                                                                             {{ stimulus_action('@whatwedo/table-bundle/table_select', 'doAction') }}
+                                                                         >
+                                                                        {{ bootstrap_icon(batchAction.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
+                                            {{ batchAction.label|trans }}
+                                                                    </a>
+                                    {% endif %}
                                 {% endfor %}
                                         </span>
 

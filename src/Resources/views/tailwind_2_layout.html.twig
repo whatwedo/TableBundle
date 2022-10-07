@@ -1,5 +1,3 @@
-{% import "@whatwedoTable/_macros.html.twig" as macros %}
-
 {% block table %}
     <div class="whatwedo_table:wrapper bg-white" {{ stimulus_controller('whatwedo/table-bundle/filter') }}>
         {% block table_header %}
@@ -10,7 +8,13 @@
             {% include "@whatwedoTable/tailwind_2/_filter.html.twig" %}
         {% endblock %}
 
-        <div {{ stimulus_controller('@whatwedo/table-bundle/table_select') }}>
+        <div {{ stimulus_controller(
+            '@whatwedo/table-bundle/table_select', {
+                'footSelectedTemplate': '<br>' ~ ('whatwedo_table.foot.selected'|trans({
+                    '{count}': '{count}',
+                }))
+            }) }}
+        >
             <turbo-frame id="whatwedo_table_{{ table.identifier }}" data-turbo="true" target="_top" {{ stimulus_action('@whatwedo/table-bundle/table_select', 'tableTargetChanged', 'turbo:frame-load') }}>
                 {% block table_table %}
                     {% include "@whatwedoTable/tailwind_2/_table.html.twig" %}
