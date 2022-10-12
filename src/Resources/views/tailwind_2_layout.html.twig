@@ -1,5 +1,5 @@
 {% block table %}
-    <div class="whatwedo_table:wrapper bg-white shadow sm:rounded-lg" {{ stimulus_controller('whatwedo/table-bundle/filter') }}>
+    <div class="whatwedo_table:wrapper bg-white shadow" {{ stimulus_controller('whatwedo/table-bundle/filter') }}>
         {% block table_header %}
             {% include "@whatwedoTable/tailwind_2/_header.html.twig" %}
         {% endblock %}
