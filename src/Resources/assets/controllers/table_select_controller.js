@@ -1,4 +1,5 @@
 import {Controller} from '@hotwired/stimulus';
+import 'regenerator-runtime/runtime'
 
 export default class extends Controller {
 
@@ -100,6 +101,7 @@ export default class extends Controller {
         this.selectorTargets.forEach(selector => {
             selector.checked = ids.includes(parseInt(selector.dataset.entityId));
         });
+
     }
 
     async doAction(event) {

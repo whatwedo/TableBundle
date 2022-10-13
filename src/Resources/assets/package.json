@@ -30,6 +30,7 @@
         "@hotwired/stimulus": "^3.0.0"
     },
     "dependencies": {
+        "regenerator-runtime": "^0.13.9",
         "stickythead": "^1.0.4"
     }
 }

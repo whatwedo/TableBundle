@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@hotwired/stimulus": "^3.1.0",
+    "core-js": "^3.24.1",
+    "stickythead": "^1.0.4",
+    "stimulus-use": "^0.50.0"
+  }
+}
