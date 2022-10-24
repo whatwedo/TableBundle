@@ -42,7 +42,6 @@ use whatwedo\TableBundle\Entity\Filter;
  */
 class FilterRepository extends ServiceEntityRepository
 {
-
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Filter::class);
@@ -69,5 +68,4 @@ class FilterRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
-
 }

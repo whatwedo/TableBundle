@@ -9,7 +9,6 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20220622145409 extends AbstractMigration
 {
-
     public function getDescription(): string
     {
         return 'creates "whatwedo_table_filter" table';
