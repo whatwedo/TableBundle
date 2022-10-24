@@ -6,13 +6,12 @@ namespace whatwedo\TableBundle\Tests\App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use whatwedo\TableBundle\Entity\UserInterface;
 
 /**
  * @ORM\Table(name="person")
  * @ORM\Entity(repositoryClass="whatwedo\TableBundle\Tests\App\Repository\PersonRepository")
  */
-class Person implements UserInterface
+class Person
 {
     /**
      * @ORM\Column(type="integer")

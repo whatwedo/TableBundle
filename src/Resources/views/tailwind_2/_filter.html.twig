@@ -161,9 +161,8 @@
                                                 tabindex="-1"
                                             >
                                                 <div class="py-1" role="none">
-                                                    {% for filter in table.filterExtension.savedFilter(app.user, app.request.attributes.get('_route')) %}
+                                                    {% for filter in table.filterExtension.savedFilter(app.request.attributes.get('_route')) %}
                                                         {% set filter_href = path(filter.route, filter.arguments | merge(filter.conditions)) %}
-                                                        {% set isCreator = filter.isCreatedBy(app.user) %}
                                                         <a href="{{ filter_href }}" class="text-neutral-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">{{ filter.name }}</a>
                                                     {% endfor %}
                                                 </div>
