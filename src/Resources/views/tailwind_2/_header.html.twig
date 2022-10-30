@@ -15,7 +15,7 @@
                     {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}
                     class="relative inline-block">
                     <button
-                        {{ stimulus_action({'whatwedo/core-bundle/dropdown':['toggle', {'click@window': 'hide'}]}) }}
+                        {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') | stimulus_action('whatwedo/core-bundle/dropdown', 'click@window', 'hide') }}
                         class="whatwedo_table:header__button whatwedo_table:header__button--download whatwedo_table-button" tabindex="-1"
                     >
                         {{ bootstrap_icon('download', { class: 'w-4 h-4' }) }}
