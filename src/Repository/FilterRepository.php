@@ -32,9 +32,7 @@ namespace whatwedo\TableBundle\Repository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use whatwedo\TableBundle\Entity\Filter;
-use whatwedo\TableBundle\Entity\UserInterface;
 
 /**
  * @method Filter|null find($id, $lockMode = null, $lockVersion = null)
@@ -44,34 +42,20 @@ use whatwedo\TableBundle\Entity\UserInterface;
  */
 class FilterRepository extends ServiceEntityRepository
 {
-    protected ParameterBagInterface $parameterBag;
-
-    public function __construct(ManagerRegistry $registry, ParameterBagInterface $parameterBag)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Filter::class);
-        $this->parameterBag = $parameterBag;
     }
 
-    public function getMineQB(string $alias, ?UserInterface $user = null): QueryBuilder
+    public function getMineQB(string $alias): QueryBuilder
     {
-        $qb = $this->createQueryBuilder($alias);
-        if ($this->isCreatedByEnabled()) {
-            $qb->where($alias . '.createdBy is null');
-            if ($user) {
-                $qb
-                    ->orWhere($alias . '.createdBy = :user')
-                    ->setParameter('user', $user)
-                ;
-            }
-        }
-
-        return $qb;
+        return $this->createQueryBuilder($alias);
     }
 
     /**
      * @return Filter[]
      */
-    public function findSaved(string $path, ?UserInterface $user): array
+    public function findSaved(string $path): array
     {
         $qb = $this->createQueryBuilder('f');
 
@@ -79,26 +63,9 @@ class FilterRepository extends ServiceEntityRepository
             ->orderBy('f.name')
             ->setParameter('path', $path);
 
-        if ($user && $this->isCreatedByEnabled()) {
-            $qb
-                ->leftJoin('f.createdBy', 'wwd_user')
-                ->andWhere(
-                    $qb->expr()->orX(
-                        $qb->expr()->isNull('f.createdBy'),
-                        $qb->expr()->eq('wwd_user.id', ':user_id')
-                    )
-                )->setParameter('user_id', $user->getId());
-        } elseif ($this->isCreatedByEnabled()) {
-            $qb->andWhere($qb->expr()->isNull('f.createdBy'));
-        }
-
         return $qb
             ->getQuery()
-            ->getResult();
-    }
-
-    private function isCreatedByEnabled(): bool
-    {
-        return $this->parameterBag->get('whatwedo_table.filter.save_created_by');
+            ->getResult()
+        ;
     }
 }

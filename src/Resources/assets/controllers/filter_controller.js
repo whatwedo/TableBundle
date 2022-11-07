@@ -1,35 +1,9 @@
 import { Controller } from '@hotwired/stimulus';
-import { useTransition } from 'stimulus-use';
 
 export default class extends Controller {
-    static targets = ['filters', 'filterGroupList', 'singleFilterRemove', 'filterGroupFilterHeaderFirst', 'filterGroupFilterHeaderOthers', 'dropdown']
+    static targets = ['filters', 'filterspanel', 'backdrop', 'filterGroupList', 'singleFilterRemove', 'filterGroupFilterHeaderFirst', 'filterGroupFilterHeaderOthers', 'dropdown']
 
     connect() {
-        /*
-        useTransition(this, {
-            element: this.filtersTarget,
-            enterActive: 'ease-in-out duration-500',
-            enterFrom: 'opacity-0',
-            enterTo: 'opacity-100',
-            leaveActive: 'ease-in-out duration-500',
-            leaveFrom: 'opacity-100',
-            leaveTo: 'opacity-0',
-            hiddenClass: '',
-            transitioned: false,
-        });
-
-        useTransition(this, {
-            element: this.filtersTarget,
-            enterActive: 'transform transition ease-in-out duration-500 sm:duration-700',
-            enterFrom: 'translate-x-full',
-            enterTo: 'translate-x-0',
-            leaveActive: 'transform transition ease-in-out duration-500 sm:duration-700',
-            leaveFrom: 'translate-x-0',
-            leaveTo: 'translate-x-full',
-            transitioned: false,
-        });
-        */
-
         this.updateGui();
     }
 
@@ -55,26 +29,29 @@ export default class extends Controller {
         const template = choosenOption.getAttribute('data-value-template')
         const doc = parser.parseFromString(template.replace(/{name}/g, valueField.getAttribute('name')), 'text/html');
         valueField.parentNode.replaceChild(doc.body, valueField);
-
     }
 
-    /*
-     * open filter panel
-     */
     open() {
-        this.filtersTarget.classList.remove('hidden');
+        this.filterspanelTarget.classList.add('translate-x-0');
+        this.filterspanelTarget.classList.remove('translate-x-full');
+
+        this.backdropTarget.classList.add('opacity-100');
+        this.backdropTarget.classList.remove('opacity-0');
+        this.backdropTarget.classList.remove('hidden');
     }
 
-    /*
-     * close filter panel
-     */
     close() {
-        this.filtersTarget.classList.add('hidden');
+        this.filterspanelTarget.classList.add('translate-x-full');
+        this.filterspanelTarget.classList.remove('translate-x-0');
+
+        this.backdropTarget.classList.add('opacity-0');
+        this.backdropTarget.classList.remove('opacity-100');
+
+        setTimeout(() => {
+            this.backdropTarget.classList.add('hidden');
+        }, 500);
     }
 
-    /*
-     * clone AND filter and append it at the end
-     */
     appendAnd(event) {
         // clone and reset all values
         let node = event.target.closest('[data-whatwedo--table-bundle--filter-target="singleFilter"]').cloneNode(true);
@@ -110,9 +87,6 @@ export default class extends Controller {
         this.updateGui();
     }
 
-    /*
-     * remove AND-filter
-     */
     removeAnd(event) {
         let filter = event.target.closest('[data-whatwedo--table-bundle--filter-target="singleFilter"]');
         let filterGroup = filter.closest('[data-whatwedo--table-bundle--filter-target="filterGroup"]');
@@ -127,9 +101,6 @@ export default class extends Controller {
         this.updateGui();
     }
 
-    /*
-     * clone AND filter and append it at the end
-     */
     appendOr(event) {
         // clone, only keep one filter and reset all values
         let node = this.filterGroupListTarget.querySelector('[data-whatwedo--table-bundle--filter-target="filterGroup"]').cloneNode(true);

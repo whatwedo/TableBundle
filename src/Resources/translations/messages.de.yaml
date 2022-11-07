@@ -27,6 +27,7 @@ whatwedo_table:
         actual: Aktuelle Ergebnisse (Seite %current_page%)
     foot:
         result: Resultat {offsetResults} bis {offsetLength} von {totalResults}
+        selected: "{count} ausgewählt"
     pagination:
         first_page: erste Seite
         previous_page: vorherige Seite

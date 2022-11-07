@@ -1,10 +1,17 @@
 import {Controller} from '@hotwired/stimulus';
+import 'regenerator-runtime/runtime'
 
 export default class extends Controller {
 
-    static targets = ["ids", "selector", "checkAll", "unCheckAll"]
+    static targets = ["ids", "selector", "checkAll", "unCheckAll", "selectedCount"]
+    static values = {
+        footSelectedTemplate: String
+    }
 
     connect() {
+        if (!this.hasIdsTarget) {
+            return;
+        }
         this.idsTarget.value = '[]';
         this.selectorTargets.forEach(selector => {
             selector.checked = false;
@@ -12,19 +19,30 @@ export default class extends Controller {
     }
 
     selectId(event) {
-        if (event.target.dataset.entityId) {
-            this.addId(parseInt(event.target.dataset.entityId))
-        } else {
-            this.removeId(parseInt(event.target.dataset.entityId))
+        if (!event.target.dataset.entityId) {
+            return;
         }
+        const eventId = parseInt(event.target.dataset.entityId);
+        const ids = this.getIds();
+
+        if (ids.includes(eventId)) {
+            this.removeId(eventId);
+            return;
+        }
+
+        this.addId(eventId);
     }
 
     tableTargetChanged() {
         this.syncSelectedIds();
+        this.updateSelectedCount();
     }
 
     checkAll() {
         this.selectorTargets.forEach(selector => {
+            if (selector.checked) {
+                return;
+            }
             this.addId(parseInt(selector.dataset.entityId));
             selector.checked = true;
         });
@@ -50,6 +68,7 @@ export default class extends Controller {
         let ids = this.getIds();
         ids.push(id);
         this.idsTarget.value = JSON.stringify(ids);
+        this.updateSelectedCount();
     }
 
     removeId(id) {
@@ -58,17 +77,29 @@ export default class extends Controller {
             return value != id;
         })
         this.idsTarget.value = JSON.stringify(ids);
+        this.updateSelectedCount();
+        if (ids.length == 0) {
+            this.checkAllTarget.classList.remove('hidden');
+            this.unCheckAllTarget.classList.add('hidden');
+        }
     }
 
+    updateSelectedCount() {
+        const count = this.getIds().length;
+
+        if (count === 0) {
+            this.selectedCountTarget.classList.add('hidden');
+            return;
+        }
+
+        this.selectedCountTarget.classList.remove('hidden');
+        this.selectedCountTarget.innerHTML = this.footSelectedTemplateValue.replace('{count}', count);
+    }
 
     syncSelectedIds() {
         let ids = this.getIds();
         this.selectorTargets.forEach(selector => {
-            if (ids.includes(parseInt(selector.dataset.tableSelectIdParam))) {
-                selector.checked = true;
-            } else {
-                selector.checked = false;
-            }
+            selector.checked = ids.includes(parseInt(selector.dataset.entityId));
         });
 
     }
@@ -85,7 +116,7 @@ export default class extends Controller {
         ids.forEach(id => {
             formData.append('ids[]', id);
         });
-        await fetch(event.target.href, {
+        await fetch(event.target.getAttribute('href'), {
             method: 'POST',
             body: formData
         }) .then(async response => {
@@ -97,11 +128,16 @@ export default class extends Controller {
                 if (data.redirect) {
                     window.location.href = data.redirect;
                 }
+                if (data.url) {
+                    window.location.href = data.url;
+                }
                 if (!data.reload && !data.redirect) {
                     console.warn('Batch Action Controller should return json data with reload or redirect information');
                 }
+            } else {
+                alert('error. please try again');
             }
-        })
+        });
     }
 
     getIds() {

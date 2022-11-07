@@ -1,7 +1,5 @@
-{% import "@whatwedoTable/_macros.html.twig" as macros %}
-
 {% block table %}
-    <div class="whatwedo_table:wrapper bg-white" {{ stimulus_controller('whatwedo/table-bundle/filter') }}>
+    <div class="whatwedo_table:wrapper bg-white shadow" {{ stimulus_controller('whatwedo/table-bundle/filter') }}>
         {% block table_header %}
             {% include "@whatwedoTable/tailwind_2/_header.html.twig" %}
         {% endblock %}
@@ -10,7 +8,13 @@
             {% include "@whatwedoTable/tailwind_2/_filter.html.twig" %}
         {% endblock %}
 
-        <div {{ stimulus_controller('@whatwedo/table-bundle/table_select') }}>
+        <div {{ stimulus_controller(
+            '@whatwedo/table-bundle/table_select', {
+                'footSelectedTemplate': '<br>' ~ ('whatwedo_table.foot.selected'|trans({
+                    '{count}': '{count}',
+                }))
+            }) }}
+        >
             <turbo-frame id="whatwedo_table_{{ table.identifier }}" data-turbo="true" target="_top" {{ stimulus_action('@whatwedo/table-bundle/table_select', 'tableTargetChanged', 'turbo:frame-load') }}>
                 {% block table_table %}
                     {% include "@whatwedoTable/tailwind_2/_table.html.twig" %}
@@ -38,7 +42,7 @@
         >
             <button
                 {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
-                {{ stimulus_action({'whatwedo/core-bundle/dropdown': ['toggle', {'click@window': 'hide'}]}) }}
+                {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') | stimulus_action('whatwedo/core-bundle/dropdown', 'click@window', 'hide') }}
                 class="text-neutral-700 font-bold group flex items-center px-4 py-2 text-sm" tabindex="-1"
             >
                 {% if action.option('icon') %}
@@ -100,7 +104,7 @@
         >
             <button
                 {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
-                {{ stimulus_action({'whatwedo/core-bundle/dropdown': ['toggle', {'click@window': 'hide'}]}) }}
+                {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') | stimulus_action('whatwedo/core-bundle/dropdown', 'click@window', 'hide') }}
                 class="text-neutral-700 font-bold group flex items-center px-4 py-2 text-sm" tabindex="-1"
             >
                 {% if action.option('icon') %}

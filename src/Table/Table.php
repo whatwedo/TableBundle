@@ -121,6 +121,10 @@ class Table
         $this->options[$key] = $value;
         $this->options = $resolver->resolve($this->options);
 
+        if ($key === self::OPTION_DEFAULT_LIMIT && $this->hasExtension(PaginationExtension::class)) {
+            $this->getPaginationExtension()->setLimit($value);
+        }
+
         return $this;
     }
 

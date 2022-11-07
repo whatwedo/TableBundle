@@ -82,127 +82,129 @@
 {% endmacro %}
 
 {% if table.filterExtension and table.filterExtension.filters|length > 0 %}
-    <div
-        class="whatwedo_table:filter__wrapper hidden fixed inset-0 overflow-hidden z-10"
-        {{ stimulus_target('whatwedo/table-bundle/filter', 'filters') }}
-    >
+    <div class="relative z-10 pointrt">
+        <div class="fixed inset-0 opacity-0 ease-in-out delay-100 duration-400 transition-opacity hidden bg-neutral-500/[.6]" {{ stimulus_target('whatwedo/table-bundle/filter', 'backdrop') }}></div>
         <div
-            class="absolute inset-0 overflow-hidden"
-            {{ stimulus_target('whatwedo/table-bundle/filter', 'filtersOverlay') }}
+            class="whatwedo_table:filter__wrapper pointer-events-none fixed inset-0 overflow-hidden"
+            {{ stimulus_target('whatwedo/table-bundle/filter', 'filters') }}
         >
             <div
-                class="absolute inset-0 bg-neutral-500 bg-opacity-75 transition-opacity"
-                {{ stimulus_action('whatwedo/table-bundle/filter', 'close') }}
-                hidden
-            ></div>
-            <div
-                class="whatwedo_table:filter__inner fixed inset-y-0 right-0 pl-10 max-w-full flex"
-                {{ stimulus_target('whatwedo/table-bundle/filter', 'filterspanel') }}
+                class="absolute inset-0 overflow-hidden"
+                {{ stimulus_target('whatwedo/table-bundle/filter', 'filtersOverlay') }}
             >
+                <div
+                    class="pointer-events-auto absolute inset-0 bg-neutral-500 bg-opacity-75 transition-opacity"
+                    {{ stimulus_action('whatwedo/table-bundle/filter', 'close') }}
+                    hidden
+                ></div>
+                <div
+                    class="whatwedo_table:filter__inner pointer-events-auto fixed inset-y-0 right-0 pl-10 max-w-full flex transform transition ease-in-out duration-500 sm:duration-700 translate-x-full"
+                    {{ stimulus_target('whatwedo/table-bundle/filter', 'filterspanel') }}
+                >
 
-                <form action="{{ whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : 1 }) }}" class="w-screen max-w-3xl">
-                    <div class="h-full flex flex-col py-6 bg-neutral-100 shadow-xl overflow-y-scroll">
-                        <div class="px-4 sm:px-6">
-                            <div class="flex items-start justify-between">
-                                <h2 class="text-lg font-medium text-neutral-900">
-                                    Filter
-                                </h2>
+                    <form action="{{ whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : 1 }) }}" class="w-screen max-w-3xl">
+                        <div class="h-full flex flex-col py-6 bg-neutral-100 shadow-xl overflow-y-scroll">
+                            <div class="px-4 sm:px-6">
+                                <div class="flex items-start justify-between">
+                                    <h2 class="text-lg font-medium text-neutral-900">
+                                        Filter
+                                    </h2>
 
-                                <div class="ml-3 h-7 flex items-center">
-                                    <button
-                                        class="rounded-md text-neutral-400 hover:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                                        {{ stimulus_action('whatwedo/table-bundle/filter', 'close') }}
-                                        type="button"
-                                    >
-                                        <span class="sr-only">Close panel</span>
-                                        {{ bootstrap_icon('x', { class: 'h-6 w-6' }) }}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-6 relative flex-1">
-                            <div class="px-4 sm:px-6" {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupList') }}>
-                                {% for groupIndex, group in table.filterExtension.filterData %}
-                                    {{ _self.filter_group(table, groupIndex, group) }}
-                                {% else %}
-                                    {{ _self.filter_group(table, 0, []) }}
-                                {% endfor %}
-                            </div>
-
-                            <!-- Filter Mutations -->
-                            <div class="mt-4 px-4 pb-4 sm:px-6 flex">
-                                <div class="flex-auto">
-                                    <button
-                                        class="px-2.5 py-1.5 border border-neutral-300 shadow-sm text-xs font-medium rounded text-neutral-700 bg-white hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                                        {{ stimulus_action('whatwedo/table-bundle/filter', 'appendOr') }}
-                                        type="button"
-                                    >
-                                        oder
-                                    </button>
-                                </div>
-                                <div>
-                                    <div class="relative inline-block text-left">
-                                        <div>
-                                            <button
-                                                class="inline-flex justify-center rounded-md border border-neutral-300 shadow-sm px-2.5 py-1.5 bg-white text-xs font-medium text-neutral-700 hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-neutral-100 focus:ring-primary"
-                                                type="button"
-                                                {{ stimulus_action('whatwedo/table-bundle/filter', 'toggleDropdown') }}
-                                            >
-                                                Gespeicherte Filter
-                                                {{ bootstrap_icon('chevron-down', { class: '-mr-1 ml-2 h-4 w-4' }) }}
-                                            </button>
-                                        </div>
-
-                                        <div
-                                            class="hidden z-20 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-neutral-100 focus:outline-none"
-                                            {{ stimulus_target('whatwedo/table-bundle/filter', 'dropdown') }}
-                                            tabindex="-1"
+                                    <div class="ml-3 h-7 flex items-center">
+                                        <button
+                                            class="rounded-md text-neutral-400 hover:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                                            {{ stimulus_action('whatwedo/table-bundle/filter', 'close') }}
+                                            type="button"
                                         >
-                                            <div class="py-1" role="none">
-                                                {% for filter in table.filterExtension.savedFilter(app.user, app.request.attributes.get('_route')) %}
-                                                    {% set filter_href = path(filter.route, filter.arguments | merge(filter.conditions)) %}
-                                                    {% set isCreator = filter.isCreatedBy(app.user) %}
-                                                    <a href="{{ filter_href }}" class="text-neutral-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">{{ filter.name }}</a>
-                                                {% endfor %}
+                                            <span class="sr-only">Close panel</span>
+                                            {{ bootstrap_icon('x', { class: 'h-6 w-6' }) }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-6 relative flex-1">
+                                <div class="px-4 sm:px-6" {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupList') }}>
+                                    {% for groupIndex, group in table.filterExtension.filterData %}
+                                        {{ _self.filter_group(table, groupIndex, group) }}
+                                    {% else %}
+                                        {{ _self.filter_group(table, 0, []) }}
+                                    {% endfor %}
+                                </div>
+
+                                <!-- Filter Mutations -->
+                                <div class="mt-4 px-4 pb-4 sm:px-6 flex">
+                                    <div class="flex-auto">
+                                        <button
+                                            class="px-2.5 py-1.5 border border-neutral-300 shadow-sm text-xs font-medium rounded text-neutral-700 bg-white hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                                            {{ stimulus_action('whatwedo/table-bundle/filter', 'appendOr') }}
+                                            type="button"
+                                        >
+                                            oder
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <div class="relative inline-block text-left">
+                                            <div>
+                                                <button
+                                                    class="inline-flex justify-center rounded-md border border-neutral-300 shadow-sm px-2.5 py-1.5 bg-white text-xs font-medium text-neutral-700 hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-neutral-100 focus:ring-primary"
+                                                    type="button"
+                                                    {{ stimulus_action('whatwedo/table-bundle/filter', 'toggleDropdown') }}
+                                                >
+                                                    Gespeicherte Filter
+                                                    {{ bootstrap_icon('chevron-down', { class: '-mr-1 ml-2 h-4 w-4' }) }}
+                                                </button>
                                             </div>
-                                            {% if app.request.query.has('index_filter_column') and app.request.query.has('index_filter_operator') and app.request.query.has('index_filter_value') %}
+
+                                            <div
+                                                class="hidden z-20 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-neutral-100 focus:outline-none"
+                                                {{ stimulus_target('whatwedo/table-bundle/filter', 'dropdown') }}
+                                                tabindex="-1"
+                                            >
+                                                <div class="py-1" role="none">
+                                                    {% for filter in table.filterExtension.savedFilter(app.request.attributes.get('_route')) %}
+                                                        {% set filter_href = path(filter.route, filter.arguments | merge(filter.conditions)) %}
+                                                        <a href="{{ filter_href }}" class="text-neutral-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">{{ filter.name }}</a>
+                                                    {% endfor %}
+                                                </div>
+                                                {% if app.request.query.has('index_filter_column') and app.request.query.has('index_filter_operator') and app.request.query.has('index_filter_value') %}
+                                                    <div class="py-1" role="none">
+                                                        <a
+                                                            href="{{ path('whatwedo_crud_filter_create', {'filter_path' : app.request.attributes.get('_route')} | merge(app.request.query.all)) }}"
+                                                            class="text-neutral-700 block w-full text-left px-4 py-2 text-sm"
+                                                            role="menuitem" tabindex="-1" id="menu-item-3"
+                                                        >
+                                                            {{ bootstrap_icon('plus', { class: 'inline-block w-5 h-5' }) }}
+                                                            Neu erstellen
+                                                        </a>
+                                                    </div>
+                                                {% endif %}
                                                 <div class="py-1" role="none">
                                                     <a
-                                                        href="{{ path('whatwedo_crud_filter_create', {'filter_path' : app.request.attributes.get('_route')} | merge(app.request.query.all)) }}"
+                                                        href="{{ path('whatwedo_crud_filter_index') }}"
                                                         class="text-neutral-700 block w-full text-left px-4 py-2 text-sm"
                                                         role="menuitem" tabindex="-1" id="menu-item-3"
                                                     >
-                                                        {{ bootstrap_icon('plus', { class: 'inline-block w-5 h-5' }) }}
-                                                        Neu erstellen
+                                                        {{ bootstrap_icon('list', { class: 'inline-block w-5 h-5' }) }}
+                                                        Filter Übersicht
                                                     </a>
                                                 </div>
-                                            {% endif %}
-                                            <div class="py-1" role="none">
-                                                <a
-                                                    href="{{ path('whatwedo_crud_filter_index') }}"
-                                                    class="text-neutral-700 block w-full text-left px-4 py-2 text-sm"
-                                                    role="menuitem" tabindex="-1" id="menu-item-3"
-                                                >
-                                                    {{ bootstrap_icon('list', { class: 'inline-block w-5 h-5' }) }}
-                                                    Filter Übersicht
-                                                </a>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="flex-auto text-right">
-                                    <button {{ stimulus_action('whatwedo/table-bundle/filter', 'reset') }} type="reset" class="px-2.5 py-1.5 border border-neutral-300 shadow-sm text-xs font-medium rounded text-white bg-error-500 hover:bg-danger-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-                                        Zurücksetzen
-                                    </button>
-                                    <button type="submit" class="px-2.5 py-1.5 border border-neutral-300 shadow-sm text-xs font-medium rounded text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-                                        Filter anwenden
-                                    </button>
+                                    <div class="flex-auto text-right">
+                                        <button {{ stimulus_action('whatwedo/table-bundle/filter', 'reset') }} type="reset" class="px-2.5 py-1.5 border border-neutral-300 shadow-sm text-xs font-medium rounded text-white bg-error-500 hover:bg-danger-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                            Zurücksetzen
+                                        </button>
+                                        <button type="submit" class="px-2.5 py-1.5 border border-neutral-300 shadow-sm text-xs font-medium rounded text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                            Filter anwenden
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

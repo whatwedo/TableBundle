@@ -26,10 +26,6 @@ services:
             - { name: kernel.event_listener, event: whatwedo_ajax.result_request.filter_set, method: searchResultSet, priority: 100 }
             - { name: kernel.event_listener, event: whatwedo_ajax.result_request.relation_set, method: searchResultSet, priority: 100 }
 
-    whatwedo\TableBundle\EventListener\FilterCreatedByListener:
-        tags:
-            - { name: doctrine.event_listener, event: loadClassMetadata }
-
     whatwedo\TableBundle\Manager\QueryBuilderManager:
         arguments:
             - !tagged_iterator 'whatwedo_table.query_builder_provider'
