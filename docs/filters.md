@@ -13,55 +13,61 @@ If this behaviour does not fit your needs properly, you can always override the 
 ## Override Filter Label
 
 The bundle tries to detect labels automatically, you can however override the generated labels easily:
- ```
-    public function configureTable(Table $table)
-    {
-        parent::configureTable($table);
-        $table->getFilterExtension()
-            ->overrideFilterName('acronym', 'new Label Value');
-    }
+
+```php
+public function configureTable(Table $table)
+{
+    parent::configureTable($table);
+    $table->getFilterExtension()
+        ->overrideFilterName('acronym', 'new Label Value');
+}
 ```
 
 ## Add a custom filter
 
 You can write your own filters with your own custom logic. You will find a lot of filters at `whatwedo\table-bundle\Filter\Type`. Use them directly or as an example on how to write your own.
-```
-    public function configureTable(Table $table)
-    {
-        parent::configureTable($table);
-        $table->getFilterExtension()
-            ->addFilter('acronym', 'label', new TextFilterType('column'));
-    }
+
+```php
+public function configureTable(Table $table)
+{
+    parent::configureTable($table);
+    $table->getFilterExtension()
+        ->addFilter('acronym', 'label', new TextFilterType('column'));
+}
 ```
 
 ## Remove an unwanted filter
 
 If the Definition generates a filter that you don't want, you can always remove them with ease:
+
+```php
+public function configureTable(Table $table)
+{
+    parent::configureTable($table);
+    $table->getFilterExtension()
+        ->removeFilter('acronym');
+}
 ```
-    public function configureTable(Table $table)
-    {
-        parent::configureTable($table);
-        $table->getFilterExtension()
-            ->removeFilter('acronym');
-    }
-```
+
 The `acronym` basically equals the property name on the `Entity`.
 
 ## Predefine often used filters
 
 Lets say your business needs to track certain customers very often. You can predefine a filter for such situations.
 (For instance we search customers with blonde hair, a height of at least 180cm and only persons that identify as women) 
+
+```php
+public function configureTable(Table $table)
+{
+    parent::configureTable($table);
+    $table->getFilterExtension()
+        ->predefineFilter('custom_query', 'hair', TextFilterType::CRITERIA_EQUAL, HairColorEnum::BLONDE)
+            ->and('height', NumberFilterType::CRITERIA_BIGGER_THAN, 180)
+            ->and('gender', TextFilterType::CRITERIA_EQUAL, GenderEnum::WOMAN)
+        ->end();
+}
 ```
-    public function configureTable(Table $table)
-    {
-        parent::configureTable($table);
-        $table->getFilterExtension()
-            ->predefineFilter('custom_query', 'hair', TextFilterType::CRITERIA_EQUAL, HairColorEnum::BLONDE)
-                ->and('height', NumberFilterType::CRITERIA_BIGGER_THAN, 180)
-                ->and('gender', TextFilterType::CRITERIA_EQUAL, GenderEnum::WOMAN)
-            ->end();
-    }
-```
+
 It is now possible to open `http://[domain].[tld]/[your-site-with-the-table]?[table-identifier]_predefined_filter=custom_query` and the declared filters will be applied. 
 
 ## Do I need to call `parent::configureTable($table)` ?
@@ -75,6 +81,7 @@ Here are some examples on how to create your own custom filters by using our `Fi
 ### NumberFilterType
 
 The number filter type allows you to filter your data by a column which holds a number.
+
 ```php
 public function configureFilters(Table $table): void
 {

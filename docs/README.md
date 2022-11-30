@@ -1,6 +1,6 @@
 # Getting Started
 
-This documentation provides a basic view of the possibilities of the whatwedoTableBundle. 
+This documentation provides a basic overview of the possibilities of the whatwedoTableBundle. 
 
 ## Requirements
 
@@ -10,14 +10,16 @@ It presumes a fresh symfony 6.x installation following the [symfony docs](https:
 
 ## Templates
 
-The views of this template are based on [Tailwind CSS](https://tailwindcss.com/) layout.
+The views of this template are based on the [Tailwind CSS](https://tailwindcss.com/) layout.
 You can overwrite them at any time.  
 More info about that can be found in the [Templating](templating.md) section of this documentation.
 
 ## Installation
+
 ### Composer
-The bundle depends on bootstrap icons. To get them running smoothly in your project
-add this repository to you composer.json: ([Sadly composer cannot load repositories recursively](https://getcomposer.org/doc/faqs/why-cant-composer-load-repositories-recursively.md))
+
+The bundle depends on bootstrap icons. To get them running smoothly in your project,
+add this repository to your composer.json: ([Sadly composer cannot load repositories recursively](https://getcomposer.org/doc/faqs/why-cant-composer-load-repositories-recursively.md))
 ```json
 "repositories": [
     {
@@ -34,22 +36,24 @@ add this repository to you composer.json: ([Sadly composer cannot load repositor
     }
 ]
 ```
-Then the bundle to your dependencies and install it.
-```
+Then add the bundle to your dependencies and install it:
+```shell
 composer require whatwedo/table-bundle
 ```
 **remove after release**
 
-The v1 version is still in developing,
+The version `v1` is still in development,
 so you need to add these lines manually to the `composer.json` `require` to get the version constraint right:
 ```json
+"require": {
     ...
     "whatwedo/core-bundle": "dev-1.0-dev as v1.0.0",
     "whatwedo/table-bundle": "dev-1.0-dev as v1.0.0",
     "whatwedo/search-bundle": "dev-3.0-dev as v3.0.0",
     ...
+}
 ```
-Run `composer update`  
+Run `composer update`.
 After successfully installing the bundle, you should see changes in these files:
 - `composer.json`
 - `composer.lock`
@@ -60,13 +64,16 @@ After successfully installing the bundle, you should see changes in these files:
  
 
 ### Tailwind and Webpack
-To give you full access over the build and look-and-feel of the application you install these dependencies in your project locally.  
-To get it up and running like whatwedo, install following:
+
+To give you full access over the build and the look-and-feel of the application, you may install these dependencies in your project locally.  
+To get it up and running like whatwedo, install the following:
 ```shell
 yarn add tailwindcss postcss-loader sass-loader sass autoprefixer --dev
 ```
+
 #### Tailwind
-Be sure to extends tailwinds default config. You need a `primary` color and a `error` color.
+
+Be sure to extend tailwinds default config. You need a `primary` color and an `error` color.
 Furthermore, you need to add our files to the `content` section. 
 The config is located at `tailwind.config.js`.
 
@@ -100,7 +107,9 @@ module.exports = {
 }
 
 ````
+
 #### Webpack
+
 Create a `postcss.config.js` file in your root directory with this content:
 ```js
 let tailwindcss = require('tailwindcss');
@@ -112,7 +121,7 @@ module.exports = {
     ]
 }
 ```
-Enable sass and postcss support in the `webpack.config.js`, like following:
+Enable sass and postcss support in the `webpack.config.js` like this:
 ```js
 Encore
     .enableSassLoader()
@@ -120,12 +129,12 @@ Encore
 ;
 ```
 Your main style, for instance `assets/styles/app.scss`, should be a `sass` file.
-If your file is named `app.css` rename it to `app.scss`. Also change the import in main entrypoint file, for instance `assets/app.js`.
+If your file is named `app.css` rename it to `app.scss`. Also change the import in the main entrypoint file, for instance `assets/app.js`.
 ```js
 import './styles/app.scss';
 ```
 
-Import following styles into the `app.scss`:
+Import the following styles into the `app.scss`:
 ```scss
 @tailwind base;
 @tailwind components;
@@ -134,18 +143,19 @@ Import following styles into the `app.scss`:
 @import "~@whatwedo/core-bundle/styles/_tailwind.scss";
 @import "~@whatwedo/table-bundle/styles/_tailwind.scss";
 ```
-It is **important** that you include the @whatwedo styles after the tailwind styles.
+It is **important** that you include the @whatwedo styles **after** the tailwind styles.
 
 Run `yarn dev`, it should end with the message `webpack compiled successfully`.
 
-Done! The whatwedoTableBundle is fully installed. Now start using it!
+Done! The whatwedoTableBundle is fully installed. You can now start using it!
 
 
 
 
 ## Use the bundle
-The Bundle uses translations files, currently only german is provided doe. Feel free to open a PR with new translations!
-To use it in german set your applications `default_locale` to `de` like following:
+
+The Bundle uses translation files, currently only german is provided though. Feel free to open a PR with new translations!
+To use it in german, set your applications `default_locale` to `de` like this:
 ```yaml
 framework:
     default_locale: de

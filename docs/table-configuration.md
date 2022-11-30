@@ -4,26 +4,43 @@ In the table configuration you define all the columns of the table
 
 ## Table Options
 
-
-- `title`: null
-- `searchable`: false
-- `sortable`: true
+- `title`: String|Null
+- `searchable`: Boolean, default: `false`
+- `sortable`: Boolean, default: `true`
 - `attr`:
 - `table_attr`: 
-- `default_limit` : dafault 25
-- `limit_choices`:  [10, 25, 50, 100, 200]
-- `table_box_template`: Box Template default: `@whatwedoTable/table.html.twig`
-- `table_template`: Table Template default  `@whatwedoTable/tableOnly.html.twig`
-- `default_sort`:,
+- `default_limit` : Int, dafault: `25`
+- `limit_choices`:  Int, possible values: [`10`, `25`, `50`, `100`, `200`]
+- `table_box_template`: String, box template, default: `@whatwedoTable/table.html.twig`
+- `table_template`: String, table template, default:  `@whatwedoTable/tableOnly.html.twig`
+- `default_sort`:
 
 
 ## Column Options
 
-- `label`: Column name
-- `callable`: Callable to get the data
-- `accessor_path`: defaults to the acronym
+Example
+```php
+public function configureTable(Table $table): void
+    {
+        parent::configureTable($table);
+        $table
+            ->addColumn('firstname')
+            ->addColumn('lastname')
+            ->addColumn('birthday', null, [
+                'sortable' => false,
+                'formatter' => UserBirthdayFormatter::class,
+            ])
+        ;
+    }
+```
+
+For the columns you have a few options to tweak how they behave:
+
+- `label`: String, column name
+- `callable`: Function, callable to get the data
+- `accessor_path`: String, defaults to the acronym
 - `formatter`: [Formatter](formatter.md)
-- `sort_expression`: ex.  'trainerGroup.name',
+- `sort_expression`: String, example: `'trainerGroup.name'`
 
 ## Action Columns
 
