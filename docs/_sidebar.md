@@ -1,4 +1,5 @@
 * [Getting Started](/)
 * [Table Configuration](table-configuration.md)
+    * [Filters](filters.md)
 * [Formatter](formatter.md)
 * [Events](events.md)
