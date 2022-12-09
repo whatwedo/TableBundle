@@ -93,13 +93,18 @@ module.exports = {
         extend: {
             colors: {
                 primary: {
-                    lightest: '#6EDBFF',
-                    light: '#48C0E8',
-                    DEFAULT: '#007EA8',
-                    dark: '#336C80',
-                    darkest: '#0F4152',
+                    200: '...',
+                    300: '...',
+                    400: '...',
+                    500: '...',
+                    600: '...',
+                    700: '...',
+                    800: '...',
                 },
+                neutral: colors.slate,
                 error: colors.red,
+                warning: colors.orange,
+                success: color.green,
             }
         },
     },
