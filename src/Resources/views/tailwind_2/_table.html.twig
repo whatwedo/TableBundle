@@ -29,12 +29,12 @@
                 </p>
 
                 <div>
-                    <button class="ml-3 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white-700 bg-success hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                    <button class="ml-3 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white-700 bg-success hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
                         {{ action.confirmation('yes') | trans }}
                     </button>
                     <button
                         {{ stimulus_action('whatwedo/core-bundle/dropdown', 'close') }}
-                        class="ml-3 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                        class="ml-3 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                         type="button"
                     >
                         {{ action.confirmation('no') | trans }}
@@ -49,7 +49,7 @@
         class="min-w-full" {{ stimulus_target('whatwedo/table-bundle/table', 'table') }} {{ stimulus_target('@whatwedo/table-bundle/table_select', 'table') }}>
         {% if table.columns %}
             <thead class="whatwedo_table:table__head">
-            <tr class="border-b border-neutral-200 bg-neutral-50 text-xs font-medium text-neutral-500 text-left uppercase tracking-wider">
+            <tr class="border-b border-neutral-300 bg-neutral-100 text-xs font-medium text-neutral-500 text-left uppercase tracking-wider">
 
                 {% if table.rows is not empty and table.getOption('definition') and table.getOption('definition').hasCapability(constant('whatwedo\\CrudBundle\\Enum\\Page::BATCH')) %}
 
@@ -146,14 +146,14 @@
         <tbody
             class="whatwedo_table:table__body bg-white text-sm text-neutral-500 font-medium divide-y divide-neutral-100">
         {% if table.rows is empty %}
-            <tr class="whatwedo_table:table__row hover:bg-neutral-50 transition duration-500 color">
+            <tr class="whatwedo_table:table__row hover:bg-neutral-100 transition duration-500 color">
                 <td class="px-3 py-2 font-normal">
                     {{ 'whatwedo_table.no_elements' | trans }}
                 </td>
             </tr>
         {% endif %}
         {% for row in table.rows %}
-            <tr class="whatwedo_table:table__row hover:bg-neutral-50 transition duration-500 color align-top">
+            <tr class="whatwedo_table:table__row hover:bg-neutral-100 transition duration-500 color align-top">
                 {% if table.getOption('definition') and table.getOption('definition').hasCapability(constant('whatwedo\\CrudBundle\\Enum\\Page::BATCH')) %}
                     <td class="px-6 py-2">
                         <input
