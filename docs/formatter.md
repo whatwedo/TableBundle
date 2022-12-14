@@ -5,7 +5,9 @@ Formatter are simple classes to convert a given variable to a string.
 You can create your own formatter (you must implement `whatwedo\CoreBundle\Formatter\FormatterInterface` or extend `whatwedo\CoreBundle\Formatter\AbstractFormatter`) and add the full class name of your formatter to the options array of a content element.
 
 ## Register
+
 Your formatters needs to be registered as service with the tag `core.formatter`. For example:
+
 ```
     Acme\AppBundle\Formatter\:
         resource: '../../Formatter'
@@ -15,7 +17,7 @@ Your formatters needs to be registered as service with the tag `core.formatter`.
 
 ## `EmailFormatter`
 
-```
+```php
 <?php
 
 namespace whatwedo\CoreBundle\Formatter;
