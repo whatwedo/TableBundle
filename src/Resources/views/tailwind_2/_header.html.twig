@@ -1,8 +1,8 @@
 {# Table Header #}
 {% if table.option('title') or view is defined and view.definition.hasCapability(constant('whatwedo\\CrudBundle\\Enum\\Page::EXPORT')) or table.filterExtension and table.filterExtension.filters|length > 0 or table.searchExtension and table.option('searchable') %}
 
-    <header class="whatwedo_table:header border-b border-neutral-200 px-4 py-4 sm:flex sm:items-center sm:justify-between">
-        <div class="whatwedo_table:header__title flex-1 min-w-0 text-lg font-medium leading-6 text-neutral-900 sm:truncate">
+    <header class="whatwedo_table:header sm:flex sm:justify-between mb-4">
+        <div class="whatwedo_table:header__title flex-1 min-w-0 whatwedo-utility-heading-1 sm:truncate">
             {% if table.option('title') %}
                 <h1>
                     {{ table.option('title')|trans }}
@@ -16,7 +16,7 @@
                     class="relative inline-block">
                     <button
                         {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') | stimulus_action('whatwedo/core-bundle/dropdown', 'click@window', 'hide') }}
-                        class="whatwedo_table:header__button whatwedo_table:header__button--download whatwedo_table-button" tabindex="-1"
+                        class="whatwedo_table:header__button whatwedo_table:header__button--download whatwedo_table-button h-full" tabindex="-1"
                     >
                         {{ bootstrap_icon('download', { class: 'w-4 h-4' }) }}
                     </button>
@@ -55,7 +55,7 @@
             {% if table.searchExtension and table.option('searchable') %}
             <form
                 action="{{ whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : 1 }) }}"
-                class="whatwedo_table:header__search inline-flex items-center px-3 ml-2"
+                class="whatwedo_table:header__search inline-flex items-center pl-3 ml-2"
             >
                 <div class="flex rounded-md shadow-sm">
                     <div class="relative flex items-stretch flex-grow focus-within:z-10">

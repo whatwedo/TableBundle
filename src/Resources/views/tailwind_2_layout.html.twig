@@ -1,5 +1,5 @@
 {% block table %}
-    <div class="whatwedo_table:wrapper bg-white shadow" {{ stimulus_controller('whatwedo/table-bundle/filter') }}>
+    <div class="whatwedo_table:wrapper" {{ stimulus_controller('whatwedo/table-bundle/filter') }}>
         {% block table_header %}
             {% include "@whatwedoTable/tailwind_2/_header.html.twig" %}
         {% endblock %}
@@ -14,6 +14,7 @@
                     '{count}': '{count}',
                 }))
             }) }}
+            class="overflow-auto"
         >
             <turbo-frame id="whatwedo_table_{{ table.identifier }}" data-turbo="true" target="_top" {{ stimulus_action('@whatwedo/table-bundle/table_select', 'tableTargetChanged', 'turbo:frame-load') }}>
                 {% block table_table %}
@@ -169,7 +170,7 @@
     <span {{ stimulus_controller('whatwedo/core-bundle/modal-form', { formUrl: path(action.option('route'), action.option('route_parameters')) }) }} class="float-end mb-3">
         <button type="button"
                 {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
-                class="text-neutral-700 font-bold group flex items-center px-4 py-2 text-sm" tabindex="-1" {{ stimulus_action('whatwedo/core-bundle/modal-form', 'openModal') }}>
+                class="text-neutral-700 font-bold group flex items-center px-4 py-2 ml-0 text-sm" tabindex="-1" {{ stimulus_action('whatwedo/core-bundle/modal-form', 'openModal') }}>
             {% if action.option('icon') %}
                 {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
             {% endif %}

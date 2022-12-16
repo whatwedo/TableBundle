@@ -49,7 +49,7 @@
         class="min-w-full" {{ stimulus_target('whatwedo/table-bundle/table', 'table') }} {{ stimulus_target('@whatwedo/table-bundle/table_select', 'table') }}>
         {% if table.columns %}
             <thead class="whatwedo_table:table__head">
-            <tr class="border-b border-neutral-300 bg-neutral-100 text-xs font-medium text-neutral-500 text-left uppercase tracking-wider">
+            <tr class="border-b border-neutral-300 bg-neutral-200 text-sm font-medium text-neutral-900 text-left tracking-wider">
 
                 {% if table.rows is not empty and table.getOption('definition') and table.getOption('definition').hasCapability(constant('whatwedo\\CrudBundle\\Enum\\Page::BATCH')) %}
 
@@ -88,11 +88,11 @@
                                             href="{{ path(batchAction.route, batchAction.routeParameters) }}"
                                             class="text-neutral-700 group flex items-center px-4 py-2 text-sm"
                                             tabindex="-1"
-                                                                             {{ stimulus_action('@whatwedo/table-bundle/table_select', 'doAction') }}
-                                                                         >
-                                                                        {{ bootstrap_icon(batchAction.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
+                                            {{ stimulus_action('@whatwedo/table-bundle/table_select', 'doAction') }}
+                                        >
+                                            {{ bootstrap_icon(batchAction.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
                                             {{ batchAction.label|trans }}
-                                                                    </a>
+                                        </a>
                                     {% endif %}
                                 {% endfor %}
                                         </span>
@@ -104,7 +104,7 @@
                     </th>
                 {% endif %}
                 {% for column in table.columns %}
-                    <th class="px-3 py-3 align-top">
+                    <th class="px-3 py-3 align-top whitespace-nowrap">
                         {{ column.option('label')|trans }}
 
                         {% if table.sortExtension and column.option('sortable') %}
@@ -144,7 +144,7 @@
             </thead>
         {% endif %}
         <tbody
-            class="whatwedo_table:table__body bg-white text-sm text-neutral-500 font-medium divide-y divide-neutral-100">
+            class="whatwedo_table:table__body bg-white text-sm text-neutral-900 font-medium divide-y divide-neutral-300">
         {% if table.rows is empty %}
             <tr class="whatwedo_table:table__row hover:bg-neutral-100 transition duration-500 color">
                 <td class="px-3 py-2 font-normal">

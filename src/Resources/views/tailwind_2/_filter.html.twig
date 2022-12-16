@@ -82,7 +82,7 @@
 {% endmacro %}
 
 {% if table.filterExtension and table.filterExtension.filters|length > 0 %}
-    <div class="relative z-10 pointrt">
+    <div class="relative z-10">
         <div class="fixed inset-0 opacity-0 ease-in-out delay-100 duration-400 transition-opacity hidden bg-neutral-500/[.6]" {{ stimulus_target('whatwedo/table-bundle/filter', 'backdrop') }}></div>
         <div
             class="whatwedo_table:filter__wrapper pointer-events-none fixed inset-0 overflow-hidden"
