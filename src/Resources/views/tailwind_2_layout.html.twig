@@ -85,7 +85,7 @@
     {% else %}
         <a
             href="{{ path(action.route, action.routeParameters(entity)) }}"
-            class="text-neutral-700 group flex items-center px-4 py-2 text-sm"
+            class="text-neutral-700 font-bold group flex items-center px-4 py-2 text-sm"
             tabindex="-1"
             {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
         >
