@@ -14,7 +14,6 @@
                     '{count}': '{count}',
                 }))
             }) }}
-            class="overflow-auto"
         >
             <turbo-frame id="whatwedo_table_{{ table.identifier }}" data-turbo="true" target="_top" {{ stimulus_action('@whatwedo/table-bundle/table_select', 'tableTargetChanged', 'turbo:frame-load') }}>
                 {% block table_table %}
