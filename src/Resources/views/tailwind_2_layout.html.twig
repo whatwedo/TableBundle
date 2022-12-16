@@ -43,7 +43,7 @@
             <button
                 {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
                 {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') | stimulus_action('whatwedo/core-bundle/dropdown', 'click@window', 'hide') }}
-                class="text-neutral-700 font-bold group flex items-center px-4 py-2 text-sm" tabindex="-1"
+                class="text-neutral-700 font-bold group flex items-center px-4 py-2 text-base" tabindex="-1"
             >
                 {% if action.option('icon') %}
                     {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
@@ -62,7 +62,7 @@
                 <form
                     class="flex items-center justify-between px-4 py-3"
                     method="get" action="{{ path(action.route, action.routeParameters(entity)) }}">
-                    <p class="text-sm text-gray-500 mr-4">
+                    <p class="text-base text-gray-500 mr-4">
                         {{ action.confirmation('label') | trans }}
                     </p>
 
@@ -124,7 +124,7 @@
                 <form
                     class="flex items-center justify-between px-4 py-3"
                     method="post" action="{{ path(action.route, action.routeParameters(entity)) }}">
-                    <p class="text-sm text-gray-500 mr-4">
+                    <p class="text-base text-gray-500 mr-4">
                         {{ action.confirmation('label') | trans }}
                     </p>
 
