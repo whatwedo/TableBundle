@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace  whatwedo\TableBundle\Entity;
+namespace whatwedo\TableBundle\Entity;
 
 use Doctrine\Common\Collections\Collection;
 

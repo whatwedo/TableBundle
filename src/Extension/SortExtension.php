@@ -36,7 +36,7 @@ use whatwedo\TableBundle\Table\ColumnInterface;
 class SortExtension extends AbstractExtension
 {
     public function __construct(
-        protected  RequestStack $requestStack
+        protected RequestStack $requestStack
     ) {
     }
 

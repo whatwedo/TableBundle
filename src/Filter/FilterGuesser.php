@@ -64,8 +64,9 @@ class FilterGuesser
         ManyToMany::class => AjaxManyToManyFilterType::class,
     ];
 
-    public function __construct(protected EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        protected EntityManagerInterface $entityManager
+    ) {
     }
 
     public function getFilterType(

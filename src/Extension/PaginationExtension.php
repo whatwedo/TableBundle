@@ -40,7 +40,7 @@ class PaginationExtension extends AbstractExtension
     protected int $totalResults = 0;
 
     public function __construct(
-        protected  RequestStack $requestStack
+        protected RequestStack $requestStack
     ) {
     }
 

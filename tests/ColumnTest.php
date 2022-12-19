@@ -31,7 +31,7 @@ class ColumnTest extends KernelTestCase
             ->addColumn('city')
             ->addColumn('country')
             ->addColumn('taxIdentificationNumber')
-;
+        ;
 
         $columns = $table->getColumns();
 
@@ -57,7 +57,7 @@ class ColumnTest extends KernelTestCase
             ->addColumn('taxIdentificationNumber', null, [
                 Column::OPTION_PRIORITY => 4,
             ])
-;
+        ;
 
         $columns = $table->getColumns();
 
@@ -83,7 +83,7 @@ class ColumnTest extends KernelTestCase
             ->addColumn('taxIdentificationNumber', null, [
                 Column::OPTION_PRIORITY => 4,
             ])
-;
+        ;
 
         $columns = $table->getColumns();
 

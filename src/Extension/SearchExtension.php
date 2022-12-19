@@ -38,7 +38,7 @@ class SearchExtension extends AbstractExtension
     public const QUERY_PARAMETER_QUERY = 'query';
 
     public function __construct(
-        protected  RequestStack $requestStack
+        protected RequestStack $requestStack
     ) {
     }
 

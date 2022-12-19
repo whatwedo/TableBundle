@@ -28,6 +28,6 @@ class DateFilterType extends DatetimeFilterType
 
     protected static function getQueryDataFormat(): string
     {
-        return  'Y-m-d';
+        return 'Y-m-d';
     }
 }
