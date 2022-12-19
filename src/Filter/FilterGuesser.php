@@ -80,9 +80,6 @@ class FilterGuesser
         foreach ($all as $holder) {
             $class = $this->getClass($holder);
             $type = $this->getType($holder, $property);
-            if ($type === null && ($class === OneToMany::class || $class === ManyToOne::class)) {
-                //dump($holder, $property);die;
-            }
             $targetEntity = $this->getTargetEntity($holder, $property);
             $result = match ($class) {
                 Column::class => $this->newColumnFilter($type, $accessor),
