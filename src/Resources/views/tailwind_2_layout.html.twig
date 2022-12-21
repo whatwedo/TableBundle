@@ -72,7 +72,7 @@
                         </button>
                         <button
                             {{ stimulus_action('whatwedo/core-bundle/dropdown', 'close') }}
-                            class="ml-3 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                            class="ml-3 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm whatwedo-utility-bold rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                             type="button"
                         >
                             {{ action.confirmation('no') | trans }}
@@ -84,7 +84,7 @@
     {% else %}
         <a
             href="{{ path(action.route, action.routeParameters(entity)) }}"
-            class="text-neutral-700 font-bold group flex items-center px-4 py-2 text-sm"
+            class="whatwedo-utility-bold group flex items-center px-4 py-2"
             tabindex="-1"
             {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
         >
@@ -105,7 +105,7 @@
             <button
                 {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
                 {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') | stimulus_action('whatwedo/core-bundle/dropdown', 'click@window', 'hide') }}
-                class="text-neutral-700 font-bold group flex items-center px-4 py-2 text-sm" tabindex="-1"
+                class="whatwedo-utility-bold group flex items-center px-4 py-2" tabindex="-1"
             >
                 {% if action.option('icon') %}
                     {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
@@ -134,7 +134,7 @@
                         </button>
                         <button
                             {{ stimulus_action('whatwedo/core-bundle/dropdown', 'close') }}
-                            class="ml-3 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                            class="ml-3 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm whatwedo-utility-bold rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                             type="button"
                         >
                             {{ action.confirmation('no') | trans }}
@@ -151,7 +151,7 @@
                 <div>
                     <button
                         {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
-                        class="text-neutral-700 font-bold group flex items-center px-4 py-2 text-sm" tabindex="-1"
+                        class="whatwedo-utility-bold group flex items-center px-4 py-2" tabindex="-1"
                     >
                         {% if action.option('icon') %}
                             {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
@@ -169,7 +169,7 @@
     <span {{ stimulus_controller('whatwedo/core-bundle/modal-form', { formUrl: path(action.option('route'), action.option('route_parameters')) }) }} class="float-end mb-3">
         <button type="button"
                 {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
-                class="text-neutral-700 font-bold group flex items-center px-4 py-2 ml-0 text-sm" tabindex="-1" {{ stimulus_action('whatwedo/core-bundle/modal-form', 'openModal') }}>
+                class="whatwedo-utility-bold group flex items-center px-4 py-2 ml-0" tabindex="-1" {{ stimulus_action('whatwedo/core-bundle/modal-form', 'openModal') }}>
             {% if action.option('icon') %}
                 {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
             {% endif %}
