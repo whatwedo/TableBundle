@@ -5,7 +5,7 @@
         <a
             class="text-neutral-700 group flex items-center px-4 py-2 text-base"
             tabindex="-1"
-            {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') | stimulus_action('whatwedo/core-bundle/dropdown', 'click@window', 'hide') }}
+            {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') }}
         >
             {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
             {{ action.label|trans }}
@@ -61,7 +61,7 @@
                         <span class="relative items-center" {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}>
                             <button
                                 class="items-center justify-center hover:text-neutral-700"
-                                {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') | stimulus_action('whatwedo/core-bundle/dropdown', 'click@window', 'hide') }}
+                                {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') }}
                                 type="button"
                             >
                                 <span class="sr-only">{{ 'whatwedo_table.options' }}</span>

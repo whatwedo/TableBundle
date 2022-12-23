@@ -93,7 +93,7 @@
                 >
                     <button
                         class="whatwedo_table-button--pagination"
-                        {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') | stimulus_action('whatwedo/core-bundle/dropdown', 'click@window', 'hide') }}
+                        {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') }}
                         type="button"
                     >
                         {{ 'whatwedo_table.amount_entries'|trans({'{amount}': table.paginationExtension.limit}) }}
