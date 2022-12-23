@@ -12,7 +12,7 @@
         </a>
         <div
             {{ stimulus_target('whatwedo/core-bundle/dropdown', 'menu') }}
-            class="z-50 hidden transition duration-300 transform w-72 origin-top-right absolute right-0 -bottom-3 transform translate-y-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5"
+            class="z-50 hidden transition duration-300 transform origin-top-right absolute right-0 -bottom-3 transform translate-y-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5"
             data-transition-enter-from="opacity-0 scale-95"
             data-transition-enter-to="opacity-100 scale-100"
             data-transition-leave-from="opacity-100 scale-100"
@@ -20,21 +20,21 @@
             tabindex="-1"
         >
             <form
-                class="flex items-center justify-between px-4 py-3"
+                class="whatwedo-core-action__confirmation whatwedo-core-action__confirmation--get flex items-center justify-between px-4 py-3"
                 method="get"
                 {% if formAction %}{{ formAction | raw }}{% else %}action="{{ path(action.route, action.routeParameters) }}"{% endif %}
             >
-                <p class="text-base text-gray-500 mr-4">
+                <p class="whatwedo-utility-bold whitespace-nowrap mr-4">
                     {{ action.confirmation('label') | trans }}
                 </p>
 
-                <div>
-                    <button class="ml-3 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm whatwedo-utility-bold rounded-md bg-success hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                <div class="flex space-x-2">
+                    <button class="whatwedo-crud-button--action-danger">
                         {{ action.confirmation('yes') | trans }}
                     </button>
                     <button
                         {{ stimulus_action('whatwedo/core-bundle/dropdown', 'close') }}
-                        class="ml-3 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm whatwedo-utility-bold rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                        class="whatwedo-crud-button--action-no-bg"
                         type="button"
                     >
                         {{ action.confirmation('no') | trans }}
