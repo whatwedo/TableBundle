@@ -9,35 +9,39 @@
                 </h1>
             {% endif %}
         </div>
-        <div class="mt-4 flex sm:mt-0 sm:ml-4">
+        <div class="mt-4 flex sm:mt-0 sm:ml-4 space-x-2">
             {% if view is defined and view.definition.hasCapability(constant('whatwedo\\CrudBundle\\Enum\\Page::EXPORT')) %}
                 <div
                     {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}
                     class="relative inline-block">
                     <button
-                        {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') }}
+                        {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') | stimulus_action('whatwedo/core-bundle/dropdown', 'close', 'keydown.esc') }}
                         class="whatwedo_table:header__button whatwedo_table:header__button--download whatwedo_table-button h-full" tabindex="-1"
                     >
                         {{ bootstrap_icon('download', { class: 'w-4 h-4' }) }}
                     </button>
                     <div
                         {{ stimulus_target('whatwedo/core-bundle/dropdown', 'menu') }}
-                        class="p-2 z-50 hidden transition duration-300 transform origin-top-right absolute right-0 -bottom-3 transform translate-y-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5"
+                        class="p-4 z-50 hidden transition duration-300 transform origin-top-right absolute right-0 -bottom-3 transform translate-y-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5"
                         data-transition-enter-from="opacity-0 scale-95"
                         data-transition-enter-to="opacity-100 scale-100"
                         data-transition-leave-from="opacity-100 scale-100"
                         data-transition-leave-to="opacity-0 scale-95"
                         tabindex="-1"
-                        >
-                        {% for label,queryParameters in {'whatwedo_table.page' : app.request.query.all, 'whatwedo_table.all' : {'all':1}|merge(app.request.query.all)} %}
-                            <a
-                                href="{{ path(view.definition.getRoute(constant('whatwedo\\CrudBundle\\Enum\\Page::EXPORT')), queryParameters) }}"
-                                class="whatwedo_table:header__button whatwedo_table:header__button--download whatwedo_table-button"
+                    >
+                        <p class="whatwedo-utility-bold whitespace-nowrap mb-3">{{ 'whatwedo_table.download.info' | trans }}</p>
 
-                            >
-                                {{ label | trans }}
-                            </a>
-                        {% endfor %}
+                        <div class="flex space-x-2">
+                            {% for label,queryParameters in {'whatwedo_table.page' : app.request.query.all, 'whatwedo_table.all' : {'all':1}|merge(app.request.query.all)} %}
+                                <a
+                                    href="{{ path(view.definition.getRoute(constant('whatwedo\\CrudBundle\\Enum\\Page::EXPORT')), queryParameters) }}"
+                                    class="whatwedo_table:header__button whatwedo_table:header__button--download whatwedo_table-button"
+
+                                >
+                                    {{ label | trans }}
+                                </a>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
             {% endif %}
@@ -55,7 +59,7 @@
             {% if table.searchExtension and table.option('searchable') %}
             <form
                 action="{{ whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : 1 }) }}"
-                class="whatwedo_table:header__search inline-flex items-center pl-3 ml-2"
+                class="whatwedo_table:header__search inline-flex items-center"
             >
                 <div class="flex rounded-md shadow-sm">
                     <div class="relative flex items-stretch flex-grow focus-within:z-10">
