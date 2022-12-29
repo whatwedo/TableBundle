@@ -157,6 +157,7 @@
                 {% if table.getOption('definition') and table.getOption('definition').hasCapability(constant('whatwedo\\CrudBundle\\Enum\\Page::BATCH')) %}
                     <td class="px-6 py-2">
                         <input
+                            class="cursor-pointer"
                             type="checkbox" {{ stimulus_target('@whatwedo/table-bundle/table_select', 'selector') }} {{ stimulus_action('@whatwedo/table-bundle/table_select', 'selectId') }}
                             data-entity-id="{{ row.id }}">
                     </td>
