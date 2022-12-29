@@ -38,7 +38,7 @@
     {% if action.hasConfirmation() %}
         <div
             {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}
-            class="relative inline-block"
+            class="relative block"
         >
             <button
                 {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
@@ -100,7 +100,7 @@
     {% if action.hasConfirmation() %}
         <div
             {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}
-            class="relative inline-block"
+            class="relative block"
         >
             <button
                 {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
@@ -145,7 +145,7 @@
             </div>
         </div>
     {% else %}
-        <div class="relative inline-block">
+        <div class="relative block">
             <form
                 class="flex items-center justify-between"
                 method="post" action="{{ path(action.route, action.routeParameters(entity)) }}">
