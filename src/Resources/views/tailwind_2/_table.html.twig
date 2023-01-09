@@ -64,7 +64,7 @@
                                 {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') | stimulus_action('whatwedo/core-bundle/dropdown', 'click@window', 'hide') }}
                                 type="button"
                             >
-                                <span class="sr-only">Optionen</span>
+                                <span class="sr-only">{{ 'whatwedo_table.options' }}</span>
                                 {{ bootstrap_icon('journals', { class: 'h-4 w-4', alt: 'Mass Actions'}) }}
                             </button>
 
@@ -148,7 +148,7 @@
         {% if table.rows is empty %}
             <tr class="whatwedo_table:table__row hover:bg-neutral-50 transition duration-500 color">
                 <td class="px-3 py-2 font-normal">
-                    {{ 'Keine Elemente verfügbar' }}
+                    {{ 'whatwedo_table.no_elements' | trans }}
                 </td>
             </tr>
         {% endif %}

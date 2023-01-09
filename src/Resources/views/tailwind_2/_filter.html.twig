@@ -55,14 +55,14 @@
             class="text-neutral-500 uppercase text-sm font-medium mt-4 block hidden"
             {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupFilterHeaderFirst') }}
         >
-            Zeige Elemente wenn
+            {{ 'whatwedo_table.filter.show_element_when' | trans }}
         </span>
         {% if groupIndex > 0 %}
         <span
             class="text-neutral-500 uppercase text-sm font-medium mt-4 block hidden"
             {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupFilterHeaderOthers') }}
         >
-            oder
+            {{ 'whatwedo_table.filter.or' | trans }}
         </span>
         {% endif %}
         <div
@@ -107,7 +107,7 @@
                             <div class="px-4 sm:px-6">
                                 <div class="flex items-start justify-between">
                                     <h2 class="text-lg font-medium text-neutral-900">
-                                        Filter
+                                        {{ 'whatwedo_table.filter.filter' | trans }}
                                     </h2>
 
                                     <div class="ml-3 h-7 flex items-center">
@@ -139,7 +139,7 @@
                                             {{ stimulus_action('whatwedo/table-bundle/filter', 'appendOr') }}
                                             type="button"
                                         >
-                                            oder
+                                            {{ 'whatwedo_table.filter.or' | trans }}
                                         </button>
                                     </div>
                                     <div>
@@ -150,7 +150,7 @@
                                                     type="button"
                                                     {{ stimulus_action('whatwedo/table-bundle/filter', 'toggleDropdown') }}
                                                 >
-                                                    Gespeicherte Filter
+                                                    {{ 'whatwedo_table.filter.saved_filter' | trans }}
                                                     {{ bootstrap_icon('chevron-down', { class: '-mr-1 ml-2 h-4 w-4' }) }}
                                                 </button>
                                             </div>
@@ -174,7 +174,7 @@
                                                             role="menuitem" tabindex="-1" id="menu-item-3"
                                                         >
                                                             {{ bootstrap_icon('plus', { class: 'inline-block w-5 h-5' }) }}
-                                                            Neu erstellen
+                                                            {{ 'whatwedo_table.filter.create_new' | trans }}
                                                         </a>
                                                     </div>
                                                 {% endif %}
@@ -185,7 +185,7 @@
                                                         role="menuitem" tabindex="-1" id="menu-item-3"
                                                     >
                                                         {{ bootstrap_icon('list', { class: 'inline-block w-5 h-5' }) }}
-                                                        Filter Übersicht
+                                                        {{ 'whatwedo_table.filter.overview' | trans }}
                                                     </a>
                                                 </div>
                                             </div>
@@ -194,10 +194,10 @@
 
                                     <div class="flex-auto text-right">
                                         <button {{ stimulus_action('whatwedo/table-bundle/filter', 'reset') }} type="reset" class="px-2.5 py-1.5 border border-neutral-300 shadow-sm text-xs font-medium rounded text-white bg-error-500 hover:bg-danger-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-                                            Zurücksetzen
+                                            {{ 'whatwedo_table.filter.reset' | trans }}
                                         </button>
                                         <button type="submit" class="px-2.5 py-1.5 border border-neutral-300 shadow-sm text-xs font-medium rounded text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-                                            Filter anwenden
+                                            {{ 'whatwedo_table.filter.apply' | trans }}
                                         </button>
                                     </div>
                                 </div>

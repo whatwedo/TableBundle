@@ -17,6 +17,8 @@ whatwedo_table:
     restore_filter: Aktiviere Filter
     amount_entries: '{amount} Einträge'
     unknown: unbekannt
+    options: Optionen
+    no_elements: Keine Elemente verfügbar
     search:
         filter: Filter
         remove_search: Suche entfernen
@@ -36,6 +38,14 @@ whatwedo_table:
         next_page: nächste Seite
         last_page: letzte Seite
     filter:
+        show_element_when: Zeige Elemente wenn
+        or: oder
+        filter: Filter
+        saved_filter: Gespeicherte Filter
+        create_new: Neu erstellen
+        overview: Filter Übersicht
+        reset: Zurücksetzen
+        apply: Filter anwenden
         operator:
             contains: enthält
             contains_not: enthält nicht
