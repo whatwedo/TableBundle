@@ -1,4 +1,6 @@
 whatwedo_table:
+    download:
+        info: Export
     all: Alle
     page: Seite
     or: Oder
