@@ -99,6 +99,8 @@ class FilterEventListener
 
                 if ($w instanceof Expr\Base || $w instanceof Expr\Comparison) {
                     $andX->add($w);
+                } elseif (is_string($w) && (str_contains($w, 'IS NULL') || str_contains($w, 'IS NOT NULL'))) {
+                    $andX->add($w);
                 } elseif (! \is_bool($w)) {
                     throw new \UnexpectedValueException(sprintf('Bool or %s expected as filter-result, got %s', Expr::class, \get_class($w)));
                 }
