@@ -17,7 +17,7 @@ class DoctrineOrderEventListener
             return;
         }
 
-        $queryBuilder = $event->getTable()->getDataLoader()->getOption(DoctrineDataLoader::OPTION_QUERY_BUILDER);
+        $queryBuilder = $event->getTable()->getDataLoader()->getOption(DoctrineDataLoader::OPT_QUERY_BUILDER);
 
         $sortedColumns = $event->getTable()->getSortExtension()->getOrders(true);
         if (! empty($sortedColumns)) {

@@ -187,7 +187,7 @@ class DefaultController extends AbstractController
     {
         $mainTable = $tableFactory->create('main', null, [
             'dataloader_options' => [
-                DoctrineDataLoader::OPTION_QUERY_BUILDER => $postRepository->createQueryBuilder('post'),
+                DoctrineDataLoader::OPT_QUERY_BUILDER => $postRepository->createQueryBuilder('post'),
             ],
         ]);
         $mainTable

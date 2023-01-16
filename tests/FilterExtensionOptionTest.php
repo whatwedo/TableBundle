@@ -18,7 +18,7 @@ class FilterExtensionOptionTest extends KernelTestCase
         /** @var TableFactory $tableFactory */
         $tableFactory = self::getContainer()->get(TableFactory::class);
 
-        $dataLoaderOptions[ArrayDataLoader::OPTION_DATA] =
+        $dataLoaderOptions[ArrayDataLoader::OPT_DATA] =
             new ArrayCollection([
                 [
                     'id' => 1,
@@ -30,19 +30,19 @@ class FilterExtensionOptionTest extends KernelTestCase
             'dataloader_options' => $dataLoaderOptions,
         ]);
 
-        $table->getFilterExtension()->setOption(FilterExtension::OPTION_ENABLE, true);
-        $table->getFilterExtension()->setOption(FilterExtension::OPTION_ADD_ALL, true);
+        $table->getFilterExtension()->setOption(FilterExtension::OPT_ENABLE, true);
+        $table->getFilterExtension()->setOption(FilterExtension::OPT_ADD_ALL, true);
 
-        $this->assertSame(true, $table->getFilterExtension()->getOption(FilterExtension::OPTION_ENABLE));
-        $this->assertSame(true, $table->getFilterExtension()->getOption(FilterExtension::OPTION_ADD_ALL));
+        $this->assertSame(true, $table->getFilterExtension()->getOption(FilterExtension::OPT_ENABLE));
+        $this->assertSame(true, $table->getFilterExtension()->getOption(FilterExtension::OPT_ADD_ALL));
 
-        $table->getFilterExtension()->setOption(FilterExtension::OPTION_ENABLE, false);
-        $table->getFilterExtension()->setOption(FilterExtension::OPTION_ADD_ALL, false);
+        $table->getFilterExtension()->setOption(FilterExtension::OPT_ENABLE, false);
+        $table->getFilterExtension()->setOption(FilterExtension::OPT_ADD_ALL, false);
 
-        $this->assertSame(false, $table->getFilterExtension()->getOption(FilterExtension::OPTION_ENABLE));
-        $this->assertSame(false, $table->getFilterExtension()->getOption(FilterExtension::OPTION_ADD_ALL));
+        $this->assertSame(false, $table->getFilterExtension()->getOption(FilterExtension::OPT_ENABLE));
+        $this->assertSame(false, $table->getFilterExtension()->getOption(FilterExtension::OPT_ADD_ALL));
 
         $this->expectException(InvalidOptionsException::class);
-        $table->getFilterExtension()->setOption(FilterExtension::OPTION_ENABLE, 'false');
+        $table->getFilterExtension()->setOption(FilterExtension::OPT_ENABLE, 'false');
     }
 }

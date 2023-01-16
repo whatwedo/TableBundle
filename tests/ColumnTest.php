@@ -46,16 +46,16 @@ class ColumnTest extends KernelTestCase
         $table = $this->prepareTable();
 
         $table->addColumn('name', null, [
-            Column::OPTION_PRIORITY => 1,
+            Column::OPT_PRIORITY => 1,
         ])
             ->addColumn('city', null, [
-                Column::OPTION_PRIORITY => 2,
+                Column::OPT_PRIORITY => 2,
             ])
             ->addColumn('country', null, [
-                Column::OPTION_PRIORITY => 3,
+                Column::OPT_PRIORITY => 3,
             ])
             ->addColumn('taxIdentificationNumber', null, [
-                Column::OPTION_PRIORITY => 4,
+                Column::OPT_PRIORITY => 4,
             ])
         ;
 
@@ -72,16 +72,16 @@ class ColumnTest extends KernelTestCase
         $table = $this->prepareTable();
 
         $table->addColumn('name', null, [
-            Column::OPTION_PRIORITY => 1,
+            Column::OPT_PRIORITY => 1,
         ])
             ->addColumn('city', null, [
-                Column::OPTION_PRIORITY => 2,
+                Column::OPT_PRIORITY => 2,
             ])
             ->addColumn('country', null, [
-                Column::OPTION_PRIORITY => 2,
+                Column::OPT_PRIORITY => 2,
             ])
             ->addColumn('taxIdentificationNumber', null, [
-                Column::OPTION_PRIORITY => 4,
+                Column::OPT_PRIORITY => 4,
             ])
         ;
 
@@ -106,7 +106,7 @@ class ColumnTest extends KernelTestCase
 
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
 
-        $dataLoaderOptions[DoctrineDataLoader::OPTION_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
+        $dataLoaderOptions[DoctrineDataLoader::OPT_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
 
         $table = $tableFactory->create('test', DoctrineDataLoader::class, [
             'dataloader_options' => $dataLoaderOptions,

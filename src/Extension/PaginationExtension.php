@@ -47,7 +47,7 @@ class PaginationExtension extends AbstractExtension
     public function setTable(Table $table): self
     {
         parent::setTable($table);
-        $this->limit = $table->getOption('default_limit');
+        $this->limit = $table->getOption(Table::OPT_DEFAULT_LIMIT);
 
         return $this;
     }

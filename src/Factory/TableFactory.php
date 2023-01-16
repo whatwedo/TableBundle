@@ -61,12 +61,12 @@ class TableFactory implements ServiceSubscriberInterface
 
         /** @var DataLoaderInterface $dataLoaderInstance */
         $dataLoaderInstance = $this->locator->get($dataLoader);
-        $dataLoaderInstance->setOptions($options['dataloader_options']);
+        $dataLoaderInstance->setOptions($options[Table::OPT_DATALOADER_OPTIONS]);
 
-        $options['data_loader'] = $dataLoaderInstance;
+        $options[Table::OPT_DATA_LOADER] = $dataLoaderInstance;
 
-        if ($options['data_loader'] instanceof DoctrineDataLoader && ! isset($options['searchable'])) {
-            $options['searchable'] = true;
+        if ($options[Table::OPT_DATA_LOADER] instanceof DoctrineDataLoader && ! isset($options[Table::OPT_SEARCHABLE])) {
+            $options[Table::OPT_SEARCHABLE] = true;
         }
 
         return new Table(

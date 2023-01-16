@@ -39,7 +39,7 @@ class FilterEventListener
      */
     private function queryBuilder()
     {
-        return $this->table->getDataLoader()->getOption(DoctrineDataLoader::OPTION_QUERY_BUILDER);
+        return $this->table->getDataLoader()->getOption(DoctrineDataLoader::OPT_QUERY_BUILDER);
     }
 
     private function addQueryBuilderFilter()

@@ -40,7 +40,7 @@ class TableRenderTest extends KernelTestCase
 
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
 
-        $dataLoaderOptions[DoctrineDataLoader::OPTION_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
+        $dataLoaderOptions[DoctrineDataLoader::OPT_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
 
         $table = $tableFactory->create('test', DoctrineDataLoader::class, [
             'dataloader_options' => $dataLoaderOptions,

@@ -31,7 +31,9 @@ namespace whatwedo\TableBundle\Extension;
 
 use Symfony\Component\HttpFoundation\RequestStack;
 use whatwedo\TableBundle\Helper\RouterHelper;
+use whatwedo\TableBundle\Table\Column;
 use whatwedo\TableBundle\Table\ColumnInterface;
+use whatwedo\TableBundle\Table\Table;
 
 class SortExtension extends AbstractExtension
 {
@@ -42,7 +44,7 @@ class SortExtension extends AbstractExtension
 
     public function getOrder(ColumnInterface $column): ?string
     {
-        if (! $column->getOption('sortable')) {
+        if (! $column->getOption(Column::OPT_SORTABLE)) {
             return null;
         }
 
@@ -56,12 +58,12 @@ class SortExtension extends AbstractExtension
                 $this->table->getIdentifier(),
                 RouterHelper::PARAMETER_SORT_DIRECTION,
                 $column->getIdentifier()
-            ) => $column->getOption('sortable') ? $order : null,
+            ) => $column->getOption(Column::OPT_SORTABLE) ? $order : null,
             RouterHelper::getParameterName(
                 $this->table->getIdentifier(),
                 RouterHelper::PARAMETER_SORT_ENABLED,
                 $column->getIdentifier()
-            ) => $order && $column->getOption('sortable') ? '1' : null,
+            ) => $order && $column->getOption(Column::OPT_SORTABLE) ? '1' : null,
             RouterHelper::getParameterName(
                 $this->table->getIdentifier(),
                 RouterHelper::PARAMETER_PAGINATION_PAGE
@@ -74,17 +76,17 @@ class SortExtension extends AbstractExtension
         $sortedColumns = [];
 
         foreach ($this->table->getColumns() as $column) {
-            if (! $column->getOption('sortable')) {
+            if (! $column->getOption(Column::OPT_SORTABLE)) {
                 continue;
             }
             $order = $this->getOrderFromQuery($column);
             if ($order) {
-                $sortedColumns[$column->getOption('sort_expression')] = $order;
+                $sortedColumns[$column->getOption(Column::OPT_SORT_EXPRESSION)] = $order;
             }
         }
 
         if (! $sortedColumns && $useDefault) {
-            return $this->table->getOption('default_sort');
+            return $this->table->getOption(Table::OPT_DEFAULT_SORT);
         }
 
         return $sortedColumns;

@@ -47,14 +47,14 @@ class ExportManager
     protected function createHeader(Worksheet $sheet, array $tableColumns): void
     {
         foreach ($tableColumns as $colIndex => $column) {
-            if ($column->getOption(Column::OPTION_EXPORT)[Column::OPTION_EXPORT_EXPORTABLE] === false) {
+            if ($column->getOption(Column::OPT_EXPORT)[Column::OPT_EXPORT_EXPORTABLE] === false) {
                 continue;
             }
 
             $value = '';
-            if ($column->getOption(Column::OPTION_LABEL)) {
+            if ($column->getOption(Column::OPT_LABEL)) {
                 $value = $this->translator->trans(
-                    $column->getOption(Column::OPTION_LABEL)
+                    $column->getOption(Column::OPT_LABEL)
                 );
             }
 
@@ -74,17 +74,17 @@ class ExportManager
         foreach ($table->getRows() as $rowIndex => $row) {
             $colIndex = 1;
             foreach ($tableColumns as $column) {
-                if ($column->getOption(Column::OPTION_EXPORT)[Column::OPTION_EXPORT_EXPORTABLE] === false) {
+                if ($column->getOption(Column::OPT_EXPORT)[Column::OPT_EXPORT_EXPORTABLE] === false) {
                     continue;
                 }
-                $data = $propertyAccessor->getValue($row, $column->getOption(Column::OPTION_ACCESSOR_PATH));
-                if ($column->getOption(Column::OPTION_FORMATTER)) {
-                    if (is_callable($column->getOption(Column::OPTION_FORMATTER))) {
-                        $formatter = $column->getOption(Column::OPTION_FORMATTER);
+                $data = $propertyAccessor->getValue($row, $column->getOption(Column::OPT_ACCESSOR_PATH));
+                if ($column->getOption(Column::OPT_FORMATTER)) {
+                    if (is_callable($column->getOption(Column::OPT_FORMATTER))) {
+                        $formatter = $column->getOption(Column::OPT_FORMATTER);
                         $data = $formatter($data);
                     } else {
-                        $formatter = $this->formatterManager->getFormatter($column->getOption(Column::OPTION_FORMATTER));
-                        $formatter->processOptions($column->getOption(Column::OPTION_FORMATTER_OPTIONS));
+                        $formatter = $this->formatterManager->getFormatter($column->getOption(Column::OPT_FORMATTER));
+                        $formatter->processOptions($column->getOption(Column::OPT_FORMATTER_OPTIONS));
                         $data = $formatter->getString($data);
                     }
                 }

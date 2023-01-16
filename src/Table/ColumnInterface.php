@@ -20,7 +20,5 @@ interface ColumnInterface
 
     public function setOption(string $key, $value): void;
 
-    public function render($row): string;
-
     public function getActions($row): array;
 }

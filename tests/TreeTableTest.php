@@ -31,7 +31,7 @@ class TreeTableTest extends KernelTestCase
         $tableFactory = self::getContainer()->get(TableFactory::class);
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
 
-        $dataLoaderOptions[DoctrineDataLoader::OPTION_QUERY_BUILDER] = $entityManager->getRepository(Category::class)->createQueryBuilder('c');
+        $dataLoaderOptions[DoctrineDataLoader::OPT_QUERY_BUILDER] = $entityManager->getRepository(Category::class)->createQueryBuilder('c');
 
         $table = $tableFactory->create('test', DoctrineTreeDataLoader::class, [
             'dataloader_options' => $dataLoaderOptions,
@@ -63,7 +63,7 @@ class TreeTableTest extends KernelTestCase
         $tableFactory = self::getContainer()->get(TableFactory::class);
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
 
-        $dataLoaderOptions[DoctrineDataLoader::OPTION_QUERY_BUILDER] = $entityManager->getRepository(Category::class)->createQueryBuilder('c');
+        $dataLoaderOptions[DoctrineDataLoader::OPT_QUERY_BUILDER] = $entityManager->getRepository(Category::class)->createQueryBuilder('c');
 
         $table = $tableFactory->create('test', DoctrineTreeDataLoader::class, [
             'dataloader_options' => $dataLoaderOptions,

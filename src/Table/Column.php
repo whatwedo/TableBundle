@@ -12,87 +12,77 @@ use whatwedo\CoreBundle\Manager\FormatterManager;
 
 class Column extends AbstractColumn implements FormattableColumnInterface
 {
-    public const OPTION_LABEL = 'label';
+    public const OPT_LABEL = 'label';
 
-    public const OPTION_ACCESSOR_PATH = 'accessor_path';
+    public const OPT_ACCESSOR_PATH = 'accessor_path';
 
-    public const OPTION_CALLABLE = 'callable';
+    public const OPT_CALLABLE = 'callable';
 
-    public const OPTION_IS_PRIMARY = 'is_primary';
+    public const OPT_IS_PRIMARY = 'is_primary';
 
-    public const OPTION_FORMATTER = 'formatter';
+    public const OPT_FORMATTER = 'formatter';
 
-    public const OPTION_FORMATTER_OPTIONS = 'formatter_options';
+    public const OPT_FORMATTER_OPTIONS = 'formatter_options';
 
-    public const OPTION_ATTRIBUTES = 'attributes';
+    public const OPT_ATTRIBUTES = 'attributes';
 
-    public const OPTION_SORTABLE = 'sortable';
+    public const OPT_SORTABLE = 'sortable';
 
-    public const OPTION_SORT_EXPRESSION = 'sort_expression';
+    public const OPT_SORT_EXPRESSION = 'sort_expression';
 
-    public const OPTION_PRIORITY = 'priority';
+    public const OPT_PRIORITY = 'priority';
 
-    public const OPTION_EXPORT = 'export';
+    public const OPT_EXPORT = 'export';
 
-    public const OPTION_EXPORT_EXPORTABLE = 'exportable';
-
-    protected string $tableIdentifier;
+    public const OPT_EXPORT_EXPORTABLE = 'exportable';
 
     protected FormatterManager $formatterManager;
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            self::OPTION_LABEL => $this->identifier,
-            self::OPTION_ACCESSOR_PATH => $this->identifier,
-            self::OPTION_CALLABLE => null,
-            self::OPTION_IS_PRIMARY => false,
-            self::OPTION_FORMATTER => DefaultFormatter::class,
-            self::OPTION_FORMATTER_OPTIONS => [],
-            self::OPTION_ATTRIBUTES => [],
-            self::OPTION_SORTABLE => true,
-            self::OPTION_SORT_EXPRESSION => $this->identifier,
-            self::OPTION_PRIORITY => 100,
+            self::OPT_LABEL => $this->identifier,
+            self::OPT_ACCESSOR_PATH => $this->identifier,
+            self::OPT_CALLABLE => null,
+            self::OPT_IS_PRIMARY => false,
+            self::OPT_FORMATTER => DefaultFormatter::class,
+            self::OPT_FORMATTER_OPTIONS => [],
+            self::OPT_ATTRIBUTES => [],
+            self::OPT_SORTABLE => true,
+            self::OPT_SORT_EXPRESSION => $this->identifier,
+            self::OPT_PRIORITY => 100,
         ]);
 
-        $resolver->setAllowedTypes(self::OPTION_PRIORITY, 'int');
-        $resolver->setAllowedTypes(self::OPTION_ACCESSOR_PATH, 'string');
-        $resolver->setAllowedTypes(self::OPTION_SORT_EXPRESSION, 'string');
-        $resolver->setAllowedTypes(self::OPTION_IS_PRIMARY, 'boolean');
-        $resolver->setAllowedTypes(self::OPTION_SORTABLE, 'boolean');
+        $resolver->setAllowedTypes(self::OPT_PRIORITY, 'int');
+        $resolver->setAllowedTypes(self::OPT_ACCESSOR_PATH, 'string');
+        $resolver->setAllowedTypes(self::OPT_SORT_EXPRESSION, 'string');
+        $resolver->setAllowedTypes(self::OPT_IS_PRIMARY, 'boolean');
+        $resolver->setAllowedTypes(self::OPT_SORTABLE, 'boolean');
 
-        $resolver->setDefault(self::OPTION_EXPORT, function (OptionsResolver $exportResolver) {
+        $resolver->setDefault(self::OPT_EXPORT, function (OptionsResolver $exportResolver) {
             $exportResolver->setDefaults([
-                self::OPTION_EXPORT_EXPORTABLE => true,
+                self::OPT_EXPORT_EXPORTABLE => true,
             ]);
 
-            $exportResolver->setAllowedTypes(self::OPTION_EXPORT_EXPORTABLE, 'boolean');
+            $exportResolver->setAllowedTypes(self::OPT_EXPORT_EXPORTABLE, 'boolean');
         });
-    }
-
-    /**
-     * @deprecated
-     */
-    public function render($row): string
-    {
-        throw new \Exception('\whatwedo\TableBundle\Table\Column::render is deprecated, use twig function whatwedo_table_column_render()');
     }
 
     public function getContent($row)
     {
-        if (is_callable($this->options[self::OPTION_CALLABLE])) {
-            if (is_array($this->options[self::OPTION_CALLABLE])) {
-                return call_user_func($this->options[self::OPTION_CALLABLE], [$row]);
+        if (is_callable($this->options[self::OPT_CALLABLE])) {
+            if (is_array($this->options[self::OPT_CALLABLE])) {
+                return call_user_func($this->options[self::OPT_CALLABLE], [$row]);
             }
 
-            return $this->options[self::OPTION_CALLABLE]($row);
+            return $this->options[self::OPT_CALLABLE]($row);
         }
 
         try {
             return PropertyAccess::createPropertyAccessorBuilder()
                 ->enableMagicCall()
                 ->getPropertyAccessor()
-                ->getValue($row, $this->options[self::OPTION_ACCESSOR_PATH])
+                ->getValue($row, $this->options[self::OPT_ACCESSOR_PATH])
             ;
         } catch (NoSuchPropertyException $e) {
             return $e->getMessage();

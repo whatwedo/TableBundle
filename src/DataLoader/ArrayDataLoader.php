@@ -8,16 +8,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ArrayDataLoader extends AbstractDataLoader
 {
-    public const OPTION_DATA = 'data';
+    public const OPT_DATA = 'data';
 
     public function getResults(): iterable
     {
-        return $this->options[self::OPTION_DATA];
+        return $this->options[self::OPT_DATA];
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setRequired(self::OPTION_DATA);
-        $resolver->setAllowedTypes(self::OPTION_DATA, ['iterable']);
+        $resolver->setRequired(self::OPT_DATA);
+        $resolver->setAllowedTypes(self::OPT_DATA, ['iterable']);
     }
 }

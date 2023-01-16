@@ -48,13 +48,13 @@ class FilterExtension extends AbstractExtension
 {
     public const QUERY_PREDEFINED_FILTER = 'predefined_filter';
 
-    public const OPTION_ADD_ALL = 'add_all';
+    public const OPT_ADD_ALL = 'add_all';
 
-    public const OPTION_INCLUDE_FIELDS = 'include_fields';
+    public const OPT_INCLUDE_FIELDS = 'include_fields';
 
-    public const OPTION_EXCLUDE_FIELDS = 'exclude_fields';
+    public const OPT_EXCLUDE_FIELDS = 'exclude_fields';
 
-    public const OPTION_ENABLE = 'enable';
+    public const OPT_ENABLE = 'enable';
 
     /**
      * @var Filter[]
@@ -80,16 +80,16 @@ class FilterExtension extends AbstractExtension
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            self::OPTION_ADD_ALL => true,
-            self::OPTION_ENABLE => true,
-            self::OPTION_INCLUDE_FIELDS => [],
-            self::OPTION_EXCLUDE_FIELDS => [],
+            self::OPT_ADD_ALL => true,
+            self::OPT_ENABLE => true,
+            self::OPT_INCLUDE_FIELDS => [],
+            self::OPT_EXCLUDE_FIELDS => [],
         ]);
 
-        $resolver->setAllowedTypes(self::OPTION_ADD_ALL, 'boolean');
-        $resolver->setAllowedTypes(self::OPTION_ENABLE, 'boolean');
-        $resolver->setAllowedTypes(self::OPTION_INCLUDE_FIELDS, 'string[]');
-        $resolver->setAllowedTypes(self::OPTION_EXCLUDE_FIELDS, 'string[]');
+        $resolver->setAllowedTypes(self::OPT_ADD_ALL, 'boolean');
+        $resolver->setAllowedTypes(self::OPT_ENABLE, 'boolean');
+        $resolver->setAllowedTypes(self::OPT_INCLUDE_FIELDS, 'string[]');
+        $resolver->setAllowedTypes(self::OPT_EXCLUDE_FIELDS, 'string[]');
     }
 
     /**
@@ -166,13 +166,13 @@ class FilterExtension extends AbstractExtension
      */
     public function addFiltersAutomatically(Table $table, ?callable $labelCallable = null, ?callable $jsonSearchCallable = null, ?array $propertyNames = null)
     {
-        if (! $this->getOption(self::OPTION_ENABLE)) {
+        if (! $this->getOption(self::OPT_ENABLE)) {
             return;
         }
 
         if ($table->getDataLoader() instanceof DoctrineDataLoader) {
             /** @var QueryBuilder $queryBuilder */
-            $queryBuilder = $table->getDataLoader()->getOption(DoctrineDataLoader::OPTION_QUERY_BUILDER);
+            $queryBuilder = $table->getDataLoader()->getOption(DoctrineDataLoader::OPT_QUERY_BUILDER);
             $entityClass = $queryBuilder->getRootEntities()[0];
 
             $reflectionClass = new \ReflectionClass($entityClass);
@@ -182,10 +182,10 @@ class FilterExtension extends AbstractExtension
             $properties = $propertyNames ? array_map([$reflectionClass, 'getProperty'], $propertyNames) : $reflectionClass->getProperties();
 
             foreach ($properties as $property) {
-                if ($this->getOption(self::OPTION_ADD_ALL) && in_array($property->getName(), $this->getOption(self::OPTION_EXCLUDE_FIELDS), true)) {
+                if ($this->getOption(self::OPT_ADD_ALL) && in_array($property->getName(), $this->getOption(self::OPT_EXCLUDE_FIELDS), true)) {
                     continue;
                 }
-                if (! $this->getOption(self::OPTION_ADD_ALL) && ! in_array($property->getName(), $this->getOption(self::OPTION_INCLUDE_FIELDS), true)) {
+                if (! $this->getOption(self::OPT_ADD_ALL) && ! in_array($property->getName(), $this->getOption(self::OPT_INCLUDE_FIELDS), true)) {
                     continue;
                 }
                 $this->addFilterAutomatically($table, $queryBuilder, $labelCallable, $jsonSearchCallable, $property, $reflectionClass->getNamespaceName());

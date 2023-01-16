@@ -33,6 +33,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use whatwedo\SearchBundle\Entity\Index;
 use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
 use whatwedo\TableBundle\Event\DataLoadEvent;
+use whatwedo\TableBundle\Table\Table;
 
 class SearchEventListener
 {
@@ -46,7 +47,7 @@ class SearchEventListener
     {
         if (! $event->getTable()->getDataLoader() instanceof DoctrineDataLoader
             || ! $event->getTable()->getSearchExtension()
-            || ! $event->getTable()->getOption('searchable')) {
+            || ! $event->getTable()->getOption(Table::OPT_SEARCHABLE)) {
             return;
         }
 
@@ -56,7 +57,7 @@ class SearchEventListener
             return;
         }
 
-        $queryBuilder = $event->getTable()->getDataLoader()->getOption(DoctrineDataLoader::OPTION_QUERY_BUILDER);
+        $queryBuilder = $event->getTable()->getDataLoader()->getOption(DoctrineDataLoader::OPT_QUERY_BUILDER);
         $entity = $queryBuilder->getRootEntities()[0];
         $ids = $this->entityManager->getRepository(Index::class)->search($query, $entity);
 

@@ -6,6 +6,7 @@ namespace whatwedo\TableBundle\DataLoader;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query;
 use Gedmo\Tree\Hydrator\ORM\TreeObjectHydrator;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use whatwedo\TableBundle\Entity\TreeInterface;
@@ -13,7 +14,7 @@ use whatwedo\TableBundle\Extension\PaginationExtension;
 
 class DoctrineTreeDataLoader extends AbstractDataLoader
 {
-    public const OPTION_QUERY_BUILDER = 'query_builder';
+    public const OPT_QUERY_BUILDER = 'query_builder';
 
     public function __construct(
         protected PaginationExtension $paginationExtension,
@@ -27,9 +28,9 @@ class DoctrineTreeDataLoader extends AbstractDataLoader
 
         $results = [];
 
-        $queryResults = $this->options[self::OPTION_QUERY_BUILDER]
+        $queryResults = $this->options[self::OPT_QUERY_BUILDER]
             ->getQuery()
-            ->setHint(\Doctrine\ORM\Query::HINT_INCLUDE_META_COLUMNS, true)
+            ->setHint(Query::HINT_INCLUDE_META_COLUMNS, true)
             ->getResult('tree');
 
         $this->getHierarchicalResults($results, $queryResults);
@@ -48,8 +49,8 @@ class DoctrineTreeDataLoader extends AbstractDataLoader
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
-        $resolver->setRequired(self::OPTION_QUERY_BUILDER);
-        $resolver->setAllowedTypes(self::OPTION_QUERY_BUILDER, 'Doctrine\ORM\QueryBuilder');
+        $resolver->setRequired(self::OPT_QUERY_BUILDER);
+        $resolver->setAllowedTypes(self::OPT_QUERY_BUILDER, 'Doctrine\ORM\QueryBuilder');
     }
 
     private function getHierarchicalResults(array &$results, array $getResult)

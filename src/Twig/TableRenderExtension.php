@@ -69,8 +69,8 @@ class TableRenderExtension extends AbstractExtension
 
     private function renderTableColumn($context, Column $column, $entity)
     {
-        $formatter = $this->formatterManager->getFormatter($column->getOption(Column::OPTION_FORMATTER));
-        $formatter->processOptions($column->getOption(Column::OPTION_FORMATTER_OPTIONS));
+        $formatter = $this->formatterManager->getFormatter($column->getOption(Column::OPT_FORMATTER));
+        $formatter->processOptions($column->getOption(Column::OPT_FORMATTER_OPTIONS));
 
         return $formatter->getHtml($column->getContent($entity));
     }
@@ -88,7 +88,7 @@ class TableRenderExtension extends AbstractExtension
     private function getTheme(array $context): string
     {
         if (isset($context['table']) && $context['table'] instanceof Table) {
-            return $context['table']->getOption(Table::OPTION_THEME);
+            return $context['table']->getOption(Table::OPT_THEME);
         }
 
         return '@whatwedoTable/tailwind_2_layout.html.twig';

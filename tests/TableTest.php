@@ -29,7 +29,7 @@ class TableTest extends KernelTestCase
     {
         $tableFactory = self::getContainer()->get(TableFactory::class);
 
-        $dataLoaderOptions[ArrayDataLoader::OPTION_DATA] =
+        $dataLoaderOptions[ArrayDataLoader::OPT_DATA] =
             new ArrayCollection([
                 [
                     'id' => 1,
@@ -78,7 +78,7 @@ class TableTest extends KernelTestCase
 
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
 
-        $dataLoaderOptions[DoctrineDataLoader::OPTION_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
+        $dataLoaderOptions[DoctrineDataLoader::OPT_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
 
         $table = $tableFactory->create('test', DoctrineDataLoader::class, [
             'dataloader_options' => $dataLoaderOptions,
@@ -107,7 +107,7 @@ class TableTest extends KernelTestCase
 
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
 
-        $dataLoaderOptions[DoctrineDataLoader::OPTION_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
+        $dataLoaderOptions[DoctrineDataLoader::OPT_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
 
         $table = $tableFactory->create('test', DoctrineDataLoader::class, [
             'dataloader_options' => $dataLoaderOptions,
@@ -141,7 +141,7 @@ class TableTest extends KernelTestCase
 
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
 
-        $dataLoaderOptions[DoctrineDataLoader::OPTION_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
+        $dataLoaderOptions[DoctrineDataLoader::OPT_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
 
         $table = $tableFactory->create('test', DoctrineDataLoader::class, [
             'dataloader_options' => $dataLoaderOptions,
@@ -181,7 +181,7 @@ class TableTest extends KernelTestCase
 
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
 
-        $dataLoaderOptions[DoctrineDataLoader::OPTION_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
+        $dataLoaderOptions[DoctrineDataLoader::OPT_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
 
         $table = $tableFactory->create('test', DoctrineDataLoader::class, [
             'dataloader_options' => $dataLoaderOptions,
@@ -245,7 +245,7 @@ class TableTest extends KernelTestCase
 
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
 
-        $dataLoaderOptions[DoctrineDataLoader::OPTION_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
+        $dataLoaderOptions[DoctrineDataLoader::OPT_QUERY_BUILDER] = $entityManager->getRepository(Company::class)->createQueryBuilder('c');
 
         $table = $tableFactory->create('test', DoctrineDataLoader::class, [
             'dataloader_options' => $dataLoaderOptions,
