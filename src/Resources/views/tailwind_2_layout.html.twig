@@ -15,7 +15,7 @@
                 {% block table_header %}
                     {% include "@whatwedoTable/tailwind_2/_header.html.twig" %}
                 {% endblock %}
-                
+
                 {% block table_table %}
                     {% include "@whatwedoTable/tailwind_2/_table.html.twig" %}
                 {% endblock %}
@@ -67,7 +67,7 @@
                     </p>
 
                     <div class="flex space-x-2">
-                        <button {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}>
+                        <button class="whatwedo-crud-button--action-danger">
                             {{ action.confirmation('yes') | trans }}
                         </button>
                         <button
@@ -84,7 +84,7 @@
     {% else %}
         <a
             href="{{ path(action.route, action.routeParameters(entity)) }}"
-            class="whatwedo-utility-bold group flex items-center px-4 py-2"
+            class="whatwedo-utility-bold group flex items-center px-4 py-2 hover:bg-neutral-200 transition-colors"
             tabindex="-1"
             {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
         >
@@ -100,12 +100,12 @@
     {% if action.hasConfirmation() %}
         <div
             {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}
-            class="relative block"
+            class="relative"
         >
             <button
                 {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
                 {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') }}
-                class="whatwedo-utility-bold group flex items-center px-4 py-2" tabindex="-1"
+                class="whatwedo-utility-bold group flex items-center px-4 py-2 w-full hover:bg-neutral-200 transition-colors" tabindex="-1"
             >
                 {% if action.option('icon') %}
                     {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
@@ -130,7 +130,7 @@
                     </p>
 
                     <div class="flex space-x-2">
-                        <button {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}>
+                        <button class="whatwedo-crud-button--action-danger">
                             {{ action.confirmation('yes') | trans }}
                         </button>
                         <button
@@ -167,10 +167,17 @@
 
 {% block modal_action %}
     {# @var action \whatwedo\CrudBundle\Action\Action #}
-    <span {{ stimulus_controller('whatwedo/core-bundle/modal-form', { formUrl: path(action.option('route'), action.option('route_parameters')) }) }} class="float-end mb-3">
-        <button type="button"
-                {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
-                class="whatwedo-utility-bold group flex items-center px-4 py-2 ml-0" tabindex="-1" {{ stimulus_action('whatwedo/core-bundle/modal-form', 'openModal') }}>
+    <span
+        class="ml-3 mb-3"
+        {{ stimulus_controller('whatwedo/core-bundle/modal-form', { formUrl: path(action.option('route'), action.option('route_parameters')) }) }}
+    >
+        <button
+            type="button"
+            class="whatwedo-utility-bold group flex items-center px-4 py-2 ml-0"
+            tabindex="-1"
+            {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
+            {{ stimulus_action('whatwedo/core-bundle/modal-form', 'openModal') }}
+        >
             {% if action.option('icon') %}
                 {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
             {% endif %}
@@ -179,7 +186,7 @@
 
         <div
                 {{ stimulus_target('whatwedo/core-bundle/modal-form', 'menu') }}
-                class="hidden fixed z-10 duration-300 ease-in-out transform inset-0 overflow-y-auto"
+                class="hidden whatwedo-crud-modal whatwedo-utility-modal"
                 data-transition-enter-from="opacity-0"
                 data-transition-enter-to="opacity-100"
                 data-transition-leave-from="opacity-100"
@@ -187,22 +194,30 @@
                 role="dialog"
                 aria-modal="true"
         >
-            <div class="flex min-h-screen text-center md:block md:px-2 lg:px-4" style="font-size: 0;">
-                <div class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity md:block"></div>
+            <div class="whatwedo-crud-modal__overlay whatwedo-utility-modal__overlay">
+                <div
+                    class="whatwedo-crud-modal__backdrop whatwedo-utility-modal__backdrop"
+                    {{ stimulus_action('whatwedo/core-bundle/modal-form', 'close', 'click') }}
+                ></div>
 
                 {# This element is to trick the browser into centering the modal contents. #}
                 <span class="hidden md:inline-block md:align-middle md:h-screen" aria-hidden="true">&#8203;</span>
 
-                <div class="flex text-base text-left transform transition w-full md:inline-block md:px-4 md:my-8 md:align-middle bg-white shadow-2xl">
-                    <div class="w-full relative flex items-center px-4 pt-14 pb-8 overflow-hidden sm:px-6 sm:pt-8 md:p-6 lg:p-8">
-                        <button type="button"
-                                class="absolute top-4 right-4 text-gray-400 hover:text-gray-500 sm:top-8 sm:right-6 md:top-6 md:right-6 lg:top-8 lg:right-8 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 rounded transition-colors" {{ stimulus_action('whatwedo/core-bundle/modal-form', 'close') }}>
+                <div class="whatwedo-crud-modal__wrapper whatwedo-utility-modal__wrapper">
+                    <div class="whatwedo-utility-modal__wrapper-inner">
+                        <button
+                            type="button"
+                            class="whatwedo-crud-modal__close whatwedo-utility-modal__close"
+                            {{ stimulus_action('whatwedo/core-bundle/modal-form', 'close') | stimulus_action('whatwedo/core-bundle/modal-form', 'close', 'keydown.esc@window') }}
+                        >
                             <span class="sr-only">Close</span>
                             {{ bootstrap_icon('x', { class: 'inline w-8 h-8' }) }}
                         </button>
                     </div>
-                    <div class="w-full" {{ stimulus_target('whatwedo/core-bundle/modal-form', 'modalBody') }}>
-                    </div>
+                    <div
+                        class="whatwedo-crud-modal__body w-full"
+                        {{ stimulus_target('whatwedo/core-bundle/modal-form', 'modalBody') }}
+                    ></div>
                 </div>
             </div>
         </div>
