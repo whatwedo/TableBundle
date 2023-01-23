@@ -42,6 +42,7 @@ whatwedo_table:
     filter:
         show_element_when: Zeige Elemente wenn
         or: oder
+        and: und
         filter: Filter
         saved_filter: Gespeicherte Filter
         create_new: Neu erstellen

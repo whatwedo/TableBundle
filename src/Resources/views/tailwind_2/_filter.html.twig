@@ -2,9 +2,9 @@
     {% set filters = table.filterExtension.filters %}
     {% set filter = filters|filter(f => f.acronym == filterAcronym)|first %}
     {% set indexSuffix = '[' ~ groupIndex ~ '][' ~ conditionIndex ~ ']' %}
-    <div class="flex" {{ stimulus_target('whatwedo/table-bundle/filter', 'singleFilter') }}>
-        <div class="flex-auto w-1/5">
-            <select {{ stimulus_action('whatwedo/table-bundle/filter', 'filterTargetChanged') }} name="{{ whatwedo_table_parameter(table, 'filter_column')~indexSuffix }}" class="w-full border-0 text-sm">
+    <div class="flex gap-x-4 my-3" {{ stimulus_target('whatwedo/table-bundle/filter', 'singleFilter') }}>
+        <div class="w-3/12">
+            <select {{ stimulus_action('whatwedo/table-bundle/filter', 'filterTargetChanged') }} name="{{ whatwedo_table_parameter(table, 'filter_column')~indexSuffix }}" class="w-full whatwedo-utility-paragraph whatwedo-crud-button--action-white">
                 {% for f in filters %}
                     <option
                         value="{{ f.acronym }}"
@@ -16,33 +16,33 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="flex-auto w-1/5">
-            <select name="{{ whatwedo_table_parameter(table, 'filter_operator')~indexSuffix }}" class="w-full border-0 text-sm">
+        <div class="whatwedo-table-filter-selection flex-initial w-3/12">
+            <select name="{{ whatwedo_table_parameter(table, 'filter_operator')~indexSuffix }}" class="w-full whatwedo-utility-paragraph whatwedo-crud-button--action-white">
                 {% for key, value in filter.type.operators %}
                     <option value="{{ key }}" {% if key == filterOperator %}selected="selected"{% endif %}>{{ value|trans }}</option>
                 {% endfor %}
             </select>
         </div>
-        <div class="flex-auto w-3/5">
+        <div class="whatwedo-table-filter-amount flex-none w-4/23">
             {{ filter.type.valueField(filterValue)|replace({ '{name}': whatwedo_table_parameter(table, 'filter_value')~indexSuffix })|raw }}
         </div>
-        <div class="flex-auto text-right pt-1 items-center w-1/5">
+        <div class="whatwedo-table-filter-actions flex-auto text-right items-center w-2/12">
             <div class="flex justify-end">
                 <button
-                    class="whatwedo_table-button hidden flex-none"
+                    type="button"
+                    class="whatwedo-crud-button--action-white hidden flex-none"
                     {{ stimulus_action('whatwedo/table-bundle/filter', 'appendAnd') }}
                     {{ stimulus_target('whatwedo/table-bundle/filter', 'singleFilterAnd') }}
-                    type="button"
                 >
-                    und
+                    {{ 'whatwedo_table.filter.and' | trans }}
                 </button>
                 <button
-                    class="flex-none px-2.5 py-2 text-neutral-400 hover:text-neutral-600 focus:outline-none"
+                    type="button"
+                    class="whatwedo-crud-button--action-danger flex-none ml-3 px-2.5 py-2"
                     {{ stimulus_action('whatwedo/table-bundle/filter', 'removeAnd') }}
                     {{ stimulus_target('whatwedo/table-bundle/filter', 'singleFilterRemove') }}
-                    type="button"
                 >
-                    {{ bootstrap_icon('trash') }}
+                    {{ bootstrap_icon('trash', { class: 'fill-white' }) }}
                 </button>
             </div>
         </div>
@@ -52,21 +52,21 @@
 {% macro filter_group(table, groupIndex, group) %}
     <div {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroup') }}>
         <span
-            class="text-neutral-500 uppercase text-sm font-medium mt-4 block hidden"
+            class="whatwedo-utility-bold hidden"
             {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupFilterHeaderFirst') }}
         >
             {{ 'whatwedo_table.filter.show_element_when' | trans }}
         </span>
         {% if groupIndex > 0 %}
         <span
-            class="text-neutral-500 uppercase text-sm font-medium mt-4 block hidden"
+            class="whatwedo-utility-bold hidden"
             {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupFilterHeaderOthers') }}
         >
             {{ 'whatwedo_table.filter.or' | trans }}
         </span>
         {% endif %}
         <div
-            class="mt-1 p-4 bg-white relative rounded-md shadow-sm"
+            class="mt-3 py-2 px-4 bg-white relative rounded-md shadow-sm"
             {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupFilterList') }}
         >
             {% for data in group %}
@@ -83,7 +83,11 @@
 
 {% if table.filterExtension and table.filterExtension.filters|length > 0 %}
     <div class="relative z-10">
-        <div class="fixed inset-0 opacity-0 ease-in-out delay-100 duration-400 transition-opacity hidden bg-neutral-500/[.6]" {{ stimulus_target('whatwedo/table-bundle/filter', 'backdrop') }}></div>
+        <div
+            class="fixed inset-0 opacity-0 ease-in-out delay-100 duration-400 transition-opacity hidden bg-neutral-500/[.6]"
+            {{ stimulus_target('whatwedo/table-bundle/filter', 'backdrop') }}
+            {{ stimulus_action('whatwedo/table-bundle/filter', 'close', 'click') }}
+        ></div>
         <div
             class="whatwedo_table:filter__wrapper pointer-events-none fixed inset-0 overflow-hidden"
             {{ stimulus_target('whatwedo/table-bundle/filter', 'filters') }}
@@ -106,18 +110,18 @@
                         <div class="h-full flex flex-col py-6 bg-neutral-100 shadow-xl overflow-y-scroll">
                             <div class="px-4 sm:px-6">
                                 <div class="flex items-start justify-between">
-                                    <h2 class="text-lg font-medium text-neutral-900">
+                                    <h2 class="whatwedo-utility-heading-2">
                                         {{ 'whatwedo_table.filter.filter' | trans }}
                                     </h2>
 
                                     <div class="ml-3 h-7 flex items-center">
                                         <button
-                                            class="rounded-md text-neutral-400 hover:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                                            {{ stimulus_action('whatwedo/table-bundle/filter', 'close') }}
                                             type="button"
+                                            class="text-neutral-400 hover:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 rounded transition-colors"
+                                            {{ stimulus_action('whatwedo/table-bundle/filter', 'close') | stimulus_action('whatwedo/table-bundle/filter', 'close', 'keydown.esc@window') }}
                                         >
                                             <span class="sr-only">Close panel</span>
-                                            {{ bootstrap_icon('x', { class: 'h-6 w-6' }) }}
+                                            {{ bootstrap_icon('x', { class: 'h-8 w-8' }) }}
                                         </button>
                                     </div>
                                 </div>
@@ -135,9 +139,9 @@
                                 <div class="mt-4 px-4 pb-4 sm:px-6 flex">
                                     <div class="flex-auto">
                                         <button
-                                            class="px-2.5 py-1.5 border border-neutral-300 shadow-sm text-xs font-medium rounded text-neutral-700 bg-white hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                                            {{ stimulus_action('whatwedo/table-bundle/filter', 'appendOr') }}
                                             type="button"
+                                            class="whatwedo-crud-button--action-white text-sm px-2.5 py-1.5"
+                                            {{ stimulus_action('whatwedo/table-bundle/filter', 'appendOr') }}
                                         >
                                             {{ 'whatwedo_table.filter.or' | trans }}
                                         </button>
@@ -146,8 +150,8 @@
                                         <div class="relative inline-block text-left">
                                             <div>
                                                 <button
-                                                    class="inline-flex justify-center rounded-md border border-neutral-300 shadow-sm px-2.5 py-1.5 bg-white text-xs font-medium text-neutral-700 hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-neutral-100 focus:ring-primary-500"
                                                     type="button"
+                                                    class="whatwedo-crud-button--action-white text-sm px-2.5 py-1.5 inline-flex justify-center"
                                                     {{ stimulus_action('whatwedo/table-bundle/filter', 'toggleDropdown') }}
                                                 >
                                                     {{ 'whatwedo_table.filter.saved_filter' | trans }}
@@ -193,10 +197,10 @@
                                     </div>
 
                                     <div class="flex-auto text-right">
-                                        <button {{ stimulus_action('whatwedo/table-bundle/filter', 'reset') }} type="reset" class="px-2.5 py-1.5 border border-neutral-300 shadow-sm text-xs font-medium rounded text-white bg-error-500 hover:bg-danger-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                        <button {{ stimulus_action('whatwedo/table-bundle/filter', 'reset') }} type="reset" class="whatwedo-crud-button--action-danger text-sm px-2.5 py-1.5">
                                             {{ 'whatwedo_table.filter.reset' | trans }}
                                         </button>
-                                        <button type="submit" class="px-2.5 py-1.5 border border-neutral-300 shadow-sm text-xs font-medium rounded text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                        <button type="submit" class="whatwedo-crud-button--action text-sm ml-2 px-2.5 py-1.5">
                                             {{ 'whatwedo_table.filter.apply' | trans }}
                                         </button>
                                     </div>
