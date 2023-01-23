@@ -84,7 +84,7 @@
     {% else %}
         <a
             href="{{ path(action.route, action.routeParameters(entity)) }}"
-            class="whatwedo-utility-bold group flex items-center px-4 py-2"
+            class="whatwedo-utility-bold group flex items-center px-4 py-2 hover:bg-neutral-200 transition-colors"
             tabindex="-1"
             {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
         >
@@ -100,12 +100,12 @@
     {% if action.hasConfirmation() %}
         <div
             {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}
-            class="relative block"
+            class="relative"
         >
             <button
                 {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
                 {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') }}
-                class="whatwedo-utility-bold group flex items-center px-4 py-2" tabindex="-1"
+                class="whatwedo-utility-bold group flex items-center px-4 py-2 w-full hover:bg-neutral-200 transition-colors" tabindex="-1"
             >
                 {% if action.option('icon') %}
                     {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
