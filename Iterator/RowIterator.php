@@ -55,12 +55,13 @@ class RowIterator implements \Iterator
     /**
      * @return RowColumnIterator
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return new RowColumnIterator($this->data[$this->position], $this->columns);
     }
 
-    public function next()
+    public function next(): void
     {
         ++$this->position;
     }
@@ -68,6 +69,7 @@ class RowIterator implements \Iterator
     /**
      * @return int
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->position;
@@ -76,17 +78,17 @@ class RowIterator implements \Iterator
     /**
      * @return bool
      */
-    public function valid()
+    public function valid(): bool
     {
         return isset($this->data[$this->position]);
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         $this->position = 0;
     }
 
-    public function count()
+    public function count(): int
     {
         return \count($this->data);
     }
