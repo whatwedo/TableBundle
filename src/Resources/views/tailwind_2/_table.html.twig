@@ -51,7 +51,7 @@
             <thead class="whatwedo_table:table__head">
             <tr class="border-b border-neutral-300 bg-neutral-200 text-base font-medium text-neutral-600 text-left tracking-wide">
 
-                {% if table.rows is not empty and table.getOption('definition') and table.getOption('definition').hasCapability(constant('whatwedo\\CrudBundle\\Enum\\Page::BATCH')) %}
+                {% if table.rows is not empty and table.hasBatchActions() %}
 
                     <th class="px-3 py-3 w-14">
                         <button {{ stimulus_action('@whatwedo/table-bundle/table_select', 'checkAll') }} {{ stimulus_target('@whatwedo/table-bundle/table_select', 'checkAll') }}>{{ bootstrap_icon('check-square') }}</button>
@@ -154,7 +154,7 @@
         {% endif %}
         {% for row in table.rows %}
             <tr class="whatwedo_table:table__row hover:bg-neutral-100 transition duration-500 color align-top">
-                {% if table.getOption('definition') and table.getOption('definition').hasCapability(constant('whatwedo\\CrudBundle\\Enum\\Page::BATCH')) and table.getOption('content_visibility')['content_show_header'] %}
+                {% if table.hasBatchActions() and table.getOption('content_visibility')['content_show_header'] %}
                     <td class="px-6 py-2">
                         <input
                             class="cursor-pointer"
@@ -220,8 +220,15 @@
                         </div>
                     </td>
                 {% endif %}
-
             </tr>
+            {% set subTable = table.getSubTable(row) %}
+            {% if subTable is not null %}
+            <tr>
+                <td colspan="{{ table.getColspan(tableActions|length > 0 ? 1 : 0) }}">
+                    {{ whatwedo_table_only_render(subTable) }}
+                </td>
+            </tr>
+            {% endif %}
         {% endfor %}
         </tbody>
     </table>
