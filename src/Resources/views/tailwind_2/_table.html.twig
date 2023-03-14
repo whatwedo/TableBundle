@@ -225,7 +225,7 @@
             {% if subTable is not null %}
             <tr>
                 <td colspan="{{ table.getColspan(tableActions|length > 0 ? 1 : 0) }}">
-                    {{ whatwedo_table_only_render(subTable) }}
+                    {% with {'table':subTable} only %}{{ whatwedo_table_only_render(table) }}{% endwith %}
                 </td>
             </tr>
             {% endif %}

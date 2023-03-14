@@ -1,0 +1,15 @@
+{% extends '@whatwedoTable/tailwind_2_layout.html.twig' %}
+
+{% block table_table %}
+    {# TODO: create a _sub_table.html.twig #}
+    {# TODO: remove temp css #}
+    <style>
+        .wwd-temp-sub-table tr {
+            font-size: 0.8em;
+        }
+    </style>
+    <div class="wwd-temp-sub-table">
+        {% include "@whatwedoTable/tailwind_2/_table.html.twig" %}
+    </div>
+{% endblock %}
+
