@@ -2,35 +2,46 @@
 
 declare(strict_types=1);
 
+use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
+use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
+use Symfony\Bundle\SecurityBundle\SecurityBundle;
+use Symfony\Bundle\TwigBundle\TwigBundle;
+use Symfony\WebpackEncoreBundle\WebpackEncoreBundle;
+use whatwedo\CoreBundle\whatwedoCoreBundle;
+use whatwedo\SearchBundle\whatwedoSearchBundle;
+use whatwedo\TableBundle\whatwedoTableBundle;
+use whatwedo\TwigBootstrapIcons\whatwedoTwigBootstrapIconsBundle;
+use Zenstruck\Foundry\ZenstruckFoundryBundle;
+
 return [
-    Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => [
+    FrameworkBundle::class => [
         'all' => true,
     ],
-    Doctrine\Bundle\DoctrineBundle\DoctrineBundle::class => [
+    DoctrineBundle::class => [
         'all' => true,
     ],
-    Symfony\Bundle\TwigBundle\TwigBundle::class => [
+    TwigBundle::class => [
         'all' => true,
     ],
-    Zenstruck\Foundry\ZenstruckFoundryBundle::class => [
+    ZenstruckFoundryBundle::class => [
         'all' => true,
     ],
-    whatwedo\CoreBundle\whatwedoCoreBundle::class => [
+    whatwedoCoreBundle::class => [
         'all' => true,
     ],
-    whatwedo\TableBundle\whatwedoTableBundle::class => [
+    whatwedoTableBundle::class => [
         'all' => true,
     ],
-    \whatwedo\SearchBundle\whatwedoSearchBundle::class => [
+    whatwedoSearchBundle::class => [
         'all' => true,
     ],
-    Symfony\WebpackEncoreBundle\WebpackEncoreBundle::class => [
+    WebpackEncoreBundle::class => [
         'all' => true,
     ],
-    whatwedo\TwigBootstrapIcons\whatwedoTwigBootstrapIconsBundle::class => [
+    whatwedoTwigBootstrapIconsBundle::class => [
         'all' => true,
     ],
-    Symfony\Bundle\SecurityBundle\SecurityBundle::class => [
+    SecurityBundle::class => [
         'all' => true,
     ],
 ];

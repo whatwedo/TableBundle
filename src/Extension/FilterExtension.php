@@ -29,6 +29,7 @@ declare(strict_types=1);
 
 namespace whatwedo\TableBundle\Extension;
 
+use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Psr\Log\LoggerInterface;
@@ -161,7 +162,7 @@ class FilterExtension extends AbstractExtension
     }
 
     /**
-     * @throws \Doctrine\Common\Annotations\AnnotationException
+     * @throws AnnotationException
      * @throws \ReflectionException
      */
     public function addFiltersAutomatically(Table $table, ?callable $labelCallable = null, ?callable $jsonSearchCallable = null, ?array $propertyNames = null)
@@ -304,7 +305,7 @@ class FilterExtension extends AbstractExtension
     /**
      * @return Filter|null
      *
-     * @throws \Doctrine\Common\Annotations\AnnotationException
+     * @throws AnnotationException
      */
     private function addFilterAutomatically(Table $table, QueryBuilder $queryBuilder, callable $labelCallable, callable $jsonSearchCallable, \ReflectionProperty $property, string $namespace)
     {

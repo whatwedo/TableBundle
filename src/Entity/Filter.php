@@ -32,45 +32,31 @@ namespace whatwedo\TableBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Table(name="whatwedo_table_filter")
- * @ORM\Entity(repositoryClass="whatwedo\TableBundle\Repository\FilterRepository")
- */
+#[ORM\Table(name: 'whatwedo_table_filter')]
+#[ORM\Entity(repositoryClass: 'whatwedo\TableBundle\Repository\FilterRepository')]
 class Filter
 {
-    /**
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
+    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     protected ?int $id = null;
 
-    /**
-     * @ORM\Column(name="name", type="string", length=50, nullable=false)
-     * @Assert\Length(max="50")
-     */
+    #[ORM\Column(name: 'name', type: 'string', length: 50, nullable: false)]
+    #[Assert\Length(max: 50)]
     protected string $name = '';
 
-    /**
-     * @ORM\Column(name="path", type="string", length=256, nullable=false)
-     * @Assert\Length(max="256")
-     */
+    #[ORM\Column(name: 'path', type: 'string', length: 256, nullable: false)]
+    #[Assert\Length(max: 256)]
     protected string $route = '';
 
-    /**
-     * @ORM\Column(name="arguments", type="array", nullable=false)
-     */
+    #[ORM\Column(name: 'arguments', type: 'array', nullable: false)]
     protected array $arguments = [];
 
-    /**
-     * @ORM\Column(name="conditions", type="array")
-     */
+    #[ORM\Column(name: 'conditions', type: 'array')]
     protected array $conditions = [];
 
-    /**
-     * @ORM\Column(name="description", type="string", length=256, nullable=true)
-     * @Assert\Length(max="256")
-     */
+    #[ORM\Column(name: 'description', type: 'string', length: 256, nullable: true)]
+    #[Assert\Length(max: 256)]
     protected ?string $description = null;
 
     public function getId(): ?int
