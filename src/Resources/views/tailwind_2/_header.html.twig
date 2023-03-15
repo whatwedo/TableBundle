@@ -61,6 +61,9 @@
                 action="{{ whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : 1 }) }}"
                 class="whatwedo_table:header__search inline-flex items-center"
             >
+                {% for name,value in whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : 1 }, true) %}
+                    <input type="hidden" name="{{ name }}" value="{{ value }}">
+                {% endfor %}
                 <div class="flex rounded-md shadow-sm">
                     <div class="relative flex items-stretch flex-grow focus-within:z-10">
                         <input

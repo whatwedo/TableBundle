@@ -70,7 +70,7 @@ $table->getFilterExtension()
     ->end();
 ```
 
-It is now possible to open `http://[domain].[tld]/[your-site-with-the-table]?[table-identifier]_predefined_filter=custom_query` and the declared filters will be applied. 
+It is now possible to open `http://[domain].[tld]/[your-site-with-the-table]?[table-identifier]_filter_predefined=custom_query` and the declared filters will be applied. 
 
 ## Remove an unwanted filter
 
