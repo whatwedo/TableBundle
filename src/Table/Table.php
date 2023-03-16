@@ -89,10 +89,18 @@ class Table
             self::OPT_LIMIT_CHOICES => [25, 50, 100, 200, 500],
             self::OPT_CONTENT_VISIBILITY => function (OptionsResolver $contentResolver) {
                 $contentResolver
-                    ->setDefaults([self::OPT_CONTENT_SHOW_PAGINATION => true])
-                    ->setDefaults([self::OPT_CONTENT_SHOW_RESULT_LABEL => true])
-                    ->setDefaults([self::OPT_CONTENT_SHOW_HEADER => true])
-                    ->setDefaults([self::OPT_CONTENT_SHOW_ENTRY_DROPDOWN => true]);
+                    ->setDefaults([
+                        self::OPT_CONTENT_SHOW_PAGINATION => true,
+                    ])
+                    ->setDefaults([
+                        self::OPT_CONTENT_SHOW_RESULT_LABEL => true,
+                    ])
+                    ->setDefaults([
+                        self::OPT_CONTENT_SHOW_HEADER => true,
+                    ])
+                    ->setDefaults([
+                        self::OPT_CONTENT_SHOW_ENTRY_DROPDOWN => true,
+                    ]);
             },
             self::OPT_THEME => '@whatwedoTable/tailwind_2_layout.html.twig',
             self::OPT_DEFINITION => null,
