@@ -228,13 +228,13 @@ class FilterExtension extends AbstractExtension
     /**
      * @return array
      */
-    public function getFilterData()
+    public function getFilterData(bool $withPredefined = true)
     {
-        $operators = $this->getFilterOperators();
-        $values = $this->getFilterValues();
+        $operators = $this->getFilterOperators($withPredefined);
+        $values = $this->getFilterValues($withPredefined);
 
         $data = [];
-        foreach ($this->getFilterColumns() as $groupIndex => $columns) {
+        foreach ($this->getFilterColumns($withPredefined) as $groupIndex => $columns) {
             $group = [];
 
             foreach ($columns as $index => $column) {
@@ -254,25 +254,25 @@ class FilterExtension extends AbstractExtension
     /**
      * @return array
      */
-    public function getFilterColumns()
+    public function getFilterColumns(bool $withPredefined = true)
     {
-        return $this->getFromRequest('filter_column');
+        return $this->getFromRequest('filter_column', $withPredefined);
     }
 
     /**
      * @return array
      */
-    public function getFilterOperators()
+    public function getFilterOperators(bool $withPredefined = true)
     {
-        return $this->getFromRequest('filter_operator');
+        return $this->getFromRequest('filter_operator', $withPredefined);
     }
 
     /**
      * @return array
      */
-    public function getFilterValues()
+    public function getFilterValues(bool $withPredefined = true)
     {
-        return $this->getFromRequest('filter_value');
+        return $this->getFromRequest('filter_value', $withPredefined);
     }
 
     public function getRequest()
@@ -334,7 +334,7 @@ class FilterExtension extends AbstractExtension
         return null;
     }
 
-    private function getFromRequest(string $param)
+    private function getFromRequest(string $param, bool $withPredefined = true)
     {
         $value = [];
 
@@ -345,8 +345,19 @@ class FilterExtension extends AbstractExtension
             }
         }
 
-        $predefined = $this->getPredefinedFilter($this->getRequest()->query->get(RouterHelper::getParameterName($this->table->getIdentifier(), RouterHelper::PARAMETER_FILTER_PREDEFINED), ''));
+        if ($withPredefined) {
+            $predefined = $this->getPredefinedFilter($this->getRequest()->query->get(RouterHelper::getParameterName($this->table->getIdentifier(), RouterHelper::PARAMETER_FILTER_PREDEFINED), ''));
+            if (! $predefined) {
+                return $value;
+            }
+            foreach ($value as $i => $group) {
+                $value[$i] = array_merge($group, $predefined[$param][0] ?? []);
+            }
+            if ($value === []) {
+                $value = $predefined[$param] ?? [];
+            }
+        }
 
-        return $predefined ? array_merge($value, $predefined[$param]) : $value;
+        return $value;
     }
 }

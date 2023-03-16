@@ -107,6 +107,12 @@
                 >
 
                     <form action="{{ whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : 1 }) }}" class="w-screen max-w-3xl">
+                        {% for name,value in whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : 1 }, true) %}
+                            {# only load filter unrelevant query parameters #}
+                            {% if not (name matches '/.+_filter_(column|operator|value).+/') %}
+                                <input type="hidden" name="{{ name }}" value="{{ value }}">
+                            {% endif %}
+                        {% endfor %}
                         <div class="h-full flex flex-col py-6 bg-neutral-100 shadow-xl overflow-y-scroll">
                             <div class="px-4 sm:px-6">
                                 <div class="flex items-start justify-between">
@@ -128,7 +134,7 @@
                             </div>
                             <div class="mt-6 relative flex-1">
                                 <div class="px-4 sm:px-6" {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupList') }}>
-                                    {% for groupIndex, group in table.filterExtension.filterData %}
+                                    {% for groupIndex, group in table.filterExtension.getFilterData(false) %}
                                         {{ _self.filter_group(table, groupIndex, group) }}
                                     {% else %}
                                         {{ _self.filter_group(table, 0, []) }}
