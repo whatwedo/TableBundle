@@ -221,14 +221,14 @@
                     </td>
                 {% endif %}
             </tr>
-            {% set subTable = table.getSubTable(row) %}
-            {% if subTable is not null %}
+            {% set subTables = table.getSubTables(row) %}
+            {% for subTable in subTables %}
             <tr>
                 <td colspan="{{ table.getColspan(tableActions|length > 0 ? 1 : 0) }}">
                     {% with {'table':subTable} only %}{{ whatwedo_table_only_render(table) }}{% endwith %}
                 </td>
             </tr>
-            {% endif %}
+            {% endfor %}
         {% endfor %}
         </tbody>
     </table>

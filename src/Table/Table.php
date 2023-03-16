@@ -129,19 +129,26 @@ class Table
         $resolver->setAllowedTypes(self::OPT_DATA_LOADER, allowedTypes: DataLoaderInterface::class);
     }
 
-    public function getSubTable(object|array $row): ?self
+    public function getSubTables(object|array $row): array
     {
         if ($this->getOption(self::OPT_SUB_TABLE_LOADER) === null) {
-            return null;
+            return [];
         }
 
-        $subTable = ($this->getOption(self::OPT_SUB_TABLE_LOADER))($row);
-        if (! $subTable) {
-            return null;
+        $subTables = ($this->getOption(self::OPT_SUB_TABLE_LOADER))($row);
+        if (! $subTables) {
+            return [];
         }
 
-        $subTable->setParent($this);
-        return $subTable;
+        if (! is_array($subTables)) {
+            $subTables = [$subTables];
+        }
+
+        foreach ($subTables as $table) {
+            $table->setParent($this);
+        }
+
+        return $subTables;
     }
 
     public function getIdentifier(): string
