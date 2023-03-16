@@ -14,6 +14,11 @@ In the table configuration you define all the columns of the table
 - `table_box_template`: String, box template, default: `@whatwedoTable/table.html.twig`
 - `table_template`: String, table template, default:  `@whatwedoTable/tableOnly.html.twig`
 - `default_sort`:
+- `content_visibility`: Array with option, default:
+- - `content_show_pagination`: Boolean, default: `true`
+- - `content_show_result_label`: Boolean, default: `true`
+- - `content_show_header`: Boolean, default: `true`
+- - `content_show_entry_dropdown`: Boolean, default: `true`
 
 
 ## Column Options
