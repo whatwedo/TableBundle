@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace whatwedo\TableBundle\EventListener;
 
 use Doctrine\ORM\Query\Expr;
+use Doctrine\ORM\Query\Expr\Base;
+use Doctrine\ORM\Query\Expr\Comparison;
 use Doctrine\ORM\QueryBuilder;
 use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
 use whatwedo\TableBundle\Event\DataLoadEvent;
@@ -97,7 +99,7 @@ class FilterEventListener
                     $this->queryBuilder()
                 );
 
-                if ($w instanceof Expr\Base || $w instanceof Expr\Comparison) {
+                if ($w instanceof Base || $w instanceof Comparison) {
                     $andX->add($w);
                 } elseif (is_string($w) && (str_contains($w, 'IS NULL') || str_contains($w, 'IS NOT NULL'))) {
                     $andX->add($w);

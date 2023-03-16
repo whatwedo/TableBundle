@@ -7,10 +7,12 @@ namespace whatwedo\TableBundle\Twig;
 use Doctrine\ORM\EntityManagerInterface;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
+use Twig\TemplateWrapper;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 use whatwedo\CoreBundle\Action\Action;
 use whatwedo\CoreBundle\Manager\FormatterManager;
+use whatwedo\TableBundle\Entity\TreeInterface;
 use whatwedo\TableBundle\Table\Column;
 use whatwedo\TableBundle\Table\Table;
 
@@ -77,10 +79,10 @@ class TableRenderExtension extends AbstractExtension
 
     private function isTree($entity)
     {
-        return $entity instanceof \whatwedo\TableBundle\Entity\TreeInterface;
+        return $entity instanceof TreeInterface;
     }
 
-    private function getTemplate(string $layoutFile): \Twig\TemplateWrapper
+    private function getTemplate(string $layoutFile): TemplateWrapper
     {
         return $this->templating->load($layoutFile);
     }

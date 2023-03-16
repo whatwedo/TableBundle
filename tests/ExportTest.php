@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
 use whatwedo\TableBundle\Factory\TableFactory;
 use whatwedo\TableBundle\Manager\ExportManager;
+use whatwedo\TableBundle\Table\Table;
 use whatwedo\TableBundle\Tests\App\Entity\Company;
 use whatwedo\TableBundle\Tests\App\Factory\CompanyFactory;
 use Zenstruck\Foundry\Test\Factories;
@@ -62,7 +63,7 @@ class ExportTest extends KernelTestCase
         $this->assertSame(null, $sheet->getActiveSheet()->getCell('E41')->getValue());
     }
 
-    protected function prepareTable(): \whatwedo\TableBundle\Table\Table
+    protected function prepareTable(): Table
     {
         $fakeRequest = Request::create('/', 'GET');
         $fakeRequest->setSession(new Session(new MockArraySessionStorage()));
