@@ -43,6 +43,16 @@ class Table
 
     public const OPT_DATA_LOADER = 'data_loader';
 
+    public const OPT_CONTENT_VISIBILITY = 'content_visibility';
+
+    public const OPT_CONTENT_SHOW_PAGINATION = 'content_show_pagination';
+
+    public const OPT_CONTENT_SHOW_RESULT_LABEL = 'content_show_result_label';
+
+    public const OPT_CONTENT_SHOW_HEADER = 'content_show_header';
+
+    public const OPT_CONTENT_SHOW_ENTRY_DROPDOWN = 'content_show_entry_dropdown';
+
     protected array $columns = [];
 
     protected array $actions = [];
@@ -77,6 +87,13 @@ class Table
             self::OPT_DEFAULT_SORT => [],
             self::OPT_DEFAULT_LIMIT => 25,
             self::OPT_LIMIT_CHOICES => [25, 50, 100, 200, 500],
+            self::OPT_CONTENT_VISIBILITY => function (OptionsResolver $contentResolver) {
+                $contentResolver
+                    ->setDefaults([self::OPT_CONTENT_SHOW_PAGINATION => true])
+                    ->setDefaults([self::OPT_CONTENT_SHOW_RESULT_LABEL => true])
+                    ->setDefaults([self::OPT_CONTENT_SHOW_HEADER => true])
+                    ->setDefaults([self::OPT_CONTENT_SHOW_ENTRY_DROPDOWN => true]);
+            },
             self::OPT_THEME => '@whatwedoTable/tailwind_2_layout.html.twig',
             self::OPT_DEFINITION => null,
             self::OPT_DATALOADER_OPTIONS => [],
