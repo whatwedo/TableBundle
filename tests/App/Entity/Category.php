@@ -8,7 +8,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use whatwedo\TableBundle\Entity\TreeInterface;
 
 #[Gedmo\Tree(type: 'nested')]
