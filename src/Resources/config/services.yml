@@ -13,6 +13,10 @@ services:
         tags:
             - { name: kernel.event_listener, event: whatwedo_table.data_load.pre_load, method: orderResultSet, priority: 100 }
 
+    whatwedo\TableBundle\EventListener\PaginationEventListener:
+        tags:
+            - { name: kernel.event_listener, event: whatwedo_table.data_load.pre_load, method: checkPageValid, priority: 100 }
+
     whatwedo\TableBundle\EventListener\FilterEventListener:
         tags:
             - { name: kernel.event_listener, event: whatwedo_table.data_load.pre_load, method: filterResultSet, priority: 100 }
