@@ -4,7 +4,7 @@
     {% set indexSuffix = '[' ~ groupIndex ~ '][' ~ conditionIndex ~ ']' %}
     <div class="flex gap-x-4 my-3" {{ stimulus_target('whatwedo/table-bundle/filter', 'singleFilter') }}>
         <div class="w-3/12">
-            <select {{ stimulus_action('whatwedo/table-bundle/filter', 'filterTargetChanged') }} name="{{ whatwedo_table_parameter(table, 'filter_column')~indexSuffix }}" class="w-full whatwedo-utility-paragraph whatwedo-crud-button--action-white">
+            <select {{ stimulus_action('whatwedo/table-bundle/filter', 'filterTargetChanged') }} name="{{ whatwedo_table_parameter(table, 'filter_column')~indexSuffix }}" class="w-full cursor-pointer whatwedo-utility-paragraph whatwedo-crud-button--action-white">
                 {% for f in filters %}
                     <option
                         value="{{ f.acronym }}"
@@ -17,7 +17,7 @@
             </select>
         </div>
         <div class="whatwedo-table-filter-selection flex-initial w-3/12">
-            <select name="{{ whatwedo_table_parameter(table, 'filter_operator')~indexSuffix }}" class="w-full whatwedo-utility-paragraph whatwedo-crud-button--action-white">
+            <select name="{{ whatwedo_table_parameter(table, 'filter_operator')~indexSuffix }}" class="w-full cursor-pointer whatwedo-utility-paragraph whatwedo-crud-button--action-white">
                 {% for key, value in filter.type.operators %}
                     <option value="{{ key }}" {% if key == filterOperator %}selected="selected"{% endif %}>{{ value|trans }}</option>
                 {% endfor %}
