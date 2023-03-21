@@ -60,7 +60,15 @@ class PaginationExtension extends AbstractExtension
 
         $page = $this->requestStack->getCurrentRequest()->query->getInt(RouterHelper::getParameterName($this->table->getIdentifier(), RouterHelper::PARAMETER_PAGINATION_PAGE), 1);
 
-        return $page < 1 ? 1 : $page;
+        if ($page < 1) {
+            return 1;
+        }
+
+        if ($this->getTotalPages() < $page) {
+            return $this->getTotalPages();
+        }
+
+        return $page;
     }
 
     public function getLimit(): int

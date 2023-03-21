@@ -20,6 +20,11 @@ class DoctrineDataLoader extends AbstractDataLoader
 
     public function getResults(): iterable
     {
+        /** @var QueryBuilder $qb */
+        $qb = (clone $this->options[self::OPT_QUERY_BUILDER]);
+        $qb->select('COUNT(' . $qb->getRootAliases()[0] . ')');
+        $this->paginationExtension->setTotalResults((int) $qb->getQuery()->getSingleScalarResult());
+
         if ($this->paginationExtension->getLimit()) {
             $this->options[self::OPT_QUERY_BUILDER]
                 ->setMaxResults($this->paginationExtension->getLimit())
@@ -29,8 +34,6 @@ class DoctrineDataLoader extends AbstractDataLoader
         $paginator = new Paginator(
             $this->options[self::OPT_QUERY_BUILDER]
         );
-
-        $this->paginationExtension->setTotalResults(\count($paginator));
 
         return $paginator->getIterator();
     }
