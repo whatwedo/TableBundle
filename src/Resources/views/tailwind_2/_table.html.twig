@@ -79,23 +79,23 @@
                             >
                                 <div class="py-1" role="none">
 
-                                <span class="block">
-                                {% for batchAction in table.getOption('definition').batchActions | filter(action => not action.getOption('voter_attribute') or is_granted(action.getOption('voter_attribute'), action)) %}
-                                    {% if batchAction.hasConfirmation() %}
-                                        {{ _self.confirmationLink(batchAction, {}, stimulus_action('@whatwedo/table-bundle/table_select', 'doAction') ~ ' href="' ~ path(batchAction.route, batchAction.routeParameters) ~ '"') }}
-                                    {% else %}
-                                        <a
-                                            href="{{ path(batchAction.route, batchAction.routeParameters) }}"
-                                            class="text-neutral-700 group flex items-center px-4 py-2 text-base hover:bg-neutral-100"
-                                            tabindex="-1"
-                                            {{ stimulus_action('@whatwedo/table-bundle/table_select', 'doAction') }}
-                                        >
-                                            {{ bootstrap_icon(batchAction.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 hover:text-neutral-50' }) }}
-                                            {{ batchAction.label|trans }}
-                                        </a>
-                                    {% endif %}
-                                {% endfor %}
-                                        </span>
+                                    <span class="block">
+                                        {% for batchAction in table.getOption('definition').batchActions | filter(action => not action.getOption('voter_attribute') or is_granted(action.getOption('voter_attribute'), action)) %}
+                                            {% if batchAction.hasConfirmation() %}
+                                                {{ _self.confirmationLink(batchAction, {}, stimulus_action('@whatwedo/table-bundle/table_select', 'doAction') ~ ' href="' ~ path(batchAction.route, batchAction.routeParameters) ~ '"') }}
+                                            {% else %}
+                                                <a
+                                                    href="{{ path(batchAction.route, batchAction.routeParameters) }}"
+                                                    class="text-neutral-700 group flex items-center px-4 py-2 text-base hover:bg-neutral-100"
+                                                    tabindex="-1"
+                                                    {{ stimulus_action('@whatwedo/table-bundle/table_select', 'doAction') }}
+                                                >
+                                                    {{ bootstrap_icon(batchAction.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 hover:text-neutral-50' }) }}
+                                                    {{ batchAction.label|trans }}
+                                                </a>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </span>
 
                                 </div>
                             </div>
