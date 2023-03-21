@@ -35,7 +35,7 @@ class DoctrineDataLoader extends AbstractDataLoader
         if ($this->paginationExtension->getLimit()) {
             $this->options[self::OPT_QUERY_BUILDER]
                 ->setMaxResults($this->paginationExtension->getLimit())
-                ->setFirstResult(($this->paginationExtension->getCurrentPage() - 1) * $this->paginationExtension->getLimit());
+                ->setFirstResult($this->paginationExtension->getOffsetResults());
         }
 
         $paginator = new Paginator(

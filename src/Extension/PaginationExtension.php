@@ -64,7 +64,7 @@ class PaginationExtension extends AbstractExtension
             return 1;
         }
 
-        if ($this->getTotalPages() < $page) {
+        if ($this->getTotalPages() < $page && $this->getTotalPages() > 0) {
             return $this->getTotalPages();
         }
 
@@ -101,7 +101,7 @@ class PaginationExtension extends AbstractExtension
 
     public function getTotalPages(): int
     {
-        if ($this->getLimit() === -1) {
+        if ($this->getLimit() <= 0) {
             return 1;
         }
 
@@ -110,7 +110,7 @@ class PaginationExtension extends AbstractExtension
 
     public function getOffsetResults(): int
     {
-        if ($this->limit === -1) {
+        if ($this->getLimit() <= 0) {
             return 0;
         }
 
