@@ -29,3 +29,9 @@ services:
     whatwedo\TableBundle\Manager\QueryBuilderManager:
         arguments:
             - !tagged_iterator 'whatwedo_table.query_builder_provider'
+
+    _instanceof:
+        whatwedo\TableBundle\DataLoader\DataLoaderInterface:
+            shared: false
+        whatwedo\TableBundle\Extension\ExtensionInterface:
+            shared: false

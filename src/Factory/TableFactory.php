@@ -62,7 +62,8 @@ class TableFactory implements ServiceSubscriberInterface
         /** @var DataLoaderInterface $dataLoaderInstance */
         $dataLoaderInstance = $this->locator->get($dataLoader);
         $dataLoaderInstance->setOptions($options[Table::OPT_DATALOADER_OPTIONS]);
-
+        $extensions = $this->getExtensions();
+        $dataLoaderInstance->loadNecessaryExtensions($extensions);
         $options[Table::OPT_DATA_LOADER] = $dataLoaderInstance;
 
         if ($options[Table::OPT_DATA_LOADER] instanceof DoctrineDataLoader && ! isset($options[Table::OPT_SEARCHABLE])) {
@@ -73,7 +74,7 @@ class TableFactory implements ServiceSubscriberInterface
             $identifier,
             $options,
             $this->eventDispatcher,
-            $this->extensions,
+            $extensions,
             $this->formatterManager
         );
     }
@@ -90,5 +91,14 @@ class TableFactory implements ServiceSubscriberInterface
             DoctrineDataLoader::class,
             DoctrineTreeDataLoader::class,
         ];
+    }
+
+    protected function getExtensions(): array
+    {
+        $newExtensions = [];
+        foreach ($this->extensions as $extension) {
+            $newExtensions[$extension::class] = clone $extension;
+        }
+        return $newExtensions;
     }
 }

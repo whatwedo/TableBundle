@@ -16,10 +16,21 @@ class DoctrineTreeDataLoader extends AbstractDataLoader
 {
     public const OPT_QUERY_BUILDER = 'query_builder';
 
+    protected PaginationExtension $paginationExtension;
+
     public function __construct(
-        protected PaginationExtension $paginationExtension,
         protected EntityManagerInterface $entityManager
     ) {
+    }
+
+    public function loadNecessaryExtensions(iterable $extensions): void
+    {
+        foreach ($extensions as $extension) {
+            if ($extension instanceof PaginationExtension) {
+                $this->paginationExtension = $extension;
+                break;
+            }
+        }
     }
 
     public function getResults(): iterable

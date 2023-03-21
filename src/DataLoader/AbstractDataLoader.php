@@ -25,4 +25,8 @@ abstract class AbstractDataLoader implements DataLoaderInterface
     {
         return $this->options[$option];
     }
+
+    public function loadNecessaryExtensions(iterable $extensions): void
+    {
+    }
 }

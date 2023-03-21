@@ -17,4 +17,6 @@ interface DataLoaderInterface
     public function getResults(): iterable;
 
     public function getOption(string $option);
+
+    public function loadNecessaryExtensions(iterable $extensions): void;
 }

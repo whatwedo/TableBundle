@@ -13,9 +13,16 @@ class DoctrineDataLoader extends AbstractDataLoader
 {
     public const OPT_QUERY_BUILDER = 'query_builder';
 
-    public function __construct(
-        protected PaginationExtension $paginationExtension
-    ) {
+    protected PaginationExtension $paginationExtension;
+
+    public function loadNecessaryExtensions(iterable $extensions): void
+    {
+        foreach ($extensions as $extension) {
+            if ($extension instanceof PaginationExtension) {
+                $this->paginationExtension = $extension;
+                break;
+            }
+        }
     }
 
     public function getResults(): iterable
