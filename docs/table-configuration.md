@@ -4,6 +4,8 @@ In the table configuration you define all the columns of the table
 
 ## Table Options
 
+All Options are as constants in `Table` class.
+
 - `title`: String|Null
 - `searchable`: Boolean, default: `false`
 - `sortable`: Boolean, default: `true`
@@ -40,6 +42,8 @@ public function configureTable(Table $table): void
 ```
 
 For the columns you have a few options to tweak how they behave:
+
+All Options are as constants in `Column` class.
 
 - `label`: String, column name
 - `callable`: Function, callable to get the data
