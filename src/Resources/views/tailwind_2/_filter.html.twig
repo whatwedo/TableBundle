@@ -50,13 +50,64 @@
 {% endmacro %}
 
 {% macro filter_group(table, groupIndex, group) %}
-    <div {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroup') }}>
+    <div class="flex justify-between ">
         <span
-            class="whatwedo-utility-bold hidden"
+            class="whatwedo-utility-bold hidden self-center"
             {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupFilterHeaderFirst') }}
         >
             {{ 'whatwedo_table.filter.show_element_when' | trans }}
         </span>
+
+        <div class="relative">
+            <button
+                type="button"
+                class="whatwedo-crud-button--action-white inline-flex justify-center"
+                {{ stimulus_action('whatwedo/table-bundle/filter', 'toggleDropdown') }}
+            >
+                {{ 'whatwedo_table.filter.saved_filter' | trans }}
+                {{ bootstrap_icon('chevron-down', { class: '-mr-1 ml-2 h-4 w-4' }) }}
+            </button>
+
+            <div class="absolute bottom-0 inline-block text-left">
+                <div
+                    class="hidden z-20 origin-top-right absolute right-0 mt-1 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-neutral-100 focus:outline-none"
+                    {{ stimulus_target('whatwedo/table-bundle/filter', 'dropdown') }}
+                    tabindex="-1"
+                >
+                    <div class="py-1" role="none">
+                        {% for filter in table.filterExtension.savedFilter(app.request.attributes.get('_route')) %}
+                            {% set filter_href = path(filter.route, filter.arguments | merge(filter.conditions)) %}
+                            <a href="{{ filter_href }}" class="text-neutral-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">{{ filter.name }}</a>
+                        {% endfor %}
+                    </div>
+                    {% if app.request.query.has('index_filter_column') and app.request.query.has('index_filter_operator') and app.request.query.has('index_filter_value') %}
+                        <div class="py-1" role="none">
+                            <a
+                                href="{{ path('whatwedo_crud_filter_create', {'filter_path' : app.request.attributes.get('_route')} | merge(app.request.query.all)) }}"
+                                class="text-neutral-700 block w-full text-left px-4 py-2 text-sm"
+                                role="menuitem" tabindex="-1" id="menu-item-3"
+                            >
+                                {{ bootstrap_icon('plus', { class: 'inline-block w-5 h-5' }) }}
+                                {{ 'whatwedo_table.filter.create_new' | trans }}
+                            </a>
+                        </div>
+                    {% endif %}
+                    <div class="py-1" role="none">
+                        <a
+                            href="{{ path('whatwedo_crud_filter_index') }}"
+                            class="text-neutral-700 block w-full text-left px-4 py-2 text-sm"
+                            role="menuitem" tabindex="-1" id="menu-item-3"
+                        >
+                            {{ bootstrap_icon('list', { class: 'inline-block w-5 h-5' }) }}
+                            {{ 'whatwedo_table.filter.overview' | trans }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroup') }}>
         {% if groupIndex > 0 %}
         <span
             class="whatwedo-utility-bold hidden"
@@ -151,55 +202,6 @@
                                         >
                                             {{ 'whatwedo_table.filter.or' | trans }}
                                         </button>
-                                    </div>
-                                    <div>
-                                        <div class="relative inline-block text-left">
-                                            <div>
-                                                <button
-                                                    type="button"
-                                                    class="whatwedo-crud-button--action-white inline-flex justify-center"
-                                                    {{ stimulus_action('whatwedo/table-bundle/filter', 'toggleDropdown') }}
-                                                >
-                                                    {{ 'whatwedo_table.filter.saved_filter' | trans }}
-                                                    {{ bootstrap_icon('chevron-down', { class: '-mr-1 ml-2 h-4 w-4' }) }}
-                                                </button>
-                                            </div>
-
-                                            <div
-                                                class="hidden z-20 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-neutral-100 focus:outline-none"
-                                                {{ stimulus_target('whatwedo/table-bundle/filter', 'dropdown') }}
-                                                tabindex="-1"
-                                            >
-                                                <div class="py-1" role="none">
-                                                    {% for filter in table.filterExtension.savedFilter(app.request.attributes.get('_route')) %}
-                                                        {% set filter_href = path(filter.route, filter.arguments | merge(filter.conditions)) %}
-                                                        <a href="{{ filter_href }}" class="text-neutral-700 block" role="menuitem" tabindex="-1" id="menu-item-0">{{ filter.name }}</a>
-                                                    {% endfor %}
-                                                </div>
-                                                {% if app.request.query.has('index_filter_column') and app.request.query.has('index_filter_operator') and app.request.query.has('index_filter_value') %}
-                                                    <div class="py-1" role="none">
-                                                        <a
-                                                            href="{{ path('whatwedo_crud_filter_create', {'filter_path' : app.request.attributes.get('_route')} | merge(app.request.query.all)) }}"
-                                                            class="text-neutral-700 block w-full text-left"
-                                                            role="menuitem" tabindex="-1" id="menu-item-3"
-                                                        >
-                                                            {{ bootstrap_icon('plus', { class: 'inline-block w-5 h-5' }) }}
-                                                            {{ 'whatwedo_table.filter.create_new' | trans }}
-                                                        </a>
-                                                    </div>
-                                                {% endif %}
-                                                <div class="py-1" role="none">
-                                                    <a
-                                                        href="{{ path('whatwedo_crud_filter_index') }}"
-                                                        class="text-neutral-700 block w-full text-left px-4 py-2 text-sm"
-                                                        role="menuitem" tabindex="-1" id="menu-item-3"
-                                                    >
-                                                        {{ bootstrap_icon('list', { class: 'inline-block w-5 h-5' }) }}
-                                                        {{ 'whatwedo_table.filter.overview' | trans }}
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
 
                                     <div class="flex-auto text-right space-x-4">
