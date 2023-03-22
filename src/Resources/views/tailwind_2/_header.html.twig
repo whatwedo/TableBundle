@@ -59,27 +59,27 @@
             {% endif %}
 
             {% if table.searchExtension and table.option('searchable') %}
-            <form
-                action="{{ whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : 1 }) }}"
-                class="whatwedo_table:header__search inline-flex items-center"
-            >
-                {% for name,value in whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : 1 }, true) %}
-                    <input type="hidden" name="{{ name }}" value="{{ value }}">
-                {% endfor %}
-                <div class="flex rounded-md shadow-sm">
-                    <div class="relative flex items-stretch flex-grow focus-within:z-10">
-                        <input
-                            class="whatwedo_core-input--rounded-left"
-                            type="search"
-                            name="{{ whatwedo_table_parameter(table, 'query') }}" placeholder="Suchbegriff ..."
-                            value="{{ table.searchExtension.query }}"
-                        >
+                <form
+                    action="{{ whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : 1 }) }}"
+                    class="whatwedo_table:header__search inline-flex items-center"
+                >
+                    {% for name,value in whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : 1 }, true) %}
+                        <input type="hidden" name="{{ name }}" value="{{ value }}">
+                    {% endfor %}
+                    <div class="flex rounded-md shadow-sm">
+                        <div class="relative flex items-stretch flex-grow focus-within:z-10">
+                            <input
+                                class="whatwedo_core-input--rounded-left"
+                                type="search"
+                                name="{{ whatwedo_table_parameter(table, 'query') }}" placeholder="Suchbegriff ..."
+                                value="{{ table.searchExtension.query }}"
+                            >
+                        </div>
+                        <button class="whatwedo_table-button--search" type="submit">
+                            {{ bootstrap_icon('search', { class: 'h-4 w-4 text-neutral-400', alt: 'Suchen' }) }}
+                        </button>
                     </div>
-                    <button class="whatwedo_table-button--search" type="submit">
-                        {{ bootstrap_icon('search', { class: 'h-4 w-4 text-neutral-400', alt: 'Suchen' }) }}
-                    </button>
-                </div>
-            </form>
+                </form>
             {% endif %}
         </div>
     </header>
