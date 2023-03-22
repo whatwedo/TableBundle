@@ -163,13 +163,13 @@
                     </td>
                 {% endif %}
                 {% for column in table.columns %}
-                    <td class="px-3 py-2 {% if column.option('is_primary') %}whitespace-nowrap{% endif %}"
+                    <td class="px-3 py-2 {% if column.option('link_the_column_content') %}whitespace-nowrap{% endif %}"
                         {% if row|whatwedo_entity_is_tree and row.level != 0 %}
                             style="padding-left: {{ row.level*50 }}px"
                         {% endif %}
                     >
                         {% apply spaceless %}
-                        {% if column.option('is_primary') and table.option('primary_link') is not null %}
+                        {% if column.option('link_the_column_content') and table.option('primary_link') is not null %}
                         {% set columnLink = table.primaryLink(row) %}
                         {% if columnLink %}
                         <a class="whatwedo-utility-link" href="{{ columnLink }}">
@@ -179,7 +179,7 @@
 
                             {{ whatwedo_table_column_render(column, row) }}
 
-                            {% if column.option('is_primary') and columnLink|default(false) %}</a>{% endif %}
+                            {% if column.option('link_the_column_content') and columnLink|default(false) %}</a>{% endif %}
                     </td>
                 {% endfor %}
                 {% set tableActions = table.actions | filter(action => not action.getOption('voter_attribute') or is_granted(action.getOption('voter_attribute'), row)) %}

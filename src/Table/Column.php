@@ -18,7 +18,7 @@ class Column extends AbstractColumn implements FormattableColumnInterface
 
     public const OPT_CALLABLE = 'callable';
 
-    public const OPT_IS_PRIMARY = 'is_primary';
+    public const OPT_LINK_THE_COLUMN_CONTENT = 'link_the_column_content';
 
     public const OPT_FORMATTER = 'formatter';
 
@@ -44,7 +44,7 @@ class Column extends AbstractColumn implements FormattableColumnInterface
             self::OPT_LABEL => $this->identifier,
             self::OPT_ACCESSOR_PATH => $this->identifier,
             self::OPT_CALLABLE => null,
-            self::OPT_IS_PRIMARY => false,
+            self::OPT_LINK_THE_COLUMN_CONTENT => false,
             self::OPT_FORMATTER => DefaultFormatter::class,
             self::OPT_FORMATTER_OPTIONS => [],
             self::OPT_ATTRIBUTES => [],
@@ -56,7 +56,7 @@ class Column extends AbstractColumn implements FormattableColumnInterface
         $resolver->setAllowedTypes(self::OPT_PRIORITY, 'int');
         $resolver->setAllowedTypes(self::OPT_ACCESSOR_PATH, 'string');
         $resolver->setAllowedTypes(self::OPT_SORT_EXPRESSION, 'string');
-        $resolver->setAllowedTypes(self::OPT_IS_PRIMARY, 'boolean');
+        $resolver->setAllowedTypes(self::OPT_LINK_THE_COLUMN_CONTENT, 'boolean');
         $resolver->setAllowedTypes(self::OPT_SORTABLE, 'boolean');
 
         $resolver->setDefault(self::OPT_EXPORT, function (OptionsResolver $exportResolver) {

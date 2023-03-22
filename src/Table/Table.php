@@ -175,9 +175,9 @@ class Table
             }
         }
 
-        // set is_primary on first column if not set
-        if (! isset($options[Column::OPT_IS_PRIMARY]) && count($this->columns) === 0) {
-            $options[Column::OPT_IS_PRIMARY] = true;
+        // set link_the_column_content on first column if not set
+        if (! isset($options[Column::OPT_LINK_THE_COLUMN_CONTENT]) && count($this->columns) === 0) {
+            $options[Column::OPT_LINK_THE_COLUMN_CONTENT] = true;
         }
 
         $column = new $type($this, $acronym, $options);
