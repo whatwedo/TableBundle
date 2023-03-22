@@ -47,13 +47,15 @@
             {% endif %}
 
             {% if table.filterExtension and table.filterExtension.filters|length > 0 %}
-            <button
-                class="whatwedo_table:header__button whatwedo_table:header__button--filter whatwedo_table-button"
-                type="button"
-                {{ stimulus_action('whatwedo/table-bundle/filter', 'open') }}
-            >
-                {{ bootstrap_icon('funnel-fill', { class: 'w-4 h-4' }) }}
-            </button>
+                <button
+                    class="whatwedo_table:header__button whatwedo_table:header__button--filter whatwedo_table-button whatwedo_table-button--filter {{ table.filterExtension.getFilterCount() > 0 ? 'whatwedo_table-button--filter-active' : '' }} }}"
+                    data-filter-count="{{ table.filterExtension.getFilterCount() }}"
+                    type="button"
+                    {{ stimulus_action('whatwedo/table-bundle/filter', 'open') }}
+                    {{ stimulus_target('whatwedo/table-bundle/filter', 'triggerButton') }}
+                >
+                    {{ bootstrap_icon('funnel-fill', { class: 'w-4 h-4' }) }}
+                </button>
             {% endif %}
 
             {% if table.searchExtension and table.option('searchable') %}
