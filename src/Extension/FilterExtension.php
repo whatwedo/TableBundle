@@ -258,7 +258,7 @@ class FilterExtension extends AbstractExtension
     public function getFilterCount()
     {
         $count = 0;
-        foreach ($this->getFilterColumns(true) as $columns) {
+        foreach ($this->getFilterColumns(false) as $columns) {
             $count += count($columns);
         }
 
