@@ -1,8 +1,8 @@
 whatwedo_table:
     download:
-        info: Export
-    all: Alle
-    page: Seite
+        info: Was möchten Sie herunterladen?
+    all: Alle Seiten
+    page: Aktuelle Seite
     or: Oder
     and: und
     saved_filters: Gespeicherte Filter

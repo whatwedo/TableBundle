@@ -6,6 +6,15 @@
     @apply -ml-px relative inline-flex items-center space-x-2 px-4 py-2 border border-neutral-300 text-base font-medium rounded-r-md text-neutral-700 bg-neutral-200 hover:bg-neutral-100 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500;
 }
 
+.whatwedo_table-button--filter-active {
+    @apply relative;
+
+    &::after {
+        content: attr(data-filter-count);
+        @apply absolute top-0 right-0 -translate-y-1/3 translate-x-1/3 flex justify-center items-center w-5 h-5 rounded-full bg-primary-500 text-base text-neutral-100 pointer-events-none;
+    }
+}
+
 .whatwedo_table-button--pagination {
     @apply inline-flex justify-center items-center w-full rounded-md border border-neutral-300 shadow-sm px-4 py-2 bg-white whatwedo-utility-paragraph hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-neutral-100 focus:ring-primary-500;
 }

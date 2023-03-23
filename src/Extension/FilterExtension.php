@@ -253,6 +253,19 @@ class FilterExtension extends AbstractExtension
     }
 
     /**
+     * @return int
+     */
+    public function getFilterCount()
+    {
+        $count = 0;
+        foreach ($this->getFilterColumns(false) as $columns) {
+            $count += count($columns);
+        }
+
+        return $count;
+    }
+
+    /**
      * @return array
      */
     public function getFilterColumns(bool $withPredefined = true)

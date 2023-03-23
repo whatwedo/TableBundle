@@ -4,7 +4,7 @@
     {% set indexSuffix = '[' ~ groupIndex ~ '][' ~ conditionIndex ~ ']' %}
     <div class="flex gap-x-4 my-3" {{ stimulus_target('whatwedo/table-bundle/filter', 'singleFilter') }}>
         <div class="w-3/12">
-            <select {{ stimulus_action('whatwedo/table-bundle/filter', 'filterTargetChanged') }} name="{{ whatwedo_table_parameter(table, 'filter_column')~indexSuffix }}" class="w-full whatwedo-utility-paragraph whatwedo-crud-button--action-white">
+            <select {{ stimulus_action('whatwedo/table-bundle/filter', 'filterTargetChanged') }} name="{{ whatwedo_table_parameter(table, 'filter_column')~indexSuffix }}" class="w-full cursor-pointer whatwedo-utility-paragraph whatwedo-crud-button--action-white">
                 {% for f in filters %}
                     <option
                         value="{{ f.acronym }}"
@@ -17,7 +17,7 @@
             </select>
         </div>
         <div class="whatwedo-table-filter-selection flex-initial w-3/12">
-            <select name="{{ whatwedo_table_parameter(table, 'filter_operator')~indexSuffix }}" class="w-full whatwedo-utility-paragraph whatwedo-crud-button--action-white">
+            <select name="{{ whatwedo_table_parameter(table, 'filter_operator')~indexSuffix }}" class="w-full cursor-pointer whatwedo-utility-paragraph whatwedo-crud-button--action-white">
                 {% for key, value in filter.type.operators %}
                     <option value="{{ key }}" {% if key == filterOperator %}selected="selected"{% endif %}>{{ value|trans }}</option>
                 {% endfor %}
@@ -49,22 +49,73 @@
     </div>
 {% endmacro %}
 
-{% macro filter_group(table, groupIndex, group) %}
-    <div {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroup') }}>
+{% macro filter_header(table) %}
+    <div class="flex justify-between ">
         <span
-            class="whatwedo-utility-bold hidden"
+            class="whatwedo-utility-bold hidden self-center"
             {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupFilterHeaderFirst') }}
         >
             {{ 'whatwedo_table.filter.show_element_when' | trans }}
         </span>
-        {% if groupIndex > 0 %}
+
+        <div class="relative">
+            <button
+                type="button"
+                class="whatwedo-crud-button--action-white inline-flex justify-center"
+                {{ stimulus_action('whatwedo/table-bundle/filter', 'toggleDropdown') }}
+            >
+                {{ 'whatwedo_table.filter.saved_filter' | trans }}
+                {{ bootstrap_icon('chevron-down', { class: '-mr-1 ml-2 h-4 w-4' }) }}
+            </button>
+
+            <div class="absolute bottom-0 inline-block text-left">
+                <div
+                    class="hidden z-20 origin-top-right absolute right-0 mt-1 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-neutral-100 focus:outline-none"
+                    {{ stimulus_target('whatwedo/table-bundle/filter', 'dropdown') }}
+                    tabindex="-1"
+                >
+                    <div class="py-1" role="none">
+                        {% for filter in table.filterExtension.savedFilter(app.request.attributes.get('_route')) %}
+                            {% set filter_href = path(filter.route, filter.arguments | merge(filter.conditions)) %}
+                            <a href="{{ filter_href }}" class="text-neutral-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">{{ filter.name }}</a>
+                        {% endfor %}
+                    </div>
+                    {% if app.request.query.has('index_filter_column') and app.request.query.has('index_filter_operator') and app.request.query.has('index_filter_value') %}
+                        <div class="py-1" role="none">
+                            <a
+                                href="{{ path('whatwedo_crud_filter_create', {'filter_path' : app.request.attributes.get('_route')} | merge(app.request.query.all)) }}"
+                                class="text-neutral-700 block w-full text-left px-4 py-2 text-sm"
+                                role="menuitem" tabindex="-1" id="menu-item-3"
+                            >
+                                {{ bootstrap_icon('plus', { class: 'inline-block w-5 h-5' }) }}
+                                {{ 'whatwedo_table.filter.create_new' | trans }}
+                            </a>
+                        </div>
+                    {% endif %}
+                    <div class="py-1" role="none">
+                        <a
+                            href="{{ path('whatwedo_crud_filter_index') }}"
+                            class="text-neutral-700 block w-full text-left px-4 py-2 text-sm"
+                            role="menuitem" tabindex="-1" id="menu-item-3"
+                        >
+                            {{ bootstrap_icon('list', { class: 'inline-block w-5 h-5' }) }}
+                            {{ 'whatwedo_table.filter.overview' | trans }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro filter_group(table, groupIndex, group) %}
+    <div {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroup') }}>
         <span
             class="whatwedo-utility-bold hidden"
             {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupFilterHeaderOthers') }}
         >
             {{ 'whatwedo_table.filter.or' | trans }}
         </span>
-        {% endif %}
         <div
             class="mt-3 py-2 px-4 bg-white relative rounded-md shadow-sm"
             {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupFilterList') }}
@@ -133,7 +184,10 @@
                                 </div>
                             </div>
                             <div class="mt-6 relative flex-1">
+
+
                                 <div class="px-4 sm:px-6" {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupList') }}>
+                                    {{ _self.filter_header(table) }}
                                     {% for groupIndex, group in table.filterExtension.getFilterData(false) %}
                                         {{ _self.filter_group(table, groupIndex, group) }}
                                     {% else %}
@@ -142,71 +196,22 @@
                                 </div>
 
                                 <!-- Filter Mutations -->
-                                <div class="mt-4 px-4 pb-4 sm:px-6 flex">
+                                <div class="mt-4 px-4 pb-4 sm:px-6 flex space-x-4">
                                     <div class="flex-auto">
                                         <button
                                             type="button"
-                                            class="whatwedo-crud-button--action-white text-sm px-2.5 py-1.5"
+                                            class="whatwedo-crud-button--action-white"
                                             {{ stimulus_action('whatwedo/table-bundle/filter', 'appendOr') }}
                                         >
                                             {{ 'whatwedo_table.filter.or' | trans }}
                                         </button>
                                     </div>
-                                    <div>
-                                        <div class="relative inline-block text-left">
-                                            <div>
-                                                <button
-                                                    type="button"
-                                                    class="whatwedo-crud-button--action-white text-sm px-2.5 py-1.5 inline-flex justify-center"
-                                                    {{ stimulus_action('whatwedo/table-bundle/filter', 'toggleDropdown') }}
-                                                >
-                                                    {{ 'whatwedo_table.filter.saved_filter' | trans }}
-                                                    {{ bootstrap_icon('chevron-down', { class: '-mr-1 ml-2 h-4 w-4' }) }}
-                                                </button>
-                                            </div>
 
-                                            <div
-                                                class="hidden z-20 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-neutral-100 focus:outline-none"
-                                                {{ stimulus_target('whatwedo/table-bundle/filter', 'dropdown') }}
-                                                tabindex="-1"
-                                            >
-                                                <div class="py-1" role="none">
-                                                    {% for filter in table.filterExtension.savedFilter(app.request.attributes.get('_route')) %}
-                                                        {% set filter_href = path(filter.route, filter.arguments | merge(filter.conditions)) %}
-                                                        <a href="{{ filter_href }}" class="text-neutral-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">{{ filter.name }}</a>
-                                                    {% endfor %}
-                                                </div>
-                                                {% if app.request.query.has('index_filter_column') and app.request.query.has('index_filter_operator') and app.request.query.has('index_filter_value') %}
-                                                    <div class="py-1" role="none">
-                                                        <a
-                                                            href="{{ path('whatwedo_crud_filter_create', {'filter_path' : app.request.attributes.get('_route')} | merge(app.request.query.all)) }}"
-                                                            class="text-neutral-700 block w-full text-left px-4 py-2 text-sm"
-                                                            role="menuitem" tabindex="-1" id="menu-item-3"
-                                                        >
-                                                            {{ bootstrap_icon('plus', { class: 'inline-block w-5 h-5' }) }}
-                                                            {{ 'whatwedo_table.filter.create_new' | trans }}
-                                                        </a>
-                                                    </div>
-                                                {% endif %}
-                                                <div class="py-1" role="none">
-                                                    <a
-                                                        href="{{ path('whatwedo_crud_filter_index') }}"
-                                                        class="text-neutral-700 block w-full text-left px-4 py-2 text-sm"
-                                                        role="menuitem" tabindex="-1" id="menu-item-3"
-                                                    >
-                                                        {{ bootstrap_icon('list', { class: 'inline-block w-5 h-5' }) }}
-                                                        {{ 'whatwedo_table.filter.overview' | trans }}
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="flex-auto text-right">
-                                        <button {{ stimulus_action('whatwedo/table-bundle/filter', 'reset') }} type="reset" class="whatwedo-crud-button--action-danger text-sm px-2.5 py-1.5">
+                                    <div class="flex-auto text-right space-x-4">
+                                        <button {{ stimulus_action('whatwedo/table-bundle/filter', 'reset') }} type="reset" class="whatwedo-crud-button--action-danger">
                                             {{ 'whatwedo_table.filter.reset' | trans }}
                                         </button>
-                                        <button type="submit" class="whatwedo-crud-button--action text-sm ml-2 px-2.5 py-1.5">
+                                        <button type="submit" class="whatwedo-crud-button--action">
                                             {{ 'whatwedo_table.filter.apply' | trans }}
                                         </button>
                                     </div>
