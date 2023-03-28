@@ -20,9 +20,34 @@
 }
 
 .whatwedo_table-actions {
+
+}
+
+.whatwedo_table-actions-button {
     @apply w-6 h-6 mt-1 bg-neutral-200 inline-flex items-center justify-center text-neutral-700 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500;
 }
 
 .whatwedo_table-link {
     @apply inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-primary-700 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3;
+}
+
+.whatwedo_table-subtable {
+    > td {
+        @apply border-none p-0;
+    }
+
+    .whatwedo_table-wrapper,
+    .whatwedo_table-row {
+        @apply border-none;
+    }
+
+    .whatwedo_table-head {
+        > tr {
+            @apply border-none bg-neutral-100 text-sm;
+        }
+
+        th {
+            @apply py-2 text-neutral-500;
+        }
+    }
 }

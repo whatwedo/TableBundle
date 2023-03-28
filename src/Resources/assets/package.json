@@ -20,6 +20,12 @@
                 "webpackMode": "eager",
                 "fetch": "eager",
                 "enabled": true
+            },
+            "accordion": {
+                "main": "controllers/accordion_controller.js",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
             }
         }
     },
