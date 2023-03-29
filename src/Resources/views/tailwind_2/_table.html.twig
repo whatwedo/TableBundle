@@ -44,14 +44,14 @@
         </div>
     </div>
 {% endmacro %}
-<div class="whatwedo_table:table__wrapper w-full overflow-x-auto align-middle inline-block min-w-full border-b border-neutral-200">
+<div class="whatwedo_table-wrapper w-full overflow-x-auto align-middle inline-block min-w-full border-b border-neutral-200">
     <table
         class="min-w-full bg-white" {{ stimulus_target('whatwedo/table-bundle/table', 'table') }} {{ stimulus_target('@whatwedo/table-bundle/table_select', 'table') }}>
         {% if table.columns and table.getOption('content_visibility')['content_show_header'] %}
-            <thead class="whatwedo_table:table__head">
+            <thead class="whatwedo_table-head">
             <tr class="border-b border-neutral-300 bg-neutral-200 text-base font-medium text-neutral-600 text-left tracking-wide">
 
-                {% if table.rows is not empty and table.getOption('definition') and table.getOption('definition').hasCapability(constant('whatwedo\\CrudBundle\\Enum\\Page::BATCH')) %}
+                {% if table.rows is not empty and table.hasBatchActions() %}
 
                     <th class="px-3 py-3 w-14">
                         <button {{ stimulus_action('@whatwedo/table-bundle/table_select', 'checkAll') }} {{ stimulus_target('@whatwedo/table-bundle/table_select', 'checkAll') }}>{{ bootstrap_icon('check-square') }}</button>
@@ -144,17 +144,23 @@
             </thead>
         {% endif %}
         <tbody
-            class="whatwedo_table:table__body bg-white whatwedo-utility-paragraph text-neutral-900 divide-y divide-neutral-300">
+            class="whatwedo_table-body bg-white whatwedo-utility-paragraph text-neutral-900 divide-y divide-neutral-300"
+            {{ stimulus_controller('whatwedo/table-bundle/accordion') }}
+        >
         {% if table.rows is empty %}
-            <tr class="whatwedo_table:table__row hover:bg-neutral-100 transition duration-500 color">
+            <tr class="whatwedo_table-row hover:bg-neutral-100 transition duration-500 color">
                 <td class="px-3 py-2 font-normal">
                     {{ 'whatwedo_table.no_elements' | trans }}
                 </td>
             </tr>
         {% endif %}
         {% for row in table.rows %}
-            <tr class="whatwedo_table:table__row hover:bg-neutral-100 transition duration-500 color align-top">
-                {% if table.getOption('definition') and table.getOption('definition').hasCapability(constant('whatwedo\\CrudBundle\\Enum\\Page::BATCH')) and table.getOption('content_visibility')['content_show_header'] %}
+            <tr class="whatwedo_table-row hover:bg-neutral-100 transition duration-500 color align-top"
+                {{ stimulus_action('whatwedo/table-bundle/accordion', 'toggle', 'click') }}
+                aria-expanded="false"
+            >
+                {% set subTables = table.getSubTables(row) %}
+                {% if table.hasBatchActions() and table.getOption('content_visibility')['content_show_header'] %}
                     <td class="px-6 py-2">
                         <input
                             class="cursor-pointer"
@@ -169,27 +175,36 @@
                         {% endif %}
                     >
                         {% apply spaceless %}
-                        {% if column.option('link_the_column_content') and table.option('primary_link') is not null %}
-                        {% set columnLink = table.primaryLink(row) %}
-                        {% if columnLink %}
-                        <a class="whatwedo-utility-link" href="{{ columnLink }}">
+                            {% if loop.first and subTables %}
+                                <svg
+                                    {{ stimulus_target('whatwedo/table-bundle/accordion', 'arrow') }}
+                                    class="inline-block align-baseline cursor-pointer h-2.5 w-2.5 text-neutral-600 mr-2"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 8.836 14.036"
+                                >
+                                    <path id="arrow-right" d="M27.65,1.333a.718.718,0,0,1,0-1.1.97.97,0,0,1,1.251,0l7.067,6.238a.717.717,0,0,1,0,1.1L28.9,13.808a.97.97,0,0,1-1.251,0,.718.718,0,0,1,0-1.1l6.487-5.685Z" transform="translate(-27.391)" fill="#4b5563" fill-rule="evenodd"/>
+                                </svg>
                             {% endif %}
+
+                            {% if column.option('link_the_column_content') and table.option('primary_link') is not null %}
+                                {% set columnLink = table.primaryLink(row) %}
+                                {% if columnLink %}
+                                    <a class="whatwedo-utility-link" href="{{ columnLink }}">
+                                {% endif %}
                             {% endif %}
-                            {% endapply %}
-
-                            {{ whatwedo_table_column_render(column, row) }}
-
-                            {% if column.option('link_the_column_content') and columnLink|default(false) %}</a>{% endif %}
+                        {% endapply %}
+                        {{ whatwedo_table_column_render(column, row) }}
+                        {% if column.option('link_the_column_content') and columnLink|default(false) %}</a>{% endif %}
                     </td>
                 {% endfor %}
                 {% set tableActions = table.actions | filter(action => not action.getOption('voter_attribute') or is_granted(action.getOption('voter_attribute'), row)) %}
                 {% if tableActions|length %}
-                    <td class="whatwedo_table:table__actions pr-6 align-top">
+                    <td class="whatwedo_table-actions pr-6 align-top">
 
                         <div
                             class="relative flex justify-end items-center" {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}>
                             <button
-                                class="whatwedo_table-actions"
+                                class="whatwedo_table-actions-button"
                                 {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') |
                                 stimulus_action('whatwedo/core-bundle/dropdown', 'close', 'scroll@window') |
                                 stimulus_action('whatwedo/core-bundle/dropdown', 'layoutCalculate') |
@@ -220,8 +235,17 @@
                         </div>
                     </td>
                 {% endif %}
-
             </tr>
+            {% for subTable in subTables %}
+                <tr
+                    class="whatwedo_table-subtable hidden"
+                    {{ stimulus_target('whatwedo/table-bundle/accordion', 'content') }}
+                >
+                    <td colspan="{{ table.getColspan(tableActions|length > 0 ? 1 : 0) }}">
+                        {% with {'table':subTable} only %}{{ whatwedo_table_only_render(table) }}{% endwith %}
+                    </td>
+                </tr>
+            {% endfor %}
         {% endfor %}
         </tbody>
     </table>

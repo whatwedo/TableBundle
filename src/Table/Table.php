@@ -53,6 +53,8 @@ class Table
 
     public const OPT_CONTENT_SHOW_ENTRY_DROPDOWN = 'content_show_entry_dropdown';
 
+    public const OPT_SUB_TABLE_LOADER = 'sub_table_loader';
+
     protected array $columns = [];
 
     protected array $actions = [];
@@ -60,6 +62,8 @@ class Table
     protected \Traversable $rows;
 
     protected bool $loaded = false;
+
+    protected ?Table $parent = null;
 
     public function __construct(
         protected string $identifier,
@@ -105,6 +109,7 @@ class Table
             self::OPT_THEME => '@whatwedoTable/tailwind_2_layout.html.twig',
             self::OPT_DEFINITION => null,
             self::OPT_DATALOADER_OPTIONS => [],
+            self::OPT_SUB_TABLE_LOADER => null,
         ]);
 
         $resolver->setAllowedTypes(self::OPT_TITLE, ['null', 'string']);
@@ -119,8 +124,31 @@ class Table
         $resolver->setAllowedTypes(self::OPT_DEFAULT_SORT, ['array']);
         $resolver->setAllowedTypes(self::OPT_DEFINITION, ['null', 'object']);
 
+        $resolver->setAllowedTypes(self::OPT_SUB_TABLE_LOADER, ['null', 'callable']);
         $resolver->setRequired(self::OPT_DATA_LOADER);
         $resolver->setAllowedTypes(self::OPT_DATA_LOADER, allowedTypes: DataLoaderInterface::class);
+    }
+
+    public function getSubTables(object|array $row): array
+    {
+        if ($this->getOption(self::OPT_SUB_TABLE_LOADER) === null) {
+            return [];
+        }
+
+        $subTables = ($this->getOption(self::OPT_SUB_TABLE_LOADER))($row);
+        if (! $subTables) {
+            return [];
+        }
+
+        if (! is_array($subTables)) {
+            $subTables = [$subTables];
+        }
+
+        foreach ($subTables as $table) {
+            $table->setParent($this);
+        }
+
+        return $subTables;
     }
 
     public function getIdentifier(): string
@@ -298,6 +326,33 @@ class Table
     public function getDataLoader(): DataLoaderInterface
     {
         return $this->options[self::OPT_DATA_LOADER];
+    }
+
+    public function getParent(): ?self
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?self $parent): void
+    {
+        $this->parent = $parent;
+    }
+
+    public function hasBatchActions(): bool
+    {
+        return $this->parent === null
+            && $this->getOption(self::OPT_DEFINITION)
+            && (enum_exists('whatwedo\CrudBundle\Enum\Page')
+                && $this->getOption(self::OPT_DEFINITION)::hasCapability(\whatwedo\CrudBundle\Enum\Page::BATCH))
+        ;
+    }
+
+    public function getColspan(int $extra = 0): int
+    {
+        return ($this->hasBatchActions() ? 1 : 0)
+            + count($this->getColumns())
+            + $extra
+        ;
     }
 
     protected function loadData(): void

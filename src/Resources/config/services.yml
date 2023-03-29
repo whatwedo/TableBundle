@@ -33,5 +33,6 @@ services:
     _instanceof:
         whatwedo\TableBundle\DataLoader\DataLoaderInterface:
             shared: false
+
         whatwedo\TableBundle\Extension\ExtensionInterface:
             shared: false

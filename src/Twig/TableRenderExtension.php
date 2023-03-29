@@ -36,6 +36,7 @@ class TableRenderExtension extends AbstractExtension
 
         return [
             new TwigFunction('whatwedo_table_render', fn ($context, Table $table) => $this->renderTable($context, $table), $options),
+            new TwigFunction('whatwedo_table_only_render', fn ($context, Table $table) => $this->renderTable($context, $table, 'table_table'), $options),
             new TwigFunction('whatwedo_table_action_render', fn ($context, Action $action, $entity) => $this->renderTableAction($context, $action, $entity), $options),
             new TwigFunction('whatwedo_table_column_render', fn ($context, Column $column, $entity) => $this->renderTableColumn($context, $column, $entity), $options),
         ];
@@ -48,11 +49,10 @@ class TableRenderExtension extends AbstractExtension
         ];
     }
 
-    private function renderTable($context, Table $table)
+    private function renderTable($context, Table $table, string $blockName = 'table')
     {
         $template = $this->getTemplate($this->getTheme($context));
         $context['table'] = $table;
-        $blockName = 'table';
         $context['blockName'] = $blockName;
 
         return $template->renderBlock($blockName, $context);
