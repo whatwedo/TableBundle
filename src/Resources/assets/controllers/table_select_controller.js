@@ -22,7 +22,7 @@ export default class extends Controller {
         if (!event.target.dataset.entityId) {
             return;
         }
-        const eventId = parseInt(event.target.dataset.entityId);
+        const eventId = event.target.dataset.entityId;
         const ids = this.getIds();
 
         if (ids.includes(eventId)) {
@@ -43,7 +43,7 @@ export default class extends Controller {
             if (selector.checked) {
                 return;
             }
-            this.addId(parseInt(selector.dataset.entityId));
+            this.addId(selector.dataset.entityId);
             selector.checked = true;
         });
         this.checkAllTarget.classList.add('hidden');
@@ -52,7 +52,7 @@ export default class extends Controller {
 
     unCheckAll() {
         this.selectorTargets.forEach(selector => {
-            this.removeId(parseInt(selector.dataset.entityId));
+            this.removeId(selector.dataset.entityId);
             selector.checked = false;
         });
         this.checkAllTarget.classList.remove('hidden');
@@ -99,7 +99,7 @@ export default class extends Controller {
     syncSelectedIds() {
         let ids = this.getIds();
         this.selectorTargets.forEach(selector => {
-            selector.checked = ids.includes(parseInt(selector.dataset.entityId));
+            selector.checked = ids.includes(selector.dataset.entityId);
         });
 
     }
