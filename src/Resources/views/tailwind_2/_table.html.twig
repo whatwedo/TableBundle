@@ -56,12 +56,16 @@
                     <th class="px-3 py-3 w-14">
                         <button {{ stimulus_action('@whatwedo/table-bundle/table_select', 'checkAll') }} {{ stimulus_target('@whatwedo/table-bundle/table_select', 'checkAll') }}>{{ bootstrap_icon('check-square') }}</button>
                         <button {{ stimulus_action('@whatwedo/table-bundle/table_select', 'unCheckAll') }} {{ stimulus_target('@whatwedo/table-bundle/table_select', 'unCheckAll') }}
-                            class="hidden">{{ bootstrap_icon('dash-square') }}</button>
+                            class="hidden">{{ bootstrap_icon('dash-square') }}
+                        </button>
 
                         <span class="relative items-center" {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}>
                             <button
                                 class="items-center justify-center hover:text-neutral-700"
-                                {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') }}
+                                {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') |
+                                stimulus_action('whatwedo/core-bundle/dropdown', 'close', 'scroll@window') |
+                                stimulus_action('whatwedo/core-bundle/dropdown', 'layoutCalculate') |
+                                stimulus_action('whatwedo/core-bundle/dropdown', 'layoutCalculate', 'resize@window') }}
                                 type="button"
                             >
                                 <span class="sr-only">{{ 'whatwedo_table.options' }}</span>
