@@ -42,6 +42,8 @@
     }
 
     .whatwedo_table-head {
+        @apply border-b border-neutral-200;
+
         > tr {
             @apply border-none bg-neutral-100 text-sm;
         }
