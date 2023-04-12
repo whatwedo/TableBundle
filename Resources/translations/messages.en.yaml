@@ -1,0 +1,50 @@
+whatwedo_table:
+    or: or
+    and: and
+    saved_filters: saved filters
+    reset: reset
+    apply: apply
+    save_filter: save query as filter
+    filter_name: name
+    filter_description: description
+    filter_public: public
+    close: close
+    save: save
+    no_results: no results found
+    delete_filter: delete filter
+    restore_filter: activate filter
+    entries: '%num% entries'
+    unknown: unknown
+    search:
+        filter: filter
+        remove_search: remove search
+        placeholder: search term...
+        export: export as Excel (CSV)
+        all_pages: current results (all pages)
+        all: all
+        actual: current results (page %current_page%)
+    foot:
+        result: entry %offsetResults% to %offsetLength% of %totalResults%
+    pagination:
+        first_page: current page
+        previous_page: previous page
+        current_page: (current page)
+        next_page: next page
+        last_page: last page
+    filter:
+        operator:
+            contains: contains
+            contains_not: does not contain
+            is: is
+            is_not: is not
+            equal: is equal
+            not_equal: is not equal
+            before: before
+            after: after
+            same_year: in the same year as
+            bigger_than: bigger than
+            smaller_than: smaller than
+            starts_with: starts with
+            ends_with: ends with
+            is_empty: contains a value
+            is_not_empty: does not contain a value
