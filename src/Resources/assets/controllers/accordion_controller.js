@@ -4,10 +4,8 @@ import * as StickyThead from 'stickythead'
 export default class extends Controller {
     static targets = ['content', 'arrow']
 
-    toggle(e) {
-        e.preventDefault();
-
-        const current = e.currentTarget;
+    toggle(event) {
+        const current = event.currentTarget;
         const arrow = current.querySelector('[data-whatwedo--table-bundle--accordion-target=arrow]');
         const isOpen = current.dataset.ariaExpanded == 'true';
         const nextSiblings = this.nextUntil(current, '[data-action="click->whatwedo--table-bundle--accordion#toggle"]');
