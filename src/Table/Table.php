@@ -342,8 +342,8 @@ class Table
     {
         return $this->parent === null
             && $this->getOption(self::OPT_DEFINITION)
-            && (enum_exists('whatwedo\CrudBundle\Enum\Page')
-                && $this->getOption(self::OPT_DEFINITION)::hasCapability(\whatwedo\CrudBundle\Enum\Page::BATCH))
+            && (enum_exists('whatwedo\CrudBundle\Enums\Page')
+                && $this->getOption(self::OPT_DEFINITION)::hasCapability(\whatwedo\CrudBundle\Enums\Page::BATCH))
         ;
     }
 
