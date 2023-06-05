@@ -3,18 +3,11 @@
 
 # whatwedoTableBundle
 
-This bundle helps to automatically create table lists for entites or arrays.
-
-Features include:
-
-- column builder
-- automatic query builder
-- sorting, filtering
-- events for f.ex. implement ElasticSearch
+This bundle is part of the [araise.dev](https://araise.dev) framework.
 
 ## Documentation
 
-https://whatwedo.github.io/TableBundle/#/
+[whatwedo.github.io/TableBundle](https://whatwedo.github.io/TableBundle/#/)
 
 ## License
 
