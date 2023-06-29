@@ -1,3 +1,7 @@
+ATTENTION: This bundle is abandoned. It is now part of araise: https://github.com/araise-dev/TableBundle
+
+---
+
 [![Latest Stable Version](https://poser.pugx.org/whatwedo/table-bundle/v/stable)](https://packagist.org/packages/whatwedo/table-bundle)
 [![SymfonyInsight](https://insight.symfony.com/projects/b01158ba-345f-4448-aef1-6220e7adbda1/mini.svg)](https://insight.symfony.com/projects/b01158ba-345f-4448-aef1-6220e7adbda1)
 
