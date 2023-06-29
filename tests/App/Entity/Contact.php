@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\Tests\App\Entity;
 
+use araise\SearchBundle\Annotation\Index;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use araise\SearchBundle\Annotation\Index;
 
 #[ORM\Table(name: 'contact')]
 #[ORM\Entity(repositoryClass: 'araise\TableBundle\Tests\App\Repository\ContactRepository')]

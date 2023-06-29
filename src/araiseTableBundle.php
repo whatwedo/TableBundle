@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace araise\TableBundle;
 
+use araise\TableBundle\DependencyInjection\Compiler\TableFactoryPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use araise\TableBundle\DependencyInjection\Compiler\TableFactoryPass;
 
-class whatwedoTableBundle extends Bundle
+class araiseTableBundle extends Bundle
 {
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new TableFactoryPass());
     }

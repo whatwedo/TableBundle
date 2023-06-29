@@ -29,11 +29,11 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\Extension;
 
+use araise\TableBundle\Table\Table;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use araise\TableBundle\Table\Table;
 
-#[Autoconfigure(tags: ['whatwedo.table_bundle.extension'])]
+#[Autoconfigure(tags: ['araise.table_bundle.extension'])]
 interface ExtensionInterface
 {
     public static function isEnabled(array $enabledBundles): bool;

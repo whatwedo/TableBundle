@@ -1,4 +1,4 @@
-{% import "@whatwedoTable/_macros.html.twig" as macros %}
+{% import "@araiseTable/_macros.html.twig" as macros %}
 
 {% if table.options.table_attr.class is not defined %}
     {% set contentAttr = table.options.table_attr|merge({
@@ -22,10 +22,10 @@
     {% endif %}
     <table {{ macros.attributes(contentAttr) }}>
         <thead class="thead-default">
-        {% include '@whatwedoTable/_head.html.twig' %}
+        {% include '@araiseTable/_head.html.twig' %}
         </thead>
         <tbody>
-        {% include '@whatwedoTable/_content.html.twig' %}
+        {% include '@araiseTable/_content.html.twig' %}
         </tbody>
     </table>
 </div>

@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\DataLoader;
 
+use araise\TableBundle\Entity\TreeInterface;
+use araise\TableBundle\Extension\PaginationExtension;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
 use Gedmo\Tree\Hydrator\ORM\TreeObjectHydrator;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use araise\TableBundle\Entity\TreeInterface;
-use araise\TableBundle\Extension\PaginationExtension;
 
 class DoctrineTreeDataLoader extends AbstractDataLoader
 {

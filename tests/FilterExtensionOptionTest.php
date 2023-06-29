@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\Tests;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use araise\TableBundle\DataLoader\ArrayDataLoader;
 use araise\TableBundle\Extension\FilterExtension;
 use araise\TableBundle\Factory\TableFactory;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 
 class FilterExtensionOptionTest extends KernelTestCase
 {

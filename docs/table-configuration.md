@@ -13,8 +13,8 @@ All Options are as constants in `Table` class.
 - `table_attr`: 
 - `default_limit` : Int, dafault: `25`
 - `limit_choices`:  Int, possible values: [`10`, `25`, `50`, `100`, `200`]
-- `table_box_template`: String, box template, default: `@whatwedoTable/table.html.twig`
-- `table_template`: String, table template, default:  `@whatwedoTable/tableOnly.html.twig`
+- `table_box_template`: String, box template, default: `@araiseTable/table.html.twig`
+- `table_template`: String, table template, default:  `@araiseTable/tableOnly.html.twig`
 - `default_sort`:
 - `content_visibility`: Array with option, default:
 - - `content_show_pagination`: Boolean, default: `true`

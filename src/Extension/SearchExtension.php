@@ -29,9 +29,9 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\Extension;
 
-use Symfony\Component\HttpFoundation\RequestStack;
-use araise\SearchBundle\whatwedoSearchBundle;
+use araise\SearchBundle\araiseSearchBundle;
 use araise\TableBundle\Helper\RouterHelper;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class SearchExtension extends AbstractExtension
 {
@@ -50,7 +50,7 @@ class SearchExtension extends AbstractExtension
     public static function isEnabled(array $enabledBundles): bool
     {
         foreach ($enabledBundles as $bundles) {
-            if (in_array(whatwedoSearchBundle::class, $bundles, true)) {
+            if (in_array(araiseSearchBundle::class, $bundles, true)) {
                 return true;
             }
         }

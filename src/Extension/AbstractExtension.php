@@ -29,8 +29,8 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\Extension;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use araise\TableBundle\Table\Table;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 abstract class AbstractExtension implements ExtensionInterface
 {

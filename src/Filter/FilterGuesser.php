@@ -29,12 +29,6 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\Filter;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\ManyToMany;
-use Doctrine\ORM\Mapping\ManyToOne;
-use Doctrine\ORM\Mapping\OneToMany;
 use araise\TableBundle\Filter\Type\AjaxManyToManyFilterType;
 use araise\TableBundle\Filter\Type\AjaxOneToManyFilterType;
 use araise\TableBundle\Filter\Type\AjaxRelationFilterType;
@@ -44,6 +38,12 @@ use araise\TableBundle\Filter\Type\DatetimeFilterType;
 use araise\TableBundle\Filter\Type\FilterTypeInterface;
 use araise\TableBundle\Filter\Type\NumberFilterType;
 use araise\TableBundle\Filter\Type\TextFilterType;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\ManyToMany;
+use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\OneToMany;
 
 class FilterGuesser
 {

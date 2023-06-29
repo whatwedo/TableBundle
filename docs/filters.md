@@ -4,8 +4,8 @@ Filters can be defined inside a `Controller`.
 
 ## Add a custom filter
 
-You can write your own filters with your own custom logic. You will find a lot of filter types at `whatwedo\table-bundle\Filter\Type`. Use them directly or as an example on how to write your own. 
-You may also consult the chapter [FilterType Examples](#filtertype-examples) for some more insight on how to use the whatwedo FilterTypes.
+You can write your own filters with your own custom logic. You will find a lot of filter types at `araise\table-bundle\Filter\Type`. Use them directly or as an example on how to write your own. 
+You may also consult the chapter [FilterType Examples](#filtertype-examples) for some more insight on how to use the araise FilterTypes.
 
 ```php
 $table->getFilterExtension()
@@ -19,7 +19,7 @@ The `FilterType` determines the logic that will be applied.
 
 ## FilterType Examples
 
-Here are some more examples on how to create your own custom filters by using the whatwedo `FilterTypes`.
+Here are some more examples on how to create your own custom filters by using the araise `FilterTypes`.
 
 ### NumberFilterType
 

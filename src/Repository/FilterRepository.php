@@ -29,10 +29,10 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\Repository;
 
+use araise\TableBundle\Entity\Filter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use araise\TableBundle\Entity\Filter;
 
 /**
  * @method Filter|null find($id, $lockMode = null, $lockVersion = null)

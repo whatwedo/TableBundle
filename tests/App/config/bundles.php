@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
+use araise\CoreBundle\araiseCoreBundle;
+use araise\SearchBundle\araiseSearchBundle;
+use araise\TableBundle\araiseTableBundle;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\WebpackEncoreBundle\WebpackEncoreBundle;
-use araise\CoreBundle\whatwedoCoreBundle;
-use araise\SearchBundle\whatwedoSearchBundle;
-use araise\TableBundle\whatwedoTableBundle;
 use whatwedo\TwigBootstrapIcons\whatwedoTwigBootstrapIconsBundle;
 use Zenstruck\Foundry\ZenstruckFoundryBundle;
 
@@ -26,13 +26,13 @@ return [
     ZenstruckFoundryBundle::class => [
         'all' => true,
     ],
-    whatwedoCoreBundle::class => [
+    araiseCoreBundle::class => [
         'all' => true,
     ],
-    whatwedoTableBundle::class => [
+    araiseTableBundle::class => [
         'all' => true,
     ],
-    whatwedoSearchBundle::class => [
+    araiseSearchBundle::class => [
         'all' => true,
     ],
     WebpackEncoreBundle::class => [

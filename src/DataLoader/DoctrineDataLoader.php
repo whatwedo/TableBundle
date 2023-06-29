@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\DataLoader;
 
+use araise\TableBundle\Extension\PaginationExtension;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use araise\TableBundle\Extension\PaginationExtension;
 
 class DoctrineDataLoader extends AbstractDataLoader
 {

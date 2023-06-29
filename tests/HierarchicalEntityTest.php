@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\Tests;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use araise\TableBundle\Tests\App\Entity\Category;
 use araise\TableBundle\Tests\App\Factory\CategoryFactory;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 

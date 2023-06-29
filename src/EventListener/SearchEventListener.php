@@ -29,11 +29,11 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\EventListener;
 
-use Doctrine\ORM\EntityManagerInterface;
 use araise\SearchBundle\Entity\Index;
 use araise\TableBundle\DataLoader\DoctrineDataLoader;
 use araise\TableBundle\Event\DataLoadEvent;
 use araise\TableBundle\Table\Table;
+use Doctrine\ORM\EntityManagerInterface;
 
 class SearchEventListener
 {

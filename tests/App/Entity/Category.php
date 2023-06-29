@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\Tests\App\Entity;
 
+use araise\TableBundle\Entity\TreeInterface;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use araise\TableBundle\Entity\TreeInterface;
 
 #[Gedmo\Tree(type: 'nested')]
 #[ORM\Entity(repositoryClass: 'Gedmo\Tree\Entity\Repository\NestedTreeRepository')]

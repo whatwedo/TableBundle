@@ -1,13 +1,12 @@
-[![Latest Stable Version](https://poser.pugx.org/whatwedo/table-bundle/v/stable)](https://packagist.org/packages/whatwedo/table-bundle)
-[![SymfonyInsight](https://insight.symfony.com/projects/b01158ba-345f-4448-aef1-6220e7adbda1/mini.svg)](https://insight.symfony.com/projects/b01158ba-345f-4448-aef1-6220e7adbda1)
+[![Latest Stable Version](https://poser.pugx.org/araise/table-bundle/v/stable)](https://packagist.org/packages/araise/table-bundle)
 
-# whatwedoTableBundle
+# araiseTableBundle
 
 This bundle is part of the [araise.dev](https://araise.dev) framework.
 
 ## Documentation
 
-[whatwedo.github.io/TableBundle](https://whatwedo.github.io/TableBundle/#/)
+[araise-dev.github.io/TableBundle](https://araise-dev.github.io/TableBundle/#/)
 
 ## License
 

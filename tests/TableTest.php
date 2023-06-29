@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\Tests;
 
+use araise\TableBundle\DataLoader\ArrayDataLoader;
+use araise\TableBundle\DataLoader\DoctrineDataLoader;
+use araise\TableBundle\Factory\TableFactory;
+use araise\TableBundle\Helper\RouterHelper;
+use araise\TableBundle\Tests\App\Entity\Company;
+use araise\TableBundle\Tests\App\Factory\CompanyFactory;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -11,12 +17,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
-use araise\TableBundle\DataLoader\ArrayDataLoader;
-use araise\TableBundle\DataLoader\DoctrineDataLoader;
-use araise\TableBundle\Factory\TableFactory;
-use araise\TableBundle\Helper\RouterHelper;
-use araise\TableBundle\Tests\App\Entity\Company;
-use araise\TableBundle\Tests\App\Factory\CompanyFactory;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 

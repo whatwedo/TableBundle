@@ -29,12 +29,6 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\Extension;
 
-use Doctrine\Common\Annotations\AnnotationException;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\QueryBuilder;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use araise\TableBundle\Builder\FilterBuilder;
 use araise\TableBundle\DataLoader\DoctrineDataLoader;
 use araise\TableBundle\Entity\Filter as FilterEntity;
@@ -44,6 +38,12 @@ use araise\TableBundle\Filter\Type\FilterTypeInterface;
 use araise\TableBundle\Helper\RouterHelper;
 use araise\TableBundle\Table\Filter;
 use araise\TableBundle\Table\Table;
+use Doctrine\Common\Annotations\AnnotationException;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FilterExtension extends AbstractExtension
 {

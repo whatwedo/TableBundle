@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\Tests;
 
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use araise\TableBundle\Factory\TableFactory;
 use araise\TableBundle\Repository\FilterRepository;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class WiringTest extends KernelTestCase
 {

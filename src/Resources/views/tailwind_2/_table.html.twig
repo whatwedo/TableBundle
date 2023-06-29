@@ -1,17 +1,17 @@
 {% macro confirmationLink(action, attr, formAction = null) %}
     <div class="cursor-pointer"
-        {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}
+        {{ stimulus_controller('araise/core-bundle/dropdown') }}
     >
         <a
             class="text-neutral-700 group flex items-center px-4 py-2 text-base hover:bg-neutral-100"
             tabindex="-1"
-            {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') }}
+            {{ stimulus_action('araise/core-bundle/dropdown', 'toggle') }}
         >
             {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400' }) }}
             {{ action.label|trans }}
         </a>
         <div
-            {{ stimulus_target('whatwedo/core-bundle/dropdown', 'menu') }}
+            {{ stimulus_target('araise/core-bundle/dropdown', 'menu') }}
             class="z-50 hidden transition duration-300 transform origin-top-left absolute left-0 -bottom-2 transform translate-y-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5"
             data-transition-enter-from="opacity-0 scale-95"
             data-transition-enter-to="opacity-100 scale-100"
@@ -33,7 +33,7 @@
                         {{ action.confirmation('yes') | trans }}
                     </button>
                     <button
-                        {{ stimulus_action('whatwedo/core-bundle/dropdown', 'close') }}
+                        {{ stimulus_action('araise/core-bundle/dropdown', 'close') }}
                         class="whatwedo-crud-button--action-no-bg"
                         type="button"
                     >
@@ -46,7 +46,7 @@
 {% endmacro %}
 <div class="whatwedo_table-wrapper w-full overflow-x-auto align-middle inline-block min-w-full border-b border-neutral-200">
     <table
-        class="min-w-full bg-white" {{ stimulus_target('whatwedo/table-bundle/table', 'table') }} {{ stimulus_target('@whatwedo/table-bundle/table_select', 'table') }}>
+        class="min-w-full bg-white" {{ stimulus_target('araise/table-bundle/table', 'table') }} {{ stimulus_target('@araise/table-bundle/table_select', 'table') }}>
         {% if table.columns and table.getOption('content_visibility')['content_show_header'] %}
             <thead class="whatwedo_table-head">
             <tr class="border-b border-neutral-300 bg-neutral-200 text-base font-medium text-neutral-600 text-left tracking-wide">
@@ -54,26 +54,26 @@
                 {% if table.rows is not empty and table.hasBatchActions() %}
 
                     <th class="px-3 py-3 w-14">
-                        <button {{ stimulus_action('@whatwedo/table-bundle/table_select', 'checkAll') }} {{ stimulus_target('@whatwedo/table-bundle/table_select', 'checkAll') }}>{{ bootstrap_icon('check-square') }}</button>
-                        <button {{ stimulus_action('@whatwedo/table-bundle/table_select', 'unCheckAll') }} {{ stimulus_target('@whatwedo/table-bundle/table_select', 'unCheckAll') }}
+                        <button {{ stimulus_action('@araise/table-bundle/table_select', 'checkAll') }} {{ stimulus_target('@araise/table-bundle/table_select', 'checkAll') }}>{{ bootstrap_icon('check-square') }}</button>
+                        <button {{ stimulus_action('@araise/table-bundle/table_select', 'unCheckAll') }} {{ stimulus_target('@araise/table-bundle/table_select', 'unCheckAll') }}
                             class="hidden">{{ bootstrap_icon('dash-square') }}
                         </button>
 
-                        <span class="relative items-center" {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}>
+                        <span class="relative items-center" {{ stimulus_controller('araise/core-bundle/dropdown') }}>
                             <button
                                 class="items-center justify-center hover:text-neutral-700"
-                                {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') |
-                                stimulus_action('whatwedo/core-bundle/dropdown', 'close', 'scroll@window') |
-                                stimulus_action('whatwedo/core-bundle/dropdown', 'layoutCalculate') |
-                                stimulus_action('whatwedo/core-bundle/dropdown', 'layoutCalculate', 'resize@window') }}
+                                {{ stimulus_action('araise/core-bundle/dropdown', 'toggle') |
+                                stimulus_action('araise/core-bundle/dropdown', 'close', 'scroll@window') |
+                                stimulus_action('araise/core-bundle/dropdown', 'layoutCalculate') |
+                                stimulus_action('araise/core-bundle/dropdown', 'layoutCalculate', 'resize@window') }}
                                 type="button"
                             >
-                                <span class="sr-only">{{ 'whatwedo_table.options' }}</span>
+                                <span class="sr-only">{{ 'araise_table.options' }}</span>
                                 {{ bootstrap_icon('journals', { class: 'h-4 w-4', alt: 'Mass Actions'}) }}
                             </button>
 
                             <div
-                                {{ stimulus_target('whatwedo/core-bundle/dropdown', 'menu') }}
+                                {{ stimulus_target('araise/core-bundle/dropdown', 'menu') }}
                                 class="z-50 hidden transition duration-300 transform origin-top-right mx-3 origin-top-right absolute left-4 top-0 w-48 -mt-1 rounded-md shadow-lg z-10 bg-white ring-1 ring-black ring-opacity-5 divide-y divide-neutral-200 focus:outline-none"
                                 data-transition-enter-from="opacity-0 scale-95"
                                 data-transition-enter-to="opacity-100 scale-100"
@@ -86,13 +86,13 @@
                                     <span class="block">
                                         {% for batchAction in table.getOption('definition').batchActions | filter(action => not action.getOption('voter_attribute') or is_granted(action.getOption('voter_attribute'), action)) %}
                                             {% if batchAction.hasConfirmation() %}
-                                                {{ _self.confirmationLink(batchAction, {}, stimulus_action('@whatwedo/table-bundle/table_select', 'doAction') ~ ' href="' ~ path(batchAction.route, batchAction.routeParameters) ~ '"') }}
+                                                {{ _self.confirmationLink(batchAction, {}, stimulus_action('@araise/table-bundle/table_select', 'doAction') ~ ' href="' ~ path(batchAction.route, batchAction.routeParameters) ~ '"') }}
                                             {% else %}
                                                 <a
                                                     href="{{ path(batchAction.route, batchAction.routeParameters) }}"
                                                     class="text-neutral-700 group flex items-center px-4 py-2 text-base hover:bg-neutral-100"
                                                     tabindex="-1"
-                                                    {{ stimulus_action('@whatwedo/table-bundle/table_select', 'doAction') }}
+                                                    {{ stimulus_action('@araise/table-bundle/table_select', 'doAction') }}
                                                 >
                                                     {{ bootstrap_icon(batchAction.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 hover:text-neutral-50' }) }}
                                                     {{ batchAction.label|trans }}
@@ -115,25 +115,25 @@
                             {% set currentOrder = table.sortExtension.order(column) %}
                             {% if currentOrder == 'asc' %}
                                 <a class="first:ml-1"
-                                   href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, 'desc')) }}">
+                                   href="{{ araise_table_path_replace_arguments(araise_table_column_sort_parameters(column, 'desc')) }}">
                                     {{ bootstrap_icon('sort-alpha-up', { class: 'inline w-4 h-4' }) }}
                                 </a>
                                 <a class="first:ml-1"
-                                   href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, null)) }}">
+                                   href="{{ araise_table_path_replace_arguments(araise_table_column_sort_parameters(column, null)) }}">
                                     {{ bootstrap_icon('x', { class: 'inline w-4 h-4' }) }}
                                 </a>
                             {% elseif currentOrder == 'desc' %}
                                 <a class="first:ml-1"
-                                   href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, 'asc')) }}">
+                                   href="{{ araise_table_path_replace_arguments(araise_table_column_sort_parameters(column, 'asc')) }}">
                                     {{ bootstrap_icon('sort-alpha-down-alt', { class: 'inline w-4 h-4' }) }}
                                 </a>
                                 <a class="first:ml-1"
-                                   href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, null)) }}">
+                                   href="{{ araise_table_path_replace_arguments(araise_table_column_sort_parameters(column, null)) }}">
                                     {{ bootstrap_icon('x', { class: 'inline w-4 h-4' }) }}
                                 </a>
                             {% else %}
                                 <a class="first:ml-1"
-                                   href="{{ whatwedo_table_path_replace_arguments(whatwedo_table_column_sort_parameters(column, 'asc')) }}">
+                                   href="{{ araise_table_path_replace_arguments(araise_table_column_sort_parameters(column, 'asc')) }}">
                                     {{ bootstrap_icon('arrow-down-up', { class: 'inline w-4 h-4' }) }}
                                 </a>
                             {% endif %}
@@ -149,18 +149,18 @@
         {% endif %}
         <tbody
             class="whatwedo_table-body bg-white whatwedo-utility-paragraph text-neutral-900 divide-y divide-neutral-300"
-            {{ stimulus_controller('whatwedo/table-bundle/accordion') }}
+            {{ stimulus_controller('araise/table-bundle/accordion') }}
         >
         {% if table.rows is empty %}
             <tr class="whatwedo_table-row hover:bg-neutral-100 transition duration-500 color">
                 <td class="px-3 py-2 font-normal">
-                    {{ 'whatwedo_table.no_elements' | trans }}
+                    {{ 'araise_table.no_elements' | trans }}
                 </td>
             </tr>
         {% endif %}
         {% for row in table.rows %}
             <tr class="whatwedo_table-row hover:bg-neutral-100 transition duration-500 color align-top"
-                {{ stimulus_action('whatwedo/table-bundle/accordion', 'toggle', 'click') }}
+                {{ stimulus_action('araise/table-bundle/accordion', 'toggle', 'click') }}
                 aria-expanded="false"
             >
                 {% set subTables = table.getSubTables(row) %}
@@ -168,20 +168,20 @@
                     <td class="px-6 py-2">
                         <input
                             class="cursor-pointer"
-                            type="checkbox" {{ stimulus_target('@whatwedo/table-bundle/table_select', 'selector') }} {{ stimulus_action('@whatwedo/table-bundle/table_select', 'selectId') }}
+                            type="checkbox" {{ stimulus_target('@araise/table-bundle/table_select', 'selector') }} {{ stimulus_action('@araise/table-bundle/table_select', 'selectId') }}
                             data-entity-id="{{ row.id }}">
                     </td>
                 {% endif %}
                 {% for column in table.columns %}
                     <td class="px-3 py-2 {% if column.option('link_the_column_content') %}whitespace-nowrap{% endif %}"
-                        {% if row|whatwedo_entity_is_tree and row.level != 0 %}
+                        {% if row|araise_entity_is_tree and row.level != 0 %}
                             style="padding-left: {{ row.level*50 }}px"
                         {% endif %}
                     >
                         {% apply spaceless %}
                             {% if loop.first and subTables %}
                                 <svg
-                                    {{ stimulus_target('whatwedo/table-bundle/accordion', 'arrow') }}
+                                    {{ stimulus_target('araise/table-bundle/accordion', 'arrow') }}
                                     class="inline-block align-baseline cursor-pointer h-2.5 w-2.5 text-neutral-600 mr-2"
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 8.836 14.036"
@@ -197,7 +197,7 @@
                                 {% endif %}
                             {% endif %}
                         {% endapply %}
-                        {{ whatwedo_table_column_render(column, row) }}
+                        {{ araise_table_column_render(column, row) }}
                         {% if column.option('link_the_column_content') and columnLink|default(false) %}</a>{% endif %}
                     </td>
                 {% endfor %}
@@ -206,13 +206,13 @@
                     <td class="whatwedo_table-actions pr-6 align-top">
 
                         <div
-                            class="relative flex justify-end items-center" {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}>
+                            class="relative flex justify-end items-center" {{ stimulus_controller('araise/core-bundle/dropdown') }}>
                             <button
                                 class="whatwedo_table-actions-button"
-                                {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') |
-                                stimulus_action('whatwedo/core-bundle/dropdown', 'close', 'scroll@window') |
-                                stimulus_action('whatwedo/core-bundle/dropdown', 'layoutCalculate') |
-                                stimulus_action('whatwedo/core-bundle/dropdown', 'layoutCalculate', 'resize@window') }}
+                                {{ stimulus_action('araise/core-bundle/dropdown', 'toggle') |
+                                stimulus_action('araise/core-bundle/dropdown', 'close', 'scroll@window') |
+                                stimulus_action('araise/core-bundle/dropdown', 'layoutCalculate') |
+                                stimulus_action('araise/core-bundle/dropdown', 'layoutCalculate', 'resize@window') }}
                                 type="button"
                             >
                                 <span class="sr-only">Optionen</span>
@@ -220,7 +220,7 @@
                             </button>
 
                             <div
-                                {{ stimulus_target('whatwedo/core-bundle/dropdown', 'menu') }}
+                                {{ stimulus_target('araise/core-bundle/dropdown', 'menu') }}
                                 class="z-50 hidden transition duration-300 origin-top-right mx-3 origin-top-right absolute right-7 top-0 -translate-x-1 w-48 -mt-1 rounded-md shadow-lg z-10 bg-white ring-1 ring-black ring-opacity-5 divide-y divide-neutral-200 focus:outline-none"
                                 data-transition-enter-from="opacity-0 scale-95"
                                 data-transition-enter-to="opacity-100 scale-100"
@@ -231,7 +231,7 @@
                                 <div class="py-1" role="none">
                                     {% for action in tableActions %}
                                         <span class="block">
-                                            {{ whatwedo_table_action_render(action, row) }}
+                                            {{ araise_table_action_render(action, row) }}
                                         </span>
                                     {% endfor %}
                                 </div>
@@ -243,10 +243,10 @@
             {% for subTable in subTables %}
                 <tr
                     class="whatwedo_table-subtable hidden"
-                    {{ stimulus_target('whatwedo/table-bundle/accordion', 'content') }}
+                    {{ stimulus_target('araise/table-bundle/accordion', 'content') }}
                 >
                     <td colspan="{{ table.getColspan(tableActions|length > 0 ? 1 : 0) }}">
-                        {% with {'table':subTable} only %}{{ whatwedo_table_only_render(table) }}{% endwith %}
+                        {% with {'table':subTable} only %}{{ araise_table_only_render(table) }}{% endwith %}
                     </td>
                 </tr>
             {% endfor %}

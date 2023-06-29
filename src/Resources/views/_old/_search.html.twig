@@ -1,17 +1,17 @@
-{% import "@whatwedoTable/_macros.html.twig" as macros %}
+{% import "@araiseTable/_macros.html.twig" as macros %}
 
-{# @var table \whatwedo\TableBundle\Table\Table #}
+{# @var table \araise\TableBundle\Table\Table #}
 <div class="whatwedo_table-search">
-    <form action="{{ whatwedo_table_path_replace_arguments({ (table.actionQueryParameter('page')) : 1 }) }}">
+    <form action="{{ araise_table_path_replace_arguments({ (table.actionQueryParameter('page')) : 1 }) }}">
         <div class="input-group input-group-sm">
             {% if table.searchExtension and table.isSearchable %}
-                <input type="text" class="form-control" placeholder="{{ 'whatwedo_table.search.placeholder'|trans }}" value="{{ table.searchExtension.searchQuery }}" name="{{ table.actionQueryParameter('query') }}">
+                <input type="text" class="form-control" placeholder="{{ 'araise_table.search.placeholder'|trans }}" value="{{ table.searchExtension.searchQuery }}" name="{{ table.actionQueryParameter('query') }}">
             {% endif %}
             {% if table.paginationExtension %}
                 {% set pagination = table.paginationExtension %}
                 <select data-disable-interactive name="{{ table.actionQueryParameter('limit') }}" class="whatwedo_table-limit form-control">
                     {% for num in table.options['limit_choices'] %}
-                        <option value="{{ num }}"{% if pagination.limit == num %} selected{% endif %}>{{ 'whatwedo_table.entries'|trans({'%num%': num}) }}</option>
+                        <option value="{{ num }}"{% if pagination.limit == num %} selected{% endif %}>{{ 'araise_table.entries'|trans({'%num%': num}) }}</option>
                     {% endfor %}
                 </select>
             {% else %}
@@ -23,16 +23,16 @@
                         <i class="fa fa-search"></i>
                     </button>
                     {% if table.searchExtension.searchQuery is not empty %}
-                        <a href="{{ whatwedo_table_path_replace_arguments({
+                        <a href="{{ araise_table_path_replace_arguments({
                             (table.actionQueryParameter('page')) : 1,
                             (table.actionQueryParameter('query')) : ''
-                        }) }}" class="btn btn-danger" type="button" title="{{ 'whatwedo_table.search.remove_search'|trans }}">
+                        }) }}" class="btn btn-danger" type="button" title="{{ 'araise_table.search.remove_search'|trans }}">
                             <i class="fa fa-times"></i>
                         </a>
                     {% endif %}
                 {% endif %}
                 {% if table.filterExtension.filters|default([]) is not empty %}
-                    <button type="button" data-toggle="filter" class="btn btn-success {% if table.filterExtension.filterData is not empty %}active{% endif %}" title="{{ 'whatwedo_table.search.filter'|trans }}">
+                    <button type="button" data-toggle="filter" class="btn btn-success {% if table.filterExtension.filterData is not empty %}active{% endif %}" title="{{ 'araise_table.search.filter'|trans }}">
                         <i class="fa fa-filter"></i>
                     </button>
                 {% endif %}

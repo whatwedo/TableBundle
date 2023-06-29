@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\Tests\App\Repository;
 
+use araise\TableBundle\Tests\App\Entity\Company;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use araise\TableBundle\Tests\App\Entity\Company;
 
 /**
  * @method Company|null find($id, $lockMode = null, $lockVersion = null)

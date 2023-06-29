@@ -1,48 +1,48 @@
 {% block table %}
-    <div class="whatwedo_table:wrapper" {{ stimulus_controller('whatwedo/table-bundle/filter') }}>
+    <div class="whatwedo_table:wrapper" {{ stimulus_controller('araise/table-bundle/filter') }}>
          {% block table_filter %}
-            {% include "@whatwedoTable/tailwind_2/_filter.html.twig" %}
+            {% include "@araiseTable/tailwind_2/_filter.html.twig" %}
         {% endblock %}
 
         <div {{ stimulus_controller(
-            '@whatwedo/table-bundle/table_select', {
-                'footSelectedTemplate': '<br>' ~ ('whatwedo_table.foot.selected'|trans({
+            '@araise/table-bundle/table_select', {
+                'footSelectedTemplate': '<br>' ~ ('araise_table.foot.selected'|trans({
                     '{count}': '{count}',
                 }))
             }) }}
         >
-            <turbo-frame id="whatwedo_table_{{ table.identifier }}" data-turbo="true" target="_top" {{ stimulus_action('@whatwedo/table-bundle/table_select', 'tableTargetChanged', 'turbo:frame-load') }}>
+            <turbo-frame id="whatwedo_table_{{ table.identifier }}" data-turbo="true" target="_top" {{ stimulus_action('@araise/table-bundle/table_select', 'tableTargetChanged', 'turbo:frame-load') }}>
                 {% block table_header %}
-                    {% include "@whatwedoTable/tailwind_2/_header.html.twig" %}
+                    {% include "@araiseTable/tailwind_2/_header.html.twig" %}
                 {% endblock %}
 
                 {% block table_table %}
-                    {% include "@whatwedoTable/tailwind_2/_table.html.twig" %}
+                    {% include "@araiseTable/tailwind_2/_table.html.twig" %}
                 {% endblock %}
 
                 {% block table_pagination %}
-                    {% include "@whatwedoTable/tailwind_2/_pagination.html.twig" %}
+                    {% include "@araiseTable/tailwind_2/_pagination.html.twig" %}
                 {% endblock %}
             </turbo-frame>
             {%  if table.hasBatchActions() %}
-            <input name="ids" type="hidden" {{ stimulus_target('@whatwedo/table-bundle/table_select', 'ids') }} value="[]">
+            <input name="ids" type="hidden" {{ stimulus_target('@araise/table-bundle/table_select', 'ids') }} value="[]">
             {% endif %}
         </div>
     </div>
 
 {% endblock %}
 
-{% use '@whatwedoCore/includes/_action.html.twig' %}
+{% use '@araiseCore/includes/_action.html.twig' %}
 
 {% block action %}
     {% if action.hasConfirmation() %}
         <div
-            {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}
+            {{ stimulus_controller('araise/core-bundle/dropdown') }}
             class="relative block"
         >
             <button
                 {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
-                {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') }}
+                {{ stimulus_action('araise/core-bundle/dropdown', 'toggle') }}
                 class="text-neutral-700 font-bold group flex items-center px-4 py-2 text-base" tabindex="-1"
             >
                 {% if action.option('icon') %}
@@ -51,7 +51,7 @@
                 {{ action.label|trans }}
             </button>
             <div
-                {{ stimulus_target('whatwedo/core-bundle/dropdown', 'menu') }}
+                {{ stimulus_target('araise/core-bundle/dropdown', 'menu') }}
                 class="z-50 hidden transition duration-300 transform origin-top-right absolute right-0 -bottom-3 transform translate-y-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5"
                 data-transition-enter-from="opacity-0 scale-95"
                 data-transition-enter-to="opacity-100 scale-100"
@@ -71,7 +71,7 @@
                             {{ action.confirmation('yes') | trans }}
                         </button>
                         <button
-                            {{ stimulus_action('whatwedo/core-bundle/dropdown', 'close') }}
+                            {{ stimulus_action('araise/core-bundle/dropdown', 'close') }}
                             class="whatwedo-crud-button--action-no-bg"
                             type="button"
                         >
@@ -99,12 +99,12 @@
 {% block post_action %}
     {% if action.hasConfirmation() %}
         <div
-            {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}
+            {{ stimulus_controller('araise/core-bundle/dropdown') }}
             class="relative"
         >
             <button
                 {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
-                {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') }}
+                {{ stimulus_action('araise/core-bundle/dropdown', 'toggle') }}
                 class="whatwedo-utility-bold group flex items-center px-4 py-2 w-full hover:bg-neutral-200 transition-colors" tabindex="-1"
             >
                 {% if action.option('icon') %}
@@ -113,7 +113,7 @@
                 {{ action.label|trans }}
             </button>
             <div
-                {{ stimulus_target('whatwedo/core-bundle/dropdown', 'menu') }}
+                {{ stimulus_target('araise/core-bundle/dropdown', 'menu') }}
                 class="z-50 hidden transition duration-300 transform origin-top-right absolute right-0 -bottom-3 transform translate-y-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5"
                 data-transition-enter-from="opacity-0 scale-95"
                 data-transition-enter-to="opacity-100 scale-100"
@@ -134,7 +134,7 @@
                             {{ action.confirmation('yes') | trans }}
                         </button>
                         <button
-                            {{ stimulus_action('whatwedo/core-bundle/dropdown', 'close') }}
+                            {{ stimulus_action('araise/core-bundle/dropdown', 'close') }}
                             class="whatwedo-crud-button--action-no-bg"
                             type="button"
                         >
@@ -166,17 +166,17 @@
 {% endblock %}
 
 {% block modal_action %}
-    {# @var action \whatwedo\CrudBundle\Action\Action #}
+    {# @var action \araise\CrudBundle\Action\Action #}
     <span
         class="ml-3 mb-3"
-        {{ stimulus_controller('whatwedo/core-bundle/modal-form', { formUrl: path(action.option('route'), action.option('route_parameters')) }) }}
+        {{ stimulus_controller('araise/core-bundle/modal-form', { formUrl: path(action.option('route'), action.option('route_parameters')) }) }}
     >
         <button
             type="button"
             class="whatwedo-utility-bold group flex items-center px-4 py-2 ml-0"
             tabindex="-1"
             {{ action.option('attr')|map((value, attr) => "#{attr}=\"#{value}\"")|join(' ')|raw }}
-            {{ stimulus_action('whatwedo/core-bundle/modal-form', 'openModal') }}
+            {{ stimulus_action('araise/core-bundle/modal-form', 'openModal') }}
         >
             {% if action.option('icon') %}
                 {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
@@ -185,7 +185,7 @@
         </button>
 
         <div
-                {{ stimulus_target('whatwedo/core-bundle/modal-form', 'menu') }}
+                {{ stimulus_target('araise/core-bundle/modal-form', 'menu') }}
                 class="hidden whatwedo-crud-modal whatwedo-utility-modal"
                 data-transition-enter-from="opacity-0"
                 data-transition-enter-to="opacity-100"
@@ -197,7 +197,7 @@
             <div class="whatwedo-crud-modal__overlay whatwedo-utility-modal__overlay">
                 <div
                     class="whatwedo-crud-modal__backdrop whatwedo-utility-modal__backdrop"
-                    {{ stimulus_action('whatwedo/core-bundle/modal-form', 'close', 'click') }}
+                    {{ stimulus_action('araise/core-bundle/modal-form', 'close', 'click') }}
                 ></div>
 
                 {# This element is to trick the browser into centering the modal contents. #}
@@ -208,7 +208,7 @@
                         <button
                             type="button"
                             class="whatwedo-crud-modal__close whatwedo-utility-modal__close"
-                            {{ stimulus_action('whatwedo/core-bundle/modal-form', 'close') | stimulus_action('whatwedo/core-bundle/modal-form', 'close', 'keydown.esc@window') }}
+                            {{ stimulus_action('araise/core-bundle/modal-form', 'close') | stimulus_action('araise/core-bundle/modal-form', 'close', 'keydown.esc@window') }}
                         >
                             <span class="sr-only">Close</span>
                             {{ bootstrap_icon('x', { class: 'inline w-8 h-8' }) }}
@@ -216,7 +216,7 @@
                     </div>
                     <div
                         class="whatwedo-crud-modal__body w-full"
-                        {{ stimulus_target('whatwedo/core-bundle/modal-form', 'modalBody') }}
+                        {{ stimulus_target('araise/core-bundle/modal-form', 'modalBody') }}
                     ></div>
                 </div>
             </div>

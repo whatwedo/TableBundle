@@ -32,7 +32,7 @@ namespace araise\TableBundle\Provider;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
-#[Autoconfigure(tags: ['whatwedo_table.query_builder_provider'])]
+#[Autoconfigure(tags: ['araise_table.query_builder_provider'])]
 interface QueryBuilderProviderInterface
 {
     /**

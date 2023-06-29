@@ -23,10 +23,10 @@ doctrine:
                         is_bundle: false
                         type: attribute
                         dir: '%kernel.project_dir%/Entity'
-                        prefix: 'whatwedo\TableBundle\Tests\App\Entity'
+                        prefix: 'araise\TableBundle\Tests\App\Entity'
                         alias: App
                 dql:
                     string_functions:
-                        MATCH_AGAINST: whatwedo\TableBundle\Extension\Doctrine\Query\Mysql\MatchAgainst
+                        MATCH_AGAINST: araise\TableBundle\Extension\Doctrine\Query\Mysql\MatchAgainst
         resolve_target_entities:
-            whatwedo\TableBundle\Entity\UserInterface: whatwedo\TableBundle\Tests\App\Entity\Person
+            araise\TableBundle\Entity\UserInterface: araise\TableBundle\Tests\App\Entity\Person

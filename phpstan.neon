@@ -4,4 +4,4 @@ parameters:
         - src
         - tests
     bootstrapFiles:
-        - vendor/bin/.phpunit/phpunit-9.5-0/vendor/autoload.php
+        - vendor/bin/.phpunit/phpunit-9.6-0/vendor/autoload.php

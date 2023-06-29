@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\Tests;
 
+use araise\TableBundle\DataLoader\DoctrineDataLoader;
+use araise\TableBundle\DataLoader\DoctrineTreeDataLoader;
+use araise\TableBundle\Factory\TableFactory;
+use araise\TableBundle\Tests\App\Entity\Category;
+use araise\TableBundle\Tests\App\Factory\CategoryFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
-use araise\TableBundle\DataLoader\DoctrineDataLoader;
-use araise\TableBundle\DataLoader\DoctrineTreeDataLoader;
-use araise\TableBundle\Factory\TableFactory;
-use araise\TableBundle\Tests\App\Entity\Category;
-use araise\TableBundle\Tests\App\Factory\CategoryFactory;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 

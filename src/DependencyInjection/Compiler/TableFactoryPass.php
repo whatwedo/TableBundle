@@ -29,17 +29,17 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\DependencyInjection\Compiler;
 
+use araise\TableBundle\Extension\ExtensionInterface;
+use araise\TableBundle\Factory\TableFactory;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
-use araise\TableBundle\Extension\ExtensionInterface;
-use araise\TableBundle\Factory\TableFactory;
 
 class TableFactoryPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
-        foreach (array_keys($container->findTaggedServiceIds('whatwedo.table_bundle.extension')) as $id) {
+        foreach (array_keys($container->findTaggedServiceIds('araise.table_bundle.extension')) as $id) {
             $tableExtension = $container->getDefinition($id);
 
             if (! is_subclass_of($tableExtension->getClass(), ExtensionInterface::class)) {
@@ -51,7 +51,7 @@ class TableFactoryPass implements CompilerPassInterface
             }
         }
 
-        foreach (array_keys($container->findTaggedServiceIds('whatwedo.table_bundle.extension')) as $id) {
+        foreach (array_keys($container->findTaggedServiceIds('araise.table_bundle.extension')) as $id) {
             $container->getDefinition(TableFactory::class)->addMethodCall('addExtension', [new Reference($id)]);
         }
     }

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\EventListener;
 
-use Doctrine\ORM\QueryBuilder;
 use araise\TableBundle\DataLoader\DoctrineDataLoader;
 use araise\TableBundle\Event\DataLoadEvent;
+use Doctrine\ORM\QueryBuilder;
 
 class DoctrineOrderEventListener
 {

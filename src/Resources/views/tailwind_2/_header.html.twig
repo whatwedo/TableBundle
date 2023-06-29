@@ -1,5 +1,5 @@
 {# Table Header #}
-{% if table.option('title') or view is defined and view.definition.hasCapability(constant('whatwedo\\CrudBundle\\Enums\\Page::EXPORT')) or table.filterExtension and table.filterExtension.filters|length > 0 or table.searchExtension and table.option('searchable') %}
+{% if table.option('title') or view is defined and view.definition.hasCapability(constant('araise\\CrudBundle\\Enums\\Page::EXPORT')) or table.filterExtension and table.filterExtension.filters|length > 0 or table.searchExtension and table.option('searchable') %}
 
     <header class="whatwedo_table:header sm:flex sm:justify-between mb-4">
         <div class="whatwedo_table:header__title flex-1 min-w-0 whatwedo-utility-heading-1 sm:truncate">
@@ -10,18 +10,18 @@
             {% endif %}
         </div>
         <div class="mt-4 flex sm:mt-0 sm:ml-4 space-x-2">
-            {% if view is defined and view.definition.hasCapability(constant('whatwedo\\CrudBundle\\Enums\\Page::EXPORT')) %}
+            {% if view is defined and view.definition.hasCapability(constant('araise\\CrudBundle\\Enums\\Page::EXPORT')) %}
                 <div
-                    {{ stimulus_controller('whatwedo/core-bundle/dropdown') }}
+                    {{ stimulus_controller('araise/core-bundle/dropdown') }}
                     class="relative inline-block">
                     <button
-                        {{ stimulus_action('whatwedo/core-bundle/dropdown', 'toggle') | stimulus_action('whatwedo/core-bundle/dropdown', 'close', 'keydown.esc') }}
+                        {{ stimulus_action('araise/core-bundle/dropdown', 'toggle') | stimulus_action('araise/core-bundle/dropdown', 'close', 'keydown.esc') }}
                         class="whatwedo_table:header__button whatwedo_table:header__button--download whatwedo_table-button h-full" tabindex="-1"
                     >
                         {{ bootstrap_icon('download', { class: 'w-4 h-4' }) }}
                     </button>
                     <div
-                        {{ stimulus_target('whatwedo/core-bundle/dropdown', 'menu') }}
+                        {{ stimulus_target('araise/core-bundle/dropdown', 'menu') }}
                         class="p-4 z-50 hidden transition duration-300 transform origin-top-right absolute right-0 -bottom-3 transform translate-y-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5"
                         data-transition-enter-from="opacity-0 scale-95"
                         data-transition-enter-to="opacity-100 scale-100"
@@ -29,12 +29,12 @@
                         data-transition-leave-to="opacity-0 scale-95"
                         tabindex="-1"
                     >
-                        <p class="whatwedo-utility-bold whitespace-nowrap mb-3">{{ 'whatwedo_table.download.info' | trans }}</p>
+                        <p class="whatwedo-utility-bold whitespace-nowrap mb-3">{{ 'araise_table.download.info' | trans }}</p>
 
                         <div class="flex space-x-2">
-                            {% for label,queryParameters in {'whatwedo_table.page' : app.request.query.all, 'whatwedo_table.all' : {'all':1}|merge(app.request.query.all)} %}
+                            {% for label,queryParameters in {'araise_table.page' : app.request.query.all, 'araise_table.all' : {'all':1}|merge(app.request.query.all)} %}
                                 <a
-                                    href="{{ path(view.definition.getRoute(constant('whatwedo\\CrudBundle\\Enums\\Page::EXPORT')), queryParameters) }}"
+                                    href="{{ path(view.definition.getRoute(constant('araise\\CrudBundle\\Enums\\Page::EXPORT')), queryParameters) }}"
                                     class="whatwedo_table:header__button whatwedo_table:header__button--download whatwedo_table-button"
 
                                 >
@@ -48,11 +48,11 @@
 
             {% if table.filterExtension and table.filterExtension.filters|length > 0 %}
                 <button
-                    class="whatwedo_table:header__button whatwedo_table:header__button--filter whatwedo_table-button whatwedo_table-button--filter {{ table.filterExtension.getFilterCount() > 0 ? 'whatwedo_table-button--filter-active' : '' }} }}"
+                    class="whatwedo_table:header__button whatwedo_table:header__button--filter whatwedo_table-button whatwedo_table-button--filter {{ table.filterExtension.getFilterCount() > 0 ? 'araise_table-button--filter-active' : '' }} }}"
                     data-filter-count="{{ table.filterExtension.getFilterCount() }}"
                     type="button"
-                    {{ stimulus_action('whatwedo/table-bundle/filter', 'open') }}
-                    {{ stimulus_target('whatwedo/table-bundle/filter', 'triggerButton') }}
+                    {{ stimulus_action('araise/table-bundle/filter', 'open') }}
+                    {{ stimulus_target('araise/table-bundle/filter', 'triggerButton') }}
                 >
                     {{ bootstrap_icon('funnel-fill', { class: 'w-4 h-4' }) }}
                 </button>
@@ -60,10 +60,10 @@
 
             {% if table.searchExtension and table.option('searchable') %}
                 <form
-                    action="{{ whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : 1 }) }}"
+                    action="{{ araise_table_path_replace_arguments({ (araise_table_parameter(table, 'page')) : 1 }) }}"
                     class="whatwedo_table:header__search inline-flex items-center"
                 >
-                    {% for name,value in whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : 1 }, true) %}
+                    {% for name,value in araise_table_path_replace_arguments({ (araise_table_parameter(table, 'page')) : 1 }, true) %}
                         <input type="hidden" name="{{ name }}" value="{{ value }}">
                     {% endfor %}
                     <div class="flex rounded-md shadow-sm">
@@ -71,11 +71,11 @@
                             <input
                                 class="whatwedo_core-input--rounded-left"
                                 type="search"
-                                name="{{ whatwedo_table_parameter(table, 'query') }}" placeholder="Suchbegriff ..."
+                                name="{{ araise_table_parameter(table, 'query') }}" placeholder="Suchbegriff ..."
                                 value="{{ table.searchExtension.query }}"
                             >
                         </div>
-                        <button class="whatwedo_table-button--search" type="submit">
+                        <button class="araise_table-button--search" type="submit">
                             {{ bootstrap_icon('search', { class: 'h-4 w-4 text-neutral-400', alt: 'Suchen' }) }}
                         </button>
                     </div>

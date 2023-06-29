@@ -2,13 +2,13 @@
     {% set filters = table.filterExtension.filters %}
     {% set filter = filters|filter(f => f.acronym == filterAcronym)|first %}
     {% set indexSuffix = '[' ~ groupIndex ~ '][' ~ conditionIndex ~ ']' %}
-    <div class="flex gap-x-4 my-3" {{ stimulus_target('whatwedo/table-bundle/filter', 'singleFilter') }}>
+    <div class="flex gap-x-4 my-3" {{ stimulus_target('araise/table-bundle/filter', 'singleFilter') }}>
         <div class="w-3/12">
-            <select {{ stimulus_action('whatwedo/table-bundle/filter', 'filterTargetChanged') }} name="{{ whatwedo_table_parameter(table, 'filter_column')~indexSuffix }}" class="w-full cursor-pointer whatwedo-utility-paragraph whatwedo-crud-button--action-white">
+            <select {{ stimulus_action('araise/table-bundle/filter', 'filterTargetChanged') }} name="{{ araise_table_parameter(table, 'filter_column')~indexSuffix }}" class="w-full cursor-pointer whatwedo-utility-paragraph whatwedo-crud-button--action-white">
                 {% for f in filters %}
                     <option
                         value="{{ f.acronym }}"
-                        data-operator-options="{{ f.type.operators|whatwedo_table_filter_operators }}"
+                        data-operator-options="{{ f.type.operators|araise_table_filter_operators }}"
                         data-value-template="{{ f.type.valueField|raw|e }}"
                         class="form-control"
                         {% if f.acronym == filter.acronym %}selected="selected"{% endif %}
@@ -17,30 +17,30 @@
             </select>
         </div>
         <div class="whatwedo-table-filter-selection flex-initial w-3/12">
-            <select name="{{ whatwedo_table_parameter(table, 'filter_operator')~indexSuffix }}" class="w-full cursor-pointer whatwedo-utility-paragraph whatwedo-crud-button--action-white">
+            <select name="{{ araise_table_parameter(table, 'filter_operator')~indexSuffix }}" class="w-full cursor-pointer whatwedo-utility-paragraph whatwedo-crud-button--action-white">
                 {% for key, value in filter.type.operators %}
                     <option value="{{ key }}" {% if key == filterOperator %}selected="selected"{% endif %}>{{ value|trans }}</option>
                 {% endfor %}
             </select>
         </div>
         <div class="whatwedo-table-filter-amount flex-none w-4/23">
-            {{ filter.type.valueField(filterValue)|replace({ '{name}': whatwedo_table_parameter(table, 'filter_value')~indexSuffix })|raw }}
+            {{ filter.type.valueField(filterValue)|replace({ '{name}': araise_table_parameter(table, 'filter_value')~indexSuffix })|raw }}
         </div>
         <div class="whatwedo-table-filter-actions flex-auto text-right items-center w-2/12">
             <div class="flex justify-end">
                 <button
                     type="button"
                     class="whatwedo-crud-button--action-white hidden flex-none"
-                    {{ stimulus_action('whatwedo/table-bundle/filter', 'appendAnd') }}
-                    {{ stimulus_target('whatwedo/table-bundle/filter', 'singleFilterAnd') }}
+                    {{ stimulus_action('araise/table-bundle/filter', 'appendAnd') }}
+                    {{ stimulus_target('araise/table-bundle/filter', 'singleFilterAnd') }}
                 >
-                    {{ 'whatwedo_table.filter.and' | trans }}
+                    {{ 'araise_table.filter.and' | trans }}
                 </button>
                 <button
                     type="button"
                     class="whatwedo-crud-button--action-danger flex-none ml-3 px-2.5 py-2"
-                    {{ stimulus_action('whatwedo/table-bundle/filter', 'removeAnd') }}
-                    {{ stimulus_target('whatwedo/table-bundle/filter', 'singleFilterRemove') }}
+                    {{ stimulus_action('araise/table-bundle/filter', 'removeAnd') }}
+                    {{ stimulus_target('araise/table-bundle/filter', 'singleFilterRemove') }}
                 >
                     {{ bootstrap_icon('trash', { class: 'fill-white' }) }}
                 </button>
@@ -53,25 +53,25 @@
     <div class="flex justify-between ">
         <span
             class="whatwedo-utility-bold hidden self-center"
-            {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupFilterHeaderFirst') }}
+            {{ stimulus_target('araise/table-bundle/filter', 'filterGroupFilterHeaderFirst') }}
         >
-            {{ 'whatwedo_table.filter.show_element_when' | trans }}
+            {{ 'araise_table.filter.show_element_when' | trans }}
         </span>
 
         <div class="relative">
             <button
                 type="button"
                 class="whatwedo-crud-button--action-white inline-flex justify-center"
-                {{ stimulus_action('whatwedo/table-bundle/filter', 'toggleDropdown') }}
+                {{ stimulus_action('araise/table-bundle/filter', 'toggleDropdown') }}
             >
-                {{ 'whatwedo_table.filter.saved_filter' | trans }}
+                {{ 'araise_table.filter.saved_filter' | trans }}
                 {{ bootstrap_icon('chevron-down', { class: '-mr-1 ml-2 h-4 w-4' }) }}
             </button>
 
             <div class="absolute bottom-0 inline-block text-left">
                 <div
                     class="hidden z-20 origin-top-right absolute right-0 mt-1 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-neutral-100 focus:outline-none"
-                    {{ stimulus_target('whatwedo/table-bundle/filter', 'dropdown') }}
+                    {{ stimulus_target('araise/table-bundle/filter', 'dropdown') }}
                     tabindex="-1"
                 >
                     <div class="py-1" role="none">
@@ -83,23 +83,23 @@
                     {% if app.request.query.has('index_filter_column') and app.request.query.has('index_filter_operator') and app.request.query.has('index_filter_value') %}
                         <div class="py-1" role="none">
                             <a
-                                href="{{ path('whatwedo_crud_filter_create', {'filter_path' : app.request.attributes.get('_route')} | merge(app.request.query.all)) }}"
+                                href="{{ path('araise_crud_filter_create', {'filter_path' : app.request.attributes.get('_route')} | merge(app.request.query.all)) }}"
                                 class="text-neutral-700 block w-full text-left px-4 py-2 text-sm"
                                 role="menuitem" tabindex="-1" id="menu-item-3"
                             >
                                 {{ bootstrap_icon('plus', { class: 'inline-block w-5 h-5' }) }}
-                                {{ 'whatwedo_table.filter.create_new' | trans }}
+                                {{ 'araise_table.filter.create_new' | trans }}
                             </a>
                         </div>
                     {% endif %}
                     <div class="py-1" role="none">
                         <a
-                            href="{{ path('whatwedo_crud_filter_index') }}"
+                            href="{{ path('araise_crud_filter_index') }}"
                             class="text-neutral-700 block w-full text-left px-4 py-2 text-sm"
                             role="menuitem" tabindex="-1" id="menu-item-3"
                         >
                             {{ bootstrap_icon('list', { class: 'inline-block w-5 h-5' }) }}
-                            {{ 'whatwedo_table.filter.overview' | trans }}
+                            {{ 'araise_table.filter.overview' | trans }}
                         </a>
                     </div>
                 </div>
@@ -109,16 +109,16 @@
 {% endmacro %}
 
 {% macro filter_group(table, groupIndex, group) %}
-    <div {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroup') }}>
+    <div {{ stimulus_target('araise/table-bundle/filter', 'filterGroup') }}>
         <span
             class="whatwedo-utility-bold mt-3 inline-block hidden"
-            {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupFilterHeaderOthers') }}
+            {{ stimulus_target('araise/table-bundle/filter', 'filterGroupFilterHeaderOthers') }}
         >
-            {{ 'whatwedo_table.filter.or' | trans }}
+            {{ 'araise_table.filter.or' | trans }}
         </span>
         <div
             class="mt-3 py-2 px-4 bg-white relative rounded-md shadow-sm"
-            {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupFilterList') }}
+            {{ stimulus_target('araise/table-bundle/filter', 'filterGroupFilterList') }}
         >
             {% for data in group %}
                 {% if table.filterExtension.filters[data.column] is defined %}
@@ -136,29 +136,29 @@
     <div class="relative z-10">
         <div
             class="fixed inset-0 opacity-0 ease-in-out delay-100 duration-400 transition-opacity hidden bg-neutral-500/[.6]"
-            {{ stimulus_target('whatwedo/table-bundle/filter', 'backdrop') }}
-            {{ stimulus_action('whatwedo/table-bundle/filter', 'close', 'click') }}
+            {{ stimulus_target('araise/table-bundle/filter', 'backdrop') }}
+            {{ stimulus_action('araise/table-bundle/filter', 'close', 'click') }}
         ></div>
         <div
             class="whatwedo_table:filter__wrapper pointer-events-none fixed inset-0 overflow-hidden"
-            {{ stimulus_target('whatwedo/table-bundle/filter', 'filters') }}
+            {{ stimulus_target('araise/table-bundle/filter', 'filters') }}
         >
             <div
                 class="absolute inset-0 overflow-hidden"
-                {{ stimulus_target('whatwedo/table-bundle/filter', 'filtersOverlay') }}
+                {{ stimulus_target('araise/table-bundle/filter', 'filtersOverlay') }}
             >
                 <div
                     class="pointer-events-auto absolute inset-0 bg-neutral-500 bg-opacity-75 transition-opacity"
-                    {{ stimulus_action('whatwedo/table-bundle/filter', 'close') }}
+                    {{ stimulus_action('araise/table-bundle/filter', 'close') }}
                     hidden
                 ></div>
                 <div
                     class="whatwedo_table:filter__inner pointer-events-auto fixed inset-y-0 right-0 pl-10 max-w-full flex transform transition ease-in-out duration-500 sm:duration-700 translate-x-full"
-                    {{ stimulus_target('whatwedo/table-bundle/filter', 'filterspanel') }}
+                    {{ stimulus_target('araise/table-bundle/filter', 'filterspanel') }}
                 >
 
-                    <form action="{{ whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : 1 }) }}" class="w-screen max-w-3xl">
-                        {% for name,value in whatwedo_table_path_replace_arguments({ (whatwedo_table_parameter(table, 'page')) : 1 }, true) %}
+                    <form action="{{ araise_table_path_replace_arguments({ (araise_table_parameter(table, 'page')) : 1 }) }}" class="w-screen max-w-3xl">
+                        {% for name,value in araise_table_path_replace_arguments({ (araise_table_parameter(table, 'page')) : 1 }, true) %}
                             {# only load filter unrelevant query parameters #}
                             {% if not (name matches '/.+_filter_(column|operator|value).+/') %}
                                 <input type="hidden" name="{{ name }}" value="{{ value }}">
@@ -168,14 +168,14 @@
                             <div class="px-4 sm:px-6">
                                 <div class="flex items-start justify-between">
                                     <h2 class="whatwedo-utility-heading-2">
-                                        {{ 'whatwedo_table.filter.filter' | trans }}
+                                        {{ 'araise_table.filter.filter' | trans }}
                                     </h2>
 
                                     <div class="ml-3 h-7 flex items-center">
                                         <button
                                             type="button"
                                             class="text-neutral-400 hover:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 rounded transition-colors"
-                                            {{ stimulus_action('whatwedo/table-bundle/filter', 'close') | stimulus_action('whatwedo/table-bundle/filter', 'close', 'keydown.esc@window') }}
+                                            {{ stimulus_action('araise/table-bundle/filter', 'close') | stimulus_action('araise/table-bundle/filter', 'close', 'keydown.esc@window') }}
                                         >
                                             <span class="sr-only">Close panel</span>
                                             {{ bootstrap_icon('x', { class: 'h-8 w-8' }) }}
@@ -186,7 +186,7 @@
                             <div class="mt-6 relative flex-1">
 
 
-                                <div class="px-4 sm:px-6" {{ stimulus_target('whatwedo/table-bundle/filter', 'filterGroupList') }}>
+                                <div class="px-4 sm:px-6" {{ stimulus_target('araise/table-bundle/filter', 'filterGroupList') }}>
                                     {{ _self.filter_header(table) }}
                                     {% for groupIndex, group in table.filterExtension.getFilterData(false) %}
                                         {{ _self.filter_group(table, groupIndex, group) }}
@@ -201,18 +201,18 @@
                                         <button
                                             type="button"
                                             class="whatwedo-crud-button--action-white"
-                                            {{ stimulus_action('whatwedo/table-bundle/filter', 'appendOr') }}
+                                            {{ stimulus_action('araise/table-bundle/filter', 'appendOr') }}
                                         >
-                                            {{ 'whatwedo_table.filter.or' | trans }}
+                                            {{ 'araise_table.filter.or' | trans }}
                                         </button>
                                     </div>
 
                                     <div class="flex-auto text-right space-x-4">
-                                        <button {{ stimulus_action('whatwedo/table-bundle/filter', 'reset') }} type="reset" class="whatwedo-crud-button--action-danger">
-                                            {{ 'whatwedo_table.filter.reset' | trans }}
+                                        <button {{ stimulus_action('araise/table-bundle/filter', 'reset') }} type="reset" class="whatwedo-crud-button--action-danger">
+                                            {{ 'araise_table.filter.reset' | trans }}
                                         </button>
                                         <button type="submit" class="whatwedo-crud-button--action">
-                                            {{ 'whatwedo_table.filter.apply' | trans }}
+                                            {{ 'araise_table.filter.apply' | trans }}
                                         </button>
                                     </div>
                                 </div>

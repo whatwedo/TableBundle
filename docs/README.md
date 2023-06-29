@@ -1,6 +1,6 @@
 # Getting Started
 
-This documentation provides a basic overview of the possibilities of the whatwedoTableBundle. 
+This documentation provides a basic overview of the possibilities of the araiseTableBundle. 
 
 ## Requirements
 
@@ -38,22 +38,8 @@ add this repository to your composer.json: ([Sadly composer cannot load reposito
 ```
 Then add the bundle to your dependencies and install it:
 ```shell
-composer require whatwedo/table-bundle
+composer require araise/table-bundle
 ```
-**remove after release**
-
-The version `v1` is still in development,
-so you need to add these lines manually to the `composer.json` `require` to get the version constraint right:
-```json
-"require": {
-    ...
-    "whatwedo/core-bundle": "dev-1.0-dev as v1.0.0",
-    "whatwedo/table-bundle": "dev-1.0-dev as v1.0.0",
-    "whatwedo/search-bundle": "dev-3.0-dev as v3.0.0",
-    ...
-}
-```
-Run `composer update`.
 After successfully installing the bundle, you should see changes in these files:
 - `composer.json`
 - `composer.lock`
@@ -85,7 +71,7 @@ module.exports = {
     content: [
         './assets/**/*.js',
         './templates/**/*.{html,html.twig}',
-        './vendor/whatwedo/**/*.{html,html.twig,js}',
+        './vendor/araise/**/*.{html,html.twig,js}',
         './var/cache/twig/**/*.php',
         './src/Definition/*.php',
     ],
@@ -145,14 +131,14 @@ Import the following styles into the `app.scss`:
 @tailwind components;
 @tailwind utilities;
 
-@import "~@whatwedo/core-bundle/styles/_tailwind.scss";
-@import "~@whatwedo/table-bundle/styles/_tailwind.scss";
+@import "~@araise/core-bundle/styles/_tailwind.scss";
+@import "~@araise/table-bundle/styles/_tailwind.scss";
 ```
-It is **important** that you include the @whatwedo styles **after** the tailwind styles.
+It is **important** that you include the @araise styles **after** the tailwind styles.
 
 Run `yarn dev`, it should end with the message `webpack compiled successfully`.
 
-Done! The whatwedoTableBundle is fully installed. You can now start using it!
+Done! The araiseTableBundle is fully installed. You can now start using it!
 
 
 
@@ -176,8 +162,8 @@ use App\Repository\PostRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
-use whatwedo\TableBundle\Factory\TableFactory;
+use araise\TableBundle\DataLoader\DoctrineDataLoader;
+use araise\TableBundle\Factory\TableFactory;
 
 class DefaultController extends AbstractController
 {
@@ -217,7 +203,7 @@ and in your template
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {{ whatwedo_table_render(mainTable) }}
+    {{ araise_table_render(mainTable) }}
 {% endblock %}
 ```
 

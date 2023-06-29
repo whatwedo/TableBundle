@@ -32,7 +32,7 @@ namespace araise\TableBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Table(name: 'whatwedo_table_filter')]
+#[ORM\Table(name: 'araise_table_filter')]
 #[ORM\Entity(repositoryClass: 'araise\TableBundle\Repository\FilterRepository')]
 class Filter
 {

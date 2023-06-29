@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\EventListener;
 
-use Doctrine\ORM\Query\Expr;
-use Doctrine\ORM\Query\Expr\Base;
-use Doctrine\ORM\Query\Expr\Comparison;
-use Doctrine\ORM\QueryBuilder;
 use araise\TableBundle\DataLoader\DoctrineDataLoader;
 use araise\TableBundle\Event\DataLoadEvent;
 use araise\TableBundle\Extension\FilterExtension;
 use araise\TableBundle\Table\Table;
+use Doctrine\ORM\Query\Expr;
+use Doctrine\ORM\Query\Expr\Base;
+use Doctrine\ORM\Query\Expr\Comparison;
+use Doctrine\ORM\QueryBuilder;
 
 class FilterEventListener
 {

@@ -29,11 +29,11 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\Extension;
 
-use Symfony\Component\HttpFoundation\RequestStack;
 use araise\TableBundle\Helper\RouterHelper;
 use araise\TableBundle\Table\Column;
 use araise\TableBundle\Table\ColumnInterface;
 use araise\TableBundle\Table\Table;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class SortExtension extends AbstractExtension
 {

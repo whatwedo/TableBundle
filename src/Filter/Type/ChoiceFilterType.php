@@ -23,8 +23,8 @@ class ChoiceFilterType extends FilterType
     public function getOperators(): array
     {
         return [
-            static::CRITERIA_EQUAL => 'whatwedo_table.filter.operator.is',
-            static::CRITERIA_NOT_EQUAL => 'whatwedo_table.filter.operator.is_not',
+            static::CRITERIA_EQUAL => 'araise_table.filter.operator.is',
+            static::CRITERIA_NOT_EQUAL => 'araise_table.filter.operator.is_not',
         ];
     }
 

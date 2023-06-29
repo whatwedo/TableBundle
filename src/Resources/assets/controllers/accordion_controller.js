@@ -6,9 +6,9 @@ export default class extends Controller {
 
     toggle(event) {
         const current = event.currentTarget;
-        const arrow = current.querySelector('[data-whatwedo--table-bundle--accordion-target=arrow]');
+        const arrow = current.querySelector('[data-araise--table-bundle--accordion-target=arrow]');
         const isOpen = current.dataset.ariaExpanded == 'true';
-        const nextSiblings = this.nextUntil(current, '[data-action="click->whatwedo--table-bundle--accordion#toggle"]');
+        const nextSiblings = this.nextUntil(current, '[data-action="click->araise--table-bundle--accordion#toggle"]');
 
         if(isOpen) {
             arrow.classList.remove('rotate-90');

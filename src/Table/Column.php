@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\Table;
 
+use araise\CoreBundle\Formatter\DefaultFormatter;
+use araise\CoreBundle\Manager\FormatterManager;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-use araise\CoreBundle\Formatter\DefaultFormatter;
-use araise\CoreBundle\Manager\FormatterManager;
 
 class Column extends AbstractColumn implements FormattableColumnInterface
 {

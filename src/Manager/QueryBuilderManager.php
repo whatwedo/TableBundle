@@ -29,8 +29,8 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\Manager;
 
-use Doctrine\ORM\QueryBuilder;
 use araise\TableBundle\Provider\QueryBuilderProviderInterface;
+use Doctrine\ORM\QueryBuilder;
 
 class QueryBuilderManager
 {

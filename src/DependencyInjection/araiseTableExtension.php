@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-class whatwedoTableExtension extends Extension implements PrependExtensionInterface
+class araiseTableExtension extends Extension implements PrependExtensionInterface
 {
     public function load(array $configs, ContainerBuilder $container): void
     {
@@ -32,7 +32,7 @@ class whatwedoTableExtension extends Extension implements PrependExtensionInterf
             'migrations_paths' => array_merge(
                 array_pop($doctrineConfig)['migrations_paths'] ?? [],
                 [
-                    'araise\TableBundle\Migrations' => '@whatwedoTableBundle/Migrations',
+                    'araise\TableBundle\Migrations' => '@araiseTableBundle/Migrations',
                 ]
             ),
         ]);

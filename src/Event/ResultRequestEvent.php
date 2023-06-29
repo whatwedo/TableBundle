@@ -35,9 +35,9 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class ResultRequestEvent extends Event
 {
-    public const FILTER_SET = 'whatwedo_ajax.result_request.filter_set';
+    public const FILTER_SET = 'araise_ajax.result_request.filter_set';
 
-    public const RELATION_SET = 'whatwedo_ajax.result_request.relation_set';
+    public const RELATION_SET = 'araise_ajax.result_request.relation_set';
 
     protected ?JsonResponse $result = null;
 

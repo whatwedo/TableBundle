@@ -54,11 +54,11 @@ export default class extends Controller {
 
     appendAnd(event) {
         // clone and reset all values
-        let node = event.target.closest('[data-whatwedo--table-bundle--filter-target="singleFilter"]').cloneNode(true);
+        let node = event.target.closest('[data-araise--table-bundle--filter-target="singleFilter"]').cloneNode(true);
         this.resetInputs(node);
 
         const block = event.target.parentNode.parentNode.parentNode.parentNode;
-        const lastSelectInBlock = block.querySelector('[data-whatwedo--table-bundle--filter-target="singleFilter"]:last-child select:first-child');
+        const lastSelectInBlock = block.querySelector('[data-araise--table-bundle--filter-target="singleFilter"]:last-child select:first-child');
 
         const optionNameMatcher = /filter_([\w\d]+)\[(\d)\]\[(\d)\]/i;
         let blockNumber = 0;
@@ -78,7 +78,7 @@ export default class extends Controller {
         node.querySelector('[name^="index_filter_operator"]').name = 'index_filter_operator['+blockNumber+']['+iNumber+']';
         node.querySelector('[name^="index_filter_value"]').name = 'index_filter_value['+blockNumber+']['+iNumber+']';
 
-        event.target.closest('[data-whatwedo--table-bundle--filter-target="filterGroupFilterList"]').appendChild(node);
+        event.target.closest('[data-araise--table-bundle--filter-target="filterGroupFilterList"]').appendChild(node);
 
         this.filterTargetChanged({
             target: node.querySelector('[name^="index_filter_column"]'),
@@ -88,13 +88,13 @@ export default class extends Controller {
     }
 
     removeAnd(event) {
-        let filter = event.target.closest('[data-whatwedo--table-bundle--filter-target="singleFilter"]');
-        let filterGroup = filter.closest('[data-whatwedo--table-bundle--filter-target="filterGroup"]');
+        let filter = event.target.closest('[data-araise--table-bundle--filter-target="singleFilter"]');
+        let filterGroup = filter.closest('[data-araise--table-bundle--filter-target="filterGroup"]');
 
-        event.target.closest('[data-whatwedo--table-bundle--filter-target="singleFilter"]').remove();
+        event.target.closest('[data-araise--table-bundle--filter-target="singleFilter"]').remove();
 
         // remove empty OR queries
-        if (filterGroup.querySelectorAll('[data-whatwedo--table-bundle--filter-target="singleFilter"]').length === 0) {
+        if (filterGroup.querySelectorAll('[data-araise--table-bundle--filter-target="singleFilter"]').length === 0) {
             filterGroup.remove();
         }
 
@@ -103,12 +103,12 @@ export default class extends Controller {
 
     appendOr(event) {
         // clone, only keep one filter and reset all values
-        let node = this.filterGroupListTarget.querySelector('[data-whatwedo--table-bundle--filter-target="filterGroup"]').cloneNode(true);
-        node.querySelectorAll('[data-whatwedo--table-bundle--filter-target="singleFilter"]:not(:first-child)').forEach(element => element.remove());
+        let node = this.filterGroupListTarget.querySelector('[data-araise--table-bundle--filter-target="filterGroup"]').cloneNode(true);
+        node.querySelectorAll('[data-araise--table-bundle--filter-target="singleFilter"]:not(:first-child)').forEach(element => element.remove());
         this.resetInputs(node);
 
         const allOfIt = event.target.parentNode.parentNode.parentNode;
-        const lastBlockSelect = allOfIt.querySelector('[data-whatwedo--table-bundle--filter-target="filterGroup"]:last-child select:first-child');
+        const lastBlockSelect = allOfIt.querySelector('[data-araise--table-bundle--filter-target="filterGroup"]:last-child select:first-child');
 
         const optionNameMatcher = /filter_([\w\d]+)\[(\d)\]\[(\d)\]/i;
         let blockNumber = 0;
@@ -155,10 +155,10 @@ export default class extends Controller {
     updateGui() {
         // only show "and" in the last row
         this.filterGroupListTargets.forEach(function (filterGroupList) {
-            filterGroupList.querySelectorAll('[data-whatwedo--table-bundle--filter-target="singleFilter"]')
-                .forEach(e => e.querySelector('[data-whatwedo--table-bundle--filter-target="singleFilterAnd"]').classList.add('hidden'))
-            filterGroupList.querySelectorAll('[data-whatwedo--table-bundle--filter-target="singleFilter"]:last-child')
-                .forEach(e => e.querySelector('[data-whatwedo--table-bundle--filter-target="singleFilterAnd"]').classList.remove('hidden'))
+            filterGroupList.querySelectorAll('[data-araise--table-bundle--filter-target="singleFilter"]')
+                .forEach(e => e.querySelector('[data-araise--table-bundle--filter-target="singleFilterAnd"]').classList.add('hidden'))
+            filterGroupList.querySelectorAll('[data-araise--table-bundle--filter-target="singleFilter"]:last-child')
+                .forEach(e => e.querySelector('[data-araise--table-bundle--filter-target="singleFilterAnd"]').classList.remove('hidden'))
         });
 
         // only show "trash" when there is more than one filter
@@ -182,7 +182,7 @@ export default class extends Controller {
     }
 
     reset(event) {
-        document.querySelectorAll('[data-whatwedo--table-bundle--filter-target="filterGroup"]').forEach((element) => {
+        document.querySelectorAll('[data-araise--table-bundle--filter-target="filterGroup"]').forEach((element) => {
             element.remove();
         });
         event.target.closest('form').submit();

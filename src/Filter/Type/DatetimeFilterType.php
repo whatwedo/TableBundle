@@ -21,11 +21,11 @@ class DatetimeFilterType extends FilterType
     public function getOperators(): array
     {
         return [
-            static::CRITERIA_EQUAL => 'whatwedo_table.filter.operator.equal',
-            static::CRITERIA_NOT_EQUAL => 'whatwedo_table.filter.operator.not_equal',
-            static::CRITERIA_BEFORE => 'whatwedo_table.filter.operator.before',
-            static::CRITERIA_AFTER => 'whatwedo_table.filter.operator.after',
-            static::CRITERIA_IN_YEAR => 'whatwedo_table.filter.operator.same_year',
+            static::CRITERIA_EQUAL => 'araise_table.filter.operator.equal',
+            static::CRITERIA_NOT_EQUAL => 'araise_table.filter.operator.not_equal',
+            static::CRITERIA_BEFORE => 'araise_table.filter.operator.before',
+            static::CRITERIA_AFTER => 'araise_table.filter.operator.after',
+            static::CRITERIA_IN_YEAR => 'araise_table.filter.operator.same_year',
         ];
     }
 

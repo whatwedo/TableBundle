@@ -1,4 +1,4 @@
-{% import "@whatwedoTable/_macros.html.twig" as macros %}
+{% import "@araiseTable/_macros.html.twig" as macros %}
 
 {% if table.options.attr.class is not defined %}
     {% set contentAttr = table.options.attr|merge({
@@ -25,19 +25,19 @@
             {% endif %}
 
             {% if hasSearchArea %}
-                {% include '@whatwedoTable/_search.html.twig' %}
+                {% include '@araiseTable/_search.html.twig' %}
             {% endif %}
         </div>
     {% endif %}
 
     <div class="box-body">
-        {% include '@whatwedoTable/_filter.html.twig' %}
+        {% include '@araiseTable/_filter.html.twig' %}
 
-        {% include "@whatwedoTable/_table.html.twig" %}
+        {% include "@araiseTable/_table.html.twig" %}
     </div>
 
     <div class="box-footer clearfix">
-        {% include '@whatwedoTable/_foot.html.twig' %}
+        {% include '@araiseTable/_foot.html.twig' %}
     </div>
 
     <div class="whatwedo_table-overlay">

@@ -1,5 +1,5 @@
 {
-    "name": "@whatwedo/table-bundle",
+    "name": "@araise/table-bundle",
     "version": "1.0.0",
     "symfony": {
         "controllers": {

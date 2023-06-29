@@ -29,15 +29,15 @@ class AjaxRelationFilterType extends FilterType
     public function getOperators(): array
     {
         return [
-            static::CRITERIA_EQUAL => 'whatwedo_table.filter.operator.is',
-            static::CRITERIA_NOT_EQUAL => 'whatwedo_table.filter.operator.is_not',
+            static::CRITERIA_EQUAL => 'araise_table.filter.operator.is',
+            static::CRITERIA_NOT_EQUAL => 'araise_table.filter.operator.is_not',
         ];
     }
 
     public function getValueField(?string $value = '0'): string
     {
         $field = sprintf(
-            '<select name="{name}" class="form-control" data-whatwedo--core-bundle--select-url-value="%s" data-controller="whatwedo--core-bundle--select" data-whatwedo--core-bundle--select-required-value="0">',
+            '<select name="{name}" class="form-control" data-araise--core-bundle--select-url-value="%s" data-controller="araise--core-bundle--select" data-araise--core-bundle--select-required-value="0">',
             $this->jsonSearchUrl
         );
 

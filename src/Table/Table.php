@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\Table;
 
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use araise\CoreBundle\Action\Action;
 use araise\CoreBundle\Manager\FormatterManager;
 use araise\TableBundle\DataLoader\DataLoaderInterface;
@@ -16,6 +14,8 @@ use araise\TableBundle\Extension\FilterExtension;
 use araise\TableBundle\Extension\PaginationExtension;
 use araise\TableBundle\Extension\SearchExtension;
 use araise\TableBundle\Extension\SortExtension;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class Table
 {
@@ -106,7 +106,7 @@ class Table
                         self::OPT_CONTENT_SHOW_ENTRY_DROPDOWN => true,
                     ]);
             },
-            self::OPT_THEME => '@whatwedoTable/tailwind_2_layout.html.twig',
+            self::OPT_THEME => '@araiseTable/tailwind_2_layout.html.twig',
             self::OPT_DEFINITION => null,
             self::OPT_DATALOADER_OPTIONS => [],
             self::OPT_SUB_TABLE_LOADER => null,
@@ -265,11 +265,11 @@ class Table
     }
 
     /**
-     * @deprecated  use twig function whatwedo_table_render()
+     * @deprecated  use twig function araise_table_render()
      */
     public function render(): string
     {
-        throw new \Exception('\araise\TableBundle\Table\Table::render is deprecated, use twig function whatwedo_table_render()');
+        throw new \Exception('\araise\TableBundle\Table\Table::render is deprecated, use twig function araise_table_render()');
     }
 
     public function getExtension(string $extension): ExtensionInterface

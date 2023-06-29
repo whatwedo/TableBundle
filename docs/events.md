@@ -4,8 +4,8 @@ There are some events which are triggered while editing or creating entites.
 
 ## Events available
 
-- `whatwedo_table.data_load.pre_load`: is triggered before the resultset is loaded
-- `whatwedo_table.data_load.post_load`: is triggered after the resultset is loaded
+- `araise_table.data_load.pre_load`: is triggered before the resultset is loaded
+- `araise_table.data_load.post_load`: is triggered after the resultset is loaded
 
 ## Using events
 
@@ -13,12 +13,12 @@ In this example, we limit the number of rows returned based on the `?limit=n` Pa
 
 ```
 <?php
-// src/whatwedo/TableBundle/EventListener/LimitEventListener.php
+// src/araise/TableBundle/EventListener/LimitEventListener.php
 
-namespace whatwedo\TableBundle\EventListener;
+namespace araise\TableBundle\EventListener;
 
-use whatwedo\TableBundle\Event\DataLoadEvent;
-use whatwedo\TableBundle\Table\Table;
+use araise\TableBundle\Event\DataLoadEvent;
+use araise\TableBundle\Table\Table;
 
 class LimitEventListener
 {
@@ -40,11 +40,11 @@ class LimitEventListener
 ```
 
 ```
-# src/whatwedo/TableBundle/Resources/config/services.yml
+# src/araise/TableBundle/Resources/config/services.yml
 services:
-    whatwedo_table.event_listener.limit:
-        class: whatwedo\TableBundle\EventListener\LimitEventListener
+    araise_table.event_listener.limit:
+        class: araise\TableBundle\EventListener\LimitEventListener
         tags:
-            - { name: kernel.event_listener, event: whatwedo_table.data_load.pre_load, method: limitResultSet }
+            - { name: kernel.event_listener, event: araise_table.data_load.pre_load, method: limitResultSet }
 
 ```

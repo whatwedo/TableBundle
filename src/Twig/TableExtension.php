@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\Twig;
 
+use araise\TableBundle\Factory\TableFactory;
+use araise\TableBundle\Helper\RouterHelper;
+use araise\TableBundle\Table\Column;
+use araise\TableBundle\Table\Table;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -11,10 +15,6 @@ use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
-use araise\TableBundle\Factory\TableFactory;
-use araise\TableBundle\Helper\RouterHelper;
-use araise\TableBundle\Table\Column;
-use araise\TableBundle\Table\Table;
 
 class TableExtension extends AbstractExtension
 {
@@ -30,25 +30,25 @@ class TableExtension extends AbstractExtension
 
     public function getName(): string
     {
-        return 'whatwedo_table_table_extension';
+        return 'araise_table_table_extension';
     }
 
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('whatwedo_table_parameter', fn (Table $table, string $parameter, $addition = null) => $this->routerHelper->getParameterName($table->getIdentifier(), $parameter, $addition)),
-            new TwigFunction('whatwedo_table_column_sort_parameters', fn (Column $column, ?string $order) => $column->getTable()->getSortExtension() ? $column->getTable()->getSortExtension()->getOrderParameters($column, $order) : []),
+            new TwigFunction('araise_table_parameter', fn (Table $table, string $parameter, $addition = null) => $this->routerHelper->getParameterName($table->getIdentifier(), $parameter, $addition)),
+            new TwigFunction('araise_table_column_sort_parameters', fn (Column $column, ?string $order) => $column->getTable()->getSortExtension() ? $column->getTable()->getSortExtension()->getOrderParameters($column, $order) : []),
             /*
              * generates the same route with replaced or new arguments
              */
-            new TwigFunction('whatwedo_table_path_replace_arguments', [$this, 'pathReplaceArguments']),
+            new TwigFunction('araise_table_path_replace_arguments', [$this, 'pathReplaceArguments']),
         ];
     }
 
     public function getFilters(): array
     {
         return [
-            new TwigFilter('whatwedo_table_filter_operators', function ($data) {
+            new TwigFilter('araise_table_filter_operators', function ($data) {
                 foreach (array_keys($data) as $key) {
                     $data[$key] = $this->translator->trans($data[$key]);
                 }

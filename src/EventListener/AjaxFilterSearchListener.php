@@ -29,11 +29,11 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\EventListener;
 
+use araise\SearchBundle\araiseSearchBundle;
+use araise\SearchBundle\Repository\IndexRepository;
+use araise\TableBundle\Event\ResultRequestEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use araise\SearchBundle\Repository\IndexRepository;
-use araise\SearchBundle\whatwedoSearchBundle;
-use araise\TableBundle\Event\ResultRequestEvent;
 
 class AjaxFilterSearchListener
 {
@@ -46,8 +46,8 @@ class AjaxFilterSearchListener
 
     public function searchResultSet(ResultRequestEvent $requestEvent)
     {
-        // check if whatwedo serach bundle is enabled
-        if (! \in_array(whatwedoSearchBundle::class, $this->kernelBundles, true)) {
+        // check if araise serach bundle is enabled
+        if (! \in_array(araiseSearchBundle::class, $this->kernelBundles, true)) {
             $result = new \stdClass();
             $result->items = [];
             $result->error = false;

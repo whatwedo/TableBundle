@@ -29,10 +29,6 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\Factory;
 
-use Psr\Container\ContainerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Contracts\Service\ServiceSubscriberInterface;
 use araise\CoreBundle\Manager\FormatterManager;
 use araise\TableBundle\DataLoader\ArrayDataLoader;
 use araise\TableBundle\DataLoader\DataLoaderInterface;
@@ -40,6 +36,10 @@ use araise\TableBundle\DataLoader\DoctrineDataLoader;
 use araise\TableBundle\DataLoader\DoctrineTreeDataLoader;
 use araise\TableBundle\Extension\ExtensionInterface;
 use araise\TableBundle\Table\Table;
+use Psr\Container\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
 class TableFactory implements ServiceSubscriberInterface
 {

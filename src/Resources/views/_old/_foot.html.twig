@@ -1,6 +1,6 @@
 <div class="row whatwedo_table-foot">
     <div class="col-xs-12">
-        {% include '@whatwedoTable/_pagination.html.twig' %}
+        {% include '@araiseTable/_pagination.html.twig' %}
         {% if table.paginationExtension is not null %}
             {% set pagination = table.paginationExtension %}
             <p>
@@ -10,7 +10,7 @@
                     {% set offsetLength = pagination.offsetResults + table.results|length %}
                     {% set totalResults = pagination.totalResults %}
 
-                    {{ 'whatwedo_table.foot.result'|trans({'%offsetResults%': offsetResults, '%offsetLength%': offsetLength, '%totalResults%': totalResults }) }}
+                    {{ 'araise_table.foot.result'|trans({'%offsetResults%': offsetResults, '%offsetLength%': offsetLength, '%totalResults%': totalResults }) }}
                 </small>
             </p>
         {% endif %}

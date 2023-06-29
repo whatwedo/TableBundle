@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\Twig;
 
+use araise\CoreBundle\Action\Action;
+use araise\CoreBundle\Manager\FormatterManager;
+use araise\TableBundle\Entity\TreeInterface;
+use araise\TableBundle\Table\Column;
+use araise\TableBundle\Table\Table;
 use Doctrine\ORM\EntityManagerInterface;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TemplateWrapper;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
-use araise\CoreBundle\Action\Action;
-use araise\CoreBundle\Manager\FormatterManager;
-use araise\TableBundle\Entity\TreeInterface;
-use araise\TableBundle\Table\Column;
-use araise\TableBundle\Table\Table;
 
 class TableRenderExtension extends AbstractExtension
 {
@@ -35,17 +35,17 @@ class TableRenderExtension extends AbstractExtension
         ];
 
         return [
-            new TwigFunction('whatwedo_table_render', fn ($context, Table $table) => $this->renderTable($context, $table), $options),
-            new TwigFunction('whatwedo_table_only_render', fn ($context, Table $table) => $this->renderTable($context, $table, 'table_table'), $options),
-            new TwigFunction('whatwedo_table_action_render', fn ($context, Action $action, $entity) => $this->renderTableAction($context, $action, $entity), $options),
-            new TwigFunction('whatwedo_table_column_render', fn ($context, Column $column, $entity) => $this->renderTableColumn($context, $column, $entity), $options),
+            new TwigFunction('araise_table_render', fn ($context, Table $table) => $this->renderTable($context, $table), $options),
+            new TwigFunction('araise_table_only_render', fn ($context, Table $table) => $this->renderTable($context, $table, 'table_table'), $options),
+            new TwigFunction('araise_table_action_render', fn ($context, Action $action, $entity) => $this->renderTableAction($context, $action, $entity), $options),
+            new TwigFunction('araise_table_column_render', fn ($context, Column $column, $entity) => $this->renderTableColumn($context, $column, $entity), $options),
         ];
     }
 
     public function getFilters(): array
     {
         return [
-            new TwigFilter('whatwedo_entity_is_tree', fn ($entity) => $this->isTree($entity)),
+            new TwigFilter('araise_entity_is_tree', fn ($entity) => $this->isTree($entity)),
         ];
     }
 
@@ -93,6 +93,6 @@ class TableRenderExtension extends AbstractExtension
             return $context['table']->getOption(Table::OPT_THEME);
         }
 
-        return '@whatwedoTable/tailwind_2_layout.html.twig';
+        return '@araiseTable/tailwind_2_layout.html.twig';
     }
 }

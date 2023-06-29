@@ -11,6 +11,6 @@ class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        return new TreeBuilder('whatwedo_table');
+        return new TreeBuilder('araise_table');
     }
 }
