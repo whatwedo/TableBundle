@@ -2,13 +2,9 @@ name: tableBundle
 
 on:
     push:
-        branches:
-            - 'feature/1.0-dev-tree'
-            - 1.0-dev
+        branches: [ main ]
     pull_request:
-        branches:
-            - 'feature/1.0-dev-tree'
-            - 1.0-dev
+        branches: [ main, develop ]
 
 jobs:
     phpunit:
