@@ -27,13 +27,13 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Extension;
+namespace araise\TableBundle\Extension;
 
 use Symfony\Component\HttpFoundation\RequestStack;
-use whatwedo\TableBundle\Helper\RouterHelper;
-use whatwedo\TableBundle\Table\Column;
-use whatwedo\TableBundle\Table\ColumnInterface;
-use whatwedo\TableBundle\Table\Table;
+use araise\TableBundle\Helper\RouterHelper;
+use araise\TableBundle\Table\Column;
+use araise\TableBundle\Table\ColumnInterface;
+use araise\TableBundle\Table\Table;
 
 class SortExtension extends AbstractExtension
 {

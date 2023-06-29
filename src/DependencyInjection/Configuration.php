@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\DependencyInjection;
+namespace araise\TableBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;

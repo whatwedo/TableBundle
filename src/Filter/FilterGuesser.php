@@ -27,7 +27,7 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Filter;
+namespace araise\TableBundle\Filter;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,15 +35,15 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
-use whatwedo\TableBundle\Filter\Type\AjaxManyToManyFilterType;
-use whatwedo\TableBundle\Filter\Type\AjaxOneToManyFilterType;
-use whatwedo\TableBundle\Filter\Type\AjaxRelationFilterType;
-use whatwedo\TableBundle\Filter\Type\BooleanFilterType;
-use whatwedo\TableBundle\Filter\Type\DateFilterType;
-use whatwedo\TableBundle\Filter\Type\DatetimeFilterType;
-use whatwedo\TableBundle\Filter\Type\FilterTypeInterface;
-use whatwedo\TableBundle\Filter\Type\NumberFilterType;
-use whatwedo\TableBundle\Filter\Type\TextFilterType;
+use araise\TableBundle\Filter\Type\AjaxManyToManyFilterType;
+use araise\TableBundle\Filter\Type\AjaxOneToManyFilterType;
+use araise\TableBundle\Filter\Type\AjaxRelationFilterType;
+use araise\TableBundle\Filter\Type\BooleanFilterType;
+use araise\TableBundle\Filter\Type\DateFilterType;
+use araise\TableBundle\Filter\Type\DatetimeFilterType;
+use araise\TableBundle\Filter\Type\FilterTypeInterface;
+use araise\TableBundle\Filter\Type\NumberFilterType;
+use araise\TableBundle\Filter\Type\TextFilterType;
 
 class FilterGuesser
 {

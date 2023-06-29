@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\Table;
+namespace araise\TableBundle\Table;
 
-use whatwedo\TableBundle\Filter\Type\FilterTypeInterface;
+use araise\TableBundle\Filter\Type\FilterTypeInterface;
 
 class Filter
 {

@@ -27,9 +27,9 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Table;
+namespace araise\TableBundle\Table;
 
-use whatwedo\CoreBundle\Manager\FormatterManager;
+use araise\CoreBundle\Manager\FormatterManager;
 
 /**
  * Interface FormattableColumnInterface.

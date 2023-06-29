@@ -27,19 +27,19 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Factory;
+namespace araise\TableBundle\Factory;
 
 use Psr\Container\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Service\ServiceSubscriberInterface;
-use whatwedo\CoreBundle\Manager\FormatterManager;
-use whatwedo\TableBundle\DataLoader\ArrayDataLoader;
-use whatwedo\TableBundle\DataLoader\DataLoaderInterface;
-use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
-use whatwedo\TableBundle\DataLoader\DoctrineTreeDataLoader;
-use whatwedo\TableBundle\Extension\ExtensionInterface;
-use whatwedo\TableBundle\Table\Table;
+use araise\CoreBundle\Manager\FormatterManager;
+use araise\TableBundle\DataLoader\ArrayDataLoader;
+use araise\TableBundle\DataLoader\DataLoaderInterface;
+use araise\TableBundle\DataLoader\DoctrineDataLoader;
+use araise\TableBundle\DataLoader\DoctrineTreeDataLoader;
+use araise\TableBundle\Extension\ExtensionInterface;
+use araise\TableBundle\Table\Table;
 
 class TableFactory implements ServiceSubscriberInterface
 {

@@ -27,7 +27,7 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Exception;
+namespace araise\TableBundle\Exception;
 
 class DataLoaderNotAvailableException extends \Exception
 {

@@ -1,9 +1,10 @@
 {
-    "name": "whatwedo/table-bundle",
+    "name": "araise/table-bundle",
     "type": "symfony-bundle",
     "description": "Table generator for symfony",
     "license": "MIT",
-    "homepage": "https://whatwedo.github.io/TableBundle/#/",
+    "homepage": "https://araise.dev",
+    "minimum-stability": "stable",
     "keywords": [
         "symfony-ux"
     ],
@@ -49,8 +50,8 @@
     },
     "autoload": {
         "psr-4": {
-            "whatwedo\\TableBundle\\": "src/",
-            "whatwedo\\TableBundle\\Tests\\": "tests/"
+            "araise\\TableBundle\\": "src/",
+            "araise\\TableBundle\\Tests\\": "tests/"
         }
     },
     "extra": {
@@ -58,20 +59,6 @@
             "dev-feature/query-builder-provider": "0.4.x-dev"
         }
     },
-    "repositories": [
-        {
-            "type": "package",
-            "package": {
-                "name": "twbs/icons",
-                "version": "1.8.1",
-                "source": {
-                    "url": "https://github.com/twbs/icons",
-                    "type": "git",
-                    "reference": "tags/v1.8.1"
-                }
-            }
-        }
-    ],
     "config": {
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true

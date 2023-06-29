@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\Manager;
+namespace araise\TableBundle\Manager;
 
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use whatwedo\CoreBundle\Manager\FormatterManager;
-use whatwedo\TableBundle\Table\Column;
-use whatwedo\TableBundle\Table\Table;
+use araise\CoreBundle\Manager\FormatterManager;
+use araise\TableBundle\Table\Column;
+use araise\TableBundle\Table\Table;
 
 class ExportManager
 {

@@ -27,13 +27,13 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\DependencyInjection\Compiler;
+namespace araise\TableBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
-use whatwedo\TableBundle\Extension\ExtensionInterface;
-use whatwedo\TableBundle\Factory\TableFactory;
+use araise\TableBundle\Extension\ExtensionInterface;
+use araise\TableBundle\Factory\TableFactory;
 
 class TableFactoryPass implements CompilerPassInterface
 {

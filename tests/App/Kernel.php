@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\Tests\App;
+namespace araise\TableBundle\Tests\App;
 
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;

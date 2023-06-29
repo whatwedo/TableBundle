@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\Tests\App\Repository;
+namespace araise\TableBundle\Tests\App\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use whatwedo\TableBundle\Tests\App\Entity\Contact;
+use araise\TableBundle\Tests\App\Entity\Contact;
 
 /**
  * @method Contact|null   find($id, $lockMode = null, $lockVersion = null)

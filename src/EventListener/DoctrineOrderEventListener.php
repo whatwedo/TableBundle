@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\EventListener;
+namespace araise\TableBundle\EventListener;
 
 use Doctrine\ORM\QueryBuilder;
-use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
-use whatwedo\TableBundle\Event\DataLoadEvent;
+use araise\TableBundle\DataLoader\DoctrineDataLoader;
+use araise\TableBundle\Event\DataLoadEvent;
 
 class DoctrineOrderEventListener
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\DependencyInjection;
+namespace araise\TableBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -32,7 +32,7 @@ class whatwedoTableExtension extends Extension implements PrependExtensionInterf
             'migrations_paths' => array_merge(
                 array_pop($doctrineConfig)['migrations_paths'] ?? [],
                 [
-                    'whatwedo\TableBundle\Migrations' => '@whatwedoTableBundle/Migrations',
+                    'araise\TableBundle\Migrations' => '@whatwedoTableBundle/Migrations',
                 ]
             ),
         ]);

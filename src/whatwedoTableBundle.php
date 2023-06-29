@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle;
+namespace araise\TableBundle;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use whatwedo\TableBundle\DependencyInjection\Compiler\TableFactoryPass;
+use araise\TableBundle\DependencyInjection\Compiler\TableFactoryPass;
 
 class whatwedoTableBundle extends Bundle
 {

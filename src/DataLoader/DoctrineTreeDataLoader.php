@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\DataLoader;
+namespace araise\TableBundle\DataLoader;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
 use Gedmo\Tree\Hydrator\ORM\TreeObjectHydrator;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use whatwedo\TableBundle\Entity\TreeInterface;
-use whatwedo\TableBundle\Extension\PaginationExtension;
+use araise\TableBundle\Entity\TreeInterface;
+use araise\TableBundle\Extension\PaginationExtension;
 
 class DoctrineTreeDataLoader extends AbstractDataLoader
 {

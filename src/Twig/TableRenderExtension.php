@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\Twig;
+namespace araise\TableBundle\Twig;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Twig\Environment;
@@ -10,11 +10,11 @@ use Twig\Extension\AbstractExtension;
 use Twig\TemplateWrapper;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
-use whatwedo\CoreBundle\Action\Action;
-use whatwedo\CoreBundle\Manager\FormatterManager;
-use whatwedo\TableBundle\Entity\TreeInterface;
-use whatwedo\TableBundle\Table\Column;
-use whatwedo\TableBundle\Table\Table;
+use araise\CoreBundle\Action\Action;
+use araise\CoreBundle\Manager\FormatterManager;
+use araise\TableBundle\Entity\TreeInterface;
+use araise\TableBundle\Table\Column;
+use araise\TableBundle\Table\Table;
 
 class TableRenderExtension extends AbstractExtension
 {

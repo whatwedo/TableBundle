@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\Tests\App\Entity;
+namespace araise\TableBundle\Tests\App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Table(name: 'person')]
-#[ORM\Entity(repositoryClass: 'whatwedo\TableBundle\Tests\App\Repository\PersonRepository')]
+#[ORM\Entity(repositoryClass: 'araise\TableBundle\Tests\App\Repository\PersonRepository')]
 class Person
 {
     #[ORM\Column(type: 'integer')]

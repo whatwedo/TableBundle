@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\Twig;
+namespace araise\TableBundle\Twig;
 
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
@@ -11,10 +11,10 @@ use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
-use whatwedo\TableBundle\Factory\TableFactory;
-use whatwedo\TableBundle\Helper\RouterHelper;
-use whatwedo\TableBundle\Table\Column;
-use whatwedo\TableBundle\Table\Table;
+use araise\TableBundle\Factory\TableFactory;
+use araise\TableBundle\Helper\RouterHelper;
+use araise\TableBundle\Table\Column;
+use araise\TableBundle\Table\Table;
 
 class TableExtension extends AbstractExtension
 {

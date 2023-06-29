@@ -27,13 +27,13 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Entity;
+namespace araise\TableBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Table(name: 'whatwedo_table_filter')]
-#[ORM\Entity(repositoryClass: 'whatwedo\TableBundle\Repository\FilterRepository')]
+#[ORM\Entity(repositoryClass: 'araise\TableBundle\Repository\FilterRepository')]
 class Filter
 {
     #[ORM\Column(name: 'id', type: 'integer')]

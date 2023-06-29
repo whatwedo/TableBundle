@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\Tests\App\Factory;
+namespace araise\TableBundle\Tests\App\Factory;
 
-use whatwedo\TableBundle\Tests\App\Entity\Category;
+use araise\TableBundle\Tests\App\Entity\Category;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;

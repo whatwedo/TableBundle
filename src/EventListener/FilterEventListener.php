@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\EventListener;
+namespace araise\TableBundle\EventListener;
 
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Base;
 use Doctrine\ORM\Query\Expr\Comparison;
 use Doctrine\ORM\QueryBuilder;
-use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
-use whatwedo\TableBundle\Event\DataLoadEvent;
-use whatwedo\TableBundle\Extension\FilterExtension;
-use whatwedo\TableBundle\Table\Table;
+use araise\TableBundle\DataLoader\DoctrineDataLoader;
+use araise\TableBundle\Event\DataLoadEvent;
+use araise\TableBundle\Extension\FilterExtension;
+use araise\TableBundle\Table\Table;
 
 class FilterEventListener
 {

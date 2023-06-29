@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\Table;
+namespace araise\TableBundle\Table;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 

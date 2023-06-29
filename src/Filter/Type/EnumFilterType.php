@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\Filter\Type;
+namespace araise\TableBundle\Filter\Type;
 
 use Symfony\Contracts\Translation\TranslatorInterface;
 

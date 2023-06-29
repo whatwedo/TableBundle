@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\Table;
+namespace araise\TableBundle\Table;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use whatwedo\CoreBundle\Action\Action;
-use whatwedo\CoreBundle\Manager\FormatterManager;
-use whatwedo\TableBundle\DataLoader\DataLoaderInterface;
-use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
-use whatwedo\TableBundle\Event\DataLoadEvent;
-use whatwedo\TableBundle\Extension\ExtensionInterface;
-use whatwedo\TableBundle\Extension\FilterExtension;
-use whatwedo\TableBundle\Extension\PaginationExtension;
-use whatwedo\TableBundle\Extension\SearchExtension;
-use whatwedo\TableBundle\Extension\SortExtension;
+use araise\CoreBundle\Action\Action;
+use araise\CoreBundle\Manager\FormatterManager;
+use araise\TableBundle\DataLoader\DataLoaderInterface;
+use araise\TableBundle\DataLoader\DoctrineDataLoader;
+use araise\TableBundle\Event\DataLoadEvent;
+use araise\TableBundle\Extension\ExtensionInterface;
+use araise\TableBundle\Extension\FilterExtension;
+use araise\TableBundle\Extension\PaginationExtension;
+use araise\TableBundle\Extension\SearchExtension;
+use araise\TableBundle\Extension\SortExtension;
 
 class Table
 {
@@ -269,7 +269,7 @@ class Table
      */
     public function render(): string
     {
-        throw new \Exception('\whatwedo\TableBundle\Table\Table::render is deprecated, use twig function whatwedo_table_render()');
+        throw new \Exception('\araise\TableBundle\Table\Table::render is deprecated, use twig function whatwedo_table_render()');
     }
 
     public function getExtension(string $extension): ExtensionInterface
@@ -342,8 +342,8 @@ class Table
     {
         return $this->parent === null
             && $this->getOption(self::OPT_DEFINITION)
-            && (enum_exists('whatwedo\CrudBundle\Enums\Page')
-                && $this->getOption(self::OPT_DEFINITION)::hasCapability(\whatwedo\CrudBundle\Enums\Page::BATCH))
+            && (enum_exists('araise\CrudBundle\Enums\Page')
+                && $this->getOption(self::OPT_DEFINITION)::hasCapability(\araise\CrudBundle\Enums\Page::BATCH))
         ;
     }
 

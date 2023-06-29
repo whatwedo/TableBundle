@@ -27,7 +27,7 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Filter\Type;
+namespace araise\TableBundle\Filter\Type;
 
 use Doctrine\ORM\QueryBuilder;
 

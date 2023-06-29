@@ -27,11 +27,11 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Extension;
+namespace araise\TableBundle\Extension;
 
 use Symfony\Component\HttpFoundation\RequestStack;
-use whatwedo\SearchBundle\whatwedoSearchBundle;
-use whatwedo\TableBundle\Helper\RouterHelper;
+use araise\SearchBundle\whatwedoSearchBundle;
+use araise\TableBundle\Helper\RouterHelper;
 
 class SearchExtension extends AbstractExtension
 {

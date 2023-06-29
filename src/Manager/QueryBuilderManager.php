@@ -27,10 +27,10 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Manager;
+namespace araise\TableBundle\Manager;
 
 use Doctrine\ORM\QueryBuilder;
-use whatwedo\TableBundle\Provider\QueryBuilderProviderInterface;
+use araise\TableBundle\Provider\QueryBuilderProviderInterface;
 
 class QueryBuilderManager
 {

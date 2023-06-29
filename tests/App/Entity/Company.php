@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\Tests\App\Entity;
+namespace araise\TableBundle\Tests\App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use whatwedo\SearchBundle\Annotation\Index;
+use araise\SearchBundle\Annotation\Index;
 
 #[ORM\Table(name: 'company')]
-#[ORM\Entity(repositoryClass: 'whatwedo\TableBundle\Tests\App\Repository\CompanyRepository')]
+#[ORM\Entity(repositoryClass: 'araise\TableBundle\Tests\App\Repository\CompanyRepository')]
 class Company
 {
     #[ORM\Column(type: 'integer')]

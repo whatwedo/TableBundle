@@ -27,11 +27,11 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Extension;
+namespace araise\TableBundle\Extension;
 
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use whatwedo\TableBundle\Table\Table;
+use araise\TableBundle\Table\Table;
 
 #[Autoconfigure(tags: ['whatwedo.table_bundle.extension'])]
 interface ExtensionInterface

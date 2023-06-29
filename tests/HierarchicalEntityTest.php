@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\Tests;
+namespace araise\TableBundle\Tests;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use whatwedo\TableBundle\Tests\App\Entity\Category;
-use whatwedo\TableBundle\Tests\App\Factory\CategoryFactory;
+use araise\TableBundle\Tests\App\Entity\Category;
+use araise\TableBundle\Tests\App\Factory\CategoryFactory;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 

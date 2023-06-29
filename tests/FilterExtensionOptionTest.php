@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\Tests;
+namespace araise\TableBundle\Tests;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
-use whatwedo\TableBundle\DataLoader\ArrayDataLoader;
-use whatwedo\TableBundle\Extension\FilterExtension;
-use whatwedo\TableBundle\Factory\TableFactory;
+use araise\TableBundle\DataLoader\ArrayDataLoader;
+use araise\TableBundle\Extension\FilterExtension;
+use araise\TableBundle\Factory\TableFactory;
 
 class FilterExtensionOptionTest extends KernelTestCase
 {

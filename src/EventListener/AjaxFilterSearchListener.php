@@ -27,13 +27,13 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\EventListener;
+namespace araise\TableBundle\EventListener;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use whatwedo\SearchBundle\Repository\IndexRepository;
-use whatwedo\SearchBundle\whatwedoSearchBundle;
-use whatwedo\TableBundle\Event\ResultRequestEvent;
+use araise\SearchBundle\Repository\IndexRepository;
+use araise\SearchBundle\whatwedoSearchBundle;
+use araise\TableBundle\Event\ResultRequestEvent;
 
 class AjaxFilterSearchListener
 {

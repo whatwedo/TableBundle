@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\Tests;
+namespace araise\TableBundle\Tests;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -11,10 +11,10 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Twig\Environment;
-use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
-use whatwedo\TableBundle\Factory\TableFactory;
-use whatwedo\TableBundle\Tests\App\Entity\Company;
-use whatwedo\TableBundle\Tests\App\Factory\CompanyFactory;
+use araise\TableBundle\DataLoader\DoctrineDataLoader;
+use araise\TableBundle\Factory\TableFactory;
+use araise\TableBundle\Tests\App\Entity\Company;
+use araise\TableBundle\Tests\App\Factory\CompanyFactory;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 

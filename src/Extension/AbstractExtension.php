@@ -27,10 +27,10 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Extension;
+namespace araise\TableBundle\Extension;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use whatwedo\TableBundle\Table\Table;
+use araise\TableBundle\Table\Table;
 
 abstract class AbstractExtension implements ExtensionInterface
 {

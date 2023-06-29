@@ -27,9 +27,9 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Builder;
+namespace araise\TableBundle\Builder;
 
-use whatwedo\TableBundle\Extension\FilterExtension;
+use araise\TableBundle\Extension\FilterExtension;
 
 /**
  * @internal

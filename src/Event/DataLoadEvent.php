@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\Event;
+namespace araise\TableBundle\Event;
 
 use Symfony\Contracts\EventDispatcher\Event;
-use whatwedo\TableBundle\Table\Table;
+use araise\TableBundle\Table\Table;
 
 class DataLoadEvent extends Event
 {

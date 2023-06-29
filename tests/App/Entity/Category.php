@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\Tests\App\Entity;
+namespace araise\TableBundle\Tests\App\Entity;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use whatwedo\TableBundle\Entity\TreeInterface;
+use araise\TableBundle\Entity\TreeInterface;
 
 #[Gedmo\Tree(type: 'nested')]
 #[ORM\Entity(repositoryClass: 'Gedmo\Tree\Entity\Repository\NestedTreeRepository')]

@@ -27,11 +27,11 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Extension;
+namespace araise\TableBundle\Extension;
 
 use Symfony\Component\HttpFoundation\RequestStack;
-use whatwedo\TableBundle\Helper\RouterHelper;
-use whatwedo\TableBundle\Table\Table;
+use araise\TableBundle\Helper\RouterHelper;
+use araise\TableBundle\Table\Table;
 
 class PaginationExtension extends AbstractExtension
 {

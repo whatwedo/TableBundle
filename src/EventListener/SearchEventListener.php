@@ -27,13 +27,13 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\EventListener;
+namespace araise\TableBundle\EventListener;
 
 use Doctrine\ORM\EntityManagerInterface;
-use whatwedo\SearchBundle\Entity\Index;
-use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
-use whatwedo\TableBundle\Event\DataLoadEvent;
-use whatwedo\TableBundle\Table\Table;
+use araise\SearchBundle\Entity\Index;
+use araise\TableBundle\DataLoader\DoctrineDataLoader;
+use araise\TableBundle\Event\DataLoadEvent;
+use araise\TableBundle\Table\Table;
 
 class SearchEventListener
 {

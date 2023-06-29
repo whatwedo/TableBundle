@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\Tests\App\Controller;
+namespace araise\TableBundle\Tests\App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
 

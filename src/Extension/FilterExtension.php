@@ -27,7 +27,7 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Extension;
+namespace araise\TableBundle\Extension;
 
 use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,15 +35,15 @@ use Doctrine\ORM\QueryBuilder;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use whatwedo\TableBundle\Builder\FilterBuilder;
-use whatwedo\TableBundle\DataLoader\DoctrineDataLoader;
-use whatwedo\TableBundle\Entity\Filter as FilterEntity;
-use whatwedo\TableBundle\Exception\InvalidFilterAcronymException;
-use whatwedo\TableBundle\Filter\FilterGuesser;
-use whatwedo\TableBundle\Filter\Type\FilterTypeInterface;
-use whatwedo\TableBundle\Helper\RouterHelper;
-use whatwedo\TableBundle\Table\Filter;
-use whatwedo\TableBundle\Table\Table;
+use araise\TableBundle\Builder\FilterBuilder;
+use araise\TableBundle\DataLoader\DoctrineDataLoader;
+use araise\TableBundle\Entity\Filter as FilterEntity;
+use araise\TableBundle\Exception\InvalidFilterAcronymException;
+use araise\TableBundle\Filter\FilterGuesser;
+use araise\TableBundle\Filter\Type\FilterTypeInterface;
+use araise\TableBundle\Helper\RouterHelper;
+use araise\TableBundle\Table\Filter;
+use araise\TableBundle\Table\Table;
 
 class FilterExtension extends AbstractExtension
 {
@@ -154,7 +154,7 @@ class FilterExtension extends AbstractExtension
     }
 
     /**
-     * @return \whatwedo\TableBundle\Entity\Filter[]
+     * @return \araise\TableBundle\Entity\Filter[]
      */
     public function getSavedFilter($route)
     {

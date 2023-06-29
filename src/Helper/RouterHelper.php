@@ -27,7 +27,7 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace whatwedo\TableBundle\Helper;
+namespace araise\TableBundle\Helper;
 
 class RouterHelper
 {

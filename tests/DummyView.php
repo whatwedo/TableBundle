@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\Tests;
+namespace araise\TableBundle\Tests;
 
 class DummyView
 {

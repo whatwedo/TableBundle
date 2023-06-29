@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace whatwedo\TableBundle\Tests\App\Factory;
+namespace araise\TableBundle\Tests\App\Factory;
 
-use whatwedo\TableBundle\Tests\App\Entity\Contact;
-use whatwedo\TableBundle\Tests\App\Repository\ContactRepository;
+use araise\TableBundle\Tests\App\Entity\Contact;
+use araise\TableBundle\Tests\App\Repository\ContactRepository;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;

@@ -7,9 +7,9 @@ use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\WebpackEncoreBundle\WebpackEncoreBundle;
-use whatwedo\CoreBundle\whatwedoCoreBundle;
-use whatwedo\SearchBundle\whatwedoSearchBundle;
-use whatwedo\TableBundle\whatwedoTableBundle;
+use araise\CoreBundle\whatwedoCoreBundle;
+use araise\SearchBundle\whatwedoSearchBundle;
+use araise\TableBundle\whatwedoTableBundle;
 use whatwedo\TwigBootstrapIcons\whatwedoTwigBootstrapIconsBundle;
 use Zenstruck\Foundry\ZenstruckFoundryBundle;
 
