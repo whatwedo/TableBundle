@@ -40,8 +40,6 @@
         "symfony/orm-pack": "^1.0",
         "symfony/translation": "^6.0",
         "symfony/twig-bundle": "^6.0",
-        "araise/core-bundle":     "dev-main as 1.0",
-        "araise/search-bundle":     "dev-main as 3.0",
         "gedmo/doctrine-extensions": "^3.5",
         "symfony/webpack-encore-bundle": "^1.13",
         "symfony/security-core": "^6.0",
