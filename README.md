@@ -1,12 +1,12 @@
 [![Latest Stable Version](https://poser.pugx.org/araise/table-bundle/v/stable)](https://packagist.org/packages/araise/table-bundle)
 
-# araiseTableBundle
+# Docs araise table bundle
 
 This bundle is part of the [araise.dev](https://araise.dev) framework.
 
 ## Documentation
 
-[araise-dev.github.io/TableBundle](https://araise-dev.github.io/TableBundle/#/)
+[table.docs.araise.dev](https://table.docs.araise.dev/#/)
 
 ## License
 

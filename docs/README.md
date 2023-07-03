@@ -1,6 +1,6 @@
 # Getting Started
 
-This documentation provides a basic overview of the possibilities of the araiseTableBundle. 
+This documentation provides a basic overview of the possibilities of the araise table bundle. 
 
 ## Requirements
 
@@ -18,24 +18,6 @@ More info about that can be found in the [Templating](templating.md) section of 
 
 ### Composer
 
-The bundle depends on bootstrap icons. To get them running smoothly in your project,
-add this repository to your composer.json: ([Sadly composer cannot load repositories recursively](https://getcomposer.org/doc/faqs/why-cant-composer-load-repositories-recursively.md))
-```json
-"repositories": [
-    {
-        "type": "package",
-        "package": {
-            "name": "twbs/icons",
-            "version": "1.8.1",
-            "source": {
-                "url": "https://github.com/twbs/icons",
-                "type": "git",
-                "reference": "tags/v1.8.1"
-            }
-        }
-    }
-]
-```
 Then add the bundle to your dependencies and install it:
 ```shell
 composer require araise/table-bundle
