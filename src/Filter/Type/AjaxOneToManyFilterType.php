@@ -75,7 +75,7 @@ class AjaxOneToManyFilterType extends FilterType
 
     public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder)
     {
-        $targetParameter = 'target_' . hash('crc32', random_bytes(10));
+        $targetParameter = 'target_'.hash('crc32', random_bytes(10));
         $queryBuilder->setParameter(
             $targetParameter,
             $this->entityManager->getRepository($this->targetClass)->find($value)
@@ -83,9 +83,9 @@ class AjaxOneToManyFilterType extends FilterType
 
         switch ($operator) {
             case static::CRITERIA_EQUAL:
-                return $queryBuilder->expr()->in($this->column, ':' . $targetParameter);
+                return $queryBuilder->expr()->in($this->column, ':'.$targetParameter);
             case static::CRITERIA_NOT_EQUAL:
-                return $queryBuilder->expr()->notIn($this->column, ':' . $targetParameter);
+                return $queryBuilder->expr()->notIn($this->column, ':'.$targetParameter);
         }
 
         return null;

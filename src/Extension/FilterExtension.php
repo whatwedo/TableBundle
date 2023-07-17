@@ -312,7 +312,7 @@ class FilterExtension extends AbstractExtension
 
     private static function jsonSearchCallable(string $entityClass)
     {
-        throw new \Exception('you need to define a json search callable for class "' . $entityClass . '".');
+        throw new \Exception('you need to define a json search callable for class "'.$entityClass.'".');
     }
 
     /**
@@ -323,7 +323,7 @@ class FilterExtension extends AbstractExtension
     private function addFilterAutomatically(Table $table, QueryBuilder $queryBuilder, callable $labelCallable, callable $jsonSearchCallable, \ReflectionProperty $property, string $namespace)
     {
         $acronymNoSuffix = $property->getName();
-        $acronym = '_' . $property->getName();
+        $acronym = '_'.$property->getName();
         $label = \call_user_func($labelCallable, $table, $property->getName());
         $allAliases = $queryBuilder->getAllAliases();
         $isPropertySelected = \in_array($acronym, $allAliases, true);
@@ -339,7 +339,7 @@ class FilterExtension extends AbstractExtension
                 return $this->getFilter($acronymNoSuffix);
             }
         } catch (\InvalidArgumentException $exception) {
-            $this->logger->warning('could not automatically add filter for "' . $label . '"', [
+            $this->logger->warning('could not automatically add filter for "'.$label.'"', [
                 'message' => $exception->getMessage(),
                 'trace' => $exception->getTraceAsString(),
             ]);

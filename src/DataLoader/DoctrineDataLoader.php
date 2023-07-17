@@ -29,7 +29,7 @@ class DoctrineDataLoader extends AbstractDataLoader
     {
         /** @var QueryBuilder $qb */
         $qb = (clone $this->options[self::OPT_QUERY_BUILDER]);
-        $qb->select('COUNT(' . $qb->getRootAliases()[0] . ')');
+        $qb->select('COUNT('.$qb->getRootAliases()[0].')');
         $this->paginationExtension->setTotalResults((int) $qb->getQuery()->getSingleScalarResult());
 
         if ($this->paginationExtension->getLimit()) {
