@@ -111,7 +111,7 @@
                     <th class="px-3 py-3 align-top whitespace-nowrap">
                         {{ column.option('label')|trans }}
 
-                        {% if table.sortExtension and column.option('sortable') %}
+                        {% if table.option('sortable') and table.sortExtension and column.option('sortable') %}
                             {% set currentOrder = table.sortExtension.order(column) %}
                             {% if currentOrder == 'asc' %}
                                 <a class="first:ml-1"
