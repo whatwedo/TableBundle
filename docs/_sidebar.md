@@ -3,3 +3,4 @@
     * [Filters](filters.md)
 * [Formatter](formatter.md)
 * [Events](events.md)
+* [Table from array](array-data-laoder.md)

@@ -7,7 +7,6 @@ namespace araise\TableBundle\Table;
 use araise\CoreBundle\Action\Action;
 use araise\CoreBundle\Manager\FormatterManager;
 use araise\TableBundle\DataLoader\DataLoaderInterface;
-use araise\TableBundle\DataLoader\DoctrineDataLoader;
 use araise\TableBundle\Event\DataLoadEvent;
 use araise\TableBundle\Extension\ExtensionInterface;
 use araise\TableBundle\Extension\FilterExtension;
@@ -209,13 +208,6 @@ class Table
         }
 
         $column = new $type($this, $acronym, $options);
-
-        // only DoctrineTable can sort nested properties. Therefore disable them for other tables.
-        if (! $this->options[self::OPT_DATA_LOADER] instanceof DoctrineDataLoader
-            && $column->getOption(Column::OPT_SORTABLE)
-            && str_contains($column->getOption(Column::OPT_SORT_EXPRESSION), '.')) {
-            $column->setOption(Column::OPT_SORTABLE, false);
-        }
 
         if ($column instanceof FormattableColumnInterface) {
             $column->setFormatterManager($this->formatterManager);
