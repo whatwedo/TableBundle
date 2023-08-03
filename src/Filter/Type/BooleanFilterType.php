@@ -32,14 +32,11 @@ class BooleanFilterType extends FilterType
     public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder)
     {
         $value = $value === '1' ? 'true' : 'false';
-
-        switch ($operator) {
-            case static::CRITERIA_EQUAL:
-                return $queryBuilder->expr()->eq($this->getColumn(), $value);
-            case static::CRITERIA_NOT_EQUAL:
-                return $queryBuilder->expr()->neq($this->getColumn(), $value);
-        }
-
-        return false;
+        $column = $this->getOption(static::OPT_COLUMN);
+        return match ($operator) {
+            static::CRITERIA_EQUAL => $queryBuilder->expr()->eq($column, $value),
+            static::CRITERIA_NOT_EQUAL => $queryBuilder->expr()->neq($column, $value),
+            default => false,
+        };
     }
 }

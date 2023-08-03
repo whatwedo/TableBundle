@@ -29,8 +29,10 @@ declare(strict_types=1);
 
 namespace araise\TableBundle\Filter\Type;
 
+use Coduo\ToString\StringConverter;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AjaxOneToManyFilterType extends FilterType
 {
@@ -38,14 +40,14 @@ class AjaxOneToManyFilterType extends FilterType
 
     public const CRITERIA_NOT_EQUAL = 'not_equal';
 
+    public const OPT_TARGET_CLASS = 'target_class';
+
+    public const OPT_JSON_SEARCH_URL = 'json_search_url';
+
     public function __construct(
-        string $column,
-        protected string $targetClass,
         protected EntityManagerInterface $entityManager,
-        protected string $jsonSearchUrl,
-        array $joins = []
     ) {
-        parent::__construct($column, $joins);
+        parent::__construct();
     }
 
     public function getOperators(): array
@@ -58,14 +60,15 @@ class AjaxOneToManyFilterType extends FilterType
 
     public function getValueField(?string $value = '0'): string
     {
+        $targetClass = $this->getOption(static::OPT_TARGET_CLASS);
         $field = sprintf(
             '<select name="{name}" class="form-control" data-ajax-select data-ajax-entity="%s">',
-            $this->targetClass
+            $targetClass
         );
 
-        $currentSelection = (int) $value > 0 ? $this->entityManager->getRepository($this->targetClass)->find((int) $value) : null;
+        $currentSelection = (int) $value > 0 ? $this->entityManager->getRepository($targetClass)->find((int) $value) : null;
         if ($currentSelection) {
-            $field .= sprintf('<option value="%s">%s</option>', $value, $currentSelection->__toString());
+            $field .= sprintf('<option value="%s">%s</option>', $value, new StringConverter($currentSelection));
         }
 
         $field .= '</select>';
@@ -75,19 +78,29 @@ class AjaxOneToManyFilterType extends FilterType
 
     public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder)
     {
+        $targetClass = $this->getOption(static::OPT_TARGET_CLASS);
         $targetParameter = 'target_'.hash('crc32', random_bytes(10));
         $queryBuilder->setParameter(
             $targetParameter,
-            $this->entityManager->getRepository($this->targetClass)->find($value)
+            $this->entityManager->getRepository($targetClass)->find($value)
         );
 
-        switch ($operator) {
-            case static::CRITERIA_EQUAL:
-                return $queryBuilder->expr()->in($this->column, ':'.$targetParameter);
-            case static::CRITERIA_NOT_EQUAL:
-                return $queryBuilder->expr()->notIn($this->column, ':'.$targetParameter);
-        }
+        $column = $this->getOption(static::OPT_COLUMN);
+        return match ($operator) {
+            static::CRITERIA_EQUAL => $queryBuilder->expr()->in($column, ':'.$targetParameter),
+            static::CRITERIA_NOT_EQUAL => $queryBuilder->expr()->notIn($column, ':'.$targetParameter),
+            default => null,
+        };
+    }
 
-        return null;
+    protected function configureOptions(OptionsResolver $resolver): void
+    {
+        parent::configureOptions($resolver);
+        $resolver->setDefaults([
+            static::OPT_TARGET_CLASS => null,
+            static::OPT_JSON_SEARCH_URL => null,
+        ]);
+        $resolver->setAllowedTypes(static::OPT_TARGET_CLASS, ['string']);
+        $resolver->setAllowedTypes(static::OPT_JSON_SEARCH_URL, ['string']);
     }
 }

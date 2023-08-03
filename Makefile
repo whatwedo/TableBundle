@@ -27,7 +27,7 @@ install:
 
 ## fix php code style
 ecs:
-	vendor/bin/ecs --fix
+	vendor/bin/ecs --fix --clear-cache
 
 ## check code with phpstan
 phpstan:

@@ -34,6 +34,10 @@ services:
         arguments:
             - !tagged_iterator 'araise_table.query_builder_provider'
 
+    araise\TableBundle\Manager\FilterTypeManager:
+        arguments:
+            - !tagged_iterator 'araise_table.filter_type'
+
     _instanceof:
         araise\TableBundle\DataLoader\DataLoaderInterface:
             shared: false

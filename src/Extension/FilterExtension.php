@@ -34,8 +34,10 @@ use araise\TableBundle\DataLoader\DoctrineDataLoader;
 use araise\TableBundle\Entity\Filter as FilterEntity;
 use araise\TableBundle\Exception\InvalidFilterAcronymException;
 use araise\TableBundle\Filter\FilterGuesser;
+use araise\TableBundle\Filter\Type\FilterType;
 use araise\TableBundle\Filter\Type\FilterTypeInterface;
 use araise\TableBundle\Helper\RouterHelper;
+use araise\TableBundle\Manager\FilterTypeManager;
 use araise\TableBundle\Table\Filter;
 use araise\TableBundle\Table\Table;
 use Doctrine\Common\Annotations\AnnotationException;
@@ -69,6 +71,7 @@ class FilterExtension extends AbstractExtension
 
     public function __construct(
         protected EntityManagerInterface $entityManager,
+        protected FilterTypeManager $filterTypeManager,
         protected RequestStack $requestStack,
         protected FilterGuesser $filterGuesser,
         protected LoggerInterface $logger
@@ -95,11 +98,25 @@ class FilterExtension extends AbstractExtension
 
     /**
      * @return $this
+     * @interal use addFilterType instead
      */
     public function addFilter(string $acronym, string $label, FilterTypeInterface $type)
     {
         $this->filters[$acronym] = new Filter($acronym, $label, $type);
 
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function addFilterType(string $acronym, string $label, string $typeClass, array $options = [])
+    {
+        if (!array_key_exists(FilterType::OPT_COLUMN, $options)) {
+            $options[FilterType::OPT_COLUMN] = $acronym;
+        }
+        $type = $this->filterTypeManager->getFilterType($typeClass)->setOptions($options);
+        $this->filters[$acronym] = new Filter($acronym, $label, $type);
         return $this;
     }
 

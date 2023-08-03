@@ -8,8 +8,14 @@ use Doctrine\ORM\QueryBuilder;
 
 interface FilterTypeInterface
 {
+    /**
+     * @deprecated Use OPT_COLUMN instead
+     */
     public function getColumn(): string;
 
+    /**
+     * @deprecated Use OPT_JOINS instead
+     */
     public function getJoins(): array;
 
     public function getOperators(): array;
@@ -17,4 +23,14 @@ interface FilterTypeInterface
     public function getValueField(?string $value): string;
 
     public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder);
+
+    public function setOptions(array $options): static;
+
+    public function setOption(string $name, mixed $value): static;
+
+    public function hasOption(string $name): bool;
+
+    public function getOptions(): array;
+
+    public function getOption(string $name): mixed;
 }

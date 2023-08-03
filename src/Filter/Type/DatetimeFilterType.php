@@ -43,6 +43,7 @@ class DatetimeFilterType extends FilterType
     {
         $date = $this->prepareDateValue($value);
         $dateAsString = $date->format(static::getQueryDataFormat());
+        $column = $this->getOption(static::OPT_COLUMN);
 
         switch ($operator) {
             case static::CRITERIA_EQUAL:
@@ -50,23 +51,23 @@ class DatetimeFilterType extends FilterType
 
                 return $queryBuilder->expr()->eq(
                     sprintf(':%s', $parameterName),
-                    sprintf('%s', $this->getColumn())
+                    sprintf('%s', $column)
                 );
             case static::CRITERIA_NOT_EQUAL:
                 $queryBuilder->setParameter($parameterName, $dateAsString);
 
                 return $queryBuilder->expr()->neq(
                     sprintf(':%s', $parameterName),
-                    sprintf('%s', $this->getColumn())
+                    sprintf('%s', $column)
                 );
             case static::CRITERIA_BEFORE:
                 $queryBuilder->setParameter($parameterName, $dateAsString);
 
-                return $queryBuilder->expr()->lt($this->getColumn(), sprintf(':%s', $parameterName));
+                return $queryBuilder->expr()->lt($column, sprintf(':%s', $parameterName));
             case static::CRITERIA_AFTER:
                 $queryBuilder->setParameter($parameterName, $dateAsString);
 
-                return $queryBuilder->expr()->gt($this->getColumn(), sprintf(':%s', $parameterName));
+                return $queryBuilder->expr()->gt($column, sprintf(':%s', $parameterName));
             case static::CRITERIA_IN_YEAR:
                 $startYear = clone $date;
                 $endYear = clone $date;
