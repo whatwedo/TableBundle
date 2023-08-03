@@ -58,6 +58,8 @@ class Table
 
     protected array $actions = [];
 
+    protected array $batchActions = [];
+
     protected \Traversable $rows;
 
     protected bool $loaded = false;
@@ -135,11 +137,11 @@ class Table
         }
 
         $subTables = ($this->getOption(self::OPT_SUB_TABLE_LOADER))($row);
-        if (! $subTables) {
+        if (!$subTables) {
             return [];
         }
 
-        if (! is_array($subTables)) {
+        if (!is_array($subTables)) {
             $subTables = [$subTables];
         }
 
@@ -197,13 +199,13 @@ class Table
         }
 
         if ($this->options[self::OPT_DEFINITION]) {
-            if (! isset($options[Column::OPT_LABEL])) {
+            if (!isset($options[Column::OPT_LABEL])) {
                 $options[Column::OPT_LABEL] = sprintf('wwd.%s.property.%s', $this->options[self::OPT_DEFINITION]->getEntityAlias(), $acronym);
             }
         }
 
         // set link_the_column_content on first column if not set
-        if (! isset($options[Column::OPT_LINK_THE_COLUMN_CONTENT]) && count($this->columns) === 0) {
+        if (!isset($options[Column::OPT_LINK_THE_COLUMN_CONTENT]) && count($this->columns) === 0) {
             $options[Column::OPT_LINK_THE_COLUMN_CONTENT] = true;
         }
 
@@ -234,17 +236,39 @@ class Table
      */
     public function getActions(): array
     {
-        uasort(
-            $this->actions,
-            static fn (Action $a, Action $b) => $a->getOption(Action::OPT_PRIORITY) <=> $b->getOption(Action::OPT_PRIORITY)
-        );
+        return $this->getInternalActions($this->actions);
+    }
 
-        return $this->actions;
+    /**
+     * @return Action[]
+     */
+    public function getBatchActions(): array
+    {
+        return $this->getInternalActions($this->batchActions);
     }
 
     public function addAction(string $acronym, array $options = [], $type = Action::class): static
     {
         $this->actions[$acronym] = new $type($acronym, $options);
+
+        return $this;
+    }
+
+    public function addBatchAction(string $acronym, array $options = [], string $type = Action::class): static
+    {
+        if (! isset($options['voter_attribute'])) {
+            $options['voter_attribute'] = 'batch_action';
+        }
+        $this->batchActions[$acronym] = new $type($acronym, $options);
+
+        return $this;
+    }
+
+    public function removeBatchAction(string $acronym): static
+    {
+        if (isset($this->batchActions[$acronym])) {
+            unset($this->batchActions[$acronym]);
+        }
 
         return $this;
     }
@@ -333,9 +357,7 @@ class Table
     public function hasBatchActions(): bool
     {
         return $this->parent === null
-            && $this->getOption(self::OPT_DEFINITION)
-            && (enum_exists('araise\CrudBundle\Enums\Page')
-                && $this->getOption(self::OPT_DEFINITION)::hasCapability(\araise\CrudBundle\Enums\Page::BATCH))
+            && count($this->getBatchActions()) > 0
         ;
     }
 
@@ -376,5 +398,18 @@ class Table
             $newArray[$key] = $value;
         }
         $this->columns = $newArray;
+    }
+
+    /**
+     * @return Action[]
+     */
+    private function getInternalActions(array $actions): array
+    {
+        uasort(
+            $actions,
+            static fn (Action $a, Action $b) => $a->getOption(Action::OPT_PRIORITY) <=> $b->getOption(Action::OPT_PRIORITY)
+        );
+
+        return $actions;
     }
 }

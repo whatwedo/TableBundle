@@ -84,7 +84,7 @@
                                 <div class="py-1" role="none">
 
                                     <span class="block">
-                                        {% for batchAction in table.getOption('definition').batchActions | filter(action => not action.getOption('voter_attribute') or is_granted(action.getOption('voter_attribute'), action)) %}
+                                        {% for batchAction in table.batchActions | filter(action => not action.getOption('voter_attribute') or is_granted(action.getOption('voter_attribute'), action)) %}
                                             {% if batchAction.hasConfirmation() %}
                                                 {{ _self.confirmationLink(batchAction, {}, stimulus_action('@araise/table-bundle/table_select', 'doAction') ~ ' href="' ~ path(batchAction.route, batchAction.routeParameters) ~ '"') }}
                                             {% else %}
