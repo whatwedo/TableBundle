@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 /*
- * Copyright (c) 2017, whatwedo GmbH
+ * Copyright (c) 2023, whatwedo GmbH
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,25 +27,23 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace araise\TableBundle\Filter\Type;
+namespace araise\TableBundle\Manager;
 
-use Doctrine\ORM\QueryBuilder;
+use araise\TableBundle\Filter\Type\FilterTypeInterface;
 
-class AjaxManyToManyFilterType extends AjaxOneToManyFilterType
+class FilterTypeManager
 {
-    public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder)
+    protected array $filterTypes = [];
+
+    public function __construct(iterable $filterTypes)
     {
-        $targetClass = $this->getOption(static::OPT_TARGET_CLASS);
-        $targetParameter = 'target_'.hash('crc32', random_bytes(10));
-        $queryBuilder->setParameter(
-            $targetParameter,
-            $this->entityManager->getRepository($targetClass)->find($value)
-        );
-        $column = $this->getOption(static::OPT_COLUMN);
-        return match ($operator) {
-            static::CRITERIA_EQUAL => $queryBuilder->expr()->isMemberOf(':'.$targetParameter, $column),
-            static::CRITERIA_NOT_EQUAL => $queryBuilder->expr()->not($queryBuilder->expr()->isMemberOf($targetParameter, $column)),
-            default => null,
-        };
+        foreach ($filterTypes as $filterType) {
+            $this->filterTypes[$filterType::class] = $filterType;
+        }
+    }
+
+    public function getFilterType(string $class): FilterTypeInterface
+    {
+        return clone $this->filterTypes[$class];
     }
 }
