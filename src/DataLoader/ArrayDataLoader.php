@@ -14,6 +14,32 @@ class ArrayDataLoader extends AbstractDataLoader
 
     protected PaginationExtension $paginationExtension;
 
+    public function getNext(mixed $current): mixed
+    {
+        $data = $this->options[self::OPT_DATA]->toArray();
+        $next = false;
+        foreach ($data as $item) {
+            if ($next) {
+                return $item;
+            }
+            $next = $item === $current;
+        }
+        return null;
+    }
+
+    public function getPrev(mixed $current): mixed
+    {
+        $data = $this->options[self::OPT_DATA]->toArray();
+        $prev = null;
+        foreach ($data as $item) {
+            if ($item === $current) {
+                return $prev;
+            }
+            $prev = $item;
+        }
+        return null;
+    }
+
     public function loadNecessaryExtensions(iterable $extensions): void
     {
         foreach ($extensions as $extension) {
