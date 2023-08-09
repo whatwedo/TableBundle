@@ -21,6 +21,16 @@ abstract class AbstractDataLoader implements DataLoaderInterface
     {
     }
 
+    public function getNext(mixed $current): mixed
+    {
+        return null;
+    }
+
+    public function getPrev(mixed $current): mixed
+    {
+        return null;
+    }
+
     public function getOption(string $option)
     {
         return $this->options[$option];
