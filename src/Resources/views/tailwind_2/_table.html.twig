@@ -193,7 +193,7 @@
                             {% if column.option('link_the_column_content') and table.option('primary_link') is not null %}
                                 {% set columnLink = table.primaryLink(row) and not subTables %}
                                 {% if columnLink %}
-                                    <a class="whatwedo-utility-link" href="{{ columnLink }}">
+                                    <a class="whatwedo-utility-link" href="{{ table.primaryLink(row) }}">
                                 {% endif %}
                             {% endif %}
                         {% endapply %}
