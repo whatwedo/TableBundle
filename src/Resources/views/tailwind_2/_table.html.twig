@@ -173,7 +173,7 @@
                     </td>
                 {% endif %}
                 {% for column in table.columns %}
-                    <td class="px-3 py-2 {% if column.option('link_the_column_content') %}whitespace-nowrap{% endif %}"
+                    <td class="px-3 py-2{% if subTables %} font-semibold cursor-pointer{% endif %}{% if column.option('link_the_column_content') %} whitespace-nowrap{% endif %}"
                         {% if row|araise_entity_is_tree and row.level != 0 %}
                             style="padding-left: {{ row.level*50 }}px"
                         {% endif %}
