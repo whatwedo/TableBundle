@@ -35,9 +35,11 @@ use araise\TableBundle\Filter\Type\AjaxRelationFilterType;
 use araise\TableBundle\Filter\Type\BooleanFilterType;
 use araise\TableBundle\Filter\Type\DateFilterType;
 use araise\TableBundle\Filter\Type\DatetimeFilterType;
+use araise\TableBundle\Filter\Type\FilterType;
 use araise\TableBundle\Filter\Type\FilterTypeInterface;
 use araise\TableBundle\Filter\Type\NumberFilterType;
 use araise\TableBundle\Filter\Type\TextFilterType;
+use araise\TableBundle\Manager\FilterTypeManager;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Column;
@@ -65,7 +67,8 @@ class FilterGuesser
     ];
 
     public function __construct(
-        protected EntityManagerInterface $entityManager
+        protected EntityManagerInterface $entityManager,
+        protected FilterTypeManager $filterTypeManager,
     ) {
     }
 
@@ -102,7 +105,9 @@ class FilterGuesser
             return null;
         }
 
-        return new (self::SCALAR_TYPES[$type])($accessor);
+        return $this->filterTypeManager->getFilterType(self::SCALAR_TYPES[$type])->setOptions([
+            FilterType::OPT_COLUMN => $accessor,
+        ]);
     }
 
     private function newManyToManyFilter(string $class, string $acronym, string $targetEntity, callable $jsonSearchCallable, array $joins): ?FilterTypeInterface
@@ -111,13 +116,12 @@ class FilterGuesser
             return null;
         }
 
-        return new (self::RELATION_TYPE[$class])(
-            $acronym,
-            $targetEntity,
-            $this->entityManager,
-            $jsonSearchCallable($targetEntity),
-            $joins
-        );
+        return $this->filterTypeManager->getFilterType(self::RELATION_TYPE[$class])->setOptions([
+            FilterType::OPT_COLUMN => $acronym,
+            FilterType::OPT_JOINS => $joins,
+            AjaxOneToManyFilterType::OPT_TARGET_CLASS => $targetEntity,
+            AjaxOneToManyFilterType::OPT_JSON_SEARCH_URL => $jsonSearchCallable($targetEntity),
+        ]);
     }
 
     private function newRelationFilter(string $class, string $acronym, string $targetEntity, string $namespace, callable $jsonSearchCallable, array $joins): ?FilterTypeInterface
@@ -127,19 +131,18 @@ class FilterGuesser
         }
 
         if (mb_strpos($targetEntity, '\\') === false) {
-            $targetEntity = $namespace . '\\' . $targetEntity;
+            $targetEntity = $namespace.'\\'.$targetEntity;
         }
 
-        return new (self::RELATION_TYPE[$class])(
-            $acronym,
-            $targetEntity,
-            $this->entityManager,
-            $jsonSearchCallable($targetEntity),
-            $joins
-        );
+        return $this->filterTypeManager->getFilterType(self::RELATION_TYPE[$class])->setOptions([
+            FilterType::OPT_COLUMN => $acronym,
+            FilterType::OPT_JOINS => $joins,
+            AjaxRelationFilterType::OPT_TARGET_CLASS => $targetEntity,
+            AjaxRelationFilterType::OPT_JSON_SEARCH_URL => $jsonSearchCallable($targetEntity),
+        ]);
     }
 
-    private function getAnnotationsAndAttributes(\ReflectionProperty $property): ?array
+    private function getAnnotationsAndAttributes(\ReflectionProperty $property): array
     {
         $annotations = (new AnnotationReader())->getPropertyAnnotations($property);
         $attributes = $property->getAttributes();

@@ -19,4 +19,8 @@ interface DataLoaderInterface
     public function getOption(string $option);
 
     public function loadNecessaryExtensions(iterable $extensions): void;
+
+    public function getNext(mixed $current): mixed;
+
+    public function getPrev(mixed $current): mixed;
 }

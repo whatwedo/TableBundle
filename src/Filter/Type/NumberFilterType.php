@@ -38,19 +38,14 @@ class NumberFilterType extends FilterType
     public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder)
     {
         $queryBuilder->setParameter($parameterName, static::prepareQueryValue($value));
-
-        switch ($operator) {
-            case static::CRITERIA_EQUAL:
-                return $queryBuilder->expr()->eq($this->getColumn(), ':' . $parameterName);
-            case static::CRITERIA_NOT_EQUAL:
-                return $queryBuilder->expr()->neq($this->getColumn(), ':' . $parameterName);
-            case static::CRITERIA_BIGGER_THAN:
-                return $queryBuilder->expr()->gt($this->getColumn(), ':' . $parameterName);
-            case static::CRITERIA_SMALLER_THAN:
-                return $queryBuilder->expr()->lt($this->getColumn(), ':' . $parameterName);
-        }
-
-        return false;
+        $column = $this->getOption(static::OPT_COLUMN);
+        return match ($operator) {
+            static::CRITERIA_EQUAL => $queryBuilder->expr()->eq($column, ':'.$parameterName),
+            static::CRITERIA_NOT_EQUAL => $queryBuilder->expr()->neq($column, ':'.$parameterName),
+            static::CRITERIA_BIGGER_THAN => $queryBuilder->expr()->gt($column, ':'.$parameterName),
+            static::CRITERIA_SMALLER_THAN => $queryBuilder->expr()->lt($column, ':'.$parameterName),
+            default => false,
+        };
     }
 
     protected static function prepareQueryValue($value): float

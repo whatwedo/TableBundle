@@ -9,7 +9,7 @@ You may also consult the chapter [FilterType Examples](#filtertype-examples) for
 
 ```php
 $table->getFilterExtension()
-    ->addFilter('firstname', 'Firstname', new TextFilterType('column'));
+    ->addFilterType('firstname', 'Firstname', TextFilterType::class);
 // addFilter(acronym, label, FilterType)
 ```
 
@@ -26,7 +26,9 @@ Here are some more examples on how to create your own custom filters by using th
 The number filter type allows you to filter your data by a column which holds a number.
 
 ```php
-$table->getFilterExtension()->addFilter('age', 'Age', new NumberFilterType(self::getQueryAlias() . '.age'))
+$table->getFilterExtension()->addFilterType('age', 'Age', NumberFilterType::class, [
+    FilterType::OPT_COLUMN => (self::getQueryAlias() . '.age')
+])
 ```
 
 ### ChoiceFilterType
@@ -34,7 +36,11 @@ $table->getFilterExtension()->addFilter('age', 'Age', new NumberFilterType(self:
 With this filter type you can create a dropdown with predefined values for filtering your data.
 
 ```php
-$table->getFilterExtension()->addFilter('state', 'State', new ChoiceFilterType('s.state', ['open', 'in_progress', 'done'], ['s' => self::getQueryAlias() . '.task']))
+$table->getFilterExtension()->addFilterType('state', 'State', ChoiceFilterType::class, [
+    FilterType::OPT_COLUMN => 's.state',
+    ChoiceFilterType::OPT_CHOICES => ['open', 'in_progress', 'done'],
+    FilterType::OPT_JOINS => ['s' => self::getQueryAlias() . '.task'])
+)
 ```
 
 ### AjaxRelationFilterType
@@ -42,10 +48,13 @@ $table->getFilterExtension()->addFilter('state', 'State', new ChoiceFilterType('
 This filter allows you to request the data for the dropdown via AJAX. It will create a filter from a relation between two entities.
 
 ```php
-$table->getFilterExtension()->addFilter('city', 'City', new AjaxRelationFilterType('c', City::class, $entityManager, $router->generate(CityDefinition::getRoute(Page::JSONSEARCH)), [
-            's' => $queryAlias . '.street',
-            'c' => 's.city',
-        ]));
+$table->getFilterExtension()->addFilterType('city', 'City', AjaxRelationFilterType::class, [
+    FilterType::OPT_COLUMN => 'c',
+    AjaxRelationFilterType::OPT_TARGET_ENTITY => City::class,
+    AjaxRelationFilterType::OPT_JSON_SEARCH_URL => $router->generate(CityDefinition::getRoute(Page::JSONSEARCH)), [
+        's' => $queryAlias . '.street',
+        'c' => 's.city',
+    ]]);
 ```
 
 Let's say for this example we have a `BuildingDefinition` where we want to filter the buildings by their city. The city is stored as a property of the `Street` entity for the purpose of this example.

@@ -13,6 +13,10 @@ services:
         tags:
             - { name: kernel.event_listener, event: araise_table.data_load.pre_load, method: orderResultSet, priority: 100 }
 
+    araise\TableBundle\EventListener\ArrayOrderEventListener:
+        tags:
+            - { name: kernel.event_listener, event: araise_table.data_load.pre_load, method: orderResultSet, priority: 100 }
+
     araise\TableBundle\EventListener\FilterEventListener:
         tags:
             - { name: kernel.event_listener, event: araise_table.data_load.pre_load, method: filterResultSet, priority: 100 }
@@ -29,6 +33,10 @@ services:
     araise\TableBundle\Manager\QueryBuilderManager:
         arguments:
             - !tagged_iterator 'araise_table.query_builder_provider'
+
+    araise\TableBundle\Manager\FilterTypeManager:
+        arguments:
+            - !tagged_iterator 'araise_table.filter_type'
 
     _instanceof:
         araise\TableBundle\DataLoader\DataLoaderInterface:

@@ -43,6 +43,7 @@ class DatetimeFilterType extends FilterType
     {
         $date = $this->prepareDateValue($value);
         $dateAsString = $date->format(static::getQueryDataFormat());
+        $column = $this->getOption(static::OPT_COLUMN);
 
         switch ($operator) {
             case static::CRITERIA_EQUAL:
@@ -50,34 +51,34 @@ class DatetimeFilterType extends FilterType
 
                 return $queryBuilder->expr()->eq(
                     sprintf(':%s', $parameterName),
-                    sprintf('%s', $this->getColumn())
+                    sprintf('%s', $column)
                 );
             case static::CRITERIA_NOT_EQUAL:
                 $queryBuilder->setParameter($parameterName, $dateAsString);
 
                 return $queryBuilder->expr()->neq(
                     sprintf(':%s', $parameterName),
-                    sprintf('%s', $this->getColumn())
+                    sprintf('%s', $column)
                 );
             case static::CRITERIA_BEFORE:
                 $queryBuilder->setParameter($parameterName, $dateAsString);
 
-                return $queryBuilder->expr()->lt($this->getColumn(), sprintf(':%s', $parameterName));
+                return $queryBuilder->expr()->lt($column, sprintf(':%s', $parameterName));
             case static::CRITERIA_AFTER:
                 $queryBuilder->setParameter($parameterName, $dateAsString);
 
-                return $queryBuilder->expr()->gt($this->getColumn(), sprintf(':%s', $parameterName));
+                return $queryBuilder->expr()->gt($column, sprintf(':%s', $parameterName));
             case static::CRITERIA_IN_YEAR:
                 $startYear = clone $date;
                 $endYear = clone $date;
-                $startYear->modify('first day of January ' . date('Y'))->setTime(0, 0, 0);
-                $endYear->modify('last day of December ' . date('Y'))->setTime(23, 59, 59);
-                $queryBuilder->setParameter($parameterName . '_start', $startYear->format(static::getQueryDataFormat()));
-                $queryBuilder->setParameter($parameterName . '_end', $endYear->format(static::getQueryDataFormat()));
+                $startYear->modify('first day of January '.date('Y'))->setTime(0, 0, 0);
+                $endYear->modify('last day of December '.date('Y'))->setTime(23, 59, 59);
+                $queryBuilder->setParameter($parameterName.'_start', $startYear->format(static::getQueryDataFormat()));
+                $queryBuilder->setParameter($parameterName.'_end', $endYear->format(static::getQueryDataFormat()));
 
                 return $queryBuilder->expr()->andX(
-                    $queryBuilder->expr()->gte($this->getColumn(), sprintf(':%s', $parameterName . '_start')),
-                    $queryBuilder->expr()->lte($this->getColumn(), sprintf(':%s', $parameterName . '_end'))
+                    $queryBuilder->expr()->gte($this->getColumn(), sprintf(':%s', $parameterName.'_start')),
+                    $queryBuilder->expr()->lte($this->getColumn(), sprintf(':%s', $parameterName.'_end'))
                 );
         }
 

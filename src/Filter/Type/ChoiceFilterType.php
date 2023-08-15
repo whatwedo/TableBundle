@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace araise\TableBundle\Filter\Type;
 
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ChoiceFilterType extends FilterType
 {
@@ -12,13 +13,7 @@ class ChoiceFilterType extends FilterType
 
     public const CRITERIA_NOT_EQUAL = 'not_equal';
 
-    protected array $choices = [];
-
-    public function __construct(string $column, array $choices, array $joins = [])
-    {
-        parent::__construct($column, $joins);
-        $this->choices = $choices;
-    }
+    public const OPT_CHOICES = 'choices';
 
     public function getOperators(): array
     {
@@ -32,7 +27,7 @@ class ChoiceFilterType extends FilterType
     {
         $result = '<select name="{name}" class="form-control"><option value=""></option>';
 
-        foreach ($this->choices as $key => $choice) {
+        foreach ($this->getOption(self::OPT_CHOICES) as $key => $choice) {
             $result .= sprintf(
                 '<option value="%s" %s>%s</option>',
                 $key,
@@ -49,14 +44,18 @@ class ChoiceFilterType extends FilterType
     public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder)
     {
         $queryBuilder->setParameter($parameterName, $value);
+        $column = $this->getOption(static::OPT_COLUMN);
+        return match ($operator) {
+            static::CRITERIA_EQUAL => $queryBuilder->expr()->eq($column, ':'.$parameterName),
+            static::CRITERIA_NOT_EQUAL => $queryBuilder->expr()->neq($column, ':'.$parameterName),
+            default => false,
+        };
+    }
 
-        switch ($operator) {
-            case static::CRITERIA_EQUAL:
-                return $queryBuilder->expr()->eq($this->getColumn(), ':' . $parameterName);
-            case static::CRITERIA_NOT_EQUAL:
-                return $queryBuilder->expr()->neq($this->getColumn(), ':' . $parameterName);
-        }
-
-        return false;
+    protected function configureOptions(OptionsResolver $resolver): void
+    {
+        parent::configureOptions($resolver);
+        $resolver->setDefault(static::OPT_CHOICES, []);
+        $resolver->setAllowedTypes(static::OPT_CHOICES, ['array']);
     }
 }

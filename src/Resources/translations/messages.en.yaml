@@ -1,0 +1,67 @@
+araise_table:
+    download:
+        info: What would you like to download?
+    all: All pages
+    page: Current page
+    or: Or
+    and: And
+    saved_filters: Saved filters
+    reset: Reset
+    apply: Apply
+    save_filter: Save filter as query
+    filter_name: Name
+    filter_description: Description
+    filter_public: Public
+    close: Close
+    save: Save
+    no_results: No results found
+    delete_filter: Delete Filter
+    restore_filter: Activate Filter
+    amount_entries: '{amount} entries'
+    unknown: Unknown
+    options: Options
+    no_elements: No elements available
+    search:
+        filter: Filter
+        remove_search: Remove search
+        placeholder: Search term...
+        export: Export as Excel (CSV)
+        all_pages: Current results (All pages)
+        all: All
+        actual: Current results (Page %current_page%)
+    foot:
+        result: Result {offsetResults} to {offsetLength} of {totalResults}
+        selected: "{count} selected"
+    pagination:
+        first_page: First page
+        previous_page: Previous page
+        current_page: Current page
+        page_num: Page %page%
+        next_page: Next page
+        last_page: Last page
+    filter:
+        show_element_when: Show elements when
+        or: Or
+        and: And
+        filter: Filter
+        saved_filter: Saved Filters
+        create_new: Create New
+        overview: Filter Overview
+        reset: Reset
+        apply: Apply Filter
+        operator:
+            contains: Contains
+            contains_not: Does not contain
+            is: Is
+            is_not: Is not
+            equal: Is equal to
+            not_equal: Is not equal to
+            before: Before
+            after: After
+            same_year: In the same year as
+            bigger_than: Greater than
+            smaller_than: Smaller than
+            starts_with: Starts with
+            ends_with: Ends with
+            is_empty: Has no value
+            is_not_empty: Has a value

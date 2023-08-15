@@ -35,19 +35,17 @@ class AjaxManyToManyFilterType extends AjaxOneToManyFilterType
 {
     public function toDql(string $operator, string $value, string $parameterName, QueryBuilder $queryBuilder)
     {
-        $targetParameter = 'target_' . hash('crc32', random_bytes(10));
+        $targetClass = $this->getOption(static::OPT_TARGET_CLASS);
+        $targetParameter = 'target_'.hash('crc32', random_bytes(10));
         $queryBuilder->setParameter(
             $targetParameter,
-            $this->entityManager->getRepository($this->targetClass)->find($value)
+            $this->entityManager->getRepository($targetClass)->find($value)
         );
-
-        switch ($operator) {
-            case static::CRITERIA_EQUAL:
-                return $queryBuilder->expr()->isMemberOf(':' . $targetParameter, $this->column);
-            case static::CRITERIA_NOT_EQUAL:
-                return $queryBuilder->expr()->not($queryBuilder->expr()->isMemberOf($targetParameter, $this->column));
-        }
-
-        return null;
+        $column = $this->getOption(static::OPT_COLUMN);
+        return match ($operator) {
+            static::CRITERIA_EQUAL => $queryBuilder->expr()->isMemberOf(':'.$targetParameter, $column),
+            static::CRITERIA_NOT_EQUAL => $queryBuilder->expr()->not($queryBuilder->expr()->isMemberOf($targetParameter, $column)),
+            default => null,
+        };
     }
 }

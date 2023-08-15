@@ -84,7 +84,7 @@
                                 <div class="py-1" role="none">
 
                                     <span class="block">
-                                        {% for batchAction in table.getOption('definition').batchActions | filter(action => not action.getOption('voter_attribute') or is_granted(action.getOption('voter_attribute'), action)) %}
+                                        {% for batchAction in table.batchActions | filter(action => not action.getOption('voter_attribute') or is_granted(action.getOption('voter_attribute'), action)) %}
                                             {% if batchAction.hasConfirmation() %}
                                                 {{ _self.confirmationLink(batchAction, {}, stimulus_action('@araise/table-bundle/table_select', 'doAction') ~ ' href="' ~ path(batchAction.route, batchAction.routeParameters) ~ '"') }}
                                             {% else %}
@@ -111,7 +111,7 @@
                     <th class="px-3 py-3 align-top whitespace-nowrap">
                         {{ column.option('label')|trans }}
 
-                        {% if table.sortExtension and column.option('sortable') %}
+                        {% if table.option('sortable') and table.sortExtension and column.option('sortable') %}
                             {% set currentOrder = table.sortExtension.order(column) %}
                             {% if currentOrder == 'asc' %}
                                 <a class="first:ml-1"
@@ -153,7 +153,7 @@
         >
         {% if table.rows is empty %}
             <tr class="whatwedo_table-row hover:bg-neutral-100 transition duration-500 color">
-                <td class="px-3 py-2 font-normal">
+                <td class="px-3 py-2 font-normal" colspan="{{ table.columns|length + (table.actions|length ? 1 : 0) }}">
                     {{ 'araise_table.no_elements' | trans }}
                 </td>
             </tr>
@@ -173,7 +173,7 @@
                     </td>
                 {% endif %}
                 {% for column in table.columns %}
-                    <td class="px-3 py-2 {% if column.option('link_the_column_content') %}whitespace-nowrap{% endif %}"
+                    <td class="px-3 py-2{% if subTables %} font-semibold cursor-pointer{% endif %}{% if column.option('link_the_column_content') %} whitespace-nowrap{% endif %}"
                         {% if row|araise_entity_is_tree and row.level != 0 %}
                             style="padding-left: {{ row.level*50 }}px"
                         {% endif %}
@@ -191,9 +191,9 @@
                             {% endif %}
 
                             {% if column.option('link_the_column_content') and table.option('primary_link') is not null %}
-                                {% set columnLink = table.primaryLink(row) %}
+                                {% set columnLink = table.primaryLink(row) and not subTables %}
                                 {% if columnLink %}
-                                    <a class="whatwedo-utility-link" href="{{ columnLink }}">
+                                    <a class="whatwedo-utility-link" href="{{ table.primaryLink(row) }}">
                                 {% endif %}
                             {% endif %}
                         {% endapply %}

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 /*
- * Copyright (c) 2021, whatwedo GmbH
+ * Copyright (c) 2023, whatwedo GmbH
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,31 +27,23 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace araise\TableBundle\Helper;
+namespace araise\TableBundle\Manager;
 
-class RouterHelper
+use araise\TableBundle\Filter\Type\FilterTypeInterface;
+
+class FilterTypeManager
 {
-    public const PARAMETER_PAGINATION_PAGE = 'page';
+    protected array $filterTypes = [];
 
-    public const PARAMETER_PAGINATION_LIMIT = 'limit';
-
-    public const PARAMETER_FILTER_PREDEFINED = 'filter_predefined';
-
-    public const PARAMETER_SEARCH_QUERY = 'query';
-
-    public const PARAMETER_SORT_ENABLED = 'sort_enabled';
-
-    public const PARAMETER_SORT_DIRECTION = 'sort_direction';
-
-    public const PARAMETER_FILTER_COLUMN = 'filter_column';
-
-    public const PARAMETER_FILTER_OPERATOR = 'filter_operator';
-
-    public const PARAMETER_FILTER_VALUE = 'filter_value';
-
-    public static function getParameterName(string $identifier, string $parameter, $addition = null): string
+    public function __construct(iterable $filterTypes)
     {
-        return sprintf('%s_%s', str_replace('.', '_', $identifier), $parameter)
-            .($addition ? '_'.str_replace('.', '_', $addition) : '');
+        foreach ($filterTypes as $filterType) {
+            $this->filterTypes[$filterType::class] = $filterType;
+        }
+    }
+
+    public function getFilterType(string $class): FilterTypeInterface
+    {
+        return clone $this->filterTypes[$class];
     }
 }
