@@ -159,11 +159,12 @@
             </tr>
         {% endif %}
         {% for row in table.rows %}
+            {% set subTables = table.getSubTables(row) %}
+            {% set subTableStimulusAction = subTables ? stimulus_action('araise/table-bundle/accordion', 'toggle', 'click') : '' %}
             <tr class="whatwedo_table-row hover:bg-neutral-100 transition duration-500 color align-top"
-                {{ stimulus_action('araise/table-bundle/accordion', 'toggle', 'click') }}
+                {{ subTableStimulusAction }}
                 aria-expanded="false"
             >
-                {% set subTables = table.getSubTables(row) %}
                 {% if table.hasBatchActions() and table.getOption('content_visibility')['content_show_header'] %}
                     <td class="px-6 py-2">
                         <input
