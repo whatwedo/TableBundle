@@ -54,10 +54,7 @@ class DatetimeFilterType extends FilterType
 
     public function getValueField($value = null): string
     {
-        $value = \DateTime::createFromFormat('d.m.Y H:i:s', $value);
-        if (!$value) {
-            $value = new \DateTime();
-        }
+        $value = $value ? \DateTime::createFromFormat('d.m.Y H:i:s', $value) : new \DateTime();
 
         return sprintf(
             '<input type="text" name="{name}" value="%s" class="form-control" data-provide="datetimepicker" data-date-format="dd.mm.yyyy HH:ii">',
