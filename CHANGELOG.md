@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v1.0.2
+ - fix only add accordion toggle trigger if in subTables
+
 ## v1.0.1
  - English translation
  - Improved & Documented `ArrayDataLoader`
