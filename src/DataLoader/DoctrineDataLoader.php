@@ -43,6 +43,8 @@ class DoctrineDataLoader extends AbstractDataLoader
         /** @var QueryBuilder $qb */
         $qb = (clone $this->options[self::OPT_QUERY_BUILDER]);
         $qb->select('COUNT('.$qb->getRootAliases()[0].')');
+        $qb->resetDQLPart('groupBy');
+        $qb->resetDQLPart('orderBy');
         $this->paginationExtension->setTotalResults((int) $qb->getQuery()->getSingleScalarResult());
 
         if ($this->getOption(self::OPT_SAVE_LAST_QUERY) && $this->requestStack->getCurrentRequest()?->hasSession()) {
