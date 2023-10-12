@@ -57,6 +57,8 @@ class DoctrineDataLoader extends AbstractDataLoader
                 'param' => $param,
                 'entity' => $qbSave->getDQLPart('from')[0]->getFrom(),
             ]));
+        } elseif ($this->requestStack->getCurrentRequest()?->hasSession()) {
+            $this->requestStack->getSession()->remove(self::LAST_TABLE_QUERY);
         }
 
         if ($this->paginationExtension->getLimit()) {
@@ -133,6 +135,7 @@ class DoctrineDataLoader extends AbstractDataLoader
         if (!$this->requestStack->getCurrentRequest()?->hasSession()) {
             return null;
         }
+
         $lastQuery = $this->requestStack?->getSession()->get(self::LAST_TABLE_QUERY);
         if ($lastQuery === null) {
             return null;
