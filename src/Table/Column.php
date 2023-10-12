@@ -14,6 +14,8 @@ class Column extends AbstractColumn implements FormattableColumnInterface
 {
     public const OPT_LABEL = 'label';
 
+    public const OPT_LABEL_HTML = 'label_html';
+
     public const OPT_ACCESSOR_PATH = 'accessor_path';
 
     public const OPT_CALLABLE = 'callable';
@@ -42,6 +44,7 @@ class Column extends AbstractColumn implements FormattableColumnInterface
     {
         $resolver->setDefaults([
             self::OPT_LABEL => $this->identifier,
+            self::OPT_LABEL_HTML => null,
             self::OPT_ACCESSOR_PATH => $this->identifier,
             self::OPT_CALLABLE => null,
             self::OPT_LINK_THE_COLUMN_CONTENT => false,
