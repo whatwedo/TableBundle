@@ -109,7 +109,7 @@
                 {% endif %}
                 {% for column in table.columns %}
                     <th class="px-3 py-3 align-top whitespace-nowrap">
-                        {{ column.option('label')|trans }}
+                        {{ column.option('label_html')|raw }} {{ column.option('label')|trans }}
 
                         {% if table.option('sortable') and table.sortExtension and column.option('sortable') %}
                             {% set currentOrder = table.sortExtension.order(column) %}
@@ -162,7 +162,7 @@
             {% set subTables = table.getSubTables(row) %}
             {% set subTableStimulusAction = subTables ? stimulus_action('araise/table-bundle/accordion', 'toggle', 'click') : '' %}
             <tr class="whatwedo_table-row hover:bg-neutral-100 transition duration-500 color align-top"
-                {{ subTableStimulusAction }}
+                {{ subTableStimulusAction|raw }}
                 aria-expanded="false"
             >
                 {% if table.hasBatchActions() and table.getOption('content_visibility')['content_show_header'] %}

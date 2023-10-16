@@ -17,6 +17,11 @@ abstract class AbstractDataLoader implements DataLoaderInterface
         $this->options = $resolver->resolve($options);
     }
 
+    public function setOption(string $option, mixed $value): void
+    {
+        $this->options[$option] = $value;
+    }
+
     public function configureOptions(OptionsResolver $resolver): void
     {
     }
