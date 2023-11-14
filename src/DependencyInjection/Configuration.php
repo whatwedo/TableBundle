@@ -11,6 +11,12 @@ class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        return new TreeBuilder('araise_table');
+        $treeBuilder = new TreeBuilder('araise_table');
+
+        $treeBuilder->getRootNode()
+            ->children()
+            ->booleanNode('enable_turbo')->defaultFalse()->end();
+
+        return $treeBuilder;
     }
 }

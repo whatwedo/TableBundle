@@ -15,7 +15,9 @@ class araiseTableExtension extends Extension implements PrependExtensionInterfac
     public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
-        $this->processConfiguration($configuration, $configs);
+        $config = $this->processConfiguration($configuration, $configs);
+
+        $container->setParameter('araise.enable_turbo', $config['enable_turbo']);
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
@@ -23,6 +25,19 @@ class araiseTableExtension extends Extension implements PrependExtensionInterfac
 
     public function prepend(ContainerBuilder $container): void
     {
+        if (!$container->hasExtension('araise_core')) {
+            return;
+        }
+        $configs = $container->getExtensionConfig($this->getAlias());
+
+        foreach (array_reverse($configs) as $config) {
+            if (isset($config['enable_turbo'])) {
+                $container->prependExtensionConfig('araise_core', [
+                    'enable_turbo' => $config['enable_turbo'],
+                ]);
+            }
+        }
+
         if (! $container->hasExtension('doctrine_migrations')) {
             return;
         }
