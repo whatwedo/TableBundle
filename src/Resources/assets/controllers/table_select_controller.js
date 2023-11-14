@@ -128,10 +128,13 @@ export default class extends Controller {
                 if (data.redirect) {
                     window.location.href = data.redirect;
                 }
+                if (data.open) {
+                    window.open(data.open, '_blank');
+                }
                 if (data.url) {
                     window.location.href = data.url;
                 }
-                if (!data.reload && !data.redirect) {
+                if (!data.reload && !data.redirect && !data.open) {
                     console.warn('Batch Action Controller should return json data with reload or redirect information');
                 }
             } else {
