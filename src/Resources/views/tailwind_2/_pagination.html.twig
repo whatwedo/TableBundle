@@ -128,7 +128,7 @@
                 {% endif %}
             </div>
 
-            {% if table.getOption('content_visibility')['content_show_pagination'] %}
+            {% if table.getOption('content_visibility')['content_show_pagination'] and paginationLinks|length > 1 %}
             <div>
                 <nav class="whatwedo_table:footer__pagination relative z-0 inline-flex rounded-md shadow-sm -space-x-px whatwedo-utility-bold bg-white">
                     {% for link in paginationLinks %}
