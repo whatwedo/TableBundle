@@ -46,7 +46,7 @@
                 class="text-neutral-700 font-bold group flex items-center px-4 py-2 text-base" tabindex="-1"
             >
                 {% if action.option('icon') %}
-                    {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
+                    {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 group-hover:text-neutral-500' }) }}
                 {% endif %}
                 {{ action.label|trans }}
             </button>
@@ -179,7 +179,7 @@
             {{ stimulus_action('araise/core-bundle/modal-form', 'openModal') }}
         >
             {% if action.option('icon') %}
-                {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
+                {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 group-hover:text-neutral-500' }) }}
             {% endif %}
             {{ action.option('label')|trans }}
         </button>
