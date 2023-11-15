@@ -23,9 +23,9 @@ class Configuration implements ConfigurationInterface
 
         $treeBuilder->getRootNode()
             ->children()
-            ->booleanNode('enable_turbo')
-            ->defaultValue($coreConfig)
-            ->end();
+                ->booleanNode('enable_turbo')
+                ->defaultValue($coreConfig)
+                ->end();
 
         return $treeBuilder;
     }
