@@ -11,7 +11,7 @@
                 }))
             }) }}
         >
-            <turbo-frame id="whatwedo_table_{{ table.identifier }}" data-turbo="{{ araise_turbo_enabled ? 'true' : 'false' }}" target="_top" {{ stimulus_action('@araise/table-bundle/table_select', 'tableTargetChanged', 'turbo:frame-load') }}>
+            <turbo-frame id="whatwedo_table_{{ table.identifier }}" data-turbo="{{ araise_table_turbo_enabled ? 'true' : 'false' }}" target="_top" {{ stimulus_action('@araise/table-bundle/table_select', 'tableTargetChanged', 'turbo:frame-load') }}>
                 {% block table_header %}
                     {% include "@araiseTable/tailwind_2/_header.html.twig" %}
                 {% endblock %}
