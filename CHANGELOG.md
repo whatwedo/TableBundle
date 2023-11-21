@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v1.0.6
+ - disable turbo by default. You can use the `enable_turbo` configuration to change this
+
 ## v1.0.2
  - fix only add accordion toggle trigger if in subTables
 
