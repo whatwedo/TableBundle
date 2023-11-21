@@ -46,7 +46,7 @@
                 class="text-neutral-700 font-bold group flex items-center px-4 py-2 text-base" tabindex="-1"
             >
                 {% if action.option('icon') %}
-                    {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
+                    {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 group-hover:text-neutral-500' }) }}
                 {% endif %}
                 {{ action.label|trans }}
             </button>
@@ -179,7 +179,7 @@
             </button>
             <div
                 {{ stimulus_target('araise/core-bundle/dropdown', 'menu') }}
-                class="z-50 hidden transition duration-300 transform origin-top-right absolute right-0 -bottom-3 transform translate-y-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5"
+                class="z-50 hidden transition duration-300 transform origin-top-right absolute right-0 bottom-0 right-full mr-2 -mb-1 bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5"
                 data-transition-enter-from="opacity-0 scale-95"
                 data-transition-enter-to="opacity-100 scale-100"
                 data-transition-leave-from="opacity-100 scale-100"
@@ -244,7 +244,7 @@
             {{ stimulus_action('araise/core-bundle/modal-form', 'openModal') }}
         >
             {% if action.option('icon') %}
-                {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 text-neutral-400 group-hover:text-neutral-500' }) }}
+                {{ bootstrap_icon(action.icon, { class: 'inline mr-3 h-5 w-5 group-hover:text-neutral-500' }) }}
             {% endif %}
             {{ action.option('label')|trans }}
         </button>
