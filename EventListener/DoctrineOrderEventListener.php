@@ -43,7 +43,7 @@ class DoctrineOrderEventListener
      */
     private $queryBuilder;
 
-    public function orderResultSet(DataLoadEvent $event)
+    public function orderResultSet(DataLoadEvent $event): void
     {
         if (!$event->getTable() instanceof DoctrineTable) {
             return;
@@ -54,7 +54,7 @@ class DoctrineOrderEventListener
         $this->process();
     }
 
-    private function process()
+    private function process(): void
     {
         $sortedColumns = $this->table->getSortedColumns();
         if (!empty($sortedColumns)) {
@@ -71,7 +71,7 @@ class DoctrineOrderEventListener
     /**
      * @throws \Exception
      */
-    private function addOrderBy(string $sortExp, string $order)
+    private function addOrderBy(string $sortExp, string $order): void
     {
         $alias = $this->queryBuilder->getRootAliases()[0];
 

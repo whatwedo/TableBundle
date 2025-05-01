@@ -63,7 +63,7 @@ class TableExtension extends AbstractExtension
         $this->translator = $translator;
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('whatwedo_table', function ($identifier, $options) {
@@ -99,7 +99,7 @@ class TableExtension extends AbstractExtension
         ];
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('whatwedo_operators', function ($data) {
@@ -111,7 +111,7 @@ class TableExtension extends AbstractExtension
         ];
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'whatwedo_table_table_extension';
     }

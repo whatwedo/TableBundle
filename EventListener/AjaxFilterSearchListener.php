@@ -58,7 +58,7 @@ class AjaxFilterSearchListener
         $this->indexRepository = $indexRepository;
     }
 
-    public function searchResultSet(ResultRequestEvent $requestEvent)
+    public function searchResultSet(ResultRequestEvent $requestEvent): void
     {
         // check if whatwedo serach bundle is enabled
         if (!\in_array(whatwedoSearchBundle::class, $this->kernelBundles, true)) {

@@ -39,7 +39,7 @@ class FilterEventListener
      */
     protected $table;
 
-    public function filterResultSet(DataLoadEvent $event)
+    public function filterResultSet(DataLoadEvent $event): void
     {
         $this->table = $event->getTable();
 
@@ -58,12 +58,12 @@ class FilterEventListener
     /**
      * @return \Doctrine\ORM\QueryBuilder
      */
-    private function queryBuilder()
+    private function queryBuilder(): \Doctrine\ORM\QueryBuilder
     {
         return $this->table->getQueryBuilder();
     }
 
-    private function addQueryBuilderFilter()
+    private function addQueryBuilderFilter(): void
     {
         $addedJoins = $this->queryBuilder()->getAllAliases();
 

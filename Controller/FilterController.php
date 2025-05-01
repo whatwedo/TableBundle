@@ -32,6 +32,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
@@ -71,12 +72,8 @@ class FilterController extends AbstractController
         $this->queryBuilderManager = $queryBuilderManager;
     }
 
-    /**
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     *
-     * @Route("/whatwedo/table/filter/create", name="whatwedo_table_filter_direct_create", methods="POST")
-     */
-    public function directCreateAction(Request $request)
+    #[Route(path: '/whatwedo/table/filter/create', name: 'whatwedo_table_filter_direct_create', methods: ['POST'])]
+    public function directCreateAction(Request $request): Response
     {
         $filter = new Filter();
         $filter->setName($request->request->get('filter_name'));
@@ -105,12 +102,8 @@ class FilterController extends AbstractController
         ));
     }
 
-    /**
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     *
-     * @Route("/whatwedo/table/filter/delete/{id}", name="whatwedo_table_filter_direct_delete")
-     */
-    public function deleteAction(Filter $filter, Request $request)
+    #[Route(path: '/whatwedo/table/filter/delete/{id}', name: 'whatwedo_table_filter_direct_delete')]
+    public function deleteAction(Filter $filter, Request $request): Response
     {
         if (!$this->isCsrfTokenValid('token', $request->get('token'))) {
             throw new InvalidCsrfTokenException('Invalid CSRF token');
@@ -125,12 +118,8 @@ class FilterController extends AbstractController
         return $this->redirect($request->headers->get('referer'));
     }
 
-    /**
-     * @return JsonResponse
-     *
-     * @Route("/whatwedo/table/filter/relation", name="whatwedo_table_filter_load_relation_filter", methods="GET")
-     */
-    public function loadRelationFilterTypeAction(Request $request)
+    #[Route(path: '/whatwedo/table/filter/relation', name: 'whatwedo_table_filter_load_relation_filter', methods: ['GET'])]
+    public function loadRelationFilterTypeAction(Request $request): JsonResponse
     {
         $class = $request->get('entity');
         $term = $request->get('q');

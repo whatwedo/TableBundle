@@ -62,7 +62,7 @@ class SearchEventListener
     /**
      * Search listener.
      */
-    public function searchResultSet(DataLoadEvent $event)
+    public function searchResultSet(DataLoadEvent $event): void
     {
         if (!\in_array(whatwedoSearchBundle::class, $this->kernelBundles, true)) {
             return;
