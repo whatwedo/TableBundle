@@ -29,7 +29,7 @@ namespace whatwedo\TableBundle\Exception;
 
 class ReservedColumnAcronymException extends \InvalidArgumentException
 {
-    public function __construct($acronym, $message = '', $code = 0, \Throwable $previous = null)
+    public function __construct($acronym, $message = '', $code = 0, ?\Throwable $previous = null)
     {
         if (!$message) {
             $message = sprintf(

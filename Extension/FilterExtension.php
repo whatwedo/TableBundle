@@ -181,7 +181,6 @@ class FilterExtension extends AbstractExtension
     {
         $filter = $this->getFilter($acronym);
         $name = $filter->getName();
-        $name = $filter->getName();
         $column = $filter->getType()->getColumn();
         $this->filters[$acronym] = new Filter($acronym, $name, new SimpleEnumFilterType($column, [], $class));
 
@@ -206,7 +205,7 @@ class FilterExtension extends AbstractExtension
      * @throws \Doctrine\Common\Annotations\AnnotationException
      * @throws \ReflectionException
      */
-    public function addFiltersAutomatically(DoctrineTable $table, callable $labelCallable = null, array $propertyNames = null)
+    public function addFiltersAutomatically(DoctrineTable $table, ?callable $labelCallable = null, ?array $propertyNames = null)
     {
         $queryBuilder = $table->getQueryBuilder();
         $entityClass = $queryBuilder->getRootEntities()[0];

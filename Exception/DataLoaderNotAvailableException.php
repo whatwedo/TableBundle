@@ -29,7 +29,7 @@ namespace whatwedo\TableBundle\Exception;
 
 class DataLoaderNotAvailableException extends \Exception
 {
-    public function __construct($message = '', $code = 0, \Throwable $previous = null)
+    public function __construct($message = '', $code = 0, ?\Throwable $previous = null)
     {
         if (!$message) {
             $message = 'Table data loader is not availabe. Please set one by calling Table::setDataLoader($dataLoader)';
