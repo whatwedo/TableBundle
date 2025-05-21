@@ -39,6 +39,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use whatwedo\TableBundle\Builder\FilterBuilder;
 use whatwedo\TableBundle\Entity\Filter as FilterEntity;
 use whatwedo\TableBundle\Exception\InvalidFilterAcronymException;
+use whatwedo\TableBundle\Filter\FilterGuesser;
 use whatwedo\TableBundle\Filter\Type\AjaxManyToManyFilterType;
 use whatwedo\TableBundle\Filter\Type\AjaxOneToManyFilterType;
 use whatwedo\TableBundle\Filter\Type\AjaxRelationFilterType;
@@ -65,6 +66,11 @@ class FilterExtension extends AbstractExtension
      * @var RequestStack
      */
     protected $requestStack;
+
+    /**
+     * @var FilterGuesser
+     */
+    protected $filterGuesser;
 
     /**
      * @var Filter[]
@@ -98,10 +104,11 @@ class FilterExtension extends AbstractExtension
      *
      * @param Registry $doctrine
      */
-    public function __construct(ManagerRegistry $doctrine, RequestStack $requestStack)
+    public function __construct(ManagerRegistry $doctrine, RequestStack $requestStack, FilterGuesser $filterGuesser)
     {
         $this->doctrine = $doctrine;
         $this->requestStack = $requestStack;
+        $this->filterGuesser = $filterGuesser;
     }
 
     /**
@@ -338,6 +345,11 @@ class FilterExtension extends AbstractExtension
         return ucfirst($property);
     }
 
+    public static function jsonSearchCallable(string $entityClass)
+    {
+        throw new \Exception('you need to define a json search callable for class "' . $entityClass . '".');
+    }
+
     /**
      * @throws \Doctrine\Common\Annotations\AnnotationException
      *
@@ -347,52 +359,28 @@ class FilterExtension extends AbstractExtension
     {
         $acronymNoSuffix = $property->getName();
         $acronym = '_' . $property->getName();
-
         $label = \call_user_func($labelCallable, $table, $property->getName());
-
-        $annotations = (new AnnotationReader())->getPropertyAnnotations($property);
-
         $allAliases = $queryBuilder->getAllAliases();
         $isPropertySelected = \in_array($acronym, $allAliases, true);
-
         $accessor = sprintf('%s.%s', $allAliases[0], $acronymNoSuffix);
-
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Column) {
-                if (array_key_exists($annotation->type, $this->scalarType)) {
-                    $this->addFilter($acronymNoSuffix, $label, new $this->scalarType[$annotation->type]($accessor));
-
-                    return $this->getFilter($acronymNoSuffix);
-                }
-
-                return null;
-            }
-
-            if ($annotation instanceof ManyToMany) {
-                $this->addFilter($acronymNoSuffix, $label, new $this->relationType[\get_class($annotation)]($accessor, $annotation->targetEntity, $this->doctrine));
-                return $this->getFilter($acronymNoSuffix);
-            }
-
-            if ($annotation instanceof OneToMany || $annotation instanceof ManyToOne) {
-                if ($annotation instanceof ManyToMany) {
-                    $this->addFilter($acronymNoSuffix, $label, new $filterType($acronym, $target, $this->doctrine));
-                    return $this->getFilter($acronymNoSuffix);
-                }
-
-                $target = $annotation->targetEntity;
-                if (false === mb_strpos($target, '\\')) {
-                    $target = $namespace.'\\'.$target;
-                }
-
-                $filterType = $this->relationType[\get_class($annotation)];
-
-                $joins = !$isPropertySelected ? [$acronym => $accessor] : [];
-
-                $this->addFilter($acronymNoSuffix, $label, new $filterType($acronym, $target, $this->doctrine, $joins));
+        $joins = ! $isPropertySelected ? [
+            $acronym => $accessor,
+        ] : [];
+        try {
+            $filterType = $this->filterGuesser->getFilterType($property, $accessor, $acronym, $joins, $namespace);
+            if ($filterType) {
+                $this->addFilter($acronymNoSuffix, $label, $filterType);
 
                 return $this->getFilter($acronymNoSuffix);
             }
+        } catch (\InvalidArgumentException $exception) {
+            $this->logger->warning('could not automatically add filter for "' . $label . '"', [
+                'message' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString(),
+            ]);
         }
+
+        return null;
     }
 
     private function getFromRequest(string $param)

@@ -27,6 +27,7 @@
 
 namespace whatwedo\TableBundle\Filter\Type;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -46,7 +47,7 @@ class AjaxOneToManyFilterType extends FilterType
      */
     protected $targetClass;
 
-    public function __construct($column, string $targetClass, ManagerRegistry $doctrine, array $joins = [])
+    public function __construct($column, string $targetClass, EntityManagerInterface $doctrine, array $joins = [])
     {
         parent::__construct($column, $joins);
         $this->doctrine = $doctrine;
