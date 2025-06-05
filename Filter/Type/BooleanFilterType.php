@@ -45,6 +45,7 @@ class   BooleanFilterType extends FilterType
 
     public function getValueField($value = 1)
     {
+        $value = (int)$value;
         return sprintf(
             '<select name="{name}" class="form-control"><option value="1" %s>ausgewählt</option><option value="0" %s>nicht ausgewählt</option></select>',
             1 === $value ? 'selected' : '',
@@ -54,7 +55,7 @@ class   BooleanFilterType extends FilterType
 
     public function addToQueryBuilder($operator, $value, $parameterName, QueryBuilder $queryBuilder)
     {
-        $value = 1 === $value ? 'true' : 'false';
+        $value = $value ? 'true' : 'false';
 
         switch ($operator) {
             case static::CRITERIA_EQUAL:
