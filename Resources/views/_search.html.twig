@@ -9,11 +9,32 @@
             {% endif %}
             {% if table.paginationExtension %}
                 {% set pagination = table.paginationExtension %}
-                <select data-disable-interactive name="{{ table.actionQueryParameter('limit') }}" class="whatwedo_table-limit form-control">
-                    {% for num in table.options['limit_choices'] %}
-                        <option value="{{ num }}"{% if pagination.limit == num %} selected{% endif %}>{{ 'whatwedo_table.entries'|trans({'%num%': num}) }}</option>
-                    {% endfor %}
-                </select>
+                <div
+                    class="whatwedo_table-limit input-group-btn"
+                >
+                    <button
+                        class="btn btn-default dropdown-toggle"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        type="button"
+                    >
+                        {{ 'whatwedo_table.entries'|trans({'%num%': pagination.limit}) }}
+                        <span class="caret"></span>
+                    </button>
+
+                    <ul
+                        class="dropdown-menu dropdown-menu-right"
+                    >
+                        {% for limit in table.options['limit_choices']|filter(limit => limit != pagination.limit) %}
+                            <li class="py-1 whatwedo-utility-paragraph">
+                                <a class="block px-4 py-2 hover:bg-neutral-50" href="{{ app.request.pathInfo }}?query={{ app.request.query.get('query') }}&index_limit={{ limit }}">
+                                    {{ 'whatwedo_table.entries'|trans({'%num%': limit}) }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
             {% else %}
                 <input type="hidden" name="{{ table.actionQueryParameter('limit') }}" value="-1">
             {% endif %}
