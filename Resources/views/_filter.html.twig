@@ -145,11 +145,31 @@
                 <div class="row" style="margin-bottom: 8px;">
                     <div class="col-xs-12">
                         <div class="btn-group btn-block" role="group">
-                            <button type="button" class="btn btn-default col-xs-10 {% if savedFilters is empty %}disabled{% endif %}" data-toggle="popover" data-container="body" data-content="{{ savedFiltersPopover|raw|e }}" data-html="true" data-placement="bottom" title="Gespeicherte Filter" data-template="{{ popoverTemplate|raw|e }}">
+                            <button
+                                type="button"
+                                class="btn btn-default col-xs-10 {% if savedFilters is empty %}disabled{% endif %} dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                            >
                                 <span class="pull-left"><i class="fa fa-floppy-o"></i></span> <span>{{ 'whatwedo_table.saved_filters'|trans }}</span>
                             </button>
-                            <button type="button" class="btn btn-default dropdown-toggle col-xs-2" data-toggle="modal"
-                                    data-target="#whatwedo_table__filters__save__{{ table.identifier }}"><i class="fa fa-plus"></i></button>
+                            <ul
+                                class="dropdown-menu dropdown-menu-left"
+                            >
+                                {% for filter in table.filterExtension.savedFilter(app.user.username, app.request.attributes.get('_route')) %}
+                                    {% set filter_href = path(filter.route, filter.arguments | merge(filter.conditions)) %}
+                                    <li><a href="{{ filter_href }}" class="text-neutral-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">{{ filter.name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                            <button
+                                type="button"
+                                class="btn btn-default dropdown-toggle col-xs-2"
+                                data-toggle="modal"
+                                data-target="#whatwedo_table__filters__save__{{ table.identifier }}"
+                            >
+                                <i class="fa fa-plus"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
