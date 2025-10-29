@@ -28,7 +28,7 @@
                     >
                         {% for limit in table.options['limit_choices']|filter(limit => limit != pagination.limit) %}
                             <li class="py-1 whatwedo-utility-paragraph">
-                                <a class="block px-4 py-2 hover:bg-neutral-50" href="{{ app.request.pathInfo }}?query={{ app.request.query.get('query') }}&index_limit={{ limit }}">
+                                <a class="block px-4 py-2 hover:bg-neutral-50" href="{{ whatwedo_table_generate_route_replace_arguments({index_limit: limit}) }}">
                                     {{ 'whatwedo_table.entries'|trans({'%num%': limit}) }}
                                 </a>
                             </li>
