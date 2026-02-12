@@ -28,7 +28,10 @@ export default class extends Controller {
         const parser = new DOMParser();
         const template = choosenOption.getAttribute('data-value-template')
         const doc = parser.parseFromString(template.replace(/{name}/g, valueField.getAttribute('name')), 'text/html');
-        valueField.parentNode.replaceChild(doc.body, valueField);
+        if(!doc.body?.childNodes?.[0]) {
+          throw new Error('No template found');
+        }
+        valueField.parentNode.replaceChild(doc.body.childNodes[0], valueField);
     }
 
     open() {
