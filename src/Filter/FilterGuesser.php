@@ -29,12 +29,16 @@ declare(strict_types=1);
 
 namespace whatwedo\TableBundle\Filter;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\ManyToMany;
-use Doctrine\ORM\Mapping\ManyToOne;
-use Doctrine\ORM\Mapping\OneToMany;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Mapping\FieldMapping;
+use Doctrine\ORM\Mapping\ManyToManyAssociationMapping;
+use Doctrine\ORM\Mapping\ManyToManyInverseSideMapping;
+use Doctrine\ORM\Mapping\ManyToManyOwningSideMapping;
+use Doctrine\ORM\Mapping\ManyToOneAssociationMapping;
+use Doctrine\ORM\Mapping\OneToManyAssociationMapping;
+use Doctrine\ORM\Mapping\ToManyAssociationMapping;
+use Doctrine\ORM\Mapping\ToOneAssociationMapping;
 use whatwedo\TableBundle\Filter\Type\AjaxManyToManyFilterType;
 use whatwedo\TableBundle\Filter\Type\AjaxOneToManyFilterType;
 use whatwedo\TableBundle\Filter\Type\AjaxRelationFilterType;
@@ -58,39 +62,29 @@ class FilterGuesser
         'boolean' => BooleanFilterType::class,
     ];
 
-    private const RELATION_TYPE = [
-        OneToMany::class => AjaxOneToManyFilterType::class,
-        ManyToOne::class => AjaxRelationFilterType::class,
-        ManyToMany::class => AjaxManyToManyFilterType::class,
-    ];
-
     public function __construct(
         protected EntityManagerInterface $entityManager
     ) {
     }
 
     public function getFilterType(
-        \ReflectionProperty $property,
         string $accessor,
         string $acronym,
         callable $jsonSearchCallable,
         array $joins,
-        string $namespace
-    ): ?FilterTypeInterface {
-        $all = $this->getAnnotationsAndAttributes($property);
-        foreach ($all as $holder) {
-            $class = $this->getClass($holder);
-            $type = $this->getType($holder, $property);
-            $targetEntity = $this->getTargetEntity($holder, $property);
-            $result = match ($class) {
-                Column::class => $this->newColumnFilter($type, $accessor),
-                ManyToMany::class => $this->newManyToManyFilter($class, $acronym, $targetEntity, $jsonSearchCallable, $joins),
-                OneToMany::class, ManyToOne::class => $this->newRelationFilter($class, $acronym, $targetEntity, $namespace, $jsonSearchCallable, $joins),
-                default => null,
-            };
-            if ($result) {
-                return $result;
-            }
+        array $mapping,
+    ): ?FilterTypeInterface
+    {
+        $result = match (true) {
+            is_string($mapping['type']) => $this->newColumnFilter($mapping['type'], $accessor),
+            $mapping['type'] === ClassMetadataInfo::MANY_TO_MANY => $this->newManyToManyFilter($acronym, $mapping['targetEntity'], $jsonSearchCallable, $joins),
+            $mapping['type'] === ClassMetadataInfo::ONE_TO_MANY => $this->newRelationFilter(AjaxOneToManyFilterType::class, $acronym, $mapping['targetEntity'], $jsonSearchCallable, $joins),
+            $mapping['type'] === ClassMetadataInfo::MANY_TO_ONE => $this->newRelationFilter(AjaxRelationFilterType::class, $acronym, $mapping['targetEntity'], $jsonSearchCallable, $joins),
+            default => null,
+        };
+
+        if ($result) {
+            return $result;
         }
 
         return null;
@@ -105,13 +99,9 @@ class FilterGuesser
         return new (self::SCALAR_TYPES[$type])($accessor);
     }
 
-    private function newManyToManyFilter(string $class, string $acronym, string $targetEntity, callable $jsonSearchCallable, array $joins): ?FilterTypeInterface
+    private function newManyToManyFilter(string $acronym, string $targetEntity, callable $jsonSearchCallable, array $joins): FilterTypeInterface
     {
-        if (! isset(self::RELATION_TYPE[$class])) {
-            return null;
-        }
-
-        return new (self::RELATION_TYPE[$class])(
+        return new AjaxManyToManyFilterType(
             $acronym,
             $targetEntity,
             $this->entityManager,
@@ -120,88 +110,14 @@ class FilterGuesser
         );
     }
 
-    private function newRelationFilter(string $class, string $acronym, string $targetEntity, string $namespace, callable $jsonSearchCallable, array $joins): ?FilterTypeInterface
+    private function newRelationFilter(string $filterClass, string $acronym, string $targetEntity, callable $jsonSearchCallable, array $joins): FilterTypeInterface
     {
-        if (! isset(self::RELATION_TYPE[$class])) {
-            return null;
-        }
-
-        if (mb_strpos($targetEntity, '\\') === false) {
-            $targetEntity = $namespace . '\\' . $targetEntity;
-        }
-
-        return new (self::RELATION_TYPE[$class])(
+        return new ($filterClass)(
             $acronym,
             $targetEntity,
             $this->entityManager,
             $jsonSearchCallable($targetEntity),
             $joins
         );
-    }
-
-    private function getAnnotationsAndAttributes(\ReflectionProperty $property): ?array
-    {
-        $annotations = (new AnnotationReader())->getPropertyAnnotations($property);
-        $attributes = $property->getAttributes();
-
-        return [...$annotations, ...$attributes];
-    }
-
-    private function getFieldMapping(\ReflectionProperty $property): array
-    {
-        $meta = $this->entityManager->getClassMetadata($property->getDeclaringClass()->getName());
-        $mappings = array_merge($meta->fieldMappings, $meta->associationMappings);
-        if (! isset($mappings[$property->getName()])) {
-            return [];
-        }
-
-        return $mappings[$property->getName()];
-    }
-
-    private function isAttribute(mixed $x): bool
-    {
-        return $x instanceof \ReflectionAttribute;
-    }
-
-    private function getClass(mixed $x): ?string
-    {
-        if ($this->isAttribute($x)) {
-            return $x->getName();
-        }
-
-        return get_class($x);
-    }
-
-    private function getType(mixed $x, \ReflectionProperty $property): null|string|int
-    {
-        return $this->getXYZ($x, $property, 'type');
-    }
-
-    private function getTargetEntity(mixed $x, \ReflectionProperty $property): null|string|int
-    {
-        return $this->getXYZ($x, $property, 'targetEntity');
-    }
-
-    private function getXYZ(mixed $x, \ReflectionProperty $property, string $what): null|string|int
-    {
-        if ($this->isAttribute($x)) {
-            $arguments = $x->getArguments();
-            if (isset($arguments[$what])) {
-                return $arguments[$what];
-            }
-        }
-
-        if (! $this->isAttribute($x)) {
-            if (property_exists($x, $what)) {
-                return $x->{$what};
-            }
-        }
-
-        $fieldMappings = $this->getFieldMapping($property);
-        if (isset($fieldMappings[$what])) {
-            return $fieldMappings[$what];
-        }
-
-        return null;
     }
 }

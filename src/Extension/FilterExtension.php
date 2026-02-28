@@ -31,6 +31,12 @@ namespace whatwedo\TableBundle\Extension;
 
 use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\FieldMapping;
+use Doctrine\ORM\Mapping\ManyToManyAssociationMapping;
+use Doctrine\ORM\Mapping\ManyToOneAssociationMapping;
+use Doctrine\ORM\Mapping\OneToManyAssociationMapping;
+use Doctrine\ORM\Mapping\ToManyAssociationMapping;
+use Doctrine\ORM\Mapping\ToOneAssociationMapping;
 use Doctrine\ORM\QueryBuilder;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -172,24 +178,26 @@ class FilterExtension extends AbstractExtension
         }
 
         if ($table->getDataLoader() instanceof DoctrineDataLoader) {
+            if ($propertyNames === null) {
+                $propertyNames = [];
+            }
             /** @var QueryBuilder $queryBuilder */
             $queryBuilder = $table->getDataLoader()->getOption(DoctrineDataLoader::OPT_QUERY_BUILDER);
             $entityClass = $queryBuilder->getRootEntities()[0];
 
-            $reflectionClass = new \ReflectionClass($entityClass);
             $labelCallable = \is_callable($labelCallable) ? $labelCallable : [$this, 'labelCallable'];
             $jsonSearchCallable = \is_callable($jsonSearchCallable) ? $jsonSearchCallable : [$this, 'jsonSearchCallable'];
 
-            $properties = $propertyNames ? array_map([$reflectionClass, 'getProperty'], $propertyNames) : $reflectionClass->getProperties();
+            $properties = $this->getMetaDataPropertyMapping($entityClass, $propertyNames);
 
-            foreach ($properties as $property) {
-                if ($this->getOption(self::OPT_ADD_ALL) && in_array($property->getName(), $this->getOption(self::OPT_EXCLUDE_FIELDS), true)) {
+            foreach ($properties as $propertyName => $mapping) {
+                if ($this->getOption(self::OPT_ADD_ALL) && in_array($propertyName, $this->getOption(self::OPT_EXCLUDE_FIELDS), true)) {
                     continue;
                 }
-                if (! $this->getOption(self::OPT_ADD_ALL) && ! in_array($property->getName(), $this->getOption(self::OPT_INCLUDE_FIELDS), true)) {
+                if (! $this->getOption(self::OPT_ADD_ALL) && ! in_array($propertyName, $this->getOption(self::OPT_INCLUDE_FIELDS), true)) {
                     continue;
                 }
-                $this->addFilterAutomatically($table, $queryBuilder, $labelCallable, $jsonSearchCallable, $property, $reflectionClass->getNamespaceName());
+                $this->addFilterAutomatically($propertyName, $table, $queryBuilder, $labelCallable, $jsonSearchCallable, $mapping);
             }
         }
     }
@@ -320,11 +328,18 @@ class FilterExtension extends AbstractExtension
      *
      * @throws AnnotationException
      */
-    private function addFilterAutomatically(Table $table, QueryBuilder $queryBuilder, callable $labelCallable, callable $jsonSearchCallable, \ReflectionProperty $property, string $namespace)
+    private function addFilterAutomatically(
+        string $propertyName,
+        Table $table,
+        QueryBuilder $queryBuilder,
+        callable $labelCallable,
+        callable $jsonSearchCallable,
+        array $mapping,
+    )
     {
-        $acronymNoSuffix = $property->getName();
-        $acronym = '_' . $property->getName();
-        $label = \call_user_func($labelCallable, $table, $property->getName());
+        $acronymNoSuffix = $propertyName;
+        $acronym = '_' . $propertyName;
+        $label = \call_user_func($labelCallable, $table, $propertyName);
         $allAliases = $queryBuilder->getAllAliases();
         $isPropertySelected = \in_array($acronym, $allAliases, true);
         $accessor = sprintf('%s.%s', $allAliases[0], $acronymNoSuffix);
@@ -332,7 +347,7 @@ class FilterExtension extends AbstractExtension
             $acronym => $accessor,
         ] : [];
         try {
-            $filterType = $this->filterGuesser->getFilterType($property, $accessor, $acronym, $jsonSearchCallable, $joins, $namespace);
+            $filterType = $this->filterGuesser->getFilterType($accessor, $acronym, $jsonSearchCallable, $joins, $mapping);
             if ($filterType) {
                 $this->addFilter($acronymNoSuffix, $label, $filterType);
 
@@ -374,4 +389,33 @@ class FilterExtension extends AbstractExtension
 
         return $value;
     }
+
+
+
+    private function getMetaDataPropertyMapping(string $entityClass, array $propertyNames = []): array
+    {
+        $metadata = $this->entityManager->getClassMetadata($entityClass);
+
+        $properties = [];
+
+        foreach ($metadata->getFieldNames() as $fieldName) {
+            if (!empty($propertyNames) && !in_array($fieldName, $propertyNames, true)) {
+                continue;
+            }
+            if (!array_key_exists($fieldName, $properties)) {
+                $properties[$fieldName] = $metadata->getFieldMapping($fieldName);
+            }
+        }
+        foreach ($metadata->getAssociationNames() as $associationName) {
+            if (!empty($propertyNames) && !in_array($associationName, $propertyNames, true)) {
+                continue;
+            }
+            if (!array_key_exists($associationName, $properties)) {
+                $properties[$associationName] = $metadata->getAssociationMapping($associationName);
+            }
+        }
+
+        return $properties;
+    }
+
 }
