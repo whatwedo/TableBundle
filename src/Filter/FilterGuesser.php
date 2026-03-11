@@ -29,7 +29,6 @@ declare(strict_types=1);
 
 namespace whatwedo\TableBundle\Filter;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\ManyToMany;
@@ -139,23 +138,24 @@ class FilterGuesser
         );
     }
 
-    private function getAnnotationsAndAttributes(\ReflectionProperty $property): ?array
+    private function getAnnotationsAndAttributes(\ReflectionProperty $property): array
     {
-        $annotations = (new AnnotationReader())->getPropertyAnnotations($property);
-        $attributes = $property->getAttributes();
-
-        return [...$annotations, ...$attributes];
+        return $property->getAttributes();
     }
 
-    private function getFieldMapping(\ReflectionProperty $property): array
+    private function getFieldMapping(\ReflectionProperty $property): array|object
     {
         $meta = $this->entityManager->getClassMetadata($property->getDeclaringClass()->getName());
-        $mappings = array_merge($meta->fieldMappings, $meta->associationMappings);
-        if (! isset($mappings[$property->getName()])) {
-            return [];
+        $fieldName = $property->getName();
+
+        if ($meta->hasField($fieldName)) {
+            return $meta->getFieldMapping($fieldName);
+        }
+        if ($meta->hasAssociation($fieldName)) {
+            return $meta->getAssociationMapping($fieldName);
         }
 
-        return $mappings[$property->getName()];
+        return [];
     }
 
     private function isAttribute(mixed $x): bool
@@ -165,11 +165,7 @@ class FilterGuesser
 
     private function getClass(mixed $x): ?string
     {
-        if ($this->isAttribute($x)) {
-            return $x->getName();
-        }
-
-        return get_class($x);
+        return $x->getName();
     }
 
     private function getType(mixed $x, \ReflectionProperty $property): null|string|int
@@ -184,22 +180,17 @@ class FilterGuesser
 
     private function getXYZ(mixed $x, \ReflectionProperty $property, string $what): null|string|int
     {
-        if ($this->isAttribute($x)) {
-            $arguments = $x->getArguments();
-            if (isset($arguments[$what])) {
-                return $arguments[$what];
-            }
+        $arguments = $x->getArguments();
+        if (isset($arguments[$what])) {
+            return $arguments[$what];
         }
 
-        if (! $this->isAttribute($x)) {
-            if (property_exists($x, $what)) {
-                return $x->{$what};
-            }
+        $fieldMapping = $this->getFieldMapping($property);
+        if (is_array($fieldMapping)) {
+            return $fieldMapping[$what] ?? null;
         }
-
-        $fieldMappings = $this->getFieldMapping($property);
-        if (isset($fieldMappings[$what])) {
-            return $fieldMappings[$what];
+        if (is_object($fieldMapping) && property_exists($fieldMapping, $what)) {
+            return $fieldMapping->{$what};
         }
 
         return null;

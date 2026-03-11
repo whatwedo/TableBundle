@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "php":                      ">=8.1",
+        "php":                      ">=8.2",
         "symfony/framework-bundle": "^5.4|^6.0|^7.0",
         "symfony/http-kernel":      "^5.4|^6.0|^7.0",
         "symfony/validator":        "^5.4|^6.0|^7.0",
@@ -32,7 +32,7 @@
         "symfony/validator": "^7.0",
         "nyholm/symfony-bundle-test": "^2.0",
         "doctrine/doctrine-bundle": "^2.11",
-        "doctrine/orm": "^2.11",
+        "doctrine/orm": "^2.11|^3.0",
         "whatwedo/php-coding-standard": "^1.0",
         "zenstruck/foundry": "^1.16|^2.0",
         "zenstruck/console-test": "^v1.1.0",
