@@ -49,10 +49,10 @@ class Filter
     #[Assert\Length(max: 256)]
     protected string $route = '';
 
-    #[ORM\Column(name: 'arguments', type: 'array', nullable: false)]
+    #[ORM\Column(name: 'arguments', type: 'json', nullable: false)]
     protected array $arguments = [];
 
-    #[ORM\Column(name: 'conditions', type: 'array')]
+    #[ORM\Column(name: 'conditions', type: 'json')]
     protected array $conditions = [];
 
     #[ORM\Column(name: 'description', type: 'string', length: 256, nullable: true)]
