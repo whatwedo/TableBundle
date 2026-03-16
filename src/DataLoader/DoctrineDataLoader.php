@@ -34,7 +34,7 @@ class DoctrineDataLoader extends AbstractDataLoader
         $qb->resetDQLPart('orderBy');
         $this->paginationExtension->setTotalResults((int) $qb->getQuery()->getSingleScalarResult());
 
-        if ($this->paginationExtension->getLimit()) {
+        if ($this->paginationExtension->getLimit() > 0) {
             $this->options[self::OPT_QUERY_BUILDER]
                 ->setMaxResults($this->paginationExtension->getLimit())
                 ->setFirstResult($this->paginationExtension->getOffsetResults());
