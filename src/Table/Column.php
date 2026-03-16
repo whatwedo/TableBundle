@@ -6,6 +6,7 @@ namespace whatwedo\TableBundle\Table;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
+use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use whatwedo\CoreBundle\Formatter\DefaultFormatter;
 use whatwedo\CoreBundle\Manager\FormatterManager;
@@ -84,8 +85,8 @@ class Column extends AbstractColumn implements FormattableColumnInterface
                 ->getPropertyAccessor()
                 ->getValue($row, $this->options[self::OPT_ACCESSOR_PATH])
             ;
-        } catch (NoSuchPropertyException $e) {
-            return $e->getMessage();
+        } catch (NoSuchPropertyException|UnexpectedTypeException $e) {
+            return null;
         }
     }
 
