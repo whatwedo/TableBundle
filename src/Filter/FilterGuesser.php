@@ -149,7 +149,11 @@ class FilterGuesser
         $fieldName = $property->getName();
 
         if ($meta->hasField($fieldName)) {
-            return $meta->getFieldMapping($fieldName);
+            try {
+                return $meta->getFieldMapping($fieldName);
+            } catch (\Doctrine\ORM\Mapping\MappingException) {
+                return [];
+            }
         }
         if ($meta->hasAssociation($fieldName)) {
             return $meta->getAssociationMapping($fieldName);
