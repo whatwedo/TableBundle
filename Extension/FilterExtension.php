@@ -28,7 +28,6 @@
 namespace whatwedo\TableBundle\Extension;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
@@ -203,7 +202,6 @@ class FilterExtension extends AbstractExtension
      * @param callable $labelCallable
      * @param string[] $propertyNames
      *
-     * @throws \Doctrine\Common\Annotations\AnnotationException
      * @throws \ReflectionException
      */
     public function addFiltersAutomatically(DoctrineTable $table, callable $labelCallable = null, array $propertyNames = null)
@@ -340,8 +338,6 @@ class FilterExtension extends AbstractExtension
     }
 
     /**
-     * @throws \Doctrine\Common\Annotations\AnnotationException
-     *
      * @return Filter|null
      */
     private function addFilterAutomatically(DoctrineTable $table, QueryBuilder $queryBuilder, callable $labelCallable, \ReflectionProperty $property, string $namespace)
@@ -351,14 +347,13 @@ class FilterExtension extends AbstractExtension
 
         $label = \call_user_func($labelCallable, $table, $property->getName());
 
-        $annotations = (new AnnotationReader())->getPropertyAnnotations($property);
-
         $allAliases = $queryBuilder->getAllAliases();
         $isPropertySelected = \in_array($acronym, $allAliases, true);
 
         $accessor = sprintf('%s.%s', $allAliases[0], $acronymNoSuffix);
 
-        foreach ($annotations as $annotation) {
+        foreach ($property->getAttributes() as $attributeRefl) {
+            $annotation = $attributeRefl->newInstance();
             if ($annotation instanceof Column) {
                 if (array_key_exists($annotation->type, $this->scalarType)) {
                     $this->addFilter($acronymNoSuffix, $label, new $this->scalarType[$annotation->type]($accessor));

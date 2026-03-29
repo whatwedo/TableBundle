@@ -71,11 +71,7 @@ class FilterController extends AbstractController
         $this->queryBuilderManager = $queryBuilderManager;
     }
 
-    /**
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     *
-     * @Route("/whatwedo/table/filter/create", name="whatwedo_table_filter_direct_create", methods="POST")
-     */
+    #[Route("/whatwedo/table/filter/create", name: "whatwedo_table_filter_direct_create", methods: ["POST"])]
     public function directCreateAction(Request $request)
     {
         $filter = new Filter();
@@ -105,11 +101,7 @@ class FilterController extends AbstractController
         ));
     }
 
-    /**
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     *
-     * @Route("/whatwedo/table/filter/delete/{id}", name="whatwedo_table_filter_direct_delete")
-     */
+    #[Route("/whatwedo/table/filter/delete/{id}", name: "whatwedo_table_filter_direct_delete")]
     public function deleteAction(Filter $filter, Request $request)
     {
         if (!$this->isCsrfTokenValid('token', $request->get('token'))) {
@@ -125,11 +117,7 @@ class FilterController extends AbstractController
         return $this->redirect($request->headers->get('referer'));
     }
 
-    /**
-     * @return JsonResponse
-     *
-     * @Route("/whatwedo/table/filter/relation", name="whatwedo_table_filter_load_relation_filter", methods="GET")
-     */
+    #[Route("/whatwedo/table/filter/relation", name: "whatwedo_table_filter_load_relation_filter", methods: ["GET"])]
     public function loadRelationFilterTypeAction(Request $request)
     {
         $class = $request->get('entity');
