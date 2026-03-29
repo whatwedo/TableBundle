@@ -30,188 +30,115 @@ namespace whatwedo\TableBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use whatwedo\TableBundle\Enum\FilterStateEnum;
+use whatwedo\TableBundle\Repository\FilterRepository;
 
-/**
- * @ORM\Table(name="whatwedo_table_filter")
- * @ORM\Entity(repositoryClass="whatwedo\TableBundle\Repository\FilterRepository")
- */
+#[ORM\Table(name: 'whatwedo_table_filter')]
+#[ORM\Entity(repositoryClass: FilterRepository::class)]
 class Filter
 {
-    /**
-     * @var int
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
+    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     protected $id;
 
-    /**
-     * @var string
-     * @ORM\Column(name="name", type="string", length=50, nullable=false)
-     * @Assert\Length(max="50")
-     */
+    #[ORM\Column(name: 'name', type: 'string', length: 50, nullable: false)]
+    #[Assert\Length(max: 50)]
     protected $name;
 
-    /**
-     * @var string
-     * @ORM\Column(name="path", type="string", length=256, nullable=false)
-     */
+    #[ORM\Column(name: 'path', type: 'string', length: 256, nullable: false)]
     protected $route;
 
-    /**
-     * @var array
-     * @ORM\Column(name="arguments", type="array", nullable=false)
-     */
+    #[ORM\Column(name: 'arguments', type: 'array', nullable: false)]
     protected $arguments;
 
-    /**
-     * @var string
-     * @ORM\Column(name="conditions", type="text", nullable=false)
-     */
+    #[ORM\Column(name: 'conditions', type: 'text', nullable: false)]
     protected $conditions;
 
-    /**
-     * @var string
-     * @ORM\Column(name="creator_username", type="string", length=256, nullable=false)
-     */
+    #[ORM\Column(name: 'creator_username', type: 'string', length: 256, nullable: false)]
     protected $creatorUsername;
 
-    /**
-     * @var int
-     * @ORM\Column(name="state", type="smallint", nullable=false)
-     */
+    #[ORM\Column(name: 'state', type: 'smallint', nullable: false)]
     protected $state;
 
-    /**
-     * @var string
-     * @ORM\Column(name="description", type="string", length=256, nullable=true)
-     * @Assert\Length(max="256")
-     */
+    #[ORM\Column(name: 'description', type: 'string', length: 256, nullable: true)]
+    #[Assert\Length(max: 256)]
     protected $description;
 
-    /**
-     * @return int
-     */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
     public function setId($id)
     {
         $this->id = $id;
     }
 
-    /**
-     * @return string
-     */
     public function getName()
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
     public function setName($name)
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
     public function getRoute()
     {
         return $this->route;
     }
 
-    /**
-     * @param string $route
-     */
     public function setRoute($route)
     {
         $this->route = $route;
     }
 
-    /**
-     * @return array
-     */
     public function getArguments()
     {
         return $this->arguments;
     }
 
-    /**
-     * @param array $arguments
-     */
     public function setArguments($arguments)
     {
         $this->arguments = $arguments;
     }
 
-    /**
-     * @return string
-     */
     public function getConditions()
     {
         return unserialize($this->conditions);
     }
 
-    /**
-     * @param string $conditions
-     */
     public function setConditions($conditions)
     {
         $this->conditions = serialize($conditions);
     }
 
-    /**
-     * @return string
-     */
     public function getCreatorUsername()
     {
         return $this->creatorUsername;
     }
 
-    /**
-     * @param string $creatorUsername
-     */
     public function setCreatorUsername($creatorUsername)
     {
         $this->creatorUsername = $creatorUsername;
     }
 
-    /**
-     * @return int
-     */
     public function getState()
     {
         return $this->state;
     }
 
-    /**
-     * @param int $state
-     */
     public function setState($state)
     {
         $this->state = $state;
     }
 
-    /**
-     * @return string
-     */
     public function getDescription()
     {
         return $this->description;
     }
 
-    /**
-     * @param string $description
-     */
     public function setDescription($description)
     {
         $this->description = $description;
