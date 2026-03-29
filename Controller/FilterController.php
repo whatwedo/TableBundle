@@ -33,7 +33,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use whatwedo\TableBundle\Entity\Filter;
@@ -72,13 +72,13 @@ class FilterController extends AbstractController
     }
 
     #[Route("/whatwedo/table/filter/create", name: "whatwedo_table_filter_direct_create", methods: ["POST"])]
-    public function directCreateAction(Request $request)
+    public function directCreateAction(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         $filter = new Filter();
         $filter->setName($request->request->get('filter_name'));
         $filter->setDescription($request->request->get('filter_description'));
         $filter->setState($request->request->getBoolean('filter_public') ? FilterStateEnum::ALL : FilterStateEnum::SELF);
-        $filter->setCreatorUsername($this->getUser()->getUsername());
+        $filter->setCreatorUsername($this->getUser()->getUserIdentifier());
 
         $filter->setRoute($request->request->get('filter_route'));
         $filter->setArguments(json_decode($request->request->get('filter_route_arguments'), true));
@@ -102,13 +102,13 @@ class FilterController extends AbstractController
     }
 
     #[Route("/whatwedo/table/filter/delete/{id}", name: "whatwedo_table_filter_direct_delete")]
-    public function deleteAction(Filter $filter, Request $request)
+    public function deleteAction(Filter $filter, Request $request): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         if (!$this->isCsrfTokenValid('token', $request->get('token'))) {
             throw new InvalidCsrfTokenException('Invalid CSRF token');
         }
 
-        if ($filter->getCreatorUsername() !== $this->getUser()->getUsername()) {
+        if ($filter->getCreatorUsername() !== $this->getUser()->getUserIdentifier()) {
             throw $this->createAccessDeniedException();
         }
         $this->entityManager->remove($filter);
@@ -118,7 +118,7 @@ class FilterController extends AbstractController
     }
 
     #[Route("/whatwedo/table/filter/relation", name: "whatwedo_table_filter_load_relation_filter", methods: ["GET"])]
-    public function loadRelationFilterTypeAction(Request $request)
+    public function loadRelationFilterTypeAction(Request $request): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $class = $request->get('entity');
         $term = $request->get('q');

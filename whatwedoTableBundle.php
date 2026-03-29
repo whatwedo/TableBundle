@@ -11,7 +11,7 @@ use whatwedo\TableBundle\DependencyInjection\Compiler\TableFactoryPass;
  */
 class whatwedoTableBundle extends Bundle
 {
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new TableFactoryPass());
     }

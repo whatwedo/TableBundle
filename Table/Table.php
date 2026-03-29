@@ -410,7 +410,7 @@ class Table
      *
      * @throws DataLoaderNotAvailableException
      */
-    public function loadData()
+    public function loadData(): void
     {
         if (!\is_callable($this->options['data_loader']) && !\is_array($this->options['data_loader'])) {
             throw new DataLoaderNotAvailableException();
