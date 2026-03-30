@@ -27,6 +27,7 @@
 
 namespace whatwedo\TableBundle\Formatter;
 
+use Symfony\Contracts\Service\Attribute\Required;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use whatwedo\CoreBundle\Formatter\AbstractFormatter;
 use whatwedo\TableBundle\Enum\FilterStateEnum;
@@ -38,6 +39,7 @@ class FilterStateFormatter extends AbstractFormatter
     /**
      * @required
      */
+    #[Required]
     public function setTranslator(TranslatorInterface $translator): void
     {
         $this->translator = $translator;
