@@ -52,9 +52,9 @@ class ChoiceFilterType extends FilterType
 
         switch ($operator) {
             case static::CRITERIA_EQUAL:
-                return $queryBuilder->expr()->eq($this->getColumn(), ':' . $parameterName);
+                return $queryBuilder->expr()->eq($this->getColumn(), ':'.$parameterName);
             case static::CRITERIA_NOT_EQUAL:
-                return $queryBuilder->expr()->neq($this->getColumn(), ':' . $parameterName);
+                return $queryBuilder->expr()->neq($this->getColumn(), ':'.$parameterName);
         }
 
         return false;

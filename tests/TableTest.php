@@ -170,7 +170,7 @@ class TableTest extends KernelTestCase
         $tableFactory = self::getContainer()->get(TableFactory::class);
 
         $fakeRequest = Request::create('/', 'GET', [
-            'test_' . RouterHelper::PARAMETER_PAGINATION_PAGE => 2,
+            'test_'.RouterHelper::PARAMETER_PAGINATION_PAGE => 2,
         ]);
 
         $fakeRequest->setSession(new Session(new MockArraySessionStorage()));

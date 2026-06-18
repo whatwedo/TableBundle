@@ -56,17 +56,17 @@ class AjaxRelationFilterType extends FilterType
         switch ($operator) {
             case static::CRITERIA_EQUAL:
                 if ((int) $value) {
-                    return $queryBuilder->expr()->eq($this->getColumn() . '.id', (int) $value);
+                    return $queryBuilder->expr()->eq($this->getColumn().'.id', (int) $value);
                 }
 
-                return $queryBuilder->expr()->isNull($this->getColumn() . '.id');
+                return $queryBuilder->expr()->isNull($this->getColumn().'.id');
 
             case static::CRITERIA_NOT_EQUAL:
                 if ((int) $value) {
-                    return $queryBuilder->expr()->neq($this->getColumn() . '.id', (int) $value);
+                    return $queryBuilder->expr()->neq($this->getColumn().'.id', (int) $value);
                 }
 
-                return $queryBuilder->expr()->isNotNull($this->getColumn() . '.id');
+                return $queryBuilder->expr()->isNotNull($this->getColumn().'.id');
         }
 
         return null;

@@ -63,7 +63,7 @@ class AjaxFilterSearchListener
             $ids = $this->indexRepository->search($term, $class);
             $queryBuilder = $requestEvent->getQueryBuilder() ?: $this->entityManager->getRepository($class)
                 ->createQueryBuilder('e');
-            $entities = $queryBuilder->andWhere($queryBuilder->getRootAliases()[0] . '.id IN (:ids)')
+            $entities = $queryBuilder->andWhere($queryBuilder->getRootAliases()[0].'.id IN (:ids)')
                 ->setParameter('ids', $ids)
                 ->getQuery()
                 ->getResult();
