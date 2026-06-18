@@ -45,7 +45,8 @@
         "symfony/webpack-encore-bundle": "^1.13",
         "symfony/security-core": "^6.0",
         "symfony/security-bundle": "^6.0",
-        "phpstan/phpstan": "^1.5"
+        "phpstan/phpstan": "^1.5",
+        "phpstan/phpstan-phpunit": "^1.0"
     },
     "autoload": {
         "psr-4": {
