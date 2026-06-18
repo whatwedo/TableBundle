@@ -92,7 +92,7 @@ class TableExtension extends AbstractExtension
             $new_key = '';
             foreach ($parts as $part) {
                 if ($i !== 0) {
-                    $part = '[' . $part . ']';
+                    $part = '['.$part.']';
                 }
                 $new_key .= $part;
                 $i++;
@@ -110,9 +110,9 @@ class TableExtension extends AbstractExtension
         $result = [];
         foreach ($array as $key => $value) {
             if (is_array($value)) {
-                $result = $result + $this->flattenArray($value, $prefix . $key . '.');
+                $result = $result + $this->flattenArray($value, $prefix.$key.'.');
             } else {
-                $result[$prefix . $key] = $value;
+                $result[$prefix.$key] = $value;
             }
         }
         return $result;

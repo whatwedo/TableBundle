@@ -197,7 +197,8 @@
                                 {% endif %}
                             {% endif %}
                         {% endapply %}
-                        {{ whatwedo_table_column_render(column, row) }}
+                        {% set columnValue = whatwedo_table_column_render(column, row) %}
+                        {{ wwd_is_html_safe(column) ? columnValue|raw : columnValue }}
                         {% if column.option('link_the_column_content') and columnLink|default(false) %}</a>{% endif %}
                     </td>
                 {% endfor %}

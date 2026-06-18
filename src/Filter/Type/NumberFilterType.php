@@ -41,13 +41,13 @@ class NumberFilterType extends FilterType
 
         switch ($operator) {
             case static::CRITERIA_EQUAL:
-                return $queryBuilder->expr()->eq($this->getColumn(), ':' . $parameterName);
+                return $queryBuilder->expr()->eq($this->getColumn(), ':'.$parameterName);
             case static::CRITERIA_NOT_EQUAL:
-                return $queryBuilder->expr()->neq($this->getColumn(), ':' . $parameterName);
+                return $queryBuilder->expr()->neq($this->getColumn(), ':'.$parameterName);
             case static::CRITERIA_BIGGER_THAN:
-                return $queryBuilder->expr()->gt($this->getColumn(), ':' . $parameterName);
+                return $queryBuilder->expr()->gt($this->getColumn(), ':'.$parameterName);
             case static::CRITERIA_SMALLER_THAN:
-                return $queryBuilder->expr()->lt($this->getColumn(), ':' . $parameterName);
+                return $queryBuilder->expr()->lt($this->getColumn(), ':'.$parameterName);
         }
 
         return false;

@@ -127,7 +127,7 @@ class FilterGuesser
         }
 
         if (mb_strpos($targetEntity, '\\') === false) {
-            $targetEntity = $namespace . '\\' . $targetEntity;
+            $targetEntity = $namespace.'\\'.$targetEntity;
         }
 
         return new (self::RELATION_TYPE[$class])(

@@ -59,7 +59,7 @@ class ExportManager
             }
 
             $columnIndex = $sheet->getColumnDimensionByColumn($colIndex + 1)->getColumnIndex();
-            $cell = $sheet->getCell($columnIndex . '1');
+            $cell = $sheet->getCell($columnIndex.'1');
             $cell->setValueExplicit($value, DataType::TYPE_STRING2);
             $cell->getStyle()->getFont()->setBold(true);
         }
@@ -89,7 +89,7 @@ class ExportManager
                     }
                 }
                 $columnIndex = $sheet->getColumnDimensionByColumn($colIndex)->getColumnIndex();
-                $cell = $sheet->getCell($columnIndex . ($rowIndex + 2));
+                $cell = $sheet->getCell($columnIndex.($rowIndex + 2));
 
                 $cell->setValueExplicit($data, DataType::TYPE_STRING2);
                 ++$colIndex;
