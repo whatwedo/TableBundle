@@ -438,10 +438,11 @@ class Table
         // loads the data from the data loader callable
         $tableData = null;
 
+        // an array callable such as [$this, 'dataLoader'] satisfies both checks, so the
+        // second branch must be an elseif — otherwise the loader runs twice per render
         if (\is_callable($this->options['data_loader'])) {
             $tableData = ($this->options['data_loader'])($currentPage, $limit);
-        }
-        if (\is_array($this->options['data_loader'])) {
+        } elseif (\is_array($this->options['data_loader'])) {
             $tableData = \call_user_func($this->options['data_loader'], $currentPage, $limit);
         }
 
